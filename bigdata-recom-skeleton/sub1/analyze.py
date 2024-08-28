@@ -11,15 +11,43 @@ def sort_stores_by_score(dataframes, n=20, min_reviews=30):
     stores_reviews = pd.merge(
         dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
     )
-    scores_group = stores_reviews.groupby(["store", "store_name"])
-    scores = scores_group.mean()
-    return scores.head(n=n).reset_index()
+    
+    # scores_group = stores_reviews.groupby(["store", "store_name"])
+    
+    # scores = scores_group.mean()
+    
+    # return scores.head(n=n).reset_index()
+
+
+    # 평균 평점과 리뷰 개수 계산@
+    scores_group = stores_reviews.groupby(["store", "store_name"])["score"].agg(
+        average_score='mean', 
+        review_count='count'
+    ).reset_index()
+
+    # 리뷰 개수가 min_reviews 미만인 음식점 제외
+    filtered_scores = scores_group[scores_group['review_count'] >= min_reviews]
+  
+    # 평균 평점 기준으로 정렬
+    sorted_scores = filtered_scores.sort_values(by='average_score', ascending=False)
+    
+    # 상위 n개 음식점 선택
+    top_stores = sorted_scores.head(n)
+
+    return top_stores
+
+   
+
+
+
 
 
 def get_most_reviewed_stores(dataframes, n=20):
     """
     Req. 1-2-3 가장 많은 리뷰를 받은 `n`개의 음식점을 정렬하여 리턴합니다
     """
+    print(dataframes)
+
     raise NotImplementedError
 
 
@@ -36,16 +64,20 @@ def main():
     term_w = shutil.get_terminal_size()[0] - 1
     separater = "-" * term_w
 
+
     stores_most_scored = sort_stores_by_score(data)
 
+    #stores_most_scored = sort_stores_by_score(data)
+    
     print("[최고 평점 음식점]")
     print(f"{separater}\n")
     for i, store in stores_most_scored.iterrows():
         print(
             "{rank}위: {store}({score}점)".format(
-                rank=i + 1, store=store.store_name, score=store.score
+                rank=i + 1, store=store.store_name, score=store.average_score
             )
         )
+        
     print(f"\n{separater}\n\n")
 
 

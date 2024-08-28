@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import shutil
 
-DATA_DIR = "../data"
+DATA_DIR = "../data/data"
 DATA_FILE = os.path.join(DATA_DIR, "data.json")
 DUMP_FILE = os.path.join(DATA_DIR, "dump.pkl")
 
@@ -28,6 +28,22 @@ review_columns = (
     "reg_time",  # 리뷰 등록 시간
 )
 
+menu_columns =(
+    "id",  # 메뉴 고유번호
+    "store", # 가게 가게 고유 번호
+    "menu_name", # 메뉴 이름
+    "price" # 가격 
+)
+
+user_columns = (
+    "id",   # 사용자 고유번호
+    "gender",   # 사용자 성별
+    "age"    # 사용자 나이
+
+)
+
+
+
 
 def import_data(data_path=DATA_FILE):
     """
@@ -43,6 +59,10 @@ def import_data(data_path=DATA_FILE):
 
     stores = []  # 음식점 테이블
     reviews = []  # 리뷰 테이블
+
+    #####
+    menus = [] # 메뉴 테이블
+    users = [] # 사용자 테이블 
 
     for d in data:
 
@@ -60,6 +80,13 @@ def import_data(data_path=DATA_FILE):
                 "|".join(categories),
             ]
         )
+        tem =1
+        for menu in d["menu_list"]:
+            
+            menus.append(
+                [tem, d["id"], menu["menu"], menu["price"],]
+            )
+            tem+=1
 
         for review in d["review_list"]:
             r = review["review_info"]
@@ -69,10 +96,18 @@ def import_data(data_path=DATA_FILE):
                 [r["id"], d["id"], u["id"], r["score"], r["content"], r["reg_time"]]
             )
 
-    store_frame = pd.DataFrame(data=stores, columns=store_columns)
-    review_frame = pd.DataFrame(data=reviews, columns=review_columns)
+            users.append(
+                [u["id"], u["gender"], u["born_year"]]
+            )
 
-    return {"stores": store_frame, "reviews": review_frame}
+        
+
+    store_frame = pd.DataFrame(data=stores, columns=store_columns) #
+    review_frame = pd.DataFrame(data=reviews, columns=review_columns)
+    menu_frame= pd.DataFrame(data=menus, columns=menu_columns)
+    user_frame=pd.DataFrame(data=users, columns=user_columns)
+
+    return {"stores": store_frame, "reviews": review_frame, "menus" : menu_frame, "users" : user_frame}
 
 
 def dump_dataframes(dataframes):
@@ -106,6 +141,16 @@ def main():
     print("[리뷰]")
     print(f"{separater}\n")
     print(data["reviews"].head())
+    print(f"\n{separater}\n\n")
+
+    print("[사용자]")
+    print(f"{separater}\n")
+    print(data["users"].head())
+    print(f"\n{separater}\n\n")
+
+    print("[메뉴]")
+    print(f"{separater}\n")
+    print(data["menus"].head())
     print(f"\n{separater}\n\n")
 
 
