@@ -1,6 +1,7 @@
 from parse import load_dataframes
 import pandas as pd
 import shutil
+import os
 
 
 def sort_stores_by_score(dataframes, n=20, min_reviews=30):
@@ -8,12 +9,25 @@ def sort_stores_by_score(dataframes, n=20, min_reviews=30):
     Req. 1-2-1 각 음식점의 평균 평점을 계산하여 높은 평점의 음식점 순으로 `n`개의 음식점을 정렬하여 리턴합니다
     Req. 1-2-2 리뷰 개수가 `min_reviews` 미만인 음식점은 제외합니다.
     """
+    # DATA_DIR = r"C:\ssaf
     stores_reviews = pd.merge(
         dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
     )
-    scores_group = stores_reviews.groupby(["store", "store_name"])
+
+    print(stores_reviews.head())
+    
+    # 리뷰 개수 기준 음식점 정렬
+    review_counts = stores_reviews.groupby("store").size()
+    stores_with_more_min_reviews_ind = review_counts[review_counts >= min_reviews].index
+    filtered_stores = stores_reviews[stores_reviews["store"].isin(stores_with_more_min_reviews_ind)]
+
+    # scores_group = stores_reviews.groupby(["store", "store_name"])
+    scores_group = filtered_stores.groupby(["store", "store_name"])
+
     scores = scores_group.score.mean()
+    # 평점이 높은 음식점의 목록
     scores = scores.sort_values(ascending=False)
+
     return scores.head(n=n).reset_index()
 
 
