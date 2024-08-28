@@ -3,9 +3,10 @@ import pandas as pd
 import os
 import shutil
 
-DATA_DIR = "../data"
+DATA_DIR = "C:\ssafy2\special\S11P21D207\\bigdata-recom-skeleton\data"
 DATA_FILE = os.path.join(DATA_DIR, "data.json")
 DUMP_FILE = os.path.join(DATA_DIR, "dump.pkl")
+
 
 store_columns = (
     "id",  # 음식점 고유번호
@@ -28,11 +29,25 @@ review_columns = (
     "reg_time",  # 리뷰 등록 시간
 )
 
+menu_columns = (
+    "id", # 메뉴 고유번호
+    "store", # 음식점 고유 번호
+    "menu_name", # 메뉴 이름
+    "price" # 메뉴 가격
+)
+
+user_columns = (
+    "id", # 유저 고유번호
+    "gender", # 유저 성별
+    "age" # 유저 나이
+)
+
 
 def import_data(data_path=DATA_FILE):
     """
     Req. 1-1-1 음식점 데이터 파일을 읽어서 Pandas DataFrame 형태로 저장합니다
     """
+    menu_id = 0
 
     try:
         with open(data_path, encoding="utf-8") as f:
@@ -43,6 +58,8 @@ def import_data(data_path=DATA_FILE):
 
     stores = []  # 음식점 테이블
     reviews = []  # 리뷰 테이블
+    menus = [] # 메뉴 테이블
+    users = [] # 유저 테이블
 
     for d in data:
 
@@ -69,10 +86,25 @@ def import_data(data_path=DATA_FILE):
                 [r["id"], d["id"], u["id"], r["score"], r["content"], r["reg_time"]]
             )
 
+            users.append(
+                [u["id"], u["gender"], u["born_year"]]
+            )
+
+        # req-1
+        for m in d["menu_list"]:
+            menu_id = menu_id + 1
+
+            menus.append(
+                [menu_id, d["id"], m["menu"], m["price"]]
+            )
+
+
     store_frame = pd.DataFrame(data=stores, columns=store_columns)
     review_frame = pd.DataFrame(data=reviews, columns=review_columns)
+    menu_frame = pd.DataFrame(data=menus, columns=menu_columns)
+    user_frame = pd.DataFrame(data=users, columns=user_columns)
 
-    return {"stores": store_frame, "reviews": review_frame}
+    return {"stores": store_frame, "reviews": review_frame, "menus": menu_frame, "users": user_frame}
 
 
 def dump_dataframes(dataframes):
@@ -108,6 +140,14 @@ def main():
     print(data["reviews"].head())
     print(f"\n{separater}\n\n")
 
+    print("[메뉴]")
+    print(f"{separater}\n")
+    print(data["menus"].head())
+    print(f"\n{separater}\n\n")
 
+    print("[유저]")
+    print(f"{separater}\n")
+    print(data["users"].head())
+    print(f"\n{separater}\n\n")
 if __name__ == "__main__":
     main()
