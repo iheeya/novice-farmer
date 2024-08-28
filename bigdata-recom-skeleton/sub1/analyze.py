@@ -9,17 +9,21 @@ def sort_stores_by_score(dataframes, n=20, min_reviews=30):
     Req. 1-2-1 각 음식점의 평균 평점을 계산하여 높은 평점의 음식점 순으로 `n`개의 음식점을 정렬하여 리턴합니다
     Req. 1-2-2 리뷰 개수가 `min_reviews` 미만인 음식점은 제외합니다.
     """
-    # DATA_DIR = r"C:\ssaf
     stores_reviews = pd.merge(
         dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
     )
-
-    print(stores_reviews.head())
     
+    # 최소 리뷰 개수 필터링
     # 리뷰 개수 기준 음식점 정렬
     review_counts = stores_reviews.groupby("store").size()
     stores_with_more_min_reviews_ind = review_counts[review_counts >= min_reviews].index
+
     filtered_stores = stores_reviews[stores_reviews["store"].isin(stores_with_more_min_reviews_ind)]
+
+    sorted_review_counts = review_counts[review_counts >= min_reviews].sort_values(ascending=False)
+
+    filtered_stores = filtered_stores[filtered_stores["store"].isin(sorted_review_counts.index)]
+    filtered_stores = filtered_stores.set_index("store").loc[sorted_review_counts.index].reset_index()
 
     # scores_group = stores_reviews.groupby(["store", "store_name"])
     scores_group = filtered_stores.groupby(["store", "store_name"])
