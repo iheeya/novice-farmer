@@ -12,7 +12,8 @@ def sort_stores_by_score(dataframes, n=20, min_reviews=30):
         dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
     )
     scores_group = stores_reviews.groupby(["store", "store_name"])
-    scores = scores_group.mean()
+    # Req. 2-1
+    scores = scores_group.score.mean()
     return scores.head(n=n).reset_index()
 
 
