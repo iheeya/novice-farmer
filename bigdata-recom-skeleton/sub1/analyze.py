@@ -11,8 +11,10 @@ def sort_stores_by_score(dataframes, n=20, min_reviews=30):
     stores_reviews = pd.merge(
         dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
     )
+    print(stores_reviews)
     scores_group = stores_reviews.groupby(["store", "store_name"])
     scores = scores_group.mean()
+    # print(scores.head(n=n))
     return scores.head(n=n).reset_index()
 
 
@@ -38,15 +40,15 @@ def main():
 
     stores_most_scored = sort_stores_by_score(data)
 
-    print("[최고 평점 음식점]")
-    print(f"{separater}\n")
-    for i, store in stores_most_scored.iterrows():
-        print(
-            "{rank}위: {store}({score}점)".format(
-                rank=i + 1, store=store.store_name, score=store.score
-            )
-        )
-    print(f"\n{separater}\n\n")
+    # print("[최고 평점 음식점]")
+    # print(f"{separater}\n")
+    # for i, store in stores_most_scored.iterrows():
+    #     print(
+    #         "{rank}위: {store}({score}점)".format(
+    #             rank=i + 1, store=store.store_name, score=store.score
+    #         )
+    #     )
+    # print(f"\n{separater}\n\n")
 
 
 if __name__ == "__main__":

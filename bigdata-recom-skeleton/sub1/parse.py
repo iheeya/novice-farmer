@@ -2,6 +2,7 @@ import json
 import pandas as pd
 import os
 import shutil
+from datetime import datetime
 
 DATA_DIR = "C:\ssafy2\special\S11P21D207\\bigdata-recom-skeleton\data"
 DATA_FILE = os.path.join(DATA_DIR, "data.json")
@@ -48,6 +49,7 @@ def import_data(data_path=DATA_FILE):
     Req. 1-1-1 음식점 데이터 파일을 읽어서 Pandas DataFrame 형태로 저장합니다
     """
     menu_id = 0
+    current_year = datetime.now().year
 
     try:
         with open(data_path, encoding="utf-8") as f:
@@ -87,7 +89,7 @@ def import_data(data_path=DATA_FILE):
             )
 
             users.append(
-                [u["id"], u["gender"], u["born_year"]]
+                [u["id"], u["gender"], current_year - int(u["born_year"])]
             )
 
         # req-1
