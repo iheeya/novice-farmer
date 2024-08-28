@@ -89,7 +89,7 @@ def import_data(data_path=DATA_FILE):
             )
 
             users.append(
-                [u["id"], u["gender"], u["born_year"]]
+                [u["id"], u["gender"], str(2024 - int(u["born_year"]))]
             )
 
         
