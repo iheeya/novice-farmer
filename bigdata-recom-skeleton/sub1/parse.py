@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import shutil
 
+
 DATA_DIR = "../data"
 DATA_FILE = os.path.join(DATA_DIR, "data.json")
 DUMP_FILE = os.path.join(DATA_DIR, "dump.pkl")
@@ -28,6 +29,18 @@ review_columns = (
     "reg_time",  # 리뷰 등록 시간
 )
 
+menu_column = (
+    "id",  # 메뉴 고유 번호
+    "store", # 음식점 고유 번호
+    "menu_name", # 메뉴 이름
+    "price",   # 메뉴 가격
+)
+
+user_column = (
+    "id",  # 유저 고유 번호
+    "gender",  # 유저 성별
+    "age",  # 유저 나이
+)
 
 def import_data(data_path=DATA_FILE):
     """
@@ -37,6 +50,7 @@ def import_data(data_path=DATA_FILE):
     try:
         with open(data_path, encoding="utf-8") as f:
             data = json.loads(f.read())
+        # df = pd.DataFrame(data)
     except FileNotFoundError as e:
         print(f"`{data_path}` 가 존재하지 않습니다.")
         exit(1)
@@ -47,6 +61,7 @@ def import_data(data_path=DATA_FILE):
     for d in data:
 
         categories = [c["category"] for c in d["category_list"]]
+
         stores.append(
             [
                 d["id"],
@@ -58,6 +73,7 @@ def import_data(data_path=DATA_FILE):
                 d["latitude"],
                 d["longitude"],
                 "|".join(categories),
+               
             ]
         )
 
