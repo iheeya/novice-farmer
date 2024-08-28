@@ -46,6 +46,7 @@ def import_data(data_path=DATA_FILE):
     """
     Req. 1-1-1 음식점 데이터 파일을 읽어서 Pandas DataFrame 형태로 저장합니다
     """
+    menu_id = 0   # 임시 메뉴 아이디
 
     try:
         with open(data_path, encoding="utf-8") as f:
@@ -57,6 +58,8 @@ def import_data(data_path=DATA_FILE):
 
     stores = []  # 음식점 테이블
     reviews = []  # 리뷰 테이블
+    menus = []  # 메뉴 테이블
+    users = []  # 유저 테이블
 
     for d in data:
 
@@ -85,10 +88,28 @@ def import_data(data_path=DATA_FILE):
                 [r["id"], d["id"], u["id"], r["score"], r["content"], r["reg_time"]]
             )
 
+            users.append(
+                [u["id"], u["gender"], u["born_year"]]
+            )
+
+        
+        for m in d["menu_list"]:
+            menus.append(
+                [   
+                    menu_id + 1,
+                    d["id"],
+                    m["menu"],
+                    m["price"]
+                ]
+            )
+
+
     store_frame = pd.DataFrame(data=stores, columns=store_columns)
     review_frame = pd.DataFrame(data=reviews, columns=review_columns)
+    menu_frame = pd.DataFrame(data=menus, columns=menu_column)
+    user_frame = pd.DataFrame(data=users, columns=user_column)
 
-    return {"stores": store_frame, "reviews": review_frame}
+    return {"stores": store_frame, "reviews": review_frame, "menus": menu_frame, "users": user_frame}
 
 
 def dump_dataframes(dataframes):
@@ -122,6 +143,16 @@ def main():
     print("[리뷰]")
     print(f"{separater}\n")
     print(data["reviews"].head())
+    print(f"\n{separater}\n\n")
+
+    print("[메뉴]")
+    print(f"{separater}\n")
+    print(data["menus"].head())
+    print(f"\n{separater}\n\n")
+
+    print("[유저]")
+    print(f"{separater}\n")
+    print(data["users"].head())
     print(f"\n{separater}\n\n")
 
 
