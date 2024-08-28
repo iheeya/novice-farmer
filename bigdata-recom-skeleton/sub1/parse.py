@@ -2,10 +2,14 @@ import json
 import pandas as pd
 import os
 import shutil
+from datetime import datetime
 
 DATA_DIR = "../data"
 DATA_FILE = os.path.join(DATA_DIR, "data.json")
 DUMP_FILE = os.path.join(DATA_DIR, "dump.pkl")
+
+# 현재 연도 가져오기
+current_year = datetime.now().year
 
 store_columns = (
     "id",  # 음식점 고유번호
@@ -28,6 +32,21 @@ review_columns = (
     "reg_time",  # 리뷰 등록 시간
 )
 
+menu_columns = (
+    "id", # 메뉴 고유번호
+    "store", # 음식점 고유번호
+    "menu_name" # 메뉴 이름
+    "price", # 메뉴 가격
+
+)
+
+user_columns = (
+    "id", # 유저 고유번호
+    "gender", # 성별
+    "age", # 나이
+)
+
+
 
 def import_data(data_path=DATA_FILE):
     """
@@ -43,6 +62,8 @@ def import_data(data_path=DATA_FILE):
 
     stores = []  # 음식점 테이블
     reviews = []  # 리뷰 테이블
+    menus = [] # 메뉴 테이블
+    users = [] # 유저 테이블
 
     for d in data:
 
@@ -68,6 +89,18 @@ def import_data(data_path=DATA_FILE):
             reviews.append(
                 [r["id"], d["id"], u["id"], r["score"], r["content"], r["reg_time"]]
             )
+            
+            age = current_year -  int(u["born_year"]) + 1
+            users.append(
+                [u["id"], u["gender"], age]
+            )
+
+        menu_idx = 1
+        for menu in d["menu_list"]:
+            menus.append(
+                [menu_idx, d["id"], menu["menu"], menu["price"]]
+            )
+            menu_idx += 1
 
     store_frame = pd.DataFrame(data=stores, columns=store_columns)
     review_frame = pd.DataFrame(data=reviews, columns=review_columns)
