@@ -12,9 +12,12 @@ def sort_stores_by_score(dataframes, n=20, min_reviews=30):
         dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
     )
     scores_group = stores_reviews.groupby(["store", "store_name"])
-    scores = scores_group.mean()
 
-    scores = scores.sort_values(ascending=False)
+    print(f'scores_group: {scores_group}')
+    scores = scores_group.mean()
+    
+
+    scores = scores.sort_values(by='score', ascending=False)
 
 
     return scores.head(n=n).reset_index()
@@ -38,6 +41,8 @@ def get_most_active_users(dataframes, n=20):
 
 def main():
     data = load_dataframes()
+    # data 출력해보기
+    print(f'data type: {data}')
 
     term_w = shutil.get_terminal_size()[0] - 1
     separater = "-" * term_w

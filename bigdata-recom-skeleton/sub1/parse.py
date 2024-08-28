@@ -12,8 +12,8 @@ store_columns = (
     "id",  # 음식점 고유번호
     "store_name",  # 음식점 이름
     "branch",  # 음식점 지점 여부
-    "area",  # 음식점 위치
     "tel",  # 음식점 번호
+    "area",  # 음식점 위치
     "address",  # 음식점 주소
     "latitude",  # 음식점 위도
     "longitude",  # 음식점 경도
