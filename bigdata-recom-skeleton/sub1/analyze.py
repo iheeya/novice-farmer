@@ -11,10 +11,16 @@ def sort_stores_by_score(dataframes, n=20, min_reviews=30):
     stores_reviews = pd.merge(
         dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
     )
-    scores_group = stores_reviews.groupby(["store", "store_name"])
+    print(stores_reviews)
+    
+    # Req. 2-2
+    filtered_stores = stores_reviews[stores_reviews["review_cnt"]>=min_reviews]
     # Req. 2-1
-    scores = scores_group.score.mean()
-    return scores.head(n=n).reset_index()
+    scores_group = filtered_stores.groupby(["store", "store_name"]).score.mean()
+    
+    sorted_scores = scores_group.sort_values(ascending=False).head(n)
+    
+    return sorted_scores.reset_index()
 
 
 def get_most_reviewed_stores(dataframes, n=20):
@@ -38,7 +44,7 @@ def main():
     separater = "-" * term_w
 
     stores_most_scored = sort_stores_by_score(data)
-
+    
     print("[최고 평점 음식점]")
     print(f"{separater}\n")
     for i, store in stores_most_scored.iterrows():
