@@ -95,7 +95,7 @@ def show_store_average_ratings_graph(dataframes, n= 100):
     scores = scores_group.score.mean()
     scores = scores.reset_index(name='score')
 
-    print(f'scores: {scores}')
+    # print(f'scores: {scores}')
     top_scores = scores.head(n)
 
     # 그래프 그리기
@@ -108,11 +108,36 @@ def show_store_average_ratings_graph(dataframes, n= 100):
     plt.show()
 
 
-def show_user_review_distribution_graph(dataframes):
+def show_user_review_distribution_graph(dataframes, n=100):
     """
     Req. 1-3-3 전체 유저의 리뷰 개수 분포를 그래프로 나타냅니다.
     """
-    raise NotImplementedError
+
+    reviews = pd.merge(
+        dataframes["users"], dataframes["reviews"], left_on="id", right_on="user"
+    )
+
+    review_group = reviews.groupby(["user", "store"])
+
+    # # 그룹별 리뷰 개수 계산
+    # review_counts_group = review_group.size()
+
+    user_counts_group = review_group.size()
+ 
+    most_reviewed_users = user_counts_group.reset_index(name='user_review_cnt')
+    
+    top_users = most_reviewed_users.head(n)
+    print(f'top_users: {top_users}')
+
+    # 그래프 그리기
+    plt.figure()
+    chart = sns.barplot(x='user', y='user_review_cnt', data=top_users)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation = 45, ha='right')
+    plt.title("유저의 리뷰 분포".format(n))
+    plt.xlabel("유저 아이디")
+    plt.ylabel("리뷰 개수")
+    plt.show()
+    # raise NotImplementedError
 
 
 def show_user_age_gender_distribution_graph(dataframes):
@@ -136,6 +161,7 @@ def main():
     show_store_categories_graph(data)
     show_store_review_distribution_graph(data)
     show_store_average_ratings_graph(data)
+    show_user_review_distribution_graph(data)
 
 
 if __name__ == "__main__":
