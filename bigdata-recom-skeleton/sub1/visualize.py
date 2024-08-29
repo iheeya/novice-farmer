@@ -24,12 +24,13 @@ def set_config():
     plt.rc("xtick", labelsize=6)
 
 
-def show_store_categories_graph(dataframes, n=100):
+def show_store_categories_graph(dataframes, n=10):
     """
     Tutorial: 전체 음식점의 상위 `n`개 카테고리 분포를 그래프로 나타냅니다.
     """
 
     stores = dataframes["stores"]
+   
 
     # 모든 카테고리를 1차원 리스트에 저장합니다
     categories = stores.category.apply(lambda c: c.split("|"))
@@ -50,11 +51,34 @@ def show_store_categories_graph(dataframes, n=100):
     plt.show()
 
 
-def show_store_review_distribution_graph():
+
+def show_store_review_distribution_graph(dataframes ):
     """
     Req. 1-3-1 전체 음식점의 리뷰 개수 분포를 그래프로 나타냅니다. 
     """
-    raise NotImplementedError
+    
+    reviews = dataframes["reviews"]
+
+    print(reviews)
+
+     # 음식점별 리뷰 수를 계산합니다.
+    review_counts = reviews.groupby('store').size().reset_index(name='count')
+
+    # 리뷰 수가 많은 상위 n개 음식점을 선택합니다.
+    n = len(review_counts)
+    top_stores = review_counts.nlargest(n, 'count')
+
+    # 그래프로 나타냅니다.
+    chart = sns.barplot(x='store', y='count', data=top_stores)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.title("음식점 리뷰 개수 분포")
+    plt.xlabel("음식점 ID")
+    plt.ylabel("리뷰 개수")
+    plt.show()
+
+
+    
+    #raise NotImplementedError
 
 
 def show_store_average_ratings_graph():
@@ -88,8 +112,9 @@ def show_stores_distribution_graph(dataframes):
 def main():
     set_config()
     data = load_dataframes()
-    show_store_categories_graph(data)
-
+    #show_store_categories_graph(data)
+    #print(data)
+    show_store_review_distribution_graph(data)
 
 if __name__ == "__main__":
     main()
