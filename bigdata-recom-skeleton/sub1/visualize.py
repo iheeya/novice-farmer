@@ -82,11 +82,30 @@ def show_store_review_distribution_graph(dataframes, n = 100):
 
 
 
-def show_store_average_ratings_graph():
+def show_store_average_ratings_graph(dataframes, n= 100):
     """
     Req. 1-3-2 각 음식점의 평균 평점을 그래프로 나타냅니다.
     """
-    raise NotImplementedError
+    stores_reviews = pd.merge(
+        dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
+    )
+    scores_group = stores_reviews.groupby(["store", "store_name"])
+
+    # 평균 평점 계산 및 정렬
+    scores = scores_group.score.mean()
+    scores = scores.reset_index(name='score')
+
+    print(f'scores: {scores}')
+    top_scores = scores.head(n)
+
+    # 그래프 그리기
+    plt.figure()
+    chart = sns.barplot(x="store_name", y="score", data=top_scores)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45, ha='right')
+    plt.title("음식점 평균 평점 그래프".format(n))
+    plt.xlabel("음식점")
+    plt.ylabel("평균 평점")
+    plt.show()
 
 
 def show_user_review_distribution_graph(dataframes):
@@ -116,6 +135,7 @@ def main():
     # print(data)
     show_store_categories_graph(data)
     show_store_review_distribution_graph(data)
+    show_store_average_ratings_graph(data)
 
 
 if __name__ == "__main__":
