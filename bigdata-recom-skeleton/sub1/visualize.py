@@ -65,7 +65,8 @@ def show_store_review_distribution_graph(dataframes ):
     review_counts = reviews.groupby('store').size().reset_index(name='count')
 
     # 리뷰 수가 많은 상위 n개 음식점을 선택합니다.
-    n = len(review_counts)
+    #n = len(review_counts)
+    n=10
     top_stores = review_counts.nlargest(n, 'count')
 
     # 그래프로 나타냅니다.
@@ -81,11 +82,28 @@ def show_store_review_distribution_graph(dataframes ):
     #raise NotImplementedError
 
 
-def show_store_average_ratings_graph():
+def show_store_average_ratings_graph(dataframes):
     """
     Req. 1-3-2 각 음식점의 평균 평점을 그래프로 나타냅니다.
     """
-    raise NotImplementedError
+
+    reviews = dataframes["reviews"]
+    print(reviews)
+    
+    # 음식점별 평균 평점을 계산합니다.
+    average_ratings = reviews.groupby('store')['score'].mean().reset_index(name='average_score')
+
+    # 그래프를 그립니다.
+    chart = sns.barplot(x='store', y='average_score', data=average_ratings)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.title("음식점 평균 평점")
+    plt.xlabel("음식점 ID")
+    plt.ylabel("평균 평점")
+    plt.show()
+    
+    
+    
+    #raise NotImplementedError
 
 
 def show_user_review_distribution_graph(dataframes):
@@ -114,7 +132,10 @@ def main():
     data = load_dataframes()
     #show_store_categories_graph(data)
     #print(data)
-    show_store_review_distribution_graph(data)
+    #show_store_review_distribution_graph(data)
+    show_store_average_ratings_graph(data)
+
+
 
 if __name__ == "__main__":
     main()
