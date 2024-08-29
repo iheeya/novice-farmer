@@ -78,7 +78,7 @@ def show_store_review_distribution_graph(dataframes ):
     plt.show()
 
 
-    
+    친
     #raise NotImplementedError
 
 
@@ -88,7 +88,7 @@ def show_store_average_ratings_graph(dataframes):
     """
 
     reviews = dataframes["reviews"]
-    print(reviews)
+    #print(reviews)
     
     # 음식점별 평균 평점을 계산합니다.
     average_ratings = reviews.groupby('store')['score'].mean().reset_index(name='average_score')
@@ -110,6 +110,25 @@ def show_user_review_distribution_graph(dataframes):
     """
     Req. 1-3-3 전체 유저의 리뷰 개수 분포를 그래프로 나타냅니다.
     """
+
+    reviews = dataframes["reviews"]
+    review_rating = reviews.groupby('store')['user'].size().reset_index(name='review_score')
+
+    n=10
+    top_stores = review_rating.nlargest(n, 'review_score')
+
+
+      # 그래프를 그립니다.
+    chart = sns.barplot(x='store', y='review_score', data=top_stores)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.title("유저의 음식점 리뷰 개수")
+    plt.xlabel("사용자 ID")
+    plt.ylabel("유저 리뷰 갯수")
+    plt.show()
+
+
+
+
     raise NotImplementedError
 
 
@@ -117,6 +136,8 @@ def show_user_age_gender_distribution_graph(dataframes):
     """
     Req. 1-3-4 전체 유저의 성별/나이대 분포를 그래프로 나타냅니다.
     """
+
+    user = dataframes["users"]
     raise NotImplementedError
 
 
@@ -133,8 +154,8 @@ def main():
     #show_store_categories_graph(data)
     #print(data)
     #show_store_review_distribution_graph(data)
-    show_store_average_ratings_graph(data)
-
+    #show_store_average_ratings_graph(data)
+    show_user_review_distribution_graph(data)
 
 
 if __name__ == "__main__":
