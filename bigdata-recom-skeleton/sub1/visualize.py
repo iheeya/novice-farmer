@@ -50,11 +50,40 @@ def show_store_categories_graph(dataframes, n=100):
     plt.show()
 
 
-def show_store_review_distribution_graph():
+def show_store_review_distribution_graph(dataframes):
     """
     Req. 1-3-1 전체 음식점의 리뷰 개수 분포를 그래프로 나타냅니다. 
     """
-    raise NotImplementedError
+    stores = dataframes["stores"]
+    review_counts = stores["review_cnt"]
+    # review_counts = review_counts[review_counts > 0]
+    review_count_distribution = Counter(review_counts)
+    
+    df = pd.DataFrame(list(review_count_distribution.items()), columns=["review_count", "store_count"])
+
+    # 리뷰 개수에 따라 정렬
+    df = df.sort_values(by="review_count")
+
+    # barplot을 사용해 리뷰 개수 분포 시각화
+    plt.figure(figsize=(10, 6))
+    # 바 그래프를 생성하고, ax 객체에 저장
+    ax = sns.barplot(x="review_count", y="store_count", data=df, palette="viridis")
+
+    # 각 바 위에 값을 표시하는 부분 추가
+    for p in ax.patches:
+        ax.annotate(f'{int(p.get_height())}',  # 바의 높이를 텍스트로 표시
+                    (p.get_x() + p.get_width() / 2., p.get_height()),  # 텍스트 위치 설정
+                    ha='center', va='baseline',  # 텍스트 위치 조정
+                    fontsize=10, color='black', xytext=(0, 5),  # 텍스트 스타일 설정
+                    textcoords='offset points', rotation=45)
+
+    # 그래프 제목과 축 레이블 설정
+    plt.title("음식점 리뷰 개수 분포")
+    plt.xlabel("리뷰 개수")
+    plt.ylabel("음식점 수")
+
+    # 그래프 표시
+    plt.show()
 
 
 def show_store_average_ratings_graph():
@@ -89,6 +118,8 @@ def main():
     set_config()
     data = load_dataframes()
     show_store_categories_graph(data)
+    # Req. 3-1.
+    show_store_review_distribution_graph(data)
 
 
 if __name__ == "__main__":
