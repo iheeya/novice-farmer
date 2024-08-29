@@ -35,7 +35,7 @@ review_columns = (
 menu_columns = (
     "id", # 메뉴 고유번호
     "store", # 음식점 고유번호
-    "menu_name" # 메뉴 이름
+    "menu_name", # 메뉴 이름
     "price", # 메뉴 가격
 
 )

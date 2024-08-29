@@ -44,31 +44,51 @@ def show_store_categories_graph(dataframes, n=100):
     )
 
     # 그래프로 나타냅니다
-    chart = sns.barplot(x="category", y="count", data=df)
-    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
-    plt.title("음식점 카테고리 분포")
-    plt.show()
+    # chart = sns.barplot(x="category", y="count", data=df)
+    # chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    # plt.title("음식점 카테고리 분포")
+    # # plt.show()
 
 
-def show_store_review_distribution_graph():
+def show_store_review_distribution_graph(dataframes):
     """
     Req. 1-3-1 전체 음식점의 리뷰 개수 분포를 그래프로 나타냅니다. 
     """
-    raise NotImplementedError
+    stores_reviews = pd.merge(
+        dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
+    )
+    scores_group = stores_reviews.groupby(["store", "store_name"])
+    review_counts = scores_group.size()
+    
+    # 리뷰 개수 분포 히스토그램 그리기
+    plt.figure(figsize=(10, 6))
+    sns.histplot(review_counts, bins=range(1, review_counts.max() + 2), kde=False)
+    plt.title("전체 음식점의 리뷰 개수 분포")
+    plt.xlabel("리뷰 개수")
+    plt.ylabel("음식점 수")
+    plt.grid(True)
+    plt.show()
+    
 
-
-def show_store_average_ratings_graph():
+def show_store_average_ratings_graph(dataframes):
     """
     Req. 1-3-2 각 음식점의 평균 평점을 그래프로 나타냅니다.
     """
-    raise NotImplementedError
+    stores_reviews = pd.merge(
+        dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
+    )
+    scores_group = stores_reviews.groupby(["store", "store_name"])
+    scores = scores_group.mean(numeric_only=True).round(2)
+    scores = scores.sort_values(by='score', ascending=False)
 
 
 def show_user_review_distribution_graph(dataframes):
     """
     Req. 1-3-3 전체 유저의 리뷰 개수 분포를 그래프로 나타냅니다.
     """
-    raise NotImplementedError
+    reviews = pd.DataFrame(dataframes['reviews'])
+    # 각 사용자별 리뷰 개수 계산
+    reviews_group = reviews.groupby('user').size().reset_index(name='review_count')
 
 
 def show_user_age_gender_distribution_graph(dataframes):
@@ -89,6 +109,11 @@ def main():
     set_config()
     data = load_dataframes()
     show_store_categories_graph(data)
+    show_store_review_distribution_graph(data)
+    # show_store_average_ratings_graph(data)
+    # show_user_review_distribution_graph(data)
+    # show_user_age_gender_distribution_graph(data)
+    # show_stores_distribution_graph(data)
 
 
 if __name__ == "__main__":
