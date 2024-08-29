@@ -60,7 +60,7 @@ def import_data(data_path=DATA_FILE):
     users = []  # 유저 테이블
 
     for d in data:
-        menu_id = -1
+        menu_id = - 1
         categories = [c["category"] for c in d["category_list"]]
         stores.append(
             [
