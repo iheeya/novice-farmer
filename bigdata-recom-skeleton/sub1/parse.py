@@ -104,8 +104,10 @@ def import_data(data_path=DATA_FILE):
 
     store_frame = pd.DataFrame(data=stores, columns=store_columns)
     review_frame = pd.DataFrame(data=reviews, columns=review_columns)
+    menu_frame = pd.DataFrame(data=menus, columns=menu_columns)
+    user_frame = pd.DataFrame(data=users, columns=user_columns)
 
-    return {"stores": store_frame, "reviews": review_frame}
+    return {"stores": store_frame, "reviews": review_frame, 'menus': menu_frame, 'users': user_frame}
 
 
 def dump_dataframes(dataframes):
