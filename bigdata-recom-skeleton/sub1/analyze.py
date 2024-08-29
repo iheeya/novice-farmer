@@ -31,6 +31,9 @@ def sort_stores_by_score(dataframes, n=20, min_reviews=30):
     # 평균 평점 기준으로 정렬
     sorted_scores = filtered_scores.sort_values(by='average_score', ascending=False)
     
+    # 리뷰 갯수 기준으로 정렬
+    sorted_scores = filtered_scores.sort_values(by='review_count', ascending=False)
+    
     # 상위 n개 음식점 선택
     top_stores = sorted_scores.head(n)
 
