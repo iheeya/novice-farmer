@@ -58,6 +58,7 @@ def import_data(data_path=DATA_FILE):
     reviews = []  # 리뷰 테이블
     menus = []  # 메뉴 테이블
     users = []  # 유저 테이블
+    user_ids = set()
 
     for d in data:
         menu_id = - 1
@@ -85,14 +86,16 @@ def import_data(data_path=DATA_FILE):
                 [r["id"], d["id"], u["id"], r["score"], r["content"], r["reg_time"]]
             )
 
-            users.append(
-                [
-                    review["writer_info"]["id"],
-                    review["writer_info"]["gender"],
-                    datetime.now().year -
-                    int(review["writer_info"]["born_year"])+1,
-                ]
-            )
+            if u["id"] not in user_ids:
+                users.append(
+                    [
+                        u["id"],
+                        u["gender"],
+                        datetime.now().year - int(u["born_year"]) + 1,
+                    ]
+                )
+                user_ids.add(u["id"]
+                             )
 
         for menu_info in d["menu_list"]:
             menu_id += 1

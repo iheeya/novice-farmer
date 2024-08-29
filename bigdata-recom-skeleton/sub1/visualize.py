@@ -112,7 +112,29 @@ def show_user_review_distribution_graph(dataframes):
     """
     Req. 1-3-3 전체 유저의 리뷰 개수 분포를 그래프로 나타냅니다.
     """
-    raise NotImplementedError
+    reviews = dataframes["reviews"]
+    
+    # 각 유저별로 작성한 리뷰 수를 계산
+    user_review_counts = reviews.groupby('user')["id"].count().reset_index()
+    user_review_counts.columns = ['user', 'review_count']
+
+    # 리뷰 수별 유저 수 계산
+    review_distribution = user_review_counts['review_count'].value_counts().reset_index()
+    review_distribution.columns = ['review_count', 'user_count']
+
+    # 리뷰 수에 따른 유저 분포를 시각화 (모든 리뷰 수에 대해)
+    plt.figure(figsize=(12, 8))
+    sns.barplot(x='review_count', y='user_count', data=review_distribution, color='#87CEEB')
+
+    plt.xticks(rotation=-45)
+    
+    # 그래프 제목과 축 레이블 설정
+    plt.title("리뷰 수에 따른 유저 분포")
+    plt.xlabel("리뷰 수")
+    plt.ylabel("유저 수")
+
+    # 그래프 표시
+    plt.show()
 
 
 def show_user_age_gender_distribution_graph(dataframes):
@@ -136,7 +158,10 @@ def main():
     # Req. 3-1.
     # show_store_review_distribution_graph(data)
     # Req. 3-2.
-    show_store_average_ratings_graph(data)
+    # show_store_average_ratings_graph(data)
+    # Req. 3-3.
+    show_user_review_distribution_graph(data)
+    
 
 
 if __name__ == "__main__":
