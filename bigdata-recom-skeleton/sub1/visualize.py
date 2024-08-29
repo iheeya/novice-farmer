@@ -56,7 +56,6 @@ def show_store_review_distribution_graph(dataframes):
     """
     stores = dataframes["stores"]
     review_counts = stores["review_cnt"]
-    # review_counts = review_counts[review_counts > 0]
     review_count_distribution = Counter(review_counts)
     
     df = pd.DataFrame(list(review_count_distribution.items()), columns=["review_count", "store_count"])
@@ -64,7 +63,6 @@ def show_store_review_distribution_graph(dataframes):
     # 리뷰 개수에 따라 정렬
     df = df.sort_values(by="review_count")
 
-    # barplot을 사용해 리뷰 개수 분포 시각화
     plt.figure(figsize=(10, 6))
     # 바 그래프를 생성하고, ax 객체에 저장
     ax = sns.barplot(x="review_count", y="store_count", data=df, palette="viridis")
@@ -86,12 +84,29 @@ def show_store_review_distribution_graph(dataframes):
     plt.show()
 
 
-def show_store_average_ratings_graph():
+def show_store_average_ratings_graph(dataframes):
     """
     Req. 1-3-2 각 음식점의 평균 평점을 그래프로 나타냅니다.
     """
-    raise NotImplementedError
+    stores = dataframes["stores"]
+    reviews = dataframes["reviews"]
+    
+    avg_ratings = reviews.groupby('store')['score'].mean().reset_index()
+    avg_ratings.columns = ['id','average_rating']
+    
+    store_avg_ratings = pd.merge(stores,avg_ratings,on='id')
+    
+    plt.figure(figsize=(10, 6))
+    sns.histplot(store_avg_ratings['average_rating'], bins=30, kde=False, color='#87CEEB')
 
+    # 그래프 제목과 축 레이블 설정
+    plt.title("음식점 평균 평점 분포")
+    plt.xlabel("평균 평점")
+    plt.ylabel("음식점 수")
+
+    # 그래프 표시
+    plt.show()
+    
 
 def show_user_review_distribution_graph(dataframes):
     """
@@ -117,9 +132,11 @@ def show_stores_distribution_graph(dataframes):
 def main():
     set_config()
     data = load_dataframes()
-    show_store_categories_graph(data)
+    # show_store_categories_graph(data)
     # Req. 3-1.
-    show_store_review_distribution_graph(data)
+    # show_store_review_distribution_graph(data)
+    # Req. 3-2.
+    show_store_average_ratings_graph(data)
 
 
 if __name__ == "__main__":
