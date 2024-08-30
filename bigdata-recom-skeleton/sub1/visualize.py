@@ -161,7 +161,10 @@ def show_stores_distribution_graph(dataframes):
     """
     Req. 1-3-5 각 음식점의 위치 분포를 지도에 나타냅니다.
     """
-    raise NotImplementedError
+
+    stores = dataframes["stores"]
+    print(stores)
+    #raise NotImplementedError
 
 
 def main():
@@ -172,7 +175,8 @@ def main():
     #show_store_review_distribution_graph(data)
     #show_store_average_ratings_graph(data)
     #show_user_review_distribution_graph(data)
-    show_user_age_gender_distribution_graph(data)
+    #show_user_age_gender_distribution_graph(data)
+    show_stores_distribution_graph(data)
 
 
 if __name__ == "__main__":
