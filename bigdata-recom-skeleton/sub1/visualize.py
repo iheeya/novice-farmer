@@ -141,7 +141,24 @@ def show_user_age_gender_distribution_graph(dataframes):
     """
     Req. 1-3-4 전체 유저의 성별/나이대 분포를 그래프로 나타냅니다.
     """
-    raise NotImplementedError
+    users = dataframes["users"]
+    bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    labels = ['0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-99']
+    users['age_group'] = pd.cut(users['age'], bins=bins, labels=labels, right=False)
+    
+    # Plotting gender distribution
+    plt.figure(figsize=(12, 8))
+
+    # Plotting age group distribution
+    sns.countplot(data=users, x='age_group', hue='gender')
+    plt.title('Age Group Distribution by Gender')
+    plt.xlabel('Age Group')
+    plt.ylabel('Count')
+
+    plt.tight_layout()
+    plt.show()
+    
+    
 
 
 def show_stores_distribution_graph(dataframes):
@@ -160,7 +177,9 @@ def main():
     # Req. 3-2.
     # show_store_average_ratings_graph(data)
     # Req. 3-3.
-    show_user_review_distribution_graph(data)
+    # show_user_review_distribution_graph(data)
+    # Req. 3-4
+    show_user_age_gender_distribution_graph(data)
     
 
 
