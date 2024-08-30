@@ -13,23 +13,13 @@ def make_user_store_matrix(dataframes):
     '''
     유저-음식점 행렬 생성
     유저와 음식점을 축으로 하고 평점을 값으로 갖는 행렬을 만들어 저장.
-    '''
-    file_path = '유저-음식점 행렬.csv'
-    
-    if os.path.exists(file_path):
-        os.remove(file_path)
-        print(f"{file_path} 파일이 삭제되었습니다.")
-        
+    '''        
     reviews = pd.DataFrame(dataframes['reviews'])
     
     user_store_matrix = reviews.pivot_table(index='user', columns='store', values='score')
     
     # NaN값 처리
     user_store_matrix = user_store_matrix.fillna(0)
-    
-    # 행렬 저장
-    user_store_matrix.to_csv(file_path, index=False)
-    print(f"{file_path} 파일이 생성되었습니다.")
     
     # 행렬 확인
     print(user_store_matrix.head())
@@ -40,19 +30,20 @@ def make_user_category_matrix(dataframes):
     유저-카테고리 행렬 생성
     유저와 음식점 카테고리를 축으로 하고 평점 평균을 값으로 갖는 행렬을 만들어 저장.
     '''
+    
     reviews = pd.DataFrame(dataframes['reviews'])
     stores = pd.DataFrame(dataframes['stores'])
     
-    store_avg_ratings = reviews.groupby('store_id')['rating'].mean().reset_index()
-    store_avg_ratings.columns = ['store_id', 'average_rating']
+    store_avg_ratings = reviews.groupby('store')['score'].mean().reset_index()
+    store_avg_ratings.columns = ['store', 'average_rating']
     
-    store_data_with_ratings = pd.merge(stores, store_avg_ratings, on='store_id')
+    store_data_with_ratings = pd.merge(stores, store_avg_ratings, left_on='id', right_on='store')
     
-    category_avg_ratings = store_data_with_ratings.groupby('category')['average_rating'].mean().reset_index()
+    user_category_matrix = reviews.merge(store_data_with_ratings[['store', 'category']], on='store')
     
-    category_avg_ratings = category_avg_ratings.fillna(0)
-    print(category_avg_ratings.head())
-    category_avg_ratings.to_csv('유저-카테고리 행렬.csv', index=False)
+    user_category_matrix = user_category_matrix.groupby(['user', 'category'])['score'].mean().unstack().fillna(0)
+    
+    print(user_category_matrix.head())
     
     
 def main():
