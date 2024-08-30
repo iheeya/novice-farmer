@@ -57,7 +57,19 @@ def get_most_active_users(dataframes, n=20):
     """
     Req. 1-2-4 가장 많은 리뷰를 작성한 `n`명의 유저를 정렬하여 리턴합니다.
     """
-    raise NotImplementedError
+    stores_reviews = pd.merge(
+        dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
+    )
+    review_counts = stores_reviews.groupby("store").size()
+    stores_ind = review_counts.index
+    
+    sorted_review_counts = review_counts.sort_values(ascending=False)
+    
+    stores = sorted_review_counts[sorted_review_counts["store"].isin(stores_ind)]
+
+    print(stores.head(n=n))
+
+    return stores.head(n=n)
 
 
 def main():
