@@ -50,39 +50,94 @@ def show_store_categories_graph(dataframes, n=100):
     plt.show()
 
 
-def show_store_review_distribution_graph():
+def show_store_review_distribution_graph(dataframes):
     """
     Req. 1-3-1 전체 음식점의 리뷰 개수 분포를 그래프로 나타냅니다. 
     """
-    raise NotImplementedError
+    stores = dataframes["stores"]
+
+    reviews_cnt = stores["review_cnt"]
+
+    reviews_cnt = Counter(reviews_cnt)
+
+    df = pd.DataFrame(list(reviews_cnt), columns=["review", "store"]).sort_values(by=["review"])
+
+    chart = sns.barplot(x="review", y="store", data=df)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.title("음식점 리뷰 개수 분포")
+    plt.show()
 
 
-def show_store_average_ratings_graph():
+def show_store_average_ratings_graph(dataframes):
     """
     Req. 1-3-2 각 음식점의 평균 평점을 그래프로 나타냅니다.
     """
-    raise NotImplementedError
+    stores = dataframes["stores"]
+
+    reviews_cnt = stores["review_cnt"]
+
+    reviews_cnt = Counter(reviews_cnt)
+
+    df = pd.DataFrame(list(reviews_cnt), columns=["review", "store"]).sort_values(by=["review"])
+
+    chart = sns.barplot(x="review", y="store", data=df)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.title("음식점 평균 평점 분포")
+    plt.show()
 
 
 def show_user_review_distribution_graph(dataframes):
     """
     Req. 1-3-3 전체 유저의 리뷰 개수 분포를 그래프로 나타냅니다.
     """
-    raise NotImplementedError
+    stores = dataframes["stores"]
+
+    reviews_cnt = stores["review_cnt"]
+
+    reviews_cnt = Counter(reviews_cnt)
+
+    df = pd.DataFrame(list(reviews_cnt), columns=["review", "store"]).sort_values(by=["review"])
+
+    chart = sns.barplot(x="review", y="store", data=df)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.title("유저 리뷰 수 분포")
+    plt.show()
 
 
 def show_user_age_gender_distribution_graph(dataframes):
     """
     Req. 1-3-4 전체 유저의 성별/나이대 분포를 그래프로 나타냅니다.
     """
-    raise NotImplementedError
+    stores = dataframes["stores"]
+
+    reviews_cnt = stores["review_cnt"]
+
+    reviews_cnt = Counter(reviews_cnt)
+
+    df = pd.DataFrame(list(reviews_cnt), columns=["review", "store"]).sort_values(by=["review"])
+
+    chart = sns.barplot(x="review", y="store", data=df)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.title("유저 나이대, 성별 분포")
+    plt.show()
 
 
 def show_stores_distribution_graph(dataframes):
     """
     Req. 1-3-5 각 음식점의 위치 분포를 지도에 나타냅니다.
     """
-    raise NotImplementedError
+    stores = dataframes["stores"]
+
+    reviews_cnt = stores["review_cnt"]
+
+    reviews_cnt = Counter(reviews_cnt)
+
+    df = pd.DataFrame(list(reviews_cnt), columns=["review", "store"]).sort_values(by=["review"])
+
+    chart = sns.barplot(x="review", y="store", data=df)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.title("음식점 위치 분포")
+    plt.show()
 
 
 def main():
