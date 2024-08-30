@@ -138,7 +138,23 @@ def show_user_age_gender_distribution_graph(dataframes):
     """
 
     user = dataframes["users"]
-    raise NotImplementedError
+    #print(user)
+     # 성별 및 나이별로 카운트
+    age_gender_distribution = user.groupby(['gender', 'age']).size().reset_index(name='count')
+
+    # 그래프로 나타냅니다.
+    plt.figure(figsize=(12, 6))
+    chart = sns.barplot(x='age', y='count', hue='gender', data=age_gender_distribution)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.title("유저 성별 및 나이 분포")
+    plt.xlabel("나이")
+    plt.ylabel("유저 수")
+    plt.legend(title='성별')
+    plt.show()
+
+
+
+    #raise NotImplementedError
 
 
 def show_stores_distribution_graph(dataframes):
@@ -155,7 +171,8 @@ def main():
     #print(data)
     #show_store_review_distribution_graph(data)
     #show_store_average_ratings_graph(data)
-    show_user_review_distribution_graph(data)
+    #show_user_review_distribution_graph(data)
+    show_user_age_gender_distribution_graph(data)
 
 
 if __name__ == "__main__":
