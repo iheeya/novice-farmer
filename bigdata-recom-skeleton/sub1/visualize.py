@@ -2,6 +2,8 @@ import itertools
 from collections import Counter
 import os
 import webbrowser
+
+import numpy as np
 from parse import load_dataframes
 import pandas as pd
 import seaborn as sns
@@ -173,10 +175,57 @@ def show_stores_distribution_graph(dataframes):
     map_path = "stores_distribution_map.html"
     map_korea.save(map_path)
 
-    browser_path = webbrowser.get('windows-default').name  # 기본 브라우저 확인
+    browser_path = webbrowser.get('windows-default').name  
     webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(browser_path))
     webbrowser.get('chrome').open('file://' + os.path.realpath(map_path))
 
+def create_user_store_matrix(dataframes):
+    reviews = []
+    
+    for store in dataframes['stores'].to_dict('records'):
+        store_id = store["id"]
+        review_list = store.get("review_list", [])
+        if not review_list:
+            continue 
+        for review in review_list:
+            user_id = review["writer_info"]["id"]
+            score = review["review_info"]["score"]
+            reviews.append([user_id, store_id, score])
+    
+    df_reviews = pd.DataFrame(reviews, columns=['user_id', 'store_id', 'score'])
+    if df_reviews.empty:
+        print("No reviews found in the data.")
+        return pd.DataFrame()  
+
+    user_store_matrix = df_reviews.pivot(index='user_id', columns='store_id', values='score')
+    user_store_sparse = user_store_matrix.astype(pd.SparseDtype("float", np.nan))
+    
+    return user_store_sparse
+
+def create_user_category_matrix(dataframes):
+    user_category = []
+    
+    for store in dataframes['stores'].to_dict('records'):
+        category_list = store.get("category_list", [])
+        categories = [c["category"] for c in category_list]
+        review_list = store.get("review_list", [])
+        if not categories or not review_list:
+            continue  
+        for review in review_list:
+            user_id = review["writer_info"]["id"]
+            score = review["review_info"]["score"]
+            for category in categories:
+                user_category.append([user_id, category, score])
+    
+    df_user_category = pd.DataFrame(user_category, columns=['user_id', 'category', 'score'])
+    if df_user_category.empty:
+        print("No user-category data found in the data.")
+        return pd.DataFrame()  
+    
+    user_category_matrix = df_user_category.groupby(['user_id', 'category']).mean().unstack().fillna(np.nan)
+    user_category_sparse = user_category_matrix.astype(pd.SparseDtype("float", np.nan))
+    
+    return user_category_sparse
 
 def main():
     set_config()
@@ -187,6 +236,12 @@ def main():
     show_user_review_distribution_graph(data)
     show_user_age_gender_distribution_graph(data)
     show_stores_distribution_graph(data)
+    user_store_sparse = create_user_store_matrix(data)
+    print(user_store_sparse.head())
+    print(user_store_sparse.info())
+    user_category_sparse = create_user_category_matrix(data)
+    print(user_category_sparse.head())
+    print(user_category_sparse.info())
 
 if __name__ == "__main__":
     main()
