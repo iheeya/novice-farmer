@@ -5,7 +5,12 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
+from matplotlib.ticker import FuncFormatter
+import folium
 
+
+def thousands_formatter(x, pos):
+    return f'{int(x):,}'
 
 def set_config():
     # 폰트, 그래프 색상 설정
@@ -44,10 +49,11 @@ def show_store_categories_graph(dataframes, n=100):
     )
 
     # 그래프로 나타냅니다
-    # chart = sns.barplot(x="category", y="count", data=df)
-    # chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
-    # plt.title("음식점 카테고리 분포")
-    # # plt.show()
+    chart = sns.barplot(x="category", y="count", data=df)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.gca().yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+    plt.title("음식점 카테고리 분포")
+    plt.show()
 
 
 def show_store_review_distribution_graph(dataframes):
@@ -60,14 +66,15 @@ def show_store_review_distribution_graph(dataframes):
     scores_group = stores_reviews.groupby(["store", "store_name"])
     review_counts = scores_group.size()
     
-    # 리뷰 개수 분포 히스토그램 그리기
     plt.figure(figsize=(10, 6))
-    sns.histplot(review_counts, bins=range(1, review_counts.max() + 2), kde=False)
-    plt.title("전체 음식점의 리뷰 개수 분포")
+    plt.scatter(review_counts, range(len(review_counts)), alpha=0.6)
+    plt.title("전체 음식점 리뷰 개수 분포")
     plt.xlabel("리뷰 개수")
-    plt.ylabel("음식점 수")
+    plt.ylabel("음식점 인덱스")
+    plt.gca().yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
     plt.grid(True)
     plt.show()
+
     
 
 def show_store_average_ratings_graph(dataframes):
@@ -79,9 +86,17 @@ def show_store_average_ratings_graph(dataframes):
     )
     scores_group = stores_reviews.groupby(["store", "store_name"])
     scores = scores_group.mean(numeric_only=True).round(2)
-    scores = scores.sort_values(by='score', ascending=False)
-
-
+    scores = scores.sort_values(by='score', ascending=False).reset_index()
+    
+    plt.figure(figsize=(10, 6))
+    sns.histplot(scores['score'], bins=20, kde=False)
+    plt.title("평균 평점별 음식점 수 분포")
+    plt.xlabel("평균 평점")
+    plt.gca().yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+    plt.ylabel("음식점 수")
+    plt.grid(True)
+    plt.show()
+    
 def show_user_review_distribution_graph(dataframes):
     """
     Req. 1-3-3 전체 유저의 리뷰 개수 분포를 그래프로 나타냅니다.
@@ -89,20 +104,77 @@ def show_user_review_distribution_graph(dataframes):
     reviews = pd.DataFrame(dataframes['reviews'])
     # 각 사용자별 리뷰 개수 계산
     reviews_group = reviews.groupby('user').size().reset_index(name='review_count')
+    review_count_dist = reviews_group.groupby('review_count').size().reset_index(name='user_count')
+    max_review = review_count_dist['review_count'].max()
+    
+    plt.figure(figsize=(10, 6))
+    plt.scatter(review_count_dist['user_count'], review_count_dist['review_count'], alpha=0.6, color='skyblue')
+    plt.title('리뷰 개수별 유저 수 분포')
+    plt.xlabel('유저 수')
+    plt.ylabel('리뷰 개수')
+    plt.gca().xaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+    plt.grid(True)
+    plt.xlim(0, review_count_dist['user_count'].max() + 10)
+    plt.ylim(0, max_review + 20)
+    plt.xticks(range(0, review_count_dist['user_count'].max() + 1, 500))
+    plt.show()
 
 
 def show_user_age_gender_distribution_graph(dataframes):
     """
     Req. 1-3-4 전체 유저의 성별/나이대 분포를 그래프로 나타냅니다.
     """
-    raise NotImplementedError
+    
+    users = pd.DataFrame(dataframes['users'])
+    
+    plt.figure(figsize=(12, 6))
 
+    plt.subplot(1, 2, 1)
+    sns.countplot(x='gender', data=users, palette={'남': 'skyblue', '여': 'pink'}, width=0.5)
+    plt.title('유저 성별 분포')
+    plt.xlabel('성별')
+    plt.gca().yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+    plt.ylabel('유저 수')
+    plt.yticks(range(0, users['gender'].value_counts().max() + 1, 5000))
+    
+    min_age, max_age = users['age'].min(), users['age'].max()
+    plt.subplot(1, 2, 2)
+    sns.histplot(x='age', data=users, bins=range(min_age, max_age, 1), kde=False, color='lightgreen')
+    plt.title('유저 나이 분포')
+    plt.xlabel('나이')
+    plt.gca().yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+    plt.ylabel('유저 수')
+    plt.xlim(0, 100) 
+    
+    plt.tight_layout()
+    plt.show()
+    
 
 def show_stores_distribution_graph(dataframes):
     """
     Req. 1-3-5 각 음식점의 위치 분포를 지도에 나타냅니다.
     """
-    raise NotImplementedError
+    # 'stores'와 'reviews' 데이터프레임을 사용
+    stores = pd.DataFrame(dataframes['stores'])
+    reviews = pd.DataFrame(dataframes['reviews'])
+    store_ratings = reviews.groupby('store')['score'].mean().reset_index(name='average_score')
+    
+    high_rated_stores = stores.merge(store_ratings, left_on='id', right_on='store')
+    high_rated_stores = high_rated_stores[(high_rated_stores['average_score'] >= 4.9) & 
+                                          (high_rated_stores['latitude'].notnull()) & 
+                                          (high_rated_stores['longitude'].notnull())]
+    
+    map_center = [36.1136, 128.4178]  # 구미시 인동의 위도와 경도
+    store_map = folium.Map(location=map_center, zoom_start=15)
+    
+    for idx, row in high_rated_stores.iterrows():
+        folium.Marker(
+            location=[row['latitude'], row['longitude']],
+            popup=f"{row['store_name']} (평점: {row['average_score']:.1f})",
+        ).add_to(store_map)
+        
+    store_map.save('인동 맛집 지도.html')
+    store_map
 
 
 def main():
@@ -110,10 +182,10 @@ def main():
     data = load_dataframes()
     show_store_categories_graph(data)
     show_store_review_distribution_graph(data)
-    # show_store_average_ratings_graph(data)
-    # show_user_review_distribution_graph(data)
-    # show_user_age_gender_distribution_graph(data)
-    # show_stores_distribution_graph(data)
+    show_store_average_ratings_graph(data)
+    show_user_review_distribution_graph(data)
+    show_user_age_gender_distribution_graph(data)
+    show_stores_distribution_graph(data)
 
 
 if __name__ == "__main__":
