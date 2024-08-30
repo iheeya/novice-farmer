@@ -154,7 +154,6 @@ def show_stores_distribution_graph(dataframes):
     """
     Req. 1-3-5 각 음식점의 위치 분포를 지도에 나타냅니다.
     """
-    # 'stores'와 'reviews' 데이터프레임을 사용
     stores = pd.DataFrame(dataframes['stores'])
     reviews = pd.DataFrame(dataframes['reviews'])
     store_ratings = reviews.groupby('store')['score'].mean().reset_index(name='average_score')
