@@ -16,6 +16,7 @@ def sort_stores_by_score(dataframes, n=20, min_reviews=30):
     # 최소 리뷰 개수 필터링
     # 리뷰 개수 기준 음식점 정렬
     review_counts = stores_reviews.groupby("store").size()
+    
     stores_with_more_min_reviews_ind = review_counts[review_counts >= min_reviews].index
 
     filtered_stores = stores_reviews[stores_reviews["store"].isin(stores_with_more_min_reviews_ind)]

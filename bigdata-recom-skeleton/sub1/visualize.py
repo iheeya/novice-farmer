@@ -119,6 +119,7 @@ def show_user_age_gender_distribution_graph(dataframes):
     chart = sns.barplot(x="review", y="store", data=df)
     chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
     plt.title("유저 나이대, 성별 분포")
+    
     plt.show()
 
 
@@ -137,6 +138,7 @@ def show_stores_distribution_graph(dataframes):
     chart = sns.barplot(x="review", y="store", data=df)
     chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
     plt.title("음식점 위치 분포")
+
     plt.show()
 
 

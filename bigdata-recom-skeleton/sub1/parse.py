@@ -108,14 +108,11 @@ def import_data(data_path=DATA_FILE):
 
     return {"stores": store_frame, "reviews": review_frame, "menus": menu_frame, "users": user_frame}
 
-
 def dump_dataframes(dataframes):
     pd.to_pickle(dataframes, DUMP_FILE)
 
-
 def load_dataframes():
     return pd.read_pickle(DUMP_FILE)
-
 
 def main():
 
