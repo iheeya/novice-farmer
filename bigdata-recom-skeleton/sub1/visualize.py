@@ -5,6 +5,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
 
 
 def set_config():
@@ -165,7 +167,35 @@ def show_stores_distribution_graph(dataframes):
     """
     Req. 1-3-5 각 음식점의 위치 분포를 지도에 나타냅니다.
     """
-    raise NotImplementedError
+    stores = dataframes["stores"]
+
+    # 위도와 경도를 숫자(float) 형식으로 변환
+    stores['latitude'] = stores['latitude'].astype(float)
+    stores['longitude'] = stores['longitude'].astype(float)
+    
+    # 지도 설정
+    plt.figure(figsize=(10, 10))
+    ax = plt.axes(projection=ccrs.PlateCarree())
+    ax.set_extent([124.0, 131.0, 33.0, 38.6], crs=ccrs.PlateCarree())
+
+    # 기본 지형도 추가
+    ax.add_feature(cfeature.LAND)
+    ax.add_feature(cfeature.OCEAN)
+    ax.add_feature(cfeature.COASTLINE)
+    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    ax.add_feature(cfeature.LAKES, alpha=0.5)
+    ax.add_feature(cfeature.RIVERS)
+
+    # 음식점 위치 표시
+    plt.scatter(stores['longitude'], stores['latitude'], color='blue', s=1, label='Stores', alpha=0.6, transform=ccrs.PlateCarree())
+    
+    # 지도 제목 및 범례
+    plt.title("Stores Distribution Map")
+    plt.legend()
+    
+    # 지도 출력
+    plt.show()
+    
 
 
 def main():
@@ -179,7 +209,9 @@ def main():
     # Req. 3-3.
     # show_user_review_distribution_graph(data)
     # Req. 3-4
-    show_user_age_gender_distribution_graph(data)
+    # show_user_age_gender_distribution_graph(data)
+    # Req. 3-5
+    show_stores_distribution_graph(data)
     
 
 
