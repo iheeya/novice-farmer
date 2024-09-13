@@ -1,5 +1,6 @@
 package com.d207.farmer.controller.user;
 
+import com.d207.farmer.dto.plant.PlantResponseDTO;
 import com.d207.farmer.dto.user.*;
 import com.d207.farmer.service.user.UserService;
 import com.d207.farmer.utils.JWTUtil;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -60,6 +62,20 @@ public class UserController {
 
         return ResponseEntity.ok().body(userService.loginUser(request));
     }
+
+
+    @GetMapping("/surveyplant")
+    public ResponseEntity<List<PlantResponseDTO>> surveyplant() {
+
+        userService.surveyplant();
+
+        return ResponseEntity.ok().body(userService.surveyplant());
+    }
+
+
+
+
+
     @PostMapping("/test")
     public ResponseEntity<UserLoginResponseDTO> loginUser2() {
 
