@@ -60,6 +60,14 @@ public class UserController {
 
         return ResponseEntity.ok().body(userService.loginUser(request));
     }
+    @PostMapping("/test")
+    public ResponseEntity<UserLoginResponseDTO> loginUser2() {
+
+        //log.info("[Us1232323");
+        System.out.println("hi~~~~~~~~~~~~~");
+        return ResponseEntity.ok().body(null);
+
+    }
 
 
 }
