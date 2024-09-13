@@ -3,7 +3,7 @@ spring:
     servlet:
       path: /farmer-api
   datasource:
-    url: jdbc:mysql://j11d207.p.ssafy.io:3306/farmer?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/farmer?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: ssafy
     ***REMOVED***
     driver-class-name: com.mysql.cj.jdbc.Driver
