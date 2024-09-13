@@ -18,12 +18,12 @@ public class TokenService {
     private final TokenRepository tokenRepository;
     private final JWTUtil jwtUtil;
 
-    public UserLoginResponseDTO saveRefreshToken(Long userId) {
+    public UserLoginResponseDTO saveRefreshToken(Long userId, boolean checkfirstLogin) {
         String accessToken = jwtUtil.createAccessToken(userId);
         String refreshToken = jwtUtil.createRefreshToken(userId);
 
         tokenRepository.save(new RedisToken(userId, refreshToken));
-        return new UserLoginResponseDTO(accessToken, refreshToken); // 최초 로그인 여부 추가 ?
+        return new UserLoginResponseDTO(accessToken, refreshToken, checkfirstLogin); // 최초 로그인 여부 추가 ?
     }
 
     public String getRefreshToken(Long userId) {
