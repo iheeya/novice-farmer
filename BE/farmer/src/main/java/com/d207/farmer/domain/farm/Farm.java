@@ -1,5 +1,7 @@
 package com.d207.farmer.domain.farm;
 
+import com.d207.farmer.domain.plant.Plant;
+import com.d207.farmer.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,9 +18,17 @@ public class Farm {
     @Column(name = "farm_id")
     private Long id;
 
-    @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "user_plant_id")
-    private UserPlant userPlant;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "plant_id")
+    private Plant plant;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_place_id")
+    private UserPlace userPlace;
 
     @Column(name = "farm_seed_date")
     private LocalDateTime seedDate;
