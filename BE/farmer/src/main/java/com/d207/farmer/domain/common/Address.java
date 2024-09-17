@@ -17,5 +17,5 @@ public class Address {
 
     private String jibun;
 
-    private String zoneCode;
+    private String zonecode;
 }
