@@ -1,9 +1,12 @@
 package com.d207.farmer.domain.farm;
 
 import com.d207.farmer.domain.common.Address;
+import com.d207.farmer.domain.common.Direction;
 import com.d207.farmer.domain.common.Location;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.user.User;
+import com.d207.farmer.dto.farm.register.FarmPlaceRegisterDTO;
+import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -49,4 +52,11 @@ public class UserPlace {
             @AttributeOverride(name = "zoneCode", column = @Column(name = "user_place_zonecode"))
     })
     private Address address;
+
+    @Column(name = "user_place_direction")
+    private Direction direction;
+
+    public UserPlace (FarmRegisterRequestDTO request) {
+
+    }
 }

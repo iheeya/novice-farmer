@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +25,8 @@ public class FarmController {
     public ResponseEntity<String> registerFarm(@RequestHeader("Authorization") String authorization,
                                                @RequestBody @Valid FarmRegisterRequestDTO request) {
         log.info("[FarmController] Received register farm request for {}", request);
-        return ResponseEntity.ok().body("");
+        // TODO 회원 넘기기
+        return ResponseEntity.created(URI.create("/")).body(farmService.registerFarm(request));
     }
 
 }

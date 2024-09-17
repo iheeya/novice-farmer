@@ -21,4 +21,8 @@ public class FarmService {
     private final FarmRepository farmRepository;
     private final PlaceRepository placeRepository;
 
+    @Transactional
+    public String registerFarm(FarmRegisterRequestDTO request) {
+        return "";
+    }
 }
