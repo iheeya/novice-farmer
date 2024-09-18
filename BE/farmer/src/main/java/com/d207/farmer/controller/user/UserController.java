@@ -4,14 +4,19 @@ import com.d207.farmer.dto.plant.PlantResponseDTO;
 import com.d207.farmer.dto.user.*;
 import com.d207.farmer.service.user.UserService;
 import com.d207.farmer.utils.JWTUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -22,6 +27,9 @@ public class UserController {
 
     private final UserService userService;
     private final JWTUtil jwtUtil;
+
+    @Value("${spring.jwt.salt}")
+    private String salt;
 
     /**
      * 일반회원 회원가입
@@ -64,12 +72,24 @@ public class UserController {
     }
 
 
-    @GetMapping("/surveyplant")
-    public ResponseEntity<List<PlantResponseDTO>> surveyplant() {
+    @GetMapping("/survey")
+    public ResponseEntity<Map<String, List<?>>> survey() {
 
-        userService.surveyplant();
+        log.info("[UserController] Received get survey after user first login");
+        return ResponseEntity.ok().body(userService.survey());
+    }
 
-        return ResponseEntity.ok().body(userService.surveyplant());
+
+    @PostMapping("/survey")
+    //public ResponseEntity<Map<String, List<?>>> savesurvey() {
+    public ResponseEntity<?> savesurvey(@RequestHeader("Authorization") String authorization) {
+
+        Long userId;
+
+        userId = jwtUtil.getUserId(authorization);
+
+
+        return ResponseEntity.ok().body("User ID: " + userId);
     }
 
 
