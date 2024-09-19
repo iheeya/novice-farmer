@@ -1,5 +1,6 @@
 package com.d207.farmer.controller.farm;
 
+import com.d207.farmer.dto.farm.register.FarmRegisterInMyPlaceRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
 import com.d207.farmer.service.farm.FarmService;
 import com.d207.farmer.utils.JWTUtil;
@@ -32,4 +33,14 @@ public class FarmController {
         return ResponseEntity.created(URI.create("/")).body(farmService.registerFarm(userId, request));
     }
 
+    /**
+     * 내 텃밭에서 작물 등록
+     */
+    @PostMapping("/plant")
+    public ResponseEntity<String> registerFarm(@RequestHeader("Authorization") String authorization,
+                                               @RequestBody @Valid FarmRegisterInMyPlaceRegisterDTO request) {
+        log.info("[FarmController] Received register farm in my place request for {}", request);
+        Long userId = jwtUtil.getUserId(authorization);
+        return ResponseEntity.created(URI.create("/")).body("");
+    }
 }
