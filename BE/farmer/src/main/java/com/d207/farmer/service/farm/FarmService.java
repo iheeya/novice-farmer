@@ -234,10 +234,11 @@ public class FarmService {
             if(recommendIdSet.contains(p.getId())) {
                 isRecommend = true;
             }
-            result.add(new PlaceWithRecommendAndFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, isRecommend));
+            result.add(new PlaceWithRecommendAndFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, isRecommend, p.getIsOn()));
         }
 
-        result.sort(Comparator.comparing(PlaceWithRecommendAndFavoriteResponseDTO::getIsRecommend).reversed()
+        result.sort(Comparator.comparing(PlaceWithRecommendAndFavoriteResponseDTO::getIsService).reversed()
+                .thenComparing(PlaceWithRecommendAndFavoriteResponseDTO::getIsRecommend).reversed()
                 .thenComparing(PlaceWithRecommendAndFavoriteResponseDTO::getIsFavorite).reversed()
                 .thenComparing(PlaceWithRecommendAndFavoriteResponseDTO::getPlaceId));
 
@@ -272,10 +273,11 @@ public class FarmService {
             if(recommendIdSet.contains(p.getId())) {
                 isRecommend = true;
             }
-            result.add(new PlantWithRecommendAndFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, isRecommend));
+            result.add(new PlantWithRecommendAndFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, isRecommend, p.getIsOn()));
         }
 
-        result.sort(Comparator.comparing(PlantWithRecommendAndFavoriteResponseDTO::getIsRecommend).reversed()
+        result.sort(Comparator.comparing(PlantWithRecommendAndFavoriteResponseDTO::getIsService).reversed()
+                .thenComparing(PlantWithRecommendAndFavoriteResponseDTO::getIsRecommend).reversed()
                 .thenComparing(PlantWithRecommendAndFavoriteResponseDTO::getIsFavorite).reversed()
                 .thenComparing(PlantWithRecommendAndFavoriteResponseDTO::getPlantId));
 

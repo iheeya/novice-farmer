@@ -10,4 +10,5 @@ public class PlantWithRecommendAndFavoriteResponseDTO {
     private String plantName;
     private Boolean isFavorite;
     private Boolean isRecommend;
+    private Boolean isService;
 }

@@ -10,4 +10,5 @@ public class PlaceWithRecommendAndFavoriteResponseDTO {
     private String placeName;
     private Boolean isFavorite;
     private Boolean isRecommend;
+    private Boolean isService;
 }
