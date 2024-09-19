@@ -1,0 +1,117 @@
+/* 기본적인 레이아웃 설정 */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+  }
+  
+  .container {
+    background-color: white;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  
+  .container img {
+    width: 100px;
+    margin-bottom: 20px;
+  }
+  
+  h2 {
+    font-size: 1.8em;
+    color: #84b366; /* 이미지의 타이틀 색상과 유사하게 조정 */
+    margin-bottom: 20px;
+  }
+  
+  /* Form input 스타일 */
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  input, select {
+    font-size: 1em;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: #84b366; /* 초록색으로 변경 */
+  }
+  
+  /* 중복 확인 버튼 스타일 */
+  .duplicate-check {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .duplicate-check input {
+    flex: 1;
+  }
+  
+  button.duplicate {
+    background-color: #84b366;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  /* 회원가입 버튼 스타일 */
+  button.submit {
+    background-color: #84b366;
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 1.2em;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  button.submit:hover {
+    background-color: #6e954e;
+  }
+  
+  /* 체크박스와 푸시 알림 동의 */
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-top: 10px;
+  }
+  
+  .checkbox-container input {
+    margin-right: 10px;
+  }
+  
+  /* 미디어 쿼리 - 모바일 최적화 */
+  @media (max-width: 480px) {
+    .container {
+      padding: 15px;
+    }
+  
+    input, select, button {
+      font-size: 0.9em;
+    }
+  
+    h2 {
+      font-size: 1.5em;
+    }
+  }
+  
