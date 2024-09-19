@@ -124,17 +124,21 @@ public class UserService {
 
     @Transactional
     public String registerSurvey(Long userId, SurveyRegisterRequestDTO surveyRegisterRequestDTO) {
-
+        // FIXME 최적화! in 으로 바꿔보기!()
         // id가 0인 Plant와 Place 여부를 확인하기 위한 boolean 변수
         boolean hasPlantWithIdZero = false;
         boolean hasPlaceWithIdZero = false;
         User user = userRepository.findById(userId).orElseThrow();
+
+        // Plant ID를 수집하기 위한 List
+        List<Long> plantIds = new ArrayList<>();
         // Plant 리스트에서 id가 0인지 확인
         for (SurveyRegisterRequestDTO.Plant plant : surveyRegisterRequestDTO.getPlant()) {
             if (plant.getId() == 0) {
                 hasPlantWithIdZero = true; // id가 0인 경우 발견
                 break; // 반복 종료
             }
+
 
 
             Plant plantDomain = plantRepository.findById(plant.getId()).orElseThrow();
