@@ -72,7 +72,9 @@ public class UserController {
         return ResponseEntity.ok().body(userService.loginUser(request));
     }
 
-
+    /**
+     * 설문조사-공간, 작물(불러오기)
+     */
     @GetMapping("/survey")
     public ResponseEntity<Map<String, List<?>>> getSurveyContent() {
 
@@ -81,6 +83,9 @@ public class UserController {
     }
 
 
+    /**
+     * 설문조사(선택 후 제출)
+     */
     @PostMapping("/survey")
     //public ResponseEntity<Map<String, List<?>>> savesurvey() {
     public ResponseEntity<?> registerSurvey(@RequestHeader("Authorization") String authorization,
@@ -92,6 +97,9 @@ public class UserController {
         return ResponseEntity.created(URI.create("/survey")).body(userService.registerSurvey(userId,surveyRegisterRequestDTO));
     }
 
+    /**
+    *마이페이지 - 선호 텃밭, 작물 불러오기 물어보기!
+    */
 
     @GetMapping("/mypage/like")
     public ResponseEntity<Map<String, List<?>>> getSurveyContentWithId(@RequestHeader("Authorization") String authorization) {

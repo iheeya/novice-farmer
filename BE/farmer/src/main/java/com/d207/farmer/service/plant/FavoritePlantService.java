@@ -1,11 +1,8 @@
 package com.d207.farmer.service.plant;
 
-import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.user.FavoritePlant;
 import com.d207.farmer.domain.user.User;
-import com.d207.farmer.dto.plant.PlantResponseWithIdDTO;
-import com.d207.farmer.repository.plant.FavoritePlantRepository;
-import com.d207.farmer.repository.plant.PlantRepository;
+import com.d207.farmer.repository.user.FavoritePlantRepository;
 import com.d207.farmer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

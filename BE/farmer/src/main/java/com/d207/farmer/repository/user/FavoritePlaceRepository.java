@@ -1,8 +1,7 @@
-package com.d207.farmer.repository.place;
+package com.d207.farmer.repository.user;
 
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.user.FavoritePlace;
-import com.d207.farmer.domain.user.FavoritePlant;
 import com.d207.farmer.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
