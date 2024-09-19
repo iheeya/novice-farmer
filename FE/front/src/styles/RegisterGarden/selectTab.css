@@ -1,7 +1,8 @@
 .menu{
-    font-size: 1.7rem;
+    font-size: 1.5rem;
     display: flex;
     margin-top: 20%;
+    text-align: center;
 }
 
 
@@ -10,7 +11,7 @@
   text-decoration: underline;
   text-decoration-thickness: 0.2rem;
   text-underline-offset: 0.4rem;
-  margin: 5%
+  margin-right: 5%;
 }
 
 .inactive{
@@ -19,5 +20,5 @@
     text-decoration: underline;
     text-decoration-thickness: 0.2rem;
     text-underline-offset: 0.4rem;
-    margin: 5% 5% 5% 0%
+ 
 }
