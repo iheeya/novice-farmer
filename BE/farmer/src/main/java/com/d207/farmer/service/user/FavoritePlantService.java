@@ -27,4 +27,16 @@ public class FavoritePlantService {
         return favoritePlants;
 
     }
+
+    public void deletePlantByUser(User user) {
+
+        List<FavoritePlant> favoritePlants = favoritePlantRepository.findByUser(user);
+        // favoritePlants가 비어있지 않은 경우에만 삭제
+        if (!favoritePlants.isEmpty()) {
+//            favoritePlantRepository.deleteAll(favoritePlants);
+            favoritePlantRepository.deleteByUserId(user.getId());
+        }
+
+    }
+
 }

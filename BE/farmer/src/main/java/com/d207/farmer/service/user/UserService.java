@@ -140,7 +140,6 @@ public class UserService {
             }
 
 
-
             Plant plantDomain = plantRepository.findById(plant.getId()).orElseThrow();
 
             // 중복 체크
@@ -179,14 +178,11 @@ public class UserService {
 
     }
 
-
+    @Transactional
     public Map<String, List<?>> getSurveyContentWithId(Long userId) {
 
         List<PlantResponseWithIdDTO> plantResponseWithIdDTOS = plantService.getAllPlantsWithFalse();
         List<PlaceResponseWithIdDTO> placeResponseWithIdDTOS = placeService.getAllPlacesWithFalse();
-
-
-
 
 
         List<FavoritePlant> favoritePlants = favoritePlantService.getPlantById(userId);
@@ -205,8 +201,7 @@ public class UserService {
         // isFavorite이 true인 항목이 먼저 오도록 정렬
         plantResponseWithIdDTOS.sort(Comparator.comparing(PlantResponseWithIdDTO::getIsFavorite).reversed()
                 .thenComparing(PlantResponseWithIdDTO::getId));
-    ///////////////////////
-
+        ///////////////////////
 
 
         List<FavoritePlace> favoritePlaces = favorPlaceService.getPlaceById(userId);
@@ -236,4 +231,46 @@ public class UserService {
 
         return resultMap; // 키와 리스트를 포함한 결과 반환
     }
+
+
+    @Transactional
+    public String registerSurveyContentWithId(Long userId, SurveyRegisterRequestDTO surveyRegisterRequestDTO) {
+        User user = userRepository.findById(userId).orElseThrow();
+        favoritePlantService.deletePlantByUser(user);
+        favorPlaceService.deletePlaceByUser(user);
+
+        // Plant ID를 수집하기 위한 List
+        List<Long> plantIds = new ArrayList<>();
+
+        for (SurveyRegisterRequestDTO.Plant plant : surveyRegisterRequestDTO.getPlant()) {
+            plantIds.add(plant.getId());
+        }
+
+        List<Plant> plantDomain = plantRepository.findByIdIn(plantIds);
+
+        // FavoritePlace 목록 생성
+        List<FavoritePlant> favoritePlants = plantDomain.stream()
+                .map(plant -> new FavoritePlant(user, plant))
+                .collect(Collectors.toList());
+        // FavoritePlace 저장
+        favoritePlantRepository.saveAll(favoritePlants);
+
+        List<Long> placeIds = new ArrayList<>();
+
+        for (SurveyRegisterRequestDTO.Place place : surveyRegisterRequestDTO.getPlace()) {
+            placeIds.add(place.getId());
+        }
+        List<Place> placeDomain = placeRepository.findByIdIn(placeIds);
+
+        // FavoritePlace 목록 생성
+        List<FavoritePlace> favoritePlaces = placeDomain.stream()
+                .map(place -> new FavoritePlace(user, place))
+                .collect(Collectors.toList());
+        // FavoritePlace 저장
+        favoritePlaceRepository.saveAll(favoritePlaces);
+
+        return "successful save";
+    }
+
+
 }

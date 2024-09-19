@@ -25,4 +25,15 @@ public class FavoritePlaceService {
 
         return favoritePlants;
     }
+
+    public void deletePlaceByUser(User user) {
+
+
+        List<FavoritePlace> favoritePlaces = favoritePlaceRepository.findByUser(user);
+        if(!favoritePlaces.isEmpty()) {
+//            favoritePlaceRepository.deleteAll(favoritePlaces);
+            favoritePlaceRepository.deleteByUserId(user.getId());
+        }
+
+    }
 }
