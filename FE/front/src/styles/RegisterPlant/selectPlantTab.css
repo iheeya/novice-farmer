@@ -1,0 +1,23 @@
+.menu{
+    font-size: 1.7rem;
+    display: flex;
+    margin-top: 20%;
+}
+
+
+.plant-active{
+  color: #5B8E55;
+  text-decoration: underline;
+  text-decoration-thickness: 0.2rem;
+  text-underline-offset: 0.4rem;
+  margin: 5% 5% 5% 0%
+}
+
+.plant-inactive{
+    color: #5B8E5555;
+    opacity: 33.3;
+    text-decoration: underline;
+    text-decoration-thickness: 0.2rem;
+    text-underline-offset: 0.4rem;
+    margin: 5% 
+}
