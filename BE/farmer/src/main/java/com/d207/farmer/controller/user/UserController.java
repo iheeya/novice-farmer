@@ -72,7 +72,9 @@ public class UserController {
         return ResponseEntity.ok().body(userService.loginUser(request));
     }
 
-
+    /**
+     * 설문조사-공간, 작물(불러오기)
+     */
     @GetMapping("/survey")
     public ResponseEntity<Map<String, List<?>>> getSurveyContent() {
 
@@ -81,6 +83,9 @@ public class UserController {
     }
 
 
+    /**
+     * 설문조사(선택 후 제출)
+     */
     @PostMapping("/survey")
     //public ResponseEntity<Map<String, List<?>>> savesurvey() {
     public ResponseEntity<?> registerSurvey(@RequestHeader("Authorization") String authorization,
@@ -89,9 +94,12 @@ public class UserController {
         userId = jwtUtil.getUserId(authorization);
 
         //create의 ret urn
-        return ResponseEntity.created(URI.create("/survey")).body(userService.registerSurvey(userId,surveyRegisterRequestDTO));
+        return ResponseEntity.created(URI.create("/survey")).body(userService.registerSurvey(userId, surveyRegisterRequestDTO));
     }
 
+    /**
+     * 마이페이지 - 선호 텃밭, 작물 불러오기 물어보기!
+     */
 
     @GetMapping("/mypage/like")
     public ResponseEntity<Map<String, List<?>>> getSurveyContentWithId(@RequestHeader("Authorization") String authorization) {
@@ -101,6 +109,23 @@ public class UserController {
         log.info("[UserController] Received get mypage- mylike");
         return ResponseEntity.ok().body(userService.getSurveyContentWithId(userId));
     }
+
+
+    /**
+     * 마이페이지 - 선호 텃밭, 작물 수정하기!!!
+     */
+
+    @PostMapping("/mypage/like")
+    public ResponseEntity<String> registerSurveyContentWithId(@RequestHeader("Authorization") String authorization,
+                                                              @RequestBody SurveyRegisterRequestDTO surveyRegisterRequestDTO) {
+
+        Long userId = jwtUtil.getUserId(authorization);
+
+        return ResponseEntity.ok().body(userService.registerSurveyContentWithId(userId, surveyRegisterRequestDTO));
+    }
+
+
+
 
 
 
