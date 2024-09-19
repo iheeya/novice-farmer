@@ -1,11 +1,8 @@
-package com.d207.farmer.service.plant;
+package com.d207.farmer.service.user;
 
-import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.user.FavoritePlant;
 import com.d207.farmer.domain.user.User;
-import com.d207.farmer.dto.plant.PlantResponseWithIdDTO;
-import com.d207.farmer.repository.plant.FavoritePlantRepository;
-import com.d207.farmer.repository.plant.PlantRepository;
+import com.d207.farmer.repository.user.FavoritePlantRepository;
 import com.d207.farmer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,4 +27,16 @@ public class FavoritePlantService {
         return favoritePlants;
 
     }
+
+    public void deletePlantByUser(User user) {
+
+        List<FavoritePlant> favoritePlants = favoritePlantRepository.findByUser(user);
+        // favoritePlants가 비어있지 않은 경우에만 삭제
+        if (!favoritePlants.isEmpty()) {
+//            favoritePlantRepository.deleteAll(favoritePlants);
+            favoritePlantRepository.deleteByUserId(user.getId());
+        }
+
+    }
+
 }

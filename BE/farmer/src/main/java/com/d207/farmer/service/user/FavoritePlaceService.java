@@ -1,8 +1,8 @@
-package com.d207.farmer.service.place;
+package com.d207.farmer.service.user;
 
 import com.d207.farmer.domain.user.FavoritePlace;
 import com.d207.farmer.domain.user.User;
-import com.d207.farmer.repository.place.FavoritePlaceRepository;
+import com.d207.farmer.repository.user.FavoritePlaceRepository;
 import com.d207.farmer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,5 +24,16 @@ public class FavoritePlaceService {
         List<FavoritePlace> favoritePlants = favoritePlaceRepository.findByUser(user);
 
         return favoritePlants;
+    }
+
+    public void deletePlaceByUser(User user) {
+
+
+        List<FavoritePlace> favoritePlaces = favoritePlaceRepository.findByUser(user);
+        if(!favoritePlaces.isEmpty()) {
+//            favoritePlaceRepository.deleteAll(favoritePlaces);
+            favoritePlaceRepository.deleteByUserId(user.getId());
+        }
+
     }
 }

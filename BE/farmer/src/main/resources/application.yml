@@ -55,7 +55,12 @@ spring:
     redis:
       host: 127.0.0.1
       port: 6379
-
+external:
+  api:
+    naver:
+      apigw:
+        ***REMOVED***
+        ***REMOVED***
 # 로그 설정
 logging:
   level:
