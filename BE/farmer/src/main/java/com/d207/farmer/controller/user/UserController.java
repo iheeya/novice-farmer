@@ -1,6 +1,7 @@
 package com.d207.farmer.controller.user;
 
 import com.d207.farmer.dto.plant.PlantResponseDTO;
+import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.*;
 import com.d207.farmer.service.user.UserService;
 import com.d207.farmer.utils.JWTUtil;
@@ -82,14 +83,13 @@ public class UserController {
 
     @PostMapping("/survey")
     //public ResponseEntity<Map<String, List<?>>> savesurvey() {
-    public ResponseEntity<?> savesurvey(@RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<?> registerSurvey(@RequestHeader("Authorization") String authorization,
+                                            @RequestBody SurveyRegisterRequestDTO surveyRegisterRequestDTO) {
         Long userId;
         userId = jwtUtil.getUserId(authorization);
 
-
-
-
-        return ResponseEntity.ok().body("User ID: " + userId);
+        //create의 ret urn
+        return ResponseEntity.created(URI.create("/survey")).body(userService.registerSurvey(userId,surveyRegisterRequestDTO));
     }
 
 
