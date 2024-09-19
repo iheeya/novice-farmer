@@ -31,7 +31,7 @@ function SelectTab() {
     };
 
     return (
-        <div className='menu'>
+        <div className='plant-menu'>
             {menus.map((menu, index) => (
                 <div
                     key={menu.name}
