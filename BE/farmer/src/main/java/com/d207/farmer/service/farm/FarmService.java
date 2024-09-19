@@ -30,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -156,10 +157,7 @@ public class FarmService {
         // 즐겨찾기(장소) 조회
         List<FavoritePlace> favorites = favoritePlaceRepository.findByUserId(userId);
 
-        Set<Long> placeIdSet = new HashSet<>();
-        for (FavoritePlace favorite : favorites) {
-            placeIdSet.add(favorite.getPlace().getId());
-        }
+        Set<Long> placeIdSet = favorites.stream().map(f -> f.getPlace().getId()).collect(Collectors.toSet());
 
         // 장소 조회
         List<Place> places = placeRepository.findAll();
@@ -172,19 +170,8 @@ public class FarmService {
             }
             result.add(new PlaceWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite));
         }
-
-        // result list 정렬(true 우선)
-        result.sort((o1, o2) -> {
-            if (o1.getIsFavorite() && o2.getIsFavorite()) { // 둘 다 true 면
-                return Long.compare(o1.getPlaceId(), o2.getPlaceId());
-            } else if (o1.getIsFavorite()) {
-                return 1;
-            } else if (o2.getIsFavorite()) {
-                return -1;
-            } else {
-                return Long.compare(o1.getPlaceId(), o2.getPlaceId());
-            }
-        });
+        result.sort(Comparator.comparing(PlaceWithFavoriteResponseDTO::getIsFavorite).reversed()
+                .thenComparing(PlaceWithFavoriteResponseDTO::getPlaceId));
 
         return result;
     }
@@ -199,10 +186,8 @@ public class FarmService {
         // 작물 조회
         List<Plant> plants = plantRepository.findAll();
 
-        Set<Long> plantIdSet = new HashSet<>();
-        for (FavoritePlant favorite : favorites) {
-            plantIdSet.add(favorite.getPlant().getId());
-        }
+        Set<Long> plantIdSet = favorites.stream().map(f -> f.getPlant().getId()).collect(Collectors.toSet());
+
         // result list 생성
         for (Plant p : plants) {
             boolean isFavorite = false;
@@ -212,18 +197,8 @@ public class FarmService {
             result.add(new PlantWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite));
         }
 
-        // result list 정렬(true 우선)
-        result.sort((o1, o2) -> {
-            if (o1.getIsFavorite() && o2.getIsFavorite()) { // 둘 다 true 면
-                return Long.compare(o1.getPlantId(), o2.getPlantId());
-            } else if (o1.getIsFavorite()) {
-                return 1;
-            } else if (o2.getIsFavorite()) {
-                return -1;
-            } else {
-                return Long.compare(o1.getPlantId(), o2.getPlantId());
-            }
-        });
+        result.sort(Comparator.comparing(PlantWithFavoriteResponseDTO::getIsFavorite).reversed()
+                .thenComparing(PlantWithFavoriteResponseDTO::getPlantId));
 
         return result;
     }
