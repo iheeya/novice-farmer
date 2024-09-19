@@ -170,9 +170,10 @@ public class FarmService {
             if(placeIdSet.contains(p.getId())) {
                 isFavorite = true;
             }
-            result.add(new PlaceWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite));
+            result.add(new PlaceWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, p.getIsOn()));
         }
-        result.sort(Comparator.comparing(PlaceWithFavoriteResponseDTO::getIsFavorite).reversed()
+        result.sort(Comparator.comparing(PlaceWithFavoriteResponseDTO::getIsService).reversed()
+                .thenComparing(PlaceWithFavoriteResponseDTO::getIsFavorite).reversed()
                 .thenComparing(PlaceWithFavoriteResponseDTO::getPlaceId));
 
         return result;
@@ -195,10 +196,11 @@ public class FarmService {
             if(plantIdSet.contains(p.getId())) {
                 isFavorite = true;
             }
-            result.add(new PlantWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite));
+            result.add(new PlantWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, p.getIsOn()));
         }
 
-        result.sort(Comparator.comparing(PlantWithFavoriteResponseDTO::getIsFavorite).reversed()
+        result.sort(Comparator.comparing(PlantWithFavoriteResponseDTO::getIsService).reversed()
+                .thenComparing(PlantWithFavoriteResponseDTO::getIsFavorite).reversed()
                 .thenComparing(PlantWithFavoriteResponseDTO::getPlantId));
 
         return result;

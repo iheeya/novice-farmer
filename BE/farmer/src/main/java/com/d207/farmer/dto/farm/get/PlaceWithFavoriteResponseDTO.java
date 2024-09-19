@@ -9,4 +9,5 @@ public class PlaceWithFavoriteResponseDTO {
     private Long placeId;
     private String placeName;
     private Boolean isFavorite;
+    private Boolean isService;
 }
