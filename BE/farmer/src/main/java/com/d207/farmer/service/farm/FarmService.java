@@ -21,13 +21,8 @@ public class FarmService {
     private final FarmRepository farmRepository;
     private final PlaceRepository placeRepository;
 
-    public String registerFarm(User user, FarmRegisterRequestDTO request) {
-        Place place = placeRepository.findById(request.getPlace().getPlaceId()).orElseThrow();
-        String latitude = "";
-        String longitude = "";
-        UserPlace userPlace = new UserPlace(user, place, request.getPlace().getLocation(), latitude, longitude);
-        Farm farm = new Farm(user, request); // TODO
-        farmRepository.save(farm);
-        return farm.getUserPlace().getName() + ", " + farm.getMyPlantName() + " 생성 완료";
+    @Transactional
+    public String registerFarm(FarmRegisterRequestDTO request) {
+        return "";
     }
 }
