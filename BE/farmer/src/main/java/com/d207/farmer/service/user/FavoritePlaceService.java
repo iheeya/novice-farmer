@@ -1,4 +1,4 @@
-package com.d207.farmer.service.place;
+package com.d207.farmer.service.user;
 
 import com.d207.farmer.domain.user.FavoritePlace;
 import com.d207.farmer.domain.user.User;

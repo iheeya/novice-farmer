@@ -2,9 +2,7 @@ package com.d207.farmer.service.user;
 
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
-import com.d207.farmer.domain.user.FavoritePlace;
-import com.d207.farmer.domain.user.FavoritePlant;
-import com.d207.farmer.domain.user.User;
+import com.d207.farmer.domain.user.*;
 import com.d207.farmer.dto.place.PlaceResponseDTO;
 import com.d207.farmer.dto.place.PlaceResponseWithIdDTO;
 import com.d207.farmer.dto.plant.PlantResponseDTO;
@@ -12,14 +10,10 @@ import com.d207.farmer.dto.plant.PlantResponseWithIdDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.*;
 import com.d207.farmer.exception.FailedAuthenticateUserException;
-import com.d207.farmer.repository.user.FavoritePlaceRepository;
+import com.d207.farmer.repository.user.*;
 import com.d207.farmer.repository.place.PlaceRepository;
-import com.d207.farmer.repository.user.FavoritePlantRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
-import com.d207.farmer.repository.user.UserRepository;
-import com.d207.farmer.service.place.FavoritePlaceService;
 import com.d207.farmer.service.place.PlaceService;
-import com.d207.farmer.service.plant.FavoritePlantService;
 import com.d207.farmer.service.plant.PlantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +39,8 @@ public class UserService {
     private final PlantRepository plantRepository;
     private final PlaceRepository placeRepository;
     private final FavoritePlaceRepository favoritePlaceRepository;
+    private final RecommendPlantRepository recommendPlantRepository;
+    private final RecommendPlaceRepository recommendPlaceRepository;
 
     @Transactional
     public UserInfoResponseDTO registerUser(UserRegisterRequestDTO request) {
@@ -145,8 +141,13 @@ public class UserService {
 
             // 중복 체크
             if (!favoritePlantRepository.existsByUserAndPlant(user, plantDomain)) {
+                // 여기는 즐겨찾기 (작물) 요기 추가!!
                 FavoritePlant favoritePlant = new FavoritePlant(user, plantDomain);
                 favoritePlantRepository.save(favoritePlant);
+
+                // 여기는 추천(작물) 요기 추가!!
+                RecommendPlant recommendPlant = new RecommendPlant(user, plantDomain);
+                recommendPlantRepository.save(recommendPlant);
             }
 
         }
@@ -160,8 +161,13 @@ public class UserService {
             Place placeDomain = placeRepository.findById(place.getId()).orElseThrow();
             // 중복 체크
             if (!favoritePlaceRepository.existsByUserAndPlace(user, placeDomain)) {
+                // 요기는 즐겨찾기(장소) 추가!!!
                 FavoritePlace favoritePlace = new FavoritePlace(user, placeDomain);
                 favoritePlaceRepository.save(favoritePlace);
+
+                // 요기는 추천(장소) 추가!!!!
+                RecommendPlace recommendPlace = new RecommendPlace(user, placeDomain);
+                recommendPlaceRepository.save(recommendPlace);
             }
 
         }

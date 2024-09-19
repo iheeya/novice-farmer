@@ -1,4 +1,4 @@
-package com.d207.farmer.service.plant;
+package com.d207.farmer.service.user;
 
 import com.d207.farmer.domain.user.FavoritePlant;
 import com.d207.farmer.domain.user.User;
