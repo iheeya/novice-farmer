@@ -74,10 +74,10 @@ public class UserController {
 
 
     @GetMapping("/survey")
-    public ResponseEntity<Map<String, List<?>>> survey() {
+    public ResponseEntity<Map<String, List<?>>> getSurveyContent() {
 
         log.info("[UserController] Received get survey after user first login");
-        return ResponseEntity.ok().body(userService.survey());
+        return ResponseEntity.ok().body(userService.getSurveyContent());
     }
 
 
@@ -93,6 +93,14 @@ public class UserController {
     }
 
 
+    @GetMapping("/mypage/like")
+    public ResponseEntity<Map<String, List<?>>> getSurveyContentWithId(@RequestHeader("Authorization") String authorization) {
+
+        Long userId;
+        userId = jwtUtil.getUserId(authorization);
+        log.info("[UserController] Received get mypage- mylike");
+        return ResponseEntity.ok().body(userService.getSurveyContentWithId(userId));
+    }
 
 
 

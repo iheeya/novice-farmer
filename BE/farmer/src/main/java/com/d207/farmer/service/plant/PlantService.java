@@ -3,6 +3,7 @@ package com.d207.farmer.service.plant;
 import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.dto.plant.PlantRegisterRequestDTO;
 import com.d207.farmer.dto.plant.PlantResponseDTO;
+import com.d207.farmer.dto.plant.PlantResponseWithIdDTO;
 import com.d207.farmer.repository.plant.PlantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,12 @@ public class PlantService {
         List<Plant> plants = plantRepository.findAll();
         return plants.stream().map(PlantResponseDTO::new).collect(Collectors.toList());
     }
+
+    public List<PlantResponseWithIdDTO> getAllPlantsWithFalse() {
+        List<Plant> plants = plantRepository.findAll();
+        return plants.stream().map(PlantResponseWithIdDTO::new).collect(Collectors.toList());
+    }
+
 
     public PlantResponseDTO getPlantById(Long id) {
         Optional<Plant> optPlant = plantRepository.findById(id);

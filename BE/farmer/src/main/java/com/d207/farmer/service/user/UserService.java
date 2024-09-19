@@ -6,7 +6,9 @@ import com.d207.farmer.domain.user.FavoritePlace;
 import com.d207.farmer.domain.user.FavoritePlant;
 import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.place.PlaceResponseDTO;
+import com.d207.farmer.dto.place.PlaceResponseWithIdDTO;
 import com.d207.farmer.dto.plant.PlantResponseDTO;
+import com.d207.farmer.dto.plant.PlantResponseWithIdDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.*;
 import com.d207.farmer.exception.FailedAuthenticateUserException;
@@ -15,7 +17,9 @@ import com.d207.farmer.repository.place.PlaceRepository;
 import com.d207.farmer.repository.plant.FavoritePlantRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
 import com.d207.farmer.repository.user.UserRepository;
+import com.d207.farmer.service.place.FavoritePlaceService;
 import com.d207.farmer.service.place.PlaceService;
+import com.d207.farmer.service.plant.FavoritePlantService;
 import com.d207.farmer.service.plant.PlantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,7 +39,9 @@ public class UserService {
     private final TokenService tokenService;
     private final PlantService plantService;
     private final PlaceService placeService;
+    private final FavoritePlantService favoritePlantService;
     private final FavoritePlantRepository favoritePlantRepository;
+    private final FavoritePlaceService favorPlaceService;
     private final PlantRepository plantRepository;
     private final PlaceRepository placeRepository;
     private final FavoritePlaceRepository favoritePlaceRepository;
@@ -96,7 +103,7 @@ public class UserService {
     }
 
     @Transactional
-    public Map<String, List<?>> survey() {
+    public Map<String, List<?>> getSurveyContent() {
         List<PlantResponseDTO> plantResponseDTOList = plantService.getAllPlants();
         List<PlaceResponseDTO> placeResponseDTOList = placeService.getAllPlaces();
         // UserSurveyResponseDTO를 생성하는 로직 추가
@@ -163,4 +170,60 @@ public class UserService {
     }
 
 
+    public Map<String, List<?>> getSurveyContentWithId(Long userId) {
+
+        List<PlantResponseWithIdDTO> plantResponseWithIdDTOS = plantService.getAllPlantsWithFalse();
+        List<PlaceResponseWithIdDTO> placeResponseWithIdDTOS = placeService.getAllPlacesWithFalse();
+
+
+
+
+
+        List<FavoritePlant> favoritePlants = favoritePlantService.getPlantById(userId);
+
+        // 즐겨찾기 식물의 ID를 Set으로 수집
+        Set<Long> favoritePlantIds = favoritePlants.stream()
+                .map(favoritePlant -> favoritePlant.getPlant().getId())
+                .collect(Collectors.toSet());
+
+        // plantResponseWithIdDTOS의 isOn 값을 업데이트
+        for (PlantResponseWithIdDTO dto : plantResponseWithIdDTOS) {
+            if (favoritePlantIds.contains(dto.getId())) {
+                dto.setIsOn(true); // isOn을 true로 설정
+            }
+        }
+        // isFavorite이 true인 항목이 먼저 오도록 정렬
+        plantResponseWithIdDTOS.sort(Comparator.comparing(PlantResponseWithIdDTO::getIsFavorite).reversed()
+                .thenComparing(PlantResponseWithIdDTO::getId));
+    ///////////////////////
+
+
+
+        List<FavoritePlace> favoritePlaces = favorPlaceService.getPlaceById(userId);
+        // 즐겨찾기 장소의 ID를 Set으로 수집
+        Set<Long> favoritePlaceIds = favoritePlaces.stream()
+                .map(favoritePlace -> favoritePlace.getPlace().getId())
+                .collect(Collectors.toSet());
+
+
+        // placeResponseWithIdDTOS의 isOn 값을 업데이트
+        for (PlaceResponseWithIdDTO dto : placeResponseWithIdDTOS) {
+            if (favoritePlaceIds.contains(dto.getId())) {
+                dto.setIsfavorite(true); // isOn을 true로 설정
+            } else {
+                dto.setIsfavorite(false); // 즐겨찾기가 아닌 경우 false로 설정 (필요할 경우)
+            }
+        }
+        // id 기준으로 정렬
+        // 장소 목록 정렬 (isOn이 true인 항목이 먼저 오도록)
+        placeResponseWithIdDTOS.sort(Comparator.comparing(PlaceResponseWithIdDTO::getIsFavorite).reversed()
+                .thenComparing(PlaceResponseWithIdDTO::getId));
+
+        // 결과를 맵에 담기
+        Map<String, List<?>> resultMap = new HashMap<>();
+        resultMap.put("plant", plantResponseWithIdDTOS);
+        resultMap.put("place", placeResponseWithIdDTOS);
+
+        return resultMap; // 키와 리스트를 포함한 결과 반환
+    }
 }
