@@ -7,6 +7,7 @@ import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.farm.api.GeoAPIResponseDTO;
+import com.d207.farmer.dto.farm.register.FarmRegisterInMyPlaceRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
 import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.farm.UserPlaceRepository;
@@ -126,4 +127,19 @@ public class FarmService {
                 bunji, addr.getJibun(), addr.getZonecode());
     }
 
+    @Transactional
+    public String registerFarm(Long userId, FarmRegisterInMyPlaceRegisterDTO request) {
+        // 회원, 작물 조회
+        User user = userRepository.findById(userId).orElseThrow();
+        Plant plant = plantRepository.findById(request.getPlant().getPlantId()).orElseThrow();
+
+        // userPlace 조회
+        UserPlace userPlace = userPlaceRepository.findById(request.getMyPlaceId()).orElseThrow();
+
+        // farm 생성
+        Farm farm = new Farm(user, userPlace, plant, request.getPlant());
+        farmRepository.save(farm);
+
+        return "작물 저장 완료";
+    }
 }

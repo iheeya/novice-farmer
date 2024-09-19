@@ -41,6 +41,6 @@ public class FarmController {
                                                @RequestBody @Valid FarmRegisterInMyPlaceRegisterDTO request) {
         log.info("[FarmController] Received register farm in my place request for {}", request);
         Long userId = jwtUtil.getUserId(authorization);
-        return ResponseEntity.created(URI.create("/")).body("");
+        return ResponseEntity.created(URI.create("/")).body(farmService.registerFarm(userId, request));
     }
 }
