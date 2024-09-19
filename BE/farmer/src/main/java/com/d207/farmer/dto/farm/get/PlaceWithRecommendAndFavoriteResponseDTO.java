@@ -5,9 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PlaceWithFavoriteResponseDTO {
+public class PlaceWithRecommendAndFavoriteResponseDTO {
     private Long placeId;
     private String placeName;
     private Boolean isFavorite;
+    private Boolean isRecommend;
     private Boolean isService;
 }

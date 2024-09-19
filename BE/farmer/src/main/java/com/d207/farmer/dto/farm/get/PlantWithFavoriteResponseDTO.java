@@ -9,4 +9,5 @@ public class PlantWithFavoriteResponseDTO {
     private Long plantId;
     private String plantName;
     private Boolean isFavorite;
+    private Boolean isService;
 }

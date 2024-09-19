@@ -5,12 +5,9 @@ import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.farm.UserPlace;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
-import com.d207.farmer.domain.user.FavoritePlace;
-import com.d207.farmer.domain.user.FavoritePlant;
-import com.d207.farmer.domain.user.User;
+import com.d207.farmer.domain.user.*;
 import com.d207.farmer.dto.farm.api.GeoAPIResponseDTO;
-import com.d207.farmer.dto.farm.get.PlaceWithFavoriteResponseDTO;
-import com.d207.farmer.dto.farm.get.PlantWithFavoriteResponseDTO;
+import com.d207.farmer.dto.farm.get.*;
 import com.d207.farmer.dto.farm.register.FarmRegisterInMyPlaceRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
 import com.d207.farmer.repository.farm.FarmRepository;
@@ -19,6 +16,8 @@ import com.d207.farmer.repository.farm.FavoritePlantForFarmRepository;
 import com.d207.farmer.repository.farm.UserPlaceRepository;
 import com.d207.farmer.repository.place.PlaceRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
+import com.d207.farmer.repository.user.RecommendPlaceRepository;
+import com.d207.farmer.repository.user.RecommendPlantRepository;
 import com.d207.farmer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +26,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,12 +43,17 @@ public class FarmService {
     private final UserPlaceRepository userPlaceRepository;
     private final FavoritePlaceForFarmRepository favoritePlaceRepository;
     private final FavoritePlantForFarmRepository favoritePlantRepository;
+    private final RecommendPlaceRepository recommendPlaceRepository;
+    private final RecommendPlantRepository recommendPlantRepository;
 
     @Value("${external.api.naver.apigw.id}")
     private String apigwId;
 
     @Value("${external.api.naver.apigw.key}")
     private String apigwKey;
+
+    @Value("${external.api.fastAPI.url}")
+    private String fastApiUrl;
 
     @Transactional
     public String registerFarm(Long userId, FarmRegisterRequestDTO request) {
@@ -150,16 +154,12 @@ public class FarmService {
     }
 
     public List<PlaceWithFavoriteResponseDTO> getPlacesWithFavorite(Long userId) {
-        // FIXME 최적화
         List<PlaceWithFavoriteResponseDTO> result = new ArrayList<>();
 
         // 즐겨찾기(장소) 조회
         List<FavoritePlace> favorites = favoritePlaceRepository.findByUserId(userId);
 
-        Set<Long> placeIdSet = new HashSet<>();
-        for (FavoritePlace favorite : favorites) {
-            placeIdSet.add(favorite.getPlace().getId());
-        }
+        Set<Long> placeIdSet = favorites.stream().map(f -> f.getPlace().getId()).collect(Collectors.toSet());
 
         // 장소 조회
         List<Place> places = placeRepository.findAll();
@@ -170,61 +170,184 @@ public class FarmService {
             if(placeIdSet.contains(p.getId())) {
                 isFavorite = true;
             }
-            result.add(new PlaceWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite));
+            result.add(new PlaceWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, p.getIsOn()));
         }
-
-        // result list 정렬(true 우선)
-        result.sort((o1, o2) -> {
-            if (o1.getIsFavorite() && o2.getIsFavorite()) { // 둘 다 true 면
-                return Long.compare(o1.getPlaceId(), o2.getPlaceId());
-            } else if (o1.getIsFavorite()) {
-                return 1;
-            } else if (o2.getIsFavorite()) {
-                return -1;
-            } else {
-                return Long.compare(o1.getPlaceId(), o2.getPlaceId());
-            }
-        });
+        result.sort(Comparator.comparing(PlaceWithFavoriteResponseDTO::getIsService).reversed()
+                .thenComparing(PlaceWithFavoriteResponseDTO::getIsFavorite).reversed()
+                .thenComparing(PlaceWithFavoriteResponseDTO::getPlaceId));
 
         return result;
     }
 
     public List<PlantWithFavoriteResponseDTO> getPlantsWithFavorite(Long userId) {
-        // FIXME 최적화
         List<PlantWithFavoriteResponseDTO> result = new ArrayList<>();
-
-        // 즐겨찾기(작물) 조회
-        List<FavoritePlant> favorites = favoritePlantRepository.findByUserId(userId);
 
         // 작물 조회
         List<Plant> plants = plantRepository.findAll();
 
-        Set<Long> plantIdSet = new HashSet<>();
-        for (FavoritePlant favorite : favorites) {
-            plantIdSet.add(favorite.getPlant().getId());
-        }
+        // 즐겨찾기(작물) 조회
+        List<FavoritePlant> favorites = favoritePlantRepository.findByUserId(userId);
+
+        Set<Long> plantIdSet = favorites.stream().map(f -> f.getPlant().getId()).collect(Collectors.toSet());
+
         // result list 생성
         for (Plant p : plants) {
             boolean isFavorite = false;
             if(plantIdSet.contains(p.getId())) {
                 isFavorite = true;
             }
-            result.add(new PlantWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite));
+            result.add(new PlantWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, p.getIsOn()));
         }
 
-        // result list 정렬(true 우선)
-        result.sort((o1, o2) -> {
-            if (o1.getIsFavorite() && o2.getIsFavorite()) { // 둘 다 true 면
-                return Long.compare(o1.getPlantId(), o2.getPlantId());
-            } else if (o1.getIsFavorite()) {
-                return 1;
-            } else if (o2.getIsFavorite()) {
-                return -1;
-            } else {
-                return Long.compare(o1.getPlantId(), o2.getPlantId());
-            }
-        });
+        result.sort(Comparator.comparing(PlantWithFavoriteResponseDTO::getIsService).reversed()
+                .thenComparing(PlantWithFavoriteResponseDTO::getIsFavorite).reversed()
+                .thenComparing(PlantWithFavoriteResponseDTO::getPlantId));
 
         return result;
+    }
+
+    public List<PlaceWithRecommendAndFavoriteResponseDTO> getPlacesWithRecommendAndFavorite(Long userId) {
+        List<PlaceWithRecommendAndFavoriteResponseDTO> result = new ArrayList<>();
+
+        // 장소 조회
+        List<Place> places = placeRepository.findAll();
+
+        // 즐겨찾기(장소) 조회
+        List<FavoritePlace> favorites = favoritePlaceRepository.findByUserId(userId);
+
+        // 즐겨찾기 아이디 set 생성
+        Set<Long> favoriteIdSet = favorites.stream().map(f -> f.getPlace().getId()).collect(Collectors.toSet());
+
+        // 추천(장소) 조회
+        List<RecommendPlace> recommends = recommendPlaceRepository.findAll();
+
+        // 추천 아이디 set 생성
+        Set<Long> recommendIdSet = recommends.stream().map(r -> r.getPlace().getId()).collect(Collectors.toSet());
+
+        // result list 생성
+        for (Place p : places) {
+            boolean isFavorite = false;
+            boolean isRecommend = false;
+            if(favoriteIdSet.contains(p.getId())) {
+                isFavorite = true;
+            }
+            if(recommendIdSet.contains(p.getId())) {
+                isRecommend = true;
+            }
+            result.add(new PlaceWithRecommendAndFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, isRecommend, p.getIsOn()));
+        }
+
+        result.sort(Comparator.comparing(PlaceWithRecommendAndFavoriteResponseDTO::getIsService).reversed()
+                .thenComparing(PlaceWithRecommendAndFavoriteResponseDTO::getIsRecommend).reversed()
+                .thenComparing(PlaceWithRecommendAndFavoriteResponseDTO::getIsFavorite).reversed()
+                .thenComparing(PlaceWithRecommendAndFavoriteResponseDTO::getPlaceId));
+
+        return result;
+    }
+
+    public List<PlantWithRecommendAndFavoriteResponseDTO> getPlantsWithRecommendAndFavorite(Long userId) {
+        List<PlantWithRecommendAndFavoriteResponseDTO> result = new ArrayList<>();
+
+        // 작물 조회
+        List<Plant> plants = plantRepository.findAll();
+
+        // 즐겨찾기(작물) 조회
+        List<FavoritePlant> favorites = favoritePlantRepository.findByUserId(userId);
+
+        // 즐겨찾기 아이디 set 생성
+        Set<Long> favoriteIdSet = favorites.stream().map(f -> f.getPlant().getId()).collect(Collectors.toSet());
+
+        // 추천(작물) 조회
+        List<RecommendPlant> recommends = recommendPlantRepository.findAll();
+
+        // 추천 아이디 set 생성
+        Set<Long> recommendIdSet = recommends.stream().map(r -> r.getPlant().getId()).collect(Collectors.toSet());
+
+        // result list 생성
+        for (Plant p : plants) {
+            boolean isFavorite = false;
+            boolean isRecommend = false;
+            if(favoriteIdSet.contains(p.getId())) {
+                isFavorite = true;
+            }
+            if(recommendIdSet.contains(p.getId())) {
+                isRecommend = true;
+            }
+            result.add(new PlantWithRecommendAndFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, isRecommend, p.getIsOn()));
+        }
+
+        result.sort(Comparator.comparing(PlantWithRecommendAndFavoriteResponseDTO::getIsService).reversed()
+                .thenComparing(PlantWithRecommendAndFavoriteResponseDTO::getIsRecommend).reversed()
+                .thenComparing(PlantWithRecommendAndFavoriteResponseDTO::getIsFavorite).reversed()
+                .thenComparing(PlantWithRecommendAndFavoriteResponseDTO::getPlantId));
+
+        return result;
+    }
+
+    @Transactional
+    public void requestPlaceRecommend(Long userId, RecommendPlaceRequestDTO request) {
+        // 작물 조회
+        Plant plant = plantRepository.findById(request.getPlantId()).orElseThrow();
+
+        // 회원 조회
+        User user = userRepository.findById(userId).orElseThrow();
+
+        // 추천 장소 받기
+        RecommendPlaceResponseDTO response = getRecommendPlaceByFastApi(request, plant);
+        List<RecommendPlaceResponseDTO.placeDTO> placeDTOs = response.getPlaces();
+
+        // 먼저 추천 테이블 비우기(by userId)
+        recommendPlaceRepository.deleteByUserId(userId);
+
+        // 추천 테이블에 추가
+        List<Long> placeIds = new ArrayList<>();
+        for (RecommendPlaceResponseDTO.placeDTO p : placeDTOs) {
+            placeIds.add(p.getPlaceId());
+        }
+
+        List<Place> places = placeRepository.findByIdIn(placeIds);
+
+        for (Place p : places) {
+            recommendPlaceRepository.save(new RecommendPlace(user, p));
+        }
+    }
+
+    private RecommendPlaceResponseDTO getRecommendPlaceByFastApi(RecommendPlaceRequestDTO request, Plant plant) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 요청 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // json data
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("plantId", request.getPlantId());
+        requestBody.put("plantName", plant.getName());
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+        // 요청 및 응답
+        ResponseEntity<RecommendPlaceResponseDTO> response = restTemplate.exchange(
+                fastApiUrl,
+                HttpMethod.POST,
+                entity,
+                RecommendPlaceResponseDTO.class
+        );
+
+        // 응답 오류 처리
+        if (!response.getStatusCode().is2xxSuccessful()) {
+          throw new IllegalStateException("장소 추천 api 오류");
+          // FIXME FastAPI 만들어질 때 까지 임의 데이터 리턴하기
+        }
+
+        return response.getBody();
+    }
+
+    @Transactional
+    public void requestPlantRecommend(Long userId, RecommendPlantRequestDTO request) {
+        // TODO
+
+        // 추천 작물 받기
+
     }
 }
