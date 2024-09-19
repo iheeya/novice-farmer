@@ -1,8 +1,11 @@
 package com.d207.farmer.service.place;
 
 import com.d207.farmer.domain.place.Place;
+import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.dto.place.PlaceRegisterRequestDTO;
 import com.d207.farmer.dto.place.PlaceResponseDTO;
+import com.d207.farmer.dto.place.PlaceResponseWithIdDTO;
+import com.d207.farmer.dto.plant.PlantResponseWithIdDTO;
 import com.d207.farmer.repository.place.PlaceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,5 +39,14 @@ public class PlaceService {
     public PlaceResponseDTO getPlaceById(Long id) {
         Optional<Place> optPlace = placeRepository.findById(id);
         return optPlace.map(PlaceResponseDTO::new).orElse(null);
+    }
+
+    public List<PlaceResponseWithIdDTO> getAllPlacesWithFalse() {
+
+        List<Place> plants = placeRepository.findAll();
+
+        return plants.stream().map(PlaceResponseWithIdDTO::new).collect(Collectors.toList());
+
+
     }
 }

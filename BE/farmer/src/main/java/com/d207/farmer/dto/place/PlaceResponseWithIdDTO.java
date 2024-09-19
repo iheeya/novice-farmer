@@ -8,17 +8,27 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 @ToString
-public class PlaceResponseDTO {
+public class PlaceResponseWithIdDTO {
     private Long id;
     private String name;
     private String desc;
-    private Boolean isOn;
+    private Boolean isFavorite;
 
-    public PlaceResponseDTO(Place place) {
+    public PlaceResponseWithIdDTO(Place place) {
         this.id = place.getId();
         this.name = place.getName();
         this.desc = place.getDesc();
-        this.isOn = place.getIsOn();
+        this.isFavorite = false;
     }
+
+    // setIsOn 메서드 추가
+    public void setIsfavorite(Boolean isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
+    public boolean getIsFavorite(){
+        return this.isFavorite;
+    }
+
 
 }
