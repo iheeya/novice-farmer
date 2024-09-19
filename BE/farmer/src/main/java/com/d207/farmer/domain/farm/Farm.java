@@ -1,7 +1,9 @@
 package com.d207.farmer.domain.farm;
 
+import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.user.User;
+import com.d207.farmer.dto.farm.register.FarmPlantRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -73,8 +75,14 @@ public class Farm {
     /**
      * 비즈니스 메서드
      */
-    public Farm (User user, FarmRegisterRequestDTO request) {
+    public Farm(User user, UserPlace userPlace, Plant plant, FarmPlantRegisterDTO request) {
         this.user = user;
-//        this.plant =
+        this.userPlace = userPlace;
+        this.plant = plant;
+        this.myPlantName = request.getMyPlantName();
+        this.memo = request.getMemo();
+        this.predDate = LocalDateTime.now().plusDays(plant.getGrowthDay());
+        this.growthStep = 1;
+        this.createDate = LocalDateTime.now();
     }
 }
