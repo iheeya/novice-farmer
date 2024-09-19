@@ -5,11 +5,17 @@ import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.farm.UserPlace;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
+import com.d207.farmer.domain.user.FavoritePlace;
+import com.d207.farmer.domain.user.FavoritePlant;
 import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.farm.api.GeoAPIResponseDTO;
+import com.d207.farmer.dto.farm.get.PlaceWithFavoriteResponseDTO;
+import com.d207.farmer.dto.farm.get.PlantWithFavoriteResponseDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterInMyPlaceRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
 import com.d207.farmer.repository.farm.FarmRepository;
+import com.d207.farmer.repository.farm.FavoritePlaceForFarmRepository;
+import com.d207.farmer.repository.farm.FavoritePlantForFarmRepository;
 import com.d207.farmer.repository.farm.UserPlaceRepository;
 import com.d207.farmer.repository.place.PlaceRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
@@ -23,9 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -38,6 +42,8 @@ public class FarmService {
     private final PlantRepository plantRepository;
     private final UserRepository userRepository;
     private final UserPlaceRepository userPlaceRepository;
+    private final FavoritePlaceForFarmRepository favoritePlaceRepository;
+    private final FavoritePlantForFarmRepository favoritePlantRepository;
 
     @Value("${external.api.naver.apigw.id}")
     private String apigwId;
@@ -141,5 +147,84 @@ public class FarmService {
         farmRepository.save(farm);
 
         return "작물 저장 완료";
+    }
+
+    public List<PlaceWithFavoriteResponseDTO> getPlacesWithFavorite(Long userId) {
+        // FIXME 최적화
+        List<PlaceWithFavoriteResponseDTO> result = new ArrayList<>();
+
+        // 즐겨찾기(장소) 조회
+        List<FavoritePlace> favorites = favoritePlaceRepository.findByUserId(userId);
+
+        Set<Long> placeIdSet = new HashSet<>();
+        for (FavoritePlace favorite : favorites) {
+            placeIdSet.add(favorite.getPlace().getId());
+        }
+
+        // 장소 조회
+        List<Place> places = placeRepository.findAll();
+
+        // result list 생성
+        for (Place p : places) {
+            boolean isFavorite = false;
+            if(placeIdSet.contains(p.getId())) {
+                isFavorite = true;
+            }
+            result.add(new PlaceWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite));
+        }
+
+        // result list 정렬(true 우선)
+        result.sort((o1, o2) -> {
+            if (o1.getIsFavorite() && o2.getIsFavorite()) { // 둘 다 true 면
+                return Long.compare(o1.getPlaceId(), o2.getPlaceId());
+            } else if (o1.getIsFavorite()) {
+                return 1;
+            } else if (o2.getIsFavorite()) {
+                return -1;
+            } else {
+                return Long.compare(o1.getPlaceId(), o2.getPlaceId());
+            }
+        });
+
+        return result;
+    }
+
+    public List<PlantWithFavoriteResponseDTO> getPlantsWithFavorite(Long userId) {
+        // FIXME 최적화
+        List<PlantWithFavoriteResponseDTO> result = new ArrayList<>();
+
+        // 즐겨찾기(작물) 조회
+        List<FavoritePlant> favorites = favoritePlantRepository.findByUserId(userId);
+
+        // 작물 조회
+        List<Plant> plants = plantRepository.findAll();
+
+        Set<Long> plantIdSet = new HashSet<>();
+        for (FavoritePlant favorite : favorites) {
+            plantIdSet.add(favorite.getPlant().getId());
+        }
+        // result list 생성
+        for (Plant p : plants) {
+            boolean isFavorite = false;
+            if(plantIdSet.contains(p.getId())) {
+                isFavorite = true;
+            }
+            result.add(new PlantWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite));
+        }
+
+        // result list 정렬(true 우선)
+        result.sort((o1, o2) -> {
+            if (o1.getIsFavorite() && o2.getIsFavorite()) { // 둘 다 true 면
+                return Long.compare(o1.getPlantId(), o2.getPlantId());
+            } else if (o1.getIsFavorite()) {
+                return 1;
+            } else if (o2.getIsFavorite()) {
+                return -1;
+            } else {
+                return Long.compare(o1.getPlantId(), o2.getPlantId());
+            }
+        });
+
+        return result;
     }
 }
