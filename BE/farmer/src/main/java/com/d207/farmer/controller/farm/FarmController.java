@@ -1,9 +1,6 @@
 package com.d207.farmer.controller.farm;
 
-import com.d207.farmer.dto.farm.get.PlaceWithFavoriteResponseDTO;
-import com.d207.farmer.dto.farm.get.PlaceWithRecommendAndFavoriteResponseDTO;
-import com.d207.farmer.dto.farm.get.PlantWithFavoriteResponseDTO;
-import com.d207.farmer.dto.farm.get.PlantWithRecommendAndFavoriteResponseDTO;
+import com.d207.farmer.dto.farm.get.*;
 import com.d207.farmer.dto.farm.register.FarmRegisterInMyPlaceRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
 import com.d207.farmer.service.farm.FarmService;
@@ -74,9 +71,13 @@ public class FarmController {
      * 장소 조회(with 추천, 즐겨찾기)
      */
     @GetMapping("/place/recommend")
-    public ResponseEntity<List<PlaceWithRecommendAndFavoriteResponseDTO>> getPlaceWithRecommendAndFavorite(@RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<List<PlaceWithRecommendAndFavoriteResponseDTO>> getPlaceWithRecommendAndFavorite(@RequestHeader("Authorization") String authorization,
+                                                                                                           @RequestBody @Valid RecommendPlaceRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[FarmController] Received get places with recommend and favorite request for {}", userId);
+
+        farmService.requestPlaceRecommend(userId, request);
+
         return ResponseEntity.ok().body(farmService.getPlacesWithRecommendAndFavorite(userId));
     }
 
@@ -84,9 +85,14 @@ public class FarmController {
      * 작물 조회(with 추천, 즐겨찾기)
      */
     @GetMapping("/plant/recommend")
-    public ResponseEntity<List<PlantWithRecommendAndFavoriteResponseDTO>> getPlantWithRecommendAndFavorite(@RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<List<PlantWithRecommendAndFavoriteResponseDTO>> getPlantWithRecommendAndFavorite(@RequestHeader("Authorization") String authorization,
+                                                                                                           @RequestBody @Valid RecommendPlantRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[FarmController] Received get plants with recommend and favorite request for {}", userId);
+
+        // TODO 작물 추천 받기
+        farmService.requestPlantRecommend(userId, request);
+
         return ResponseEntity.ok().body(farmService.getPlantsWithRecommendAndFavorite(userId));
     }
 }

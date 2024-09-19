@@ -7,10 +7,7 @@ import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.user.*;
 import com.d207.farmer.dto.farm.api.GeoAPIResponseDTO;
-import com.d207.farmer.dto.farm.get.PlaceWithFavoriteResponseDTO;
-import com.d207.farmer.dto.farm.get.PlaceWithRecommendAndFavoriteResponseDTO;
-import com.d207.farmer.dto.farm.get.PlantWithFavoriteResponseDTO;
-import com.d207.farmer.dto.farm.get.PlantWithRecommendAndFavoriteResponseDTO;
+import com.d207.farmer.dto.farm.get.*;
 import com.d207.farmer.dto.farm.register.FarmRegisterInMyPlaceRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
 import com.d207.farmer.repository.farm.FarmRepository;
@@ -29,7 +26,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,6 +51,9 @@ public class FarmService {
 
     @Value("${external.api.naver.apigw.key}")
     private String apigwKey;
+
+    @Value("${external.api.fastAPI.url}")
+    private String fastApiUrl;
 
     @Transactional
     public String registerFarm(Long userId, FarmRegisterRequestDTO request) {
@@ -279,5 +278,72 @@ public class FarmService {
                 .thenComparing(PlantWithRecommendAndFavoriteResponseDTO::getPlantId));
 
         return result;
+    }
+
+    @Transactional
+    public void requestPlaceRecommend(Long userId, RecommendPlaceRequestDTO request) {
+        // 작물 조회
+        Plant plant = plantRepository.findById(request.getPlantId()).orElseThrow();
+
+        // 회원 조회
+        User user = userRepository.findById(userId).orElseThrow();
+
+        // 추천 장소 받기
+        RecommendPlaceResponseDTO response = getRecommendPlaceByFastApi(request, plant);
+        List<RecommendPlaceResponseDTO.placeDTO> placeDTOs = response.getPlaces();
+
+        // 먼저 추천 테이블 비우기(by userId)
+        recommendPlaceRepository.deleteByUserId(userId);
+
+        // 추천 테이블에 추가
+        List<Long> placeIds = new ArrayList<>();
+        for (RecommendPlaceResponseDTO.placeDTO p : placeDTOs) {
+            placeIds.add(p.getPlaceId());
+        }
+
+        List<Place> places = placeRepository.findByIdIn(placeIds);
+
+        for (Place p : places) {
+            recommendPlaceRepository.save(new RecommendPlace(user, p));
+        }
+    }
+
+    private RecommendPlaceResponseDTO getRecommendPlaceByFastApi(RecommendPlaceRequestDTO request, Plant plant) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 요청 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // json data
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("plantId", request.getPlantId());
+        requestBody.put("plantName", plant.getName());
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+        // 요청 및 응답
+        ResponseEntity<RecommendPlaceResponseDTO> response = restTemplate.exchange(
+                fastApiUrl,
+                HttpMethod.POST,
+                entity,
+                RecommendPlaceResponseDTO.class
+        );
+
+        // 응답 오류 처리
+        if (!response.getStatusCode().is2xxSuccessful()) {
+          throw new IllegalStateException("장소 추천 api 오류");
+          // FIXME FastAPI 만들어질 때 까지 임의 데이터 리턴하기
+        }
+
+        return response.getBody();
+    }
+
+    @Transactional
+    public void requestPlantRecommend(Long userId, RecommendPlantRequestDTO request) {
+        // TODO
+
+        // 추천 작물 받기
+
     }
 }
