@@ -56,7 +56,14 @@ public class UserPlace {
     @Column(name = "user_place_direction")
     private Direction direction;
 
-    public UserPlace (FarmRegisterRequestDTO request) {
-
+    public UserPlace(User user, Place place, String lati, String longi, String defaultPlaceName, Address address, Direction direction) {
+        this.user = user;
+        this.place = place;
+        this.name = defaultPlaceName;
+        this.latitude = lati;
+        this.longitude = longi;
+        this.address = address;
+        this.direction = direction;
     }
+
 }
