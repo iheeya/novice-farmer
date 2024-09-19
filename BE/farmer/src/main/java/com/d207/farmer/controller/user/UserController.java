@@ -83,10 +83,10 @@ public class UserController {
     @PostMapping("/survey")
     //public ResponseEntity<Map<String, List<?>>> savesurvey() {
     public ResponseEntity<?> savesurvey(@RequestHeader("Authorization") String authorization) {
-
         Long userId;
-
         userId = jwtUtil.getUserId(authorization);
+
+
 
 
         return ResponseEntity.ok().body("User ID: " + userId);
