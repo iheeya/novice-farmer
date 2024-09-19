@@ -61,4 +61,20 @@ public class User {
         this.address = request.getAddress();
         this.imagePath = ""; // TODO default 값 설정 필요
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", password='" + password + '\'' +
+                ", regDate=" + regDate +
+                ", isFirstLogin=" + isFirstLogin +
+                ", gender=" + gender +
+                ", age=" + age +
+                ", address='" + address + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                '}';
+    }
 }
