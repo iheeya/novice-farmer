@@ -1,6 +1,8 @@
 package com.d207.farmer.controller.user;
 
+import com.d207.farmer.dto.myplace.MyPlaceRequestDTO;
 import com.d207.farmer.dto.myplace.MyPlaceResponseDTO;
+import com.d207.farmer.dto.myplace.UpdateMyPlaceNameRequestDTO;
 import com.d207.farmer.service.user.MyPlaceService;
 import com.d207.farmer.utils.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -25,5 +27,18 @@ public class MyPlaceController {
     public ResponseEntity<MyPlaceResponseDTO> getMyPlace(@RequestHeader("Authorization") String authorization,
                                                          @RequestBody MyPlaceRequestDTO request) {
         log.info("[MyPlaceController] Received getMyPlace request for {}", request);
+        Long userId = jwtUtil.getUserId(authorization);
+        return ResponseEntity.ok().body(myPlaceService.getMyPlace(userId, request));
+    }
+
+    /**
+     * 내 텃밭 이름 변경
+     */
+    @PostMapping("/name")
+    public ResponseEntity<String> updateMyPlaceName(@RequestHeader("Authorization") String authorization,
+                                                    @RequestBody UpdateMyPlaceNameRequestDTO request) {
+        log.info("[MyPlaceController] Received updateMyPlaceName request for {}", request);
+        Long userId = jwtUtil.getUserId(authorization);
+        return ResponseEntity.ok().body(myPlaceService.updateMyPlaceName(userId, request));
     }
 }

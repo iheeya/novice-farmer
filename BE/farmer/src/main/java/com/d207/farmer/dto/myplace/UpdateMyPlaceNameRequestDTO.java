@@ -2,14 +2,10 @@ package com.d207.farmer.dto.myplace;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class MyPlaceRequestDTO {
+public class UpdateMyPlaceNameRequestDTO {
     private Long userPlaceId;
-
+    private String userPlaceName;
 }
