@@ -6,7 +6,6 @@ import com.d207.farmer.domain.farm.UserPlace;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.user.*;
-import com.d207.farmer.dto.farm.api.GeoAPIResponseDTO;
 import com.d207.farmer.dto.farm.get.*;
 import com.d207.farmer.dto.farm.register.FarmRegisterInMyPlaceRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
@@ -23,13 +22,9 @@ import com.d207.farmer.utils.AddressUtil;
 import com.d207.farmer.utils.FastApiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
-import java.net.ConnectException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -78,13 +73,13 @@ public class FarmService {
         Address address = request.getPlace().getAddress();
         // 내장 값타입은 값 변경할 때 생성자로 인스턴스 새로 생성
         // 지번에서 번지 찾아서 address 인스턴스 재생성
-        Address newAddress = createAddress(address);
+        Address newAddress = createAddressWithJibun(address);
 
         // userPlace 생성
         return new UserPlace(user, place, latitude, longitude, place.getName(), newAddress, request.getPlace().getDirection());
     }
 
-    private Address createAddress(Address addr) {
+    private Address createAddressWithJibun(Address addr) {
         String bunji = addressUtil.findBunjiByJibun(addr.getJibun());
         return new Address(addr.getSido(), addr.getSigugun(), addr.getBname1(), addr.getBname2(),
                 bunji, addr.getJibun(), addr.getZonecode());
@@ -266,9 +261,34 @@ public class FarmService {
 
     @Transactional
     public void requestPlantRecommend(Long userId, RecommendPlantRequestDTO request) {
-        // TODO
+        // 장소 조회
+        Place place = placeRepository.findById(request.getPlaceId()).orElseThrow();
+
+        // 회원 조회
+        User user = userRepository.findById(userId).orElseThrow();
+
+        Address address = createAddressWithJibun(request.getAddress());
+
+        Map<String, String> latAndLong = addressUtil.getLatAndLongByJibun(address.getJibun());
 
         // 추천 작물 받기
+        RecommendPlantResponseDTO response = fastApiUtil.getRecommendPlantByFastApi(place, address, latAndLong);
 
+        List<RecommendPlantResponseDTO.plantDTO> plantDTOs = response.getPlants();
+
+        // 먼저 추천 테이블 비우기(by userId)
+        recommendPlantRepository.deleteByUserId(userId);
+
+        // 추천 테이블에 추가
+        List<Long> plantIds = new ArrayList<>();
+        for (RecommendPlantResponseDTO.plantDTO p : plantDTOs) {
+            plantIds.add(p.getPlantId());
+        }
+
+        List<Plant> plants = plantRepository.findByIdIn(plantIds);
+
+        for (Plant p : plants) {
+            recommendPlantRepository.save(new RecommendPlant(user, p));
+        }
     }
 }
