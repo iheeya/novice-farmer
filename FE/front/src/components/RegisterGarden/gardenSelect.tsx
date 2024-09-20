@@ -15,6 +15,7 @@ import GardenModal from './gardenModal'
 function GardenSelect() {
     const [selectedPlace, setSelectedPlace] = useState<string | null>(null); // 선택된 장소를 저장할 상태
     const [isModalOpen, setIsModalOpen] = useState(false)  // 모달 열림 상태
+    const [selectPlaceId, setSelectPalceId] = useState<number|null>(null) // 장소 id 저장
 
     const imageMapping: {[key:string]: string} = {
         1:veranda,
@@ -24,10 +25,12 @@ function GardenSelect() {
         5: rooftop
     }
 
-    const handleImageClick = (placeName :string) => {
+    const handleImageClick = (placeName :string, placeId:number) => {
         // setSelectedPlace(place); // 선택한 장소 저장
         console.log(`${placeName}`)
+        console.log(`${placeId}`)
         setSelectedPlace(placeName)
+        setSelectPalceId(placeId)
         setIsModalOpen(true)
     }
 
@@ -42,7 +45,7 @@ function GardenSelect() {
                 {farmPlace.map(place => (
                     <div className={`image-container ${place.isService ? '': 'blur'}`} // 서비스하지 않는 텃밭은 흑백 처리
                      key={place.placeId}
-                    onClick={place.isService ? () => handleImageClick(place.placeName) : undefined} // 클릭 이벤트 설정
+                    onClick={place.isService ? () => handleImageClick(place.placeName, place.placeId) : undefined} // 클릭 이벤트 설정
                     >     
                      {place.isFavorite && <FaHeart className='heart-icon' />}
                      {/* 왼쪽 조건이 True일 때만 오른쪽에 있는 값을 반환 */}
@@ -55,7 +58,7 @@ function GardenSelect() {
                 </div>
                 ))}
             </div>
-            {isModalOpen && <GardenModal placeName={selectedPlace} onClose={closeModal}/>} {/* 모달 조건부 렌더링 */}
+            {isModalOpen && <GardenModal placeName={selectedPlace} placeId={selectPlaceId} onClose={closeModal}/>} {/* 모달 조건부 렌더링 */}
         </div>
     )
 }
