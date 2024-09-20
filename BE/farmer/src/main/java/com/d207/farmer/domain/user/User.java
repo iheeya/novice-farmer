@@ -61,7 +61,7 @@ public class User {
         this.age = request.getAge();
         this.address = request.getAddress();
         this.imagePath = ""; // TODO default 값 설정 필요
-        this.pushAllow = request.getPsuhAllow();
+        this.pushAllow = request.getPushAllow();
     }
 
     @Override

@@ -31,5 +31,5 @@ public class UserRegisterRequestDTO {
     private String address;
 
     @NotNull
-    private Boolean psuhAllow;
+    private Boolean pushAllow;
 }
