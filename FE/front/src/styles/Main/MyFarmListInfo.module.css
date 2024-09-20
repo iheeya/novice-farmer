@@ -1,0 +1,41 @@
+.farmListContainer {
+  padding: 20px;
+  background-color: #f0f4c3;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.farmList {
+  list-style: none;
+  padding: 0;
+}
+
+.farmItem {
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #c5e1a5;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #558b2f;
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+h3 {
+  color: #33691e;
+  font-size: 18px;
+}
+
+p {
+  color: #666;
+  font-size: 16px;
+}
+
+.noFarmText {
+  color: #757575;
+  font-size: 16px;
+  text-align: center;
+}

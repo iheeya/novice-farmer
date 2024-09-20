@@ -1,0 +1,45 @@
+.recommendContainer {
+    padding: 20px;
+    background-color: #f3e5f5;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .recommendSection {
+    margin-bottom: 20px;
+  }
+  
+  .recommendList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .recommendItem {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #e1bee7;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    color: #8e24aa;
+    font-size: 24px;
+  }
+  
+  h3 {
+    color: #7b1fa2;
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  h4 {
+    color: #6a1b9a;
+    font-size: 18px;
+  }
+  
+  p {
+    color: #555;
+    font-size: 16px;
+  }
+  
