@@ -1,6 +1,7 @@
 package com.d207.farmer.exception.advice;
 
 import com.d207.farmer.dto.exception.ErrorResponseDTO;
+import com.d207.farmer.exception.FailedInvalidUserException;
 import jakarta.validation.UnexpectedTypeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,4 +36,13 @@ public class ExControllerAdvice {
         log.error("[exceptionHandle] ex", e);
         return new ErrorResponseDTO("BAD_REQUEST", e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FailedInvalidUserException.class)
+    public ErrorResponseDTO HttpMessageNotFound(FailedInvalidUserException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorResponseDTO("BAD_REQUEST", e.getMessage());
+    }
+
+
 }

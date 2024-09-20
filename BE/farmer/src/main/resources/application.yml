@@ -61,6 +61,8 @@ external:
       apigw:
         ***REMOVED***
         ***REMOVED***
+    fastAPI:
+      url: https://j11d207.p.ssafy.io/data-api
 # 로그 설정
 logging:
   level:

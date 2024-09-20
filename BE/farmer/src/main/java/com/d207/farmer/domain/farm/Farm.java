@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
-@Getter @Setter
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Farm {
 
@@ -84,5 +84,37 @@ public class Farm {
         this.predDate = LocalDateTime.now().plusDays(plant.getGrowthDay());
         this.growthStep = 1;
         this.createDate = LocalDateTime.now();
+    }
+
+    // 작물 키우기 시작하기
+    public void startGrow(int step) {
+        this.seedDate = LocalDateTime.now();
+        this.growthStep = step;
+    }
+
+    // 작물 삭제
+    public void delete() {
+        this.isDeleted = true;
+        this.deletedDate = LocalDateTime.now();
+    }
+
+    // 첫 수확
+    public void harvest() {
+        this.isFirstHarvest = true;
+        this.firstHarvestDate = LocalDateTime.now();
+    }
+
+    // 완료(첫 수확 버튼 클릭 시 렌더링)
+    public void end() {
+        this.isCompleted = true;
+        this.completeDate = LocalDateTime.now();
+    }
+
+    public void updateName(String plantName) {
+        this.myPlantName = plantName;
+    }
+
+    public void updateMemo(String memo) {
+        this.memo = memo;
     }
 }

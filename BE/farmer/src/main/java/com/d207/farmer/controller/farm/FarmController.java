@@ -90,7 +90,6 @@ public class FarmController {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[FarmController] Received get plants with recommend and favorite request for {}", userId);
 
-        // TODO 작물 추천 받기
         farmService.requestPlantRecommend(userId, request);
 
         return ResponseEntity.ok().body(farmService.getPlantsWithRecommendAndFavorite(userId));
