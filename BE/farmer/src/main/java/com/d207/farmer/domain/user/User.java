@@ -2,10 +2,7 @@ package com.d207.farmer.domain.user;
 
 import com.d207.farmer.dto.user.UserRegisterRequestDTO;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -13,6 +10,7 @@ import java.time.ZoneId;
 @Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class User {
 
     @Id @GeneratedValue

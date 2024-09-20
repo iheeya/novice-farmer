@@ -10,6 +10,7 @@ import com.d207.farmer.dto.plant.PlantResponseWithIdDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.*;
 import com.d207.farmer.exception.FailedAuthenticateUserException;
+import com.d207.farmer.exception.FailedInvalidUserException;
 import com.d207.farmer.repository.user.*;
 import com.d207.farmer.repository.place.PlaceRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
@@ -45,6 +46,11 @@ public class UserService {
     @Transactional
     public UserInfoResponseDTO registerUser(UserRegisterRequestDTO request) {
         User user = new User(request);
+
+        ////////////////////////////////////
+        if (userRepository.findByNickname(request.getNickname()) != null) throw new FailedInvalidUserException("닉네임 중복입니다!");
+        if (userRepository.findByEmail(request.getEmail()) != null) throw new FailedInvalidUserException("이메일 중복입니다!");
+
         User saveUser = userRepository.save(user);
         return UserInfoResponseDTO.builder()
                 .email(user.getEmail())
@@ -56,6 +62,9 @@ public class UserService {
                 .address(user.getAddress())
                 .pushAllow(user.getPushAllow())
                 .build();
+
+
+
     }
 
     public UserInfoResponseDTO getUserInfo(UserInfoRequestByEmailDTO request) {
@@ -287,7 +296,6 @@ public class UserService {
 
         User user = userRepository.findById(userId).orElseThrow();
 
-
         user.setNickname(userInfoResponseDTO.getNickname());
         user.setAge(userInfoResponseDTO.getAge());
         user.setAddress(userInfoResponseDTO.getAddress());
@@ -297,5 +305,18 @@ public class UserService {
 
 
 
+    }
+
+    public boolean getEmailUse(String email) {
+        User user = userRepository.findByEmail(email);
+        log.info("user = {}, {}", user, email);
+        return userRepository.findByEmail(email) == null;
+
+    }
+
+    public boolean getNicknameUse(String nickname) {
+        User user = userRepository.findByEmail(nickname);
+        log.info("user = {}, {}", user, nickname);
+        return userRepository.findByNickname(nickname) == null;
     }
 }

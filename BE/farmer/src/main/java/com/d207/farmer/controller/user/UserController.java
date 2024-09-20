@@ -33,6 +33,28 @@ public class UserController {
     @Value("${spring.jwt.salt}")
     private String salt;
 
+
+    /**
+     * 회원가입쪽에서 email 중복 여부 체크!!
+     */
+
+    @GetMapping("/email-valid")
+    public ResponseEntity<?> getEmailUse(@RequestParam("email") String email) {
+        log.info("[UserController] check email already use");
+        return ResponseEntity.ok().body(userService.getEmailUse(email));
+    }
+
+    /**
+     * 회원가입쪽에서 nickname 중복 여부 체크!!
+     */
+
+    @GetMapping("/nickname-valid")
+    public ResponseEntity<?> getNicknameUse(@RequestParam("nickname") String nickname) {
+        log.info("[UserController] check nickname already use");
+        return ResponseEntity.ok().body(userService.getNicknameUse(nickname));
+    }
+
+
     /**
      * 일반회원 회원가입
      */
@@ -133,7 +155,7 @@ public class UserController {
 
 
     /**
-     * 마이페이지 - 프로필페이지(정보 변경) - Token
+     * 마이페이지 - 프로필페이지(정보 변경) - Token으로!!!
      */
 
     @PostMapping("/mypage")
@@ -144,6 +166,8 @@ public class UserController {
         log.info("[UserController] Set mypage - MyProfile");
         return ResponseEntity.ok().body(userService.registerUserInfo(userId, userInfoResponseDTO));
     }
+
+
 
 
 
