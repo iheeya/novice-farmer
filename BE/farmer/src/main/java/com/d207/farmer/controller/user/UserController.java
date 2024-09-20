@@ -141,7 +141,7 @@ public class UserController {
                                                 @RequestBody UserInfoResponseDTO userInfoResponseDTO) {
         Long userId;
         userId = jwtUtil.getUserId(authorization);
-        log.info("[UserController] Received get mypage- MyProfile");
+        log.info("[UserController] Set mypage - MyProfile");
         return ResponseEntity.ok().body(userService.registerUserInfo(userId, userInfoResponseDTO));
     }
 

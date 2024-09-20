@@ -283,15 +283,17 @@ public class UserService {
 
 
     @Transactional
-    public Object registerUserInfo(Long userId, UserInfoResponseDTO userInfoResponseDTO) {
+    public String registerUserInfo(Long userId, UserInfoResponseDTO userInfoResponseDTO) {
 
         User user = userRepository.findById(userId).orElseThrow();
 
 
         user.setNickname(userInfoResponseDTO.getNickname());
-        user.setGender(userInfoResponseDTO.getGender());
+        user.setAge(userInfoResponseDTO.getAge());
+        user.setAddress(userInfoResponseDTO.getAddress());
+        user.setPushAllow(userInfoResponseDTO.getPushAllow());
 
-        return null;
+        return "successful save";
 
 
 
