@@ -1,0 +1,41 @@
+.weekendFarmContainer {
+    padding: 20px;
+    background-color: #e3f2fd;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    color: #1976d2;
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+  
+  p {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .weekendFarmImage img {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .exploreButton {
+    padding: 10px 20px;
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .exploreButton:hover {
+    background-color: #1565c0;
+  }
+  

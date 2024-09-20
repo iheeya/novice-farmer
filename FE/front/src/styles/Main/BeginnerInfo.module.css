@@ -1,0 +1,34 @@
+.beginnerInfoContainer {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.plantList {
+  list-style: none;
+  padding: 0;
+}
+
+.plantItem {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #e0f7fa;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #00796b;
+  font-size: 24px;
+}
+
+h3 {
+  color: #004d40;
+  font-size: 18px;
+}
+
+p {
+  color: #555;
+  font-size: 16px;
+}
