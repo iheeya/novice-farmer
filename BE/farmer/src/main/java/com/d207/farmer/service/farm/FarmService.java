@@ -19,6 +19,8 @@ import com.d207.farmer.repository.plant.PlantRepository;
 import com.d207.farmer.repository.user.RecommendPlaceRepository;
 import com.d207.farmer.repository.user.RecommendPlantRepository;
 import com.d207.farmer.repository.user.UserRepository;
+import com.d207.farmer.utils.AddressUtil;
+import com.d207.farmer.utils.FastApiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,15 +48,8 @@ public class FarmService {
     private final FavoritePlantForFarmRepository favoritePlantRepository;
     private final RecommendPlaceRepository recommendPlaceRepository;
     private final RecommendPlantRepository recommendPlantRepository;
-
-    @Value("${external.api.naver.apigw.id}")
-    private String apigwId;
-
-    @Value("${external.api.naver.apigw.key}")
-    private String apigwKey;
-
-    @Value("${external.api.fastAPI.url}")
-    private String fastApiUrl;
+    private final AddressUtil addressUtil;
+    private final FastApiUtil fastApiUtil;
 
     @Transactional
     public String registerFarm(Long userId, FarmRegisterRequestDTO request) {
@@ -76,7 +71,7 @@ public class FarmService {
 
     private UserPlace createUserPlace(User user, Place place, FarmRegisterRequestDTO request) {
         // 위 경도 불러오기
-        Map<String, String> latAndLongMap = getLatAndLongByJibun(request.getPlace().getAddress().getJibun());
+        Map<String, String> latAndLongMap = addressUtil.getLatAndLongByJibun(request.getPlace().getAddress().getJibun());
         String latitude = latAndLongMap.get("latitude");
         String longitude = latAndLongMap.get("longitude");
 
@@ -89,51 +84,8 @@ public class FarmService {
         return new UserPlace(user, place, latitude, longitude, place.getName(), newAddress, request.getPlace().getDirection());
     }
 
-    private Map<String, String> getLatAndLongByJibun(String query) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        // 요청 헤더 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("X-NCP-APIGW-API-KEY-ID", apigwId);
-        headers.set("X-NCP-APIGW-API-KEY", apigwKey);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        // 파라미터 포함 url 생성
-        String url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=" + query;
-
-        // 요청 및 응답
-        ResponseEntity<GeoAPIResponseDTO> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                entity,
-                GeoAPIResponseDTO.class
-        );
-
-
-        // 응답 처리
-        if(response.getStatusCode().is2xxSuccessful()) {
-            Map<String, String> result = new HashMap<>();
-            result.put("latitude", response.getBody().getAddresses().get(0).getY());
-            result.put("longitude", response.getBody().getAddresses().get(0).getX());
-            return result;
-        } else {
-            throw new IllegalStateException("네이버 지오코딩 api 호출 실패");
-        }
-
-    }
-
     private Address createAddress(Address addr) {
-        // 번지는 지번의 마지막 토큰 값으로 넣기
-        // 우편번호 api에서 번지는 제공해주지 않음
-        // 대신 띄어쓰기 형식이 핏하게 맞아서 토크나이저로 마지막 토큰만 가져오면 됨
-        String jibun = addr.getJibun();
-        StringTokenizer st = new StringTokenizer(jibun, " ");
-        String bunji = "";
-        while(st.hasMoreTokens()) {
-            bunji = st.nextToken();
-        }
+        String bunji = addressUtil.findBunjiByJibun(addr.getJibun());
         return new Address(addr.getSido(), addr.getSigugun(), addr.getBname1(), addr.getBname2(),
                 bunji, addr.getJibun(), addr.getZonecode());
     }
@@ -293,7 +245,7 @@ public class FarmService {
         User user = userRepository.findById(userId).orElseThrow();
 
         // 추천 장소 받기
-        RecommendPlaceResponseDTO response = getRecommendPlaceByFastApi(request, plant);
+        RecommendPlaceResponseDTO response = fastApiUtil.getRecommendPlaceByFastApi(request, plant);
         List<RecommendPlaceResponseDTO.placeDTO> placeDTOs = response.getPlaces();
 
         // 먼저 추천 테이블 비우기(by userId)
@@ -310,43 +262,6 @@ public class FarmService {
         for (Place p : places) {
             recommendPlaceRepository.save(new RecommendPlace(user, p));
         }
-    }
-
-    private RecommendPlaceResponseDTO getRecommendPlaceByFastApi(RecommendPlaceRequestDTO request, Plant plant) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        // 요청 헤더 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        // json data
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("plantId", request.getPlantId());
-        requestBody.put("plantName", plant.getName());
-
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-
-        List<RecommendPlaceResponseDTO.placeDTO> placeDTO = new ArrayList<>();
-        placeDTO.add(new RecommendPlaceResponseDTO.placeDTO(1L));
-        return new RecommendPlaceResponseDTO(placeDTO);
-
-        // FIXME FastAPI에서 추천 API 만들어질 때까지, 베란다만 추천으로 만들어서 리턴
-        /*
-        // 요청 및 응답
-        ResponseEntity<RecommendPlaceResponseDTO> response = restTemplate.exchange(
-                fastApiUrl,
-                HttpMethod.POST,
-                entity,
-                RecommendPlaceResponseDTO.class
-        );
-
-        // 응답 오류 처리
-        if (!response.getStatusCode().is2xxSuccessful()) {
-          throw new IllegalStateException("장소 추천 api 오류");
-        }
-
-        return response.getBody();
-         */
     }
 
     @Transactional
