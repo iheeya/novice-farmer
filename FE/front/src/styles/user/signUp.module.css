@@ -1,117 +1,138 @@
 /* 기본적인 레이아웃 설정 */
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  margin: 5vh;
+  background-color: #f0f0f0;
+}
+
+.container {
+  background-color: white;
+  width: 90vw; /* 모바일 환경에 맞게 넓이 설정 */
+  padding: 5vw; /* 뷰포트 너비의 5% */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 2vw; /* 뷰포트 너비의 2% */
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.container img {
+  width: 40vw; /* 뷰포트 너비의 40% */
+}
+
+/* Form input 스타일 */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh; /* 입력 필드 간의 간격 */
+}
+
+input {
+  background-color: #F8FAF8;
+  font-size: 4vmin; /* 뷰포트 최소값의 4% */
+  padding: 2vh; /* 뷰포트 높이의 2% */
+  border-radius: 1.5vmin; /* 뷰포트 최소값의 1.5% */
+  border: 0.2vmin solid #ccc; /* 뷰포트 최소값의 0.2% */
+  box-sizing: border-box;
+}
+
+select {
+  -webkit-appearance: none; /* Safari, Chrome */
+  -moz-appearance: none; /* Firefox */
+  appearance: none; /* 기본 스타일 제거 */
+  width: 100%; /* select의 너비를 부모에 맞추기 */
+  background-color: #F8FAF8;
+  font-size: 4vmin;
+  padding: 2vh;
+  margin-bottom: 1.5vh;
+  border-radius: 1.5vmin;
+  border: 0.2vmin solid #ccc;
+  box-sizing: border-box;
+}
+
+
+.select option[disabled] {
+  color: #888888; /* 비활성화된 옵션의 색상을 회색으로 설정 */
+}
+
+.select option {
+  max-width: 50%;
+  width: 100%;
+}
+
+.select:invalid {
+  color: #888; /* 선택하지 않은 경우 placeholder처럼 보이기 */
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #84b366; /* 초록색 */
+}
+
+/* 중복 확인 버튼 스타일 */
+.duplicate-check {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.duplicate-check input {
+  flex: 1;
+}
+
+button.duplicate {
+  background-color: #84b366;
+  color: white;
+  border: none;
+  padding: 2vmin; /* 뷰포트 최소값의 2% */
+  border-radius: 1.5vmin; /* 뷰포트 최소값의 1.5% */
+  cursor: pointer;
+  margin-left: 2vw; /* 뷰포트 너비의 2% */
+}
+
+button.duplicate:hover {
+  background-color: #6e954e;
+}
+
+/* 회원가입 버튼 스타일 */
+button.submit {
+  background-color: #84b366;
+  color: white;
+  border: none;
+  padding: 3vmin; /* 뷰포트 최소값의 3% */
+  font-size: 5vh; /* 뷰포트 높이의 5% */
+  border-radius: 2vmin; /* 뷰포트 최소값의 2% */
+  cursor: pointer;
+  margin-top: 3vh; /* 뷰포트 높이의 3% */
+}
+
+button.submit:hover {
+  background-color: #6e954e;
+}
+
+/* 체크박스와 푸시 알림 동의 */
+.checkbox-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2vh; /* 뷰포트 높이의 2% */
+}
+
+.checkbox-container input {
+  margin-right: 2vw; /* 뷰포트 너비의 2% */
+}
+
+/* 모바일 화면 대응 - 미디어 쿼리 */
+@media (max-width: 768px) {
+  input, select, button.submit {
+    font-size: 5vmin; /* 더 작은 화면에서는 글자 크기 조정 */
+    padding: 2.5vh; /* 모바일 사용자가 더 쉽게 터치할 수 있도록 여백을 더 줌 */
   }
-  
-  .container {
-    background-color: white;
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 20px;
-    text-align: center;
-    box-sizing: border-box;
+}
+
+@media (min-width: 769px) {
+  input, select, button.submit {
+    font-size: 3vmin; /* 큰 화면에서는 글자 크기를 줄임 */
+    padding: 2vh;
   }
-  
-  .container img {
-    width: 100px;
-    margin-bottom: 20px;
-  }
-  
-  h2 {
-    font-size: 1.8em;
-    color: #84b366; /* 이미지의 타이틀 색상과 유사하게 조정 */
-    margin-bottom: 20px;
-  }
-  
-  /* Form input 스타일 */
-  form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  input, select {
-    font-size: 1em;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-  
-  input:focus, select:focus {
-    outline: none;
-    border-color: #84b366; /* 초록색으로 변경 */
-  }
-  
-  /* 중복 확인 버튼 스타일 */
-  .duplicate-check {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .duplicate-check input {
-    flex: 1;
-  }
-  
-  button.duplicate {
-    background-color: #84b366;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 10px;
-  }
-  
-  /* 회원가입 버튼 스타일 */
-  button.submit {
-    background-color: #84b366;
-    color: white;
-    border: none;
-    padding: 15px;
-    font-size: 1.2em;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-  }
-  
-  button.submit:hover {
-    background-color: #6e954e;
-  }
-  
-  /* 체크박스와 푸시 알림 동의 */
-  .checkbox-container {
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    margin-top: 10px;
-  }
-  
-  .checkbox-container input {
-    margin-right: 10px;
-  }
-  
-  /* 미디어 쿼리 - 모바일 최적화 */
-  @media (max-width: 480px) {
-    .container {
-      padding: 15px;
-    }
-  
-    input, select, button {
-      font-size: 0.9em;
-    }
-  
-    h2 {
-      font-size: 1.5em;
-    }
-  }
-  
+}
