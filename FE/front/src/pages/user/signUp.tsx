@@ -1,4 +1,8 @@
-import { useState } from "react";
+// 해야 할 것들
+// 1. 이메일 유효성 검사 ()
+// 회원
+
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -11,6 +15,7 @@ import {
   FormControlLabel,
   Box,
 } from "@mui/material";
+import { validateEmail, validateNickname, validatePassword, passwordConfirm } from "../../utils/util";
 
 function SignUp() {
   // 행정구역 정보
@@ -238,7 +243,7 @@ function SignUp() {
   // 회원가입을 위한 상태 변수
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [passwordConf, setPasswordConf] = useState("");
   const [nickName, setNickName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
@@ -246,17 +251,19 @@ function SignUp() {
   const [selectedCity, setSelectedCity] = useState(""); // 시/군/구
   const [pushNotification, setPushNotification] = useState(false); // 푸시 알림 동의 여부
 
+  const isEmailValid = useMemo(() => validateEmail(email), [email]);
+  const isPasswordValid = useMemo(() => validatePassword(password), [password]);
+  const isPasswordConfirmed = useMemo(
+    () => passwordConfirm({ password, passwordConf }),
+    [password, passwordConf]
+  );
+  const isNicknameValid = useMemo(() => validateNickname(nickName), [nickName]);
+
   const navigate = useNavigate();
 
   // 회원가입 API 핸들러
   const handleSignUp = (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-
-    // 비밀번호와 비밀번호 확인이 다를 경우 알림
-    if (password !== passwordConfirm) {
-      alert("비밀번호가 일치하지 않습니다");
-      return;
-    }
+    event.preventDefault();    
 
     // API 요청을 위한 데이터
     const signUpData = {
@@ -294,16 +301,18 @@ function SignUp() {
     alignItems: "center", // 수평 중앙 정렬
   }}
 >
-      <img src="/user/sampleLogo.png" alt="사진이 왜 안나와" style={{ width: "40%", marginTop: "5%" }} />
+      <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%", marginTop: "5%" }} />
       <form onSubmit={handleSignUp}>
         <TextField
           label="이메일"
           variant="outlined"
           fullWidth
+          error={!isEmailValid}
           margin="normal"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          helperText={!isEmailValid ? "유효한 이메일이 아닙니다" : ""}
         />
 
         <TextField
@@ -311,9 +320,11 @@ function SignUp() {
           type="password"
           variant="outlined"
           fullWidth
+          error={!isPasswordValid}
           margin="normal"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          helperText={!isPasswordValid ? "문자와 숫자를 포함하여 8자리 이상이여야 합니다" : ""}
           required
         />
 
@@ -323,8 +334,10 @@ function SignUp() {
           variant="outlined"
           fullWidth
           margin="normal"
-          value={passwordConfirm}
-          onChange={(e) => setPasswordConfirm(e.target.value)}
+          value={passwordConf}
+          error={!isPasswordConfirmed}
+          helperText={!isPasswordConfirmed ? "비밀번호가 일치하지 않습니다" : ""}
+          onChange={(e) => setPasswordConf(e.target.value)}
           required
         />
 
@@ -332,9 +345,11 @@ function SignUp() {
           label="별명"
           variant="outlined"
           fullWidth
+          error={!isNicknameValid}
           margin="normal"
           value={nickName}
           onChange={(e) => setNickName(e.target.value)}
+          helperText={!isNicknameValid ? "자음과 모음을 단독으로 사용할 수 없습니다" : ""}
           required
         />
 
@@ -366,7 +381,7 @@ function SignUp() {
         </FormControl>
 
         {/* 도/특별시/광역시 선택 */}
-        <FormControl fullWidth margin="normal">
+        <FormControl fullWidth margin="normal" variant="outlined" required>
           <InputLabel id="province-label">도/특별시/광역시</InputLabel>
           <Select
             sx={{
@@ -389,7 +404,7 @@ function SignUp() {
         </FormControl>
 
         {/* 시/군/구 선택 */}
-        <FormControl fullWidth margin="normal" disabled={!selectedProvince}>
+        <FormControl fullWidth margin="normal" disabled={!selectedProvince} variant="outlined" required>
           <InputLabel id="city-label">시/군/구</InputLabel>
           <Select
             sx={{
