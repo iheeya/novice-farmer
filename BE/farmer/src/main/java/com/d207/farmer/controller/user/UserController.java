@@ -1,5 +1,6 @@
 package com.d207.farmer.controller.user;
 
+import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.plant.PlantResponseDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.*;
@@ -51,15 +52,8 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUserInfo(request));
     }
 
-    /**
-     * 회원 조회 - token으로 조회
-     */
-    @GetMapping
-    public ResponseEntity<UserInfoResponseDTO> getUserInfo(@RequestHeader("Authorization") String authorization) {
-        log.info("[UserController] Received get user info by token request for {}", authorization);
-        Long userId = jwtUtil.getUserId(authorization);
-        return ResponseEntity.ok().body(userService.getUserInfo(userId));
-    }
+
+
 
     /**
      * 일반회원 로그인
@@ -112,7 +106,7 @@ public class UserController {
 
 
     /**
-     * 마이페이지 - 선호 텃밭, 작물 수정하기!!!
+     * 마이페이지 - 선호 텃밭, 작물 변경 후 변경버튼눌렀을때~!!!!
      */
 
     @PostMapping("/mypage/like")
@@ -123,6 +117,35 @@ public class UserController {
 
         return ResponseEntity.ok().body(userService.registerSurveyContentWithId(userId, surveyRegisterRequestDTO));
     }
+
+
+    /**
+     * 마이페이지!!!! 회원 조회 - token으로 조회
+     */
+
+    @GetMapping("/mypage")
+    public ResponseEntity<UserInfoResponseDTO> getProfilePage(@RequestHeader("Authorization") String authorization) {
+        Long userId;
+        userId = jwtUtil.getUserId(authorization);
+        log.info("[UserController] Received get mypage- MyProfile");
+        return ResponseEntity.ok().body(userService.getUserInfo(userId));
+    }
+
+
+    /**
+     * 마이페이지 - 프로필페이지(정보 변경) - Token
+     */
+
+    @PostMapping("/mypage")
+    public ResponseEntity<?> registerProfilePage(@RequestHeader("Authorization") String authorization,
+                                                @RequestBody UserInfoResponseDTO userInfoResponseDTO) {
+        Long userId;
+        userId = jwtUtil.getUserId(authorization);
+        log.info("[UserController] Received get mypage- MyProfile");
+        return ResponseEntity.ok().body(userService.registerUserInfo(userId, userInfoResponseDTO));
+    }
+
+
 
 
 

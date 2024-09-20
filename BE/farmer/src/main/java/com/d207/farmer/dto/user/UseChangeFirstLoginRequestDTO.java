@@ -23,6 +23,7 @@ public class UseChangeFirstLoginRequestDTO {
     private Integer age;
     private String address;
     private String imagePath;
+    private Boolean pushallow;
 
 
 

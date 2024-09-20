@@ -54,6 +54,7 @@ public class UserService {
                 .gender(user.getGender())
                 .age(user.getAge())
                 .address(user.getAddress())
+                .pushAllow(user.getPushAllow())
                 .build();
     }
 
@@ -67,6 +68,7 @@ public class UserService {
                 .gender(user.getGender())
                 .age(user.getAge())
                 .address(user.getAddress())
+                .pushAllow(user.getPushAllow())
                 .build();
     }
 
@@ -81,6 +83,7 @@ public class UserService {
                 .gender(user.getGender())
                 .age(user.getAge())
                 .address(user.getAddress())
+                .pushAllow(user.getPushAllow())
                 .build();
     }
 
@@ -88,9 +91,7 @@ public class UserService {
     public UserLoginResponseDTO loginUser(UserLoginRequestDTO request) {
         User user = userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword());
         boolean check_firstLogin = user.getIsFirstLogin();
-        if (check_firstLogin) {
-            user.setIsFirstLogin(false);
-        }
+
 
         if (user == null) {
             throw new FailedAuthenticateUserException("아이디 혹은 비밀번호가 일치하지 않습니다.");
@@ -174,6 +175,14 @@ public class UserService {
             }
 
         }
+        boolean check_firstLogin = user.getIsFirstLogin();
+        if (check_firstLogin) {
+            user.setIsFirstLogin(false);
+        }
+
+
+
+
         return "registered successfully.";
 
     }
@@ -273,4 +282,18 @@ public class UserService {
     }
 
 
+    @Transactional
+    public Object registerUserInfo(Long userId, UserInfoResponseDTO userInfoResponseDTO) {
+
+        User user = userRepository.findById(userId).orElseThrow();
+
+
+        user.setNickname(userInfoResponseDTO.getNickname());
+        user.setGender(userInfoResponseDTO.getGender());
+
+        return null;
+
+
+
+    }
 }
