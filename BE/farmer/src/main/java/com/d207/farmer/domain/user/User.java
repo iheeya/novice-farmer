@@ -2,10 +2,7 @@ package com.d207.farmer.domain.user;
 
 import com.d207.farmer.dto.user.UserRegisterRequestDTO;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -13,6 +10,7 @@ import java.time.ZoneId;
 @Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class User {
 
     @Id @GeneratedValue
@@ -47,6 +45,9 @@ public class User {
     @Column(name = "user_image_path")
     private String imagePath;
 
+    @Column(name = "user_allow_push")
+    private Boolean pushAllow;
+
     /*
      * 비즈니스 메서드
      */
@@ -60,6 +61,7 @@ public class User {
         this.age = request.getAge();
         this.address = request.getAddress();
         this.imagePath = ""; // TODO default 값 설정 필요
+        this.pushAllow = request.getPsuhAllow();
     }
 
     @Override

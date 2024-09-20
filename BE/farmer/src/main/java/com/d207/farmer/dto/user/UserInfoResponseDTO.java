@@ -20,4 +20,5 @@ public class UserInfoResponseDTO {
     private Gender gender;
     private Integer age;
     private String address;
+    private Boolean pushAllow;
 }

@@ -18,6 +18,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static java.lang.Boolean.TRUE;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -50,7 +52,7 @@ public class StartupApplicationListener {
     private void createUserSample() {
         for (int i = 1; i < USER_NUM + 1; i++) {
             UserRegisterRequestDTO u = new UserRegisterRequestDTO(
-                    "test" + i + "@email.com", "1234", "test" + i, 20 + i, Gender.MALE, "대구"
+                    "test" + i + "@email.com", "1234", "test" + i, 20 + i, Gender.MALE, "대구", TRUE
             );
             userService.registerUser(u);
         }

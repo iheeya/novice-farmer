@@ -10,6 +10,7 @@ import com.d207.farmer.dto.plant.PlantResponseWithIdDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.*;
 import com.d207.farmer.exception.FailedAuthenticateUserException;
+import com.d207.farmer.exception.FailedInvalidUserException;
 import com.d207.farmer.repository.user.*;
 import com.d207.farmer.repository.place.PlaceRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
@@ -45,6 +46,11 @@ public class UserService {
     @Transactional
     public UserInfoResponseDTO registerUser(UserRegisterRequestDTO request) {
         User user = new User(request);
+
+        ////////////////////////////////////
+        if (userRepository.findByNickname(request.getNickname()) != null) throw new FailedInvalidUserException("닉네임 중복입니다!");
+        if (userRepository.findByEmail(request.getEmail()) != null) throw new FailedInvalidUserException("이메일 중복입니다!");
+
         User saveUser = userRepository.save(user);
         return UserInfoResponseDTO.builder()
                 .email(user.getEmail())
@@ -54,7 +60,11 @@ public class UserService {
                 .gender(user.getGender())
                 .age(user.getAge())
                 .address(user.getAddress())
+                .pushAllow(user.getPushAllow())
                 .build();
+
+
+
     }
 
     public UserInfoResponseDTO getUserInfo(UserInfoRequestByEmailDTO request) {
@@ -67,6 +77,7 @@ public class UserService {
                 .gender(user.getGender())
                 .age(user.getAge())
                 .address(user.getAddress())
+                .pushAllow(user.getPushAllow())
                 .build();
     }
 
@@ -81,6 +92,7 @@ public class UserService {
                 .gender(user.getGender())
                 .age(user.getAge())
                 .address(user.getAddress())
+                .pushAllow(user.getPushAllow())
                 .build();
     }
 
@@ -88,9 +100,7 @@ public class UserService {
     public UserLoginResponseDTO loginUser(UserLoginRequestDTO request) {
         User user = userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword());
         boolean check_firstLogin = user.getIsFirstLogin();
-        if (check_firstLogin) {
-            user.setIsFirstLogin(false);
-        }
+
 
         if (user == null) {
             throw new FailedAuthenticateUserException("아이디 혹은 비밀번호가 일치하지 않습니다.");
@@ -174,6 +184,14 @@ public class UserService {
             }
 
         }
+        boolean check_firstLogin = user.getIsFirstLogin();
+        if (check_firstLogin) {
+            user.setIsFirstLogin(false);
+        }
+
+
+
+
         return "registered successfully.";
 
     }
@@ -273,4 +291,32 @@ public class UserService {
     }
 
 
+    @Transactional
+    public String registerUserInfo(Long userId, UserInfoResponseDTO userInfoResponseDTO) {
+
+        User user = userRepository.findById(userId).orElseThrow();
+
+        user.setNickname(userInfoResponseDTO.getNickname());
+        user.setAge(userInfoResponseDTO.getAge());
+        user.setAddress(userInfoResponseDTO.getAddress());
+        user.setPushAllow(userInfoResponseDTO.getPushAllow());
+
+        return "successful save";
+
+
+
+    }
+
+    public boolean getEmailUse(String email) {
+        User user = userRepository.findByEmail(email);
+        log.info("user = {}, {}", user, email);
+        return userRepository.findByEmail(email) == null;
+
+    }
+
+    public boolean getNicknameUse(String nickname) {
+        User user = userRepository.findByEmail(nickname);
+        log.info("user = {}, {}", user, nickname);
+        return userRepository.findByNickname(nickname) == null;
+    }
 }
