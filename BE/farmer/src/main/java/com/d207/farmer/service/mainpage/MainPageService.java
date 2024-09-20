@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MainPageService {
 
     public MainPageResponseDTO getMainPage(Long userId) {
-        // TODO
-        return null;
+        return new MainPageResponseDTO();
     }
 }
