@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.ConnectException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -172,8 +173,9 @@ public class FarmService {
             }
             result.add(new PlaceWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, p.getIsOn()));
         }
-        result.sort(Comparator.comparing(PlaceWithFavoriteResponseDTO::getIsService).reversed()
-                .thenComparing(PlaceWithFavoriteResponseDTO::getIsFavorite).reversed()
+
+        result.sort(Comparator.comparing((PlaceWithFavoriteResponseDTO p) -> !p.getIsService())
+                .thenComparing(p -> !p.getIsFavorite())
                 .thenComparing(PlaceWithFavoriteResponseDTO::getPlaceId));
 
         return result;
@@ -199,8 +201,8 @@ public class FarmService {
             result.add(new PlantWithFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, p.getIsOn()));
         }
 
-        result.sort(Comparator.comparing(PlantWithFavoriteResponseDTO::getIsService).reversed()
-                .thenComparing(PlantWithFavoriteResponseDTO::getIsFavorite).reversed()
+        result.sort(Comparator.comparing((PlantWithFavoriteResponseDTO p) -> !p.getIsService())
+                .thenComparing(p -> !p.getIsFavorite())
                 .thenComparing(PlantWithFavoriteResponseDTO::getPlantId));
 
         return result;
@@ -236,10 +238,9 @@ public class FarmService {
             }
             result.add(new PlaceWithRecommendAndFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, isRecommend, p.getIsOn()));
         }
-
-        result.sort(Comparator.comparing(PlaceWithRecommendAndFavoriteResponseDTO::getIsService).reversed()
-                .thenComparing(PlaceWithRecommendAndFavoriteResponseDTO::getIsRecommend).reversed()
-                .thenComparing(PlaceWithRecommendAndFavoriteResponseDTO::getIsFavorite).reversed()
+        result.sort(Comparator.comparing((PlaceWithRecommendAndFavoriteResponseDTO p) -> !p.getIsService())
+                .thenComparing(p -> !p.getIsRecommend())
+                .thenComparing(p -> !p.getIsFavorite())
                 .thenComparing(PlaceWithRecommendAndFavoriteResponseDTO::getPlaceId));
 
         return result;
@@ -276,11 +277,10 @@ public class FarmService {
             result.add(new PlantWithRecommendAndFavoriteResponseDTO(p.getId(), p.getName(), isFavorite, isRecommend, p.getIsOn()));
         }
 
-        result.sort(Comparator.comparing(PlantWithRecommendAndFavoriteResponseDTO::getIsService).reversed()
-                .thenComparing(PlantWithRecommendAndFavoriteResponseDTO::getIsRecommend).reversed()
-                .thenComparing(PlantWithRecommendAndFavoriteResponseDTO::getIsFavorite).reversed()
+        result.sort(Comparator.comparing((PlantWithRecommendAndFavoriteResponseDTO p) -> !p.getIsService())
+                .thenComparing(p -> !p.getIsRecommend())
+                .thenComparing(p -> !p.getIsFavorite())
                 .thenComparing(PlantWithRecommendAndFavoriteResponseDTO::getPlantId));
-
         return result;
     }
 
@@ -326,6 +326,12 @@ public class FarmService {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
+        List<RecommendPlaceResponseDTO.placeDTO> placeDTO = new ArrayList<>();
+        placeDTO.add(new RecommendPlaceResponseDTO.placeDTO(1L));
+        return new RecommendPlaceResponseDTO(placeDTO);
+
+        // FIXME FastAPI에서 추천 API 만들어질 때까지, 베란다만 추천으로 만들어서 리턴
+        /*
         // 요청 및 응답
         ResponseEntity<RecommendPlaceResponseDTO> response = restTemplate.exchange(
                 fastApiUrl,
@@ -337,10 +343,10 @@ public class FarmService {
         // 응답 오류 처리
         if (!response.getStatusCode().is2xxSuccessful()) {
           throw new IllegalStateException("장소 추천 api 오류");
-          // FIXME FastAPI 만들어질 때 까지 임의 데이터 리턴하기
         }
 
         return response.getBody();
+         */
     }
 
     @Transactional
