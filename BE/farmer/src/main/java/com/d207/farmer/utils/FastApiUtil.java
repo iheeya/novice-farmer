@@ -7,11 +7,11 @@ import com.d207.farmer.dto.farm.get.RecommendPlaceRequestDTO;
 import com.d207.farmer.dto.farm.get.RecommendPlaceResponseDTO;
 import com.d207.farmer.dto.farm.get.RecommendPlantRequestDTO;
 import com.d207.farmer.dto.farm.get.RecommendPlantResponseDTO;
+import com.d207.farmer.dto.myplant.InspectionGrowthStepResponseByFastApiDTO;
+import com.d207.farmer.dto.myplant.InspectionPestResponseByFastApiDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -47,9 +47,10 @@ public class FastApiUtil {
 
         // FIXME FastAPI에서 추천 API 만들어질 때까지, 베란다만 추천으로 만들어서 리턴
         /*
+        String url = fastApiUrl + "/place/recommend";
         // 요청 및 응답
         ResponseEntity<RecommendPlaceResponseDTO> response = restTemplate.exchange(
-                fastApiUrl,
+                url,
                 HttpMethod.POST,
                 entity,
                 RecommendPlaceResponseDTO.class
@@ -85,9 +86,10 @@ public class FastApiUtil {
 
         // FIXME FastAPI에서 추천 API 만들어질 때까지, 토마토만 추천으로 만들어서 리턴
         /*
+        String url = fastApiUrl + "/plant/recommend";
         // 요청 및 응답
         ResponseEntity<RecommendPlantResponseDTO> response = restTemplate.exchange(
-                fastApiUrl,
+                url,
                 HttpMethod.POST,
                 entity,
                 RecommendPlantResponseDTO.class
@@ -100,5 +102,66 @@ public class FastApiUtil {
 
         return response.getBody();
          */
+    }
+
+    public InspectionPestResponseByFastApiDTO getInspectionPest(String imagePath) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 요청 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // json data
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("imagePath", imagePath);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+        String url = fastApiUrl + "/plant/pest";
+        // 요청 및 응답
+        ResponseEntity<InspectionPestResponseByFastApiDTO> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                InspectionPestResponseByFastApiDTO.class
+        );
+
+        // 응답 오류 처리
+        if (!response.getStatusCode().is2xxSuccessful()) {
+          throw new IllegalStateException("병해충 검사 api 오류");
+        }
+
+        return response.getBody();
+    }
+
+    public InspectionGrowthStepResponseByFastApiDTO getInspectionGrowthStep(String imagePath) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 요청 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // json data
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("imagePath", imagePath);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+        String url = fastApiUrl + "/plant/growth";
+
+        // 요청 및 응답
+        ResponseEntity<InspectionGrowthStepResponseByFastApiDTO> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                InspectionGrowthStepResponseByFastApiDTO.class
+        );
+
+        // 응답 오류 처리
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new IllegalStateException("생장정보 업데이트 api 오류");
+        }
+
+        return response.getBody();
     }
 }

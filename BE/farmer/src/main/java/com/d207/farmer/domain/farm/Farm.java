@@ -109,4 +109,12 @@ public class Farm {
         this.isCompleted = true;
         this.completeDate = LocalDateTime.now();
     }
+
+    public void updateName(String plantName) {
+        this.myPlantName = plantName;
+    }
+
+    public void updateMemo(String memo) {
+        this.memo = memo;
+    }
 }

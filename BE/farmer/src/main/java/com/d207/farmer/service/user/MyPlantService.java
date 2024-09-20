@@ -1,9 +1,10 @@
 package com.d207.farmer.service.user;
 
 import com.d207.farmer.domain.farm.Farm;
-import com.d207.farmer.dto.myplant.ManagePlantRequestDTO;
-import com.d207.farmer.dto.myplant.StartGrowPlantRequestDTO;
+import com.d207.farmer.dto.myplant.*;
 import com.d207.farmer.repository.farm.FarmRepository;
+import com.d207.farmer.repository.farm.FarmTodoRepository;
+import com.d207.farmer.utils.FastApiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ import java.time.LocalDateTime;
 public class MyPlantService {
 
     private final FarmRepository farmRepository;
+    private final FarmTodoRepository farmTodoRepository;
+    private final FastApiUtil fastApiUtil;
 
     @Transactional
     public String startGrowPlant(Long userId, StartGrowPlantRequestDTO request) {
@@ -50,14 +53,40 @@ public class MyPlantService {
     @Transactional
     public String waterPlant(Long userId, ManagePlantRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
-        // FIXME todo에 추가가 아니라 원래 있던 todo를 update 해야하나?
+        // TODO todo에 추가가 아니라 원래 있던 todo를 update 해야할 것 같음
+
         return "작물 물주기 성공";
     }
 
     @Transactional
     public String fertilizerPlant(Long userId, ManagePlantRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
-        // FIXME todo에 추가가 아니라 원래 있던 todo를 update 해야하나?
+        // TODO todo에 추가가 아니라 원래 있던 todo를 update 해야할 것 같음
         return "작물 비료주기 성공";
+    }
+
+    @Transactional
+    public String updateName(Long userId, UpdatePlantNameRequestDTO request) {
+        Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
+        farm.updateName(request.getPlantName());
+        return "이름 변경 성공";
+    }
+
+    @Transactional
+    public String updateMemo(Long userId, UpdatePlantMemoRequestDTO request) {
+        Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
+        farm.updateMemo(request.getMemo());
+        return "메모 변경 성공";
+    }
+
+    public InspectionPestResponseDTO inspectionPest(Long userId, InspectionPlantRequestDTO request) {
+        InspectionPestResponseByFastApiDTO response = fastApiUtil.getInspectionPest(request.getImagePath());
+        // TODO response에서 병해충 이름 받아서 몽고db 조회 후 반환
+        return null;
+    }
+
+    public InspectionGrowthStepResponseDTO inspectionGrowthStep(Long userId, InspectionPlantRequestDTO request) {
+        InspectionGrowthStepResponseByFastApiDTO response = fastApiUtil.getInspectionGrowthStep(request.getImagePath());
+        return null;
     }
 }
