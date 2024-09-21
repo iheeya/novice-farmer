@@ -13,7 +13,9 @@ RUN rm -rf .gradle
 
 RUN chmod +x ./gradlew && ./gradlew clean build
 RUN ls -al ./build/libs/
-ARG JAR_FILE=./build/libs/farmer-0.0.1-SNAPSHOT.jar
-COPY ${JAR_FILE} ./app.jar
+RUN cp ./build/libs/farmer-0.0.1-SNAPSHOT.jar ./build/libs/farmer.jar
+COPY ./build/libs/farmer.jar ./app.jar
+
+COPY ./build/libs/farmer.jar ./app.jar
 ENV TZ=Asia/Seoul
 ENTRYPOINT ["java", "-jar", "./app.jar"]
