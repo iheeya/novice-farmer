@@ -1,6 +1,4 @@
-
 spring:
-
   mvc:
     servlet:
       path: /farmer-api
