@@ -1,5 +1,6 @@
 package com.d207.farmer.controller.user;
 
+import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.plant.PlantResponseDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
@@ -167,6 +168,15 @@ public class UserController {
         return ResponseEntity.ok().body(userService.registerUserInfo(userId, userInfoResponseDTO));
     }
 
+
+    // 확인해봐야함!
+    @GetMapping("/mypage/history")
+    public ResponseEntity<List<Farm>> getFarmHistory(@RequestHeader("Authorization") String authorization) {
+        Long userId;
+        userId = jwtUtil.getUserId(authorization);
+        log.info("[UserController] Received get mypage- My Farm history");
+        return ResponseEntity.ok().body(userService.getFarmHistory(userId));
+    }
 
 
 
