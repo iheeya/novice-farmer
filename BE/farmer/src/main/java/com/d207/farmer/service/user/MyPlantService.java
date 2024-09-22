@@ -54,6 +54,7 @@ public class MyPlantService {
     public String waterPlant(Long userId, ManagePlantRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
         // TODO todo에 추가가 아니라 원래 있던 todo를 update 해야할 것 같음
+        // TODO 원래 최근에 있던 물주기 todo를 업데이트하거나, 없으면 새로 추가
 
         return "작물 물주기 성공";
     }
@@ -62,6 +63,7 @@ public class MyPlantService {
     public String fertilizerPlant(Long userId, ManagePlantRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
         // TODO todo에 추가가 아니라 원래 있던 todo를 update 해야할 것 같음
+        // TODO 원래 최근에 있던 비료주기 todo를 업데이트하거나, 없으면 새로 추가
         return "작물 비료주기 성공";
     }
 
