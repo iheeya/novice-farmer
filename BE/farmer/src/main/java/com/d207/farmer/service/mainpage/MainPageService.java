@@ -45,7 +45,8 @@ public class MainPageService {
         RecommendInfoComponentDTO recommendInfoComponent = getRecommendInfo(userId);
         CommunityInfoComponentDTO communityInfoComponent = getCommunityInfo(userId);
         WeekendFarmComponentDTO weekendFarmComponent = getWeekendFarm(userId);
-        return new MainPageResponseDTO();
+        return new MainPageResponseDTO(todoInfoComponent, beginnerInfoComponent, myFarmListInfoComponent, farmGuideInfoComponent, favoritesInfoComponent,
+                myPlantInfoComponent, recommendInfoComponent, communityInfoComponent, weekendFarmComponent);
     }
 
     /**
@@ -138,20 +139,21 @@ public class MainPageService {
      * 7. 추천 컴포넌트
      */
     private RecommendInfoComponentDTO getRecommendInfo(Long userId) {
-        return null;
+        // TODO 추천 알고리즘
+        return new RecommendInfoComponentDTO();
     }
 
     /**
      * 8. 커뮤니티 컴포넌트
      */
     private CommunityInfoComponentDTO getCommunityInfo(Long userId) {
-        return null;
+        return new CommunityInfoComponentDTO();
     }
 
     /**
      * 9. 주말농장 컴포넌트
      */
     private WeekendFarmComponentDTO getWeekendFarm(Long userId) {
-        return null;
+        return new WeekendFarmComponentDTO();
     }
 }
