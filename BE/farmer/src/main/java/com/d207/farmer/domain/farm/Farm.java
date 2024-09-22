@@ -120,4 +120,8 @@ public class Farm {
     public void updateMemo(String memo) {
         this.memo = memo;
     }
+
+    public void updateGrowthStep(int growthStep) {
+        this.growthStep = growthStep;
+    }
 }

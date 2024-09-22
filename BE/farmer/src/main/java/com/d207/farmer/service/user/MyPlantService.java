@@ -89,4 +89,11 @@ public class MyPlantService {
         InspectionGrowthStepResponseByFastApiDTO response = fastApiUtil.getInspectionGrowthStep(request.getImagePath());
         return null;
     }
+
+    @Transactional
+    public String updateGrowthStepByInspection(Long userId, UpdateGrowthStepRequestDTO request) {
+        Farm farm = farmRepository.findById(request.getMyPlantId()).orElseThrow();
+        farm.updateGrowthStep(request.getGrowthStep());
+        return "생장단계 업데이트 성공";
+    }
 }
