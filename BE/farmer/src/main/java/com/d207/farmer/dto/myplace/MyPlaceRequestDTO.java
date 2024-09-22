@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class MyPlaceRequestDTO {
     private Long userPlaceId;
-
 }
