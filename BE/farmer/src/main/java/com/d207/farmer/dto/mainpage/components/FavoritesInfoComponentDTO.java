@@ -18,7 +18,7 @@ public class FavoritesInfoComponentDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    private static class FavoritePlantDTO {
+    public static class FavoritePlantDTO {
         private Long plantId;
         private String plantName;
     }
@@ -26,7 +26,7 @@ public class FavoritesInfoComponentDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    private static class FavoritePlaceDTO {
+    public static class FavoritePlaceDTO {
         private Long placeId;
         private String placeName;
     }
