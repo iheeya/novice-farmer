@@ -17,7 +17,7 @@ public class BeginnerInfoComponentDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    private static class plantInfoDTO {
+    public static class plantInfoDTO {
         private Long plantId;
         private String plantName;
         private String plantDesc;
