@@ -25,7 +25,6 @@ public class FarmRepositoryCustomImpl implements FarmRepositoryCustom {
      * 현재 키우기가 진행되고 있는 농장
      * FIXME plant 에서 growthIllust은 어떻게 가져오는지 확인필요
      */
-    @Query("select f from Farm f left join fetch f.plant p where f.userPlace.id = :userPlaceId and f.isCompleted = false and f.isDeleted = false")
     @Override
     public Optional<List<Farm>> findByUserPlaceIdWithCurrentGrowing(Long userPlaceId) {
         return Optional.of(queryFactory.selectFrom(farm)
@@ -44,6 +43,7 @@ public class FarmRepositoryCustomImpl implements FarmRepositoryCustom {
     @Override
     public Optional<List<Farm>> findByUserIdWithCurrentGrowing(Long userId) {
         return Optional.of(queryFactory.selectFrom(farm)
+                .join(farm.plant).fetchJoin()
                 .where(
                         userIdEq(userId),
                         isCurrentGrowingFarm()

@@ -1,7 +1,6 @@
 package com.d207.farmer.service.mainpage;
 
 import com.d207.farmer.domain.farm.Farm;
-import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.user.FavoritePlant;
 import com.d207.farmer.dto.mainpage.MainPageResponseDTO;
 import com.d207.farmer.dto.mainpage.components.*;
@@ -27,10 +26,11 @@ public class MainPageService {
     private final PlantRepository plantRepository;
 
     public MainPageResponseDTO getMainPage(Long userId) {
+        List<Farm> farms = farmRepository.findByUserIdWithCurrentGrowing(userId).orElse(null);
         TodoInfoComponentDTO todoInfoComponent = getTodoInfo(userId);
-        BeginnerInfoComponentDTO beginnerInfoComponent = getBeginnerInfo(userId); // 완성
-        MyFarmListInfoComponentDTO myFarmListInfoComponent = getMyFarmListInfo(userId);
-        FarmGuideInfoComponentDTO farmGuideInfoComponent = getFarmGuideInfo(userId);
+        BeginnerInfoComponentDTO beginnerInfoComponent = getBeginnerInfo(userId, farms); // 완성
+        MyFarmListInfoComponentDTO myFarmListInfoComponent = getMyFarmListInfo(userId, farms); // 완성
+        FarmGuideInfoComponentDTO farmGuideInfoComponent = getFarmGuideInfo(userId); // 완성
         FavoritesInfoComponentDTO favoritesInfoComponent = getFavoritesInfo(userId);
         MyPlantInfoComponentDTO myPlantInfoComponent = getMyPlantInfo(userId);
         RecommendInfoComponentDTO recommendInfoComponent = getRecommendInfo(userId);
@@ -49,9 +49,8 @@ public class MainPageService {
     /**
      * 2. 초보자용 컴포넌트
      */
-    private BeginnerInfoComponentDTO getBeginnerInfo(Long userId) {
+    private BeginnerInfoComponentDTO getBeginnerInfo(Long userId, List<Farm> farms) {
         // 키우는 작물이 없고 선호 작물이 없으면
-        List<Farm> farms = farmRepository.findByUserIdWithCurrentGrowing(userId).orElse(null);
         List<FavoritePlant> favoritePlants = favoritePlantRepository.findByUserId(userId);
         if (farms != null || favoritePlants != null) {
             return new BeginnerInfoComponentDTO(false, new ArrayList<>());
@@ -67,15 +66,25 @@ public class MainPageService {
     /**
      * 3. 내 텃밭 컴포넌트
      */
-    private MyFarmListInfoComponentDTO getMyFarmListInfo(Long userId) {
-        return null;
+    private MyFarmListInfoComponentDTO getMyFarmListInfo(Long userId, List<Farm> farms) {
+        if(farms == null) {
+            return new MyFarmListInfoComponentDTO(true, new ArrayList<>());
+        }
+
+        List<MyFarmListInfoComponentDTO.myFarmDTO> myFarms = new ArrayList<>();
+        for (Farm farm : farms) {
+            myFarms.add(new MyFarmListInfoComponentDTO.myFarmDTO(farm.getPlant().getId(),farm.getPlant().getName(), farm.getId(), farm.getMyPlantName()));
+        }
+        return new MyFarmListInfoComponentDTO(true, myFarms);
     }
 
     /**
      * 4. 텃밭 가이드 컴포넌트
      */
     private FarmGuideInfoComponentDTO getFarmGuideInfo(Long userId) {
-        return null;
+        // 설문조사 여부와 관계없이 텃밭을 아예 만든 적이 없을 때
+        List<Farm> farms = farmRepository.findByUserId(userId).orElse(null);
+        return farms == null ? new FarmGuideInfoComponentDTO(true) : new FarmGuideInfoComponentDTO(false);
     }
 
     /**

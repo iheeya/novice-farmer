@@ -17,7 +17,7 @@ public class MyFarmListInfoComponentDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    private static class myFarmDTO {
+    public static class myFarmDTO {
         private Long plantId;
         private String plantName;
         private Long myPlantId;

@@ -9,4 +9,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FarmRepository extends JpaRepository<Farm, Long>, FarmRepositoryCustom {
+    Optional<List<Farm>> findByUserId(Long userId);
 }
