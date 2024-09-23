@@ -7,6 +7,7 @@ import rooftop from '../../assets/img/farms/5.png'
 import farmPlace from '../../assets/dummydata/farmPlace.json'
 import '../../styles/RegisterGarden/gardenSelect.css'
 import { FaHeart } from "react-icons/fa";
+// import GardenModal from './GardenModal'
 import GardenModal from './gardenModal'
 import { useDispatch } from 'react-redux'
 import {setFarmData} from '../../store/store'

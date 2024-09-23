@@ -31,6 +31,15 @@
   z-index: 1; /* 이미지를 덮어쓰도록 하기 위해 z-index를 높임 */
 }
 
+.star-icon{
+  position: absolute;
+  top: 9%;
+  right: 25%;
+  color : #f5945c;
+  font-size: 1rem;
+  z-index: 1;
+}
+
 .image-size{
     width: 25vw; 
     height: auto; 
