@@ -1,6 +1,7 @@
 package com.d207.farmer.service.user;
 
 import com.d207.farmer.domain.farm.Farm;
+import com.d207.farmer.domain.plant.PlantGrowthIllust;
 import com.d207.farmer.dto.myplant.*;
 import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.farm.FarmTodoRepository;
@@ -53,8 +54,8 @@ public class MyPlantService {
     @Transactional
     public String waterPlant(Long userId, ManagePlantRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
-        // TODO todo에 추가가 아니라 원래 있던 todo를 update 해야할 것 같음
         // TODO 원래 최근에 있던 물주기 todo를 업데이트하거나, 없으면 새로 추가
+
 
         return "작물 물주기 성공";
     }
@@ -62,7 +63,6 @@ public class MyPlantService {
     @Transactional
     public String fertilizerPlant(Long userId, ManagePlantRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
-        // TODO todo에 추가가 아니라 원래 있던 todo를 update 해야할 것 같음
         // TODO 원래 최근에 있던 비료주기 todo를 업데이트하거나, 없으면 새로 추가
         return "작물 비료주기 성공";
     }
@@ -97,5 +97,26 @@ public class MyPlantService {
         Farm farm = farmRepository.findById(request.getMyPlantId()).orElseThrow();
         farm.updateGrowthStep(request.getGrowthStep());
         return "생장단계 업데이트 성공";
+    }
+
+    public MyPlantInfoResponseDTO getMyPlantInfo(Long userId, MyPlantInfoRequestDTO request) {
+        Farm farm = farmRepository.findByIdWithJoin(request.getMyPlantId()).orElseThrow();
+        if(farm.getSeedDate() == null) {
+            return new MyPlantInfoResponseDTO(false, false, new MyPlantInfoResponseDTO.PlantInfoDTO(), new MyPlantInfoResponseDTO.TodoInfoDTO());
+        }
+        // 일러스트 이미지 경로
+        String imagePath = "";
+        for (PlantGrowthIllust pgi : farm.getPlant().getPlantGrowthIllusts()) {
+            if(pgi.getStep() == farm.getGrowthStep()) {
+                imagePath = pgi.getImagePath();
+                break;
+            }
+        }
+
+        MyPlantInfoResponseDTO.PlantInfoDTO plantInfo = new MyPlantInfoResponseDTO.PlantInfoDTO(farm.getUserPlace().getId(), farm.getUserPlace().getName(),
+                farm.getMyPlantName(), farm.getGrowthStep(), farm.getPlant().getName(), farm.getUserPlace().getPlace().getName(), imagePath, farm.getSeedDate(), farm.getPredDate(), LocalDateTime.now());
+
+        // TODO todo 생기면 todo dto 생성해서 넣기
+        return new MyPlantInfoResponseDTO(true, farm.getIsFirstHarvest(), plantInfo, new MyPlantInfoResponseDTO.TodoInfoDTO());
     }
 }
