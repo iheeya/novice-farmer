@@ -1,6 +1,7 @@
 package com.d207.farmer.service.mainpage;
 
 import com.d207.farmer.domain.farm.Farm;
+import com.d207.farmer.domain.farm.UserPlace;
 import com.d207.farmer.domain.user.FavoritePlace;
 import com.d207.farmer.domain.user.FavoritePlant;
 import com.d207.farmer.dto.mainpage.MainPageResponseDTO;
@@ -8,6 +9,7 @@ import com.d207.farmer.dto.mainpage.components.*;
 import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.farm.FavoritePlaceForFarmRepository;
 import com.d207.farmer.repository.farm.FavoritePlantForFarmRepository;
+import com.d207.farmer.repository.farm.UserPlaceRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.temporal.TemporalField;
 import java.util.*;
 
 @Slf4j
@@ -29,16 +30,18 @@ public class MainPageService {
     private final FavoritePlaceForFarmRepository favoritePlaceRepository;
     private final FavoritePlantForFarmRepository favoritePlantRepository;
     private final PlantRepository plantRepository;
+    private final UserPlaceRepository userPlaceRepository;
 
     public MainPageResponseDTO getMainPage(Long userId) {
         // db 조회
         List<Farm> farms = farmRepository.findByUserIdWithCurrentGrowing(userId).orElse(null);
         List<FavoritePlant> favoritePlants = favoritePlantRepository.findByUserId(userId);
         List<FavoritePlace> favoritePlaces = favoritePlaceRepository.findByUserId(userId);
+        List<UserPlace> userPlaces = userPlaceRepository.findByUserIdWithPlace(userId);
 
         TodoInfoComponentDTO todoInfoComponent = getTodoInfo(userId);
         BeginnerInfoComponentDTO beginnerInfoComponent = getBeginnerInfo(userId, farms, favoritePlants); // 완성
-        MyFarmListInfoComponentDTO myFarmListInfoComponent = getMyFarmListInfo(userId, farms); // 완성
+        MyFarmListInfoComponentDTO myFarmListInfoComponent = getMyFarmListInfo(userId, farms, userPlaces); // 완성
         FarmGuideInfoComponentDTO farmGuideInfoComponent = getFarmGuideInfo(userId); // 완성
         FavoritesInfoComponentDTO favoritesInfoComponent = getFavoritesInfo(userId, farms, favoritePlants, favoritePlaces); // 완성
         MyPlantInfoComponentDTO myPlantInfoComponent = getMyPlantInfo(userId, farms); // 완성
@@ -76,15 +79,17 @@ public class MainPageService {
     /**
      * 3. 내 텃밭 컴포넌트
      */
-    private MyFarmListInfoComponentDTO getMyFarmListInfo(Long userId, List<Farm> farms) {
+    private MyFarmListInfoComponentDTO getMyFarmListInfo(Long userId, List<Farm> farms, List<UserPlace> userPlaces) {
         if(farms == null) {
             return new MyFarmListInfoComponentDTO(true, new ArrayList<>());
         }
-
         List<MyFarmListInfoComponentDTO.myFarmDTO> myFarms = new ArrayList<>();
-        for (Farm farm : farms) {
-            myFarms.add(new MyFarmListInfoComponentDTO.myFarmDTO(farm.getPlant().getId(),farm.getPlant().getName(), farm.getId(), farm.getMyPlantName()));
+        for (UserPlace up : userPlaces) {
+            myFarms.add(new MyFarmListInfoComponentDTO.myFarmDTO(up.getPlace().getId(), up.getPlace().getName(),
+                    up.getId(), up.getName()));
         }
+        Collections.reverse(myFarms); // 최근에 넣은게 먼저 오게
+        
         return new MyFarmListInfoComponentDTO(true, myFarms);
     }
 

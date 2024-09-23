@@ -4,8 +4,6 @@ import com.d207.farmer.dto.mainpage.MainPageResponseDTO;
 import com.d207.farmer.service.mainpage.MainPageService;
 import com.d207.farmer.utils.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
