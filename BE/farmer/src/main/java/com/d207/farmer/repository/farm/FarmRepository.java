@@ -11,4 +11,5 @@ import java.util.Optional;
 
 public interface FarmRepository extends JpaRepository<Farm, Long>, FarmRepositoryCustom {
     Optional<List<Farm>> findByUserId(Long userId);
+    List<Farm> findByUserAndIsCompletedTrue(User user);
 }
