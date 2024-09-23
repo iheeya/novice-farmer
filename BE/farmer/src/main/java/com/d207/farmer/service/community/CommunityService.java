@@ -1,8 +1,17 @@
 package com.d207.farmer.service.community;
 
 import com.d207.farmer.domain.community.Community;
+import com.d207.farmer.domain.community.CommunityImage;
+import com.d207.farmer.domain.community.CommunitySelectedTag;
+import com.d207.farmer.domain.community.CommunityTag;
+import com.d207.farmer.domain.user.User;
+import com.d207.farmer.dto.community.CommunityRegisterDTO;
 import com.d207.farmer.dto.community.CommunityResponseDTO;
+import com.d207.farmer.repository.community.CommunityImageRepository;
 import com.d207.farmer.repository.community.CommunityRepository;
+import com.d207.farmer.repository.community.CommunitySelectedTagRespository;
+import com.d207.farmer.repository.community.CommunityTagRepository;
+import com.d207.farmer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -10,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -18,6 +30,10 @@ import java.util.List;
 public class CommunityService {
 
     private final CommunityRepository communityRepository;
+    private final UserRepository userRepository;
+    private final CommunityTagRepository communityTagRepository;
+    private final CommunitySelectedTagRespository communitySelectedTagRespository;
+    private final CommunityImageRepository communityImageRepository;
 
     public List<CommunityResponseDTO> getCommunity() {
         List<Community> communities =communityRepository.findAll();
@@ -35,5 +51,44 @@ public class CommunityService {
         }
 
         return communityList;
+    }
+
+    @Transactional
+    public String registerCommunity(Long userId, CommunityRegisterDTO communityRegisterDTO) {
+
+
+        User user = userRepository.findById(userId).orElseThrow();
+        Community community = new Community(user, communityRegisterDTO.getCommunityTitle(), communityRegisterDTO.getCommunityContent());
+        communityRepository.save(community);
+
+        // CommunityTagRepository에서 태그 목록을 가져오기
+        List<CommunityTag> communityTags = communityTagRepository.findBytagNameIn(communityRegisterDTO.getCommunityTagList());
+
+        // id를 키로 하고 tagName을 값으로 하는 Map으로 변환
+        Set<String> communityTagSet = communityTags.stream().map(CommunityTag::getTagName).collect(Collectors.toSet());
+
+        for (String communitytagtem :communityRegisterDTO.getCommunityTagList()){
+            //포함되지 않으면!! Community Tag 테이블에 save 하기
+            if(!communityTagSet.contains(communitytagtem)){
+                CommunityTag communityTag = new CommunityTag(communitytagtem);
+                communityTagRepository.save(communityTag);
+            }
+        }
+        communityTags = communityTagRepository.findBytagNameIn(communityRegisterDTO.getCommunityTagList());
+
+
+        // community_selected_tag 안에 tag 집어넣기!
+        for(CommunityTag communityTag : communityTags){
+            communitySelectedTagRespository.save(new CommunitySelectedTag(community, communityTag));
+        }
+
+        // Community_image 테이블에 imagePath 집어넣기
+        for(String imapgepath : communityRegisterDTO.getImagePath()){
+            communityImageRepository.save(new CommunityImage(community, imapgepath));
+        }
+
+
+
+        return "register Success";
     }
 }
