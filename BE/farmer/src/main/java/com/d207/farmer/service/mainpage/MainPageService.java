@@ -2,6 +2,7 @@ package com.d207.farmer.service.mainpage;
 
 import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.farm.UserPlace;
+import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.user.FavoritePlace;
 import com.d207.farmer.domain.user.FavoritePlant;
 import com.d207.farmer.dto.mainpage.MainPageResponseDTO;
@@ -39,6 +40,7 @@ public class MainPageService {
         List<FavoritePlant> favoritePlants = favoritePlantRepository.findByUserId(userId);
         List<FavoritePlace> favoritePlaces = favoritePlaceRepository.findByUserId(userId);
         List<UserPlace> userPlaces = userPlaceRepository.findByUserIdWithPlace(userId);
+        List<Plant> plants = plantRepository.findAll();
 
         TodoInfoComponentDTO todoInfoComponent = getTodoInfo(userId);
         BeginnerInfoComponentDTO beginnerInfoComponent = getBeginnerInfo(userId, farms, favoritePlants); // 완성
@@ -46,7 +48,7 @@ public class MainPageService {
         FarmGuideInfoComponentDTO farmGuideInfoComponent = getFarmGuideInfo(userId); // 완성
         FavoritesInfoComponentDTO favoritesInfoComponent = getFavoritesInfo(userId, farms, favoritePlants, favoritePlaces); // 완성
         MyPlantInfoComponentDTO myPlantInfoComponent = getMyPlantInfo(userId, farms); // 완성
-        RecommendInfoComponentDTO recommendInfoComponent = getRecommendInfo(userId);
+        RecommendInfoComponentDTO recommendInfoComponent = getRecommendInfo(userId, plants); // 완성(추천없이)
         CommunityInfoComponentDTO communityInfoComponent = getCommunityInfo(userId);
         WeekendFarmComponentDTO weekendFarmComponent = getWeekendFarm(userId);
 
@@ -145,15 +147,26 @@ public class MainPageService {
     /**
      * 7. 추천 컴포넌트
      */
-    private RecommendInfoComponentDTO getRecommendInfo(Long userId) {
+    private RecommendInfoComponentDTO getRecommendInfo(Long userId, List<Plant> plants) {
         // TODO 추천 알고리즘
-        return new RecommendInfoComponentDTO();
+        List<RecommendInfoComponentDTO.RecommendPlantDTO> recommendPlants = new ArrayList<>();
+        String[] desc = {"라이코펜 가득!", "비타민C 풍부!", "비타민B 풍부!", "철분 가득!"};
+        for (int i = 0; i < 4; i++) {
+            recommendPlants.add(new RecommendInfoComponentDTO.RecommendPlantDTO(plants.get(i).getId(), plants.get(i).getName(), desc[i]));
+        }
+        RecommendInfoComponentDTO.RecommendByDTO recommendByPlace = new RecommendInfoComponentDTO.RecommendByDTO("서늘한 가을날, 구미시 진평동에서 키우기 좋은 작물은?",
+                recommendPlants.subList(0, 2));
+        RecommendInfoComponentDTO.RecommendByDTO recommendByUser = new RecommendInfoComponentDTO.RecommendByDTO("토마토를 키우는 20대 남성들에게 가장 인기있는 작물은?",
+                recommendPlants.subList(2, 4));
+        return new RecommendInfoComponentDTO(true, recommendByPlace, recommendByUser);
     }
 
     /**
      * 8. 커뮤니티 컴포넌트
      */
     private CommunityInfoComponentDTO getCommunityInfo(Long userId) {
+        // 내가 선택해놓은 태그가 뜨거나, 선택해놓은 태그가 없으면 선호하는 작물 태그가 뜨거나
+        // 그거도 없으면 키우고 있는 작물 태그 뜨거나, 그거도 없으면 그냥 토마토
         return new CommunityInfoComponentDTO();
     }
 
