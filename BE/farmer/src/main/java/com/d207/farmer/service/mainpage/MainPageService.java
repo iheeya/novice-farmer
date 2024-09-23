@@ -8,10 +8,12 @@ import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.plant.PlantGrowthIllust;
 import com.d207.farmer.domain.user.FavoritePlace;
 import com.d207.farmer.domain.user.FavoritePlant;
+import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.mainpage.MainPageResponseDTO;
 import com.d207.farmer.dto.mainpage.components.*;
 import com.d207.farmer.repository.farm.*;
 import com.d207.farmer.repository.plant.PlantRepository;
+import com.d207.farmer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class MainPageService {
     private final PlantRepository plantRepository;
     private final UserPlaceRepository userPlaceRepository;
     private final FarmTodoRepository todoRepository;
+    private final UserRepository userRepository;
 
     public MainPageResponseDTO getMainPage(Long userId) {
         // db 조회
@@ -43,7 +46,7 @@ public class MainPageService {
         List<UserPlace> userPlaces = userPlaceRepository.findByUserIdWithPlace(userId);
         List<Plant> plants = plantRepository.findAll();
 
-        TodoInfoComponentDTO todoInfoComponent = getTodoInfo(userId, farms);
+        TodoInfoComponentDTO todoInfoComponent = getTodoInfo(userId, farms); // 중간완성
         BeginnerInfoComponentDTO beginnerInfoComponent = getBeginnerInfo(userId, farms, favoritePlants); // 완성
         MyFarmListInfoComponentDTO myFarmListInfoComponent = getMyFarmListInfo(userId, farms, userPlaces); // 완성
         FarmGuideInfoComponentDTO farmGuideInfoComponent = getFarmGuideInfo(userId); // 완성
@@ -51,7 +54,7 @@ public class MainPageService {
         MyPlantInfoComponentDTO myPlantInfoComponent = getMyPlantInfo(userId, farms); // 완성
         RecommendInfoComponentDTO recommendInfoComponent = getRecommendInfo(userId, plants); // 완성(추천없이)
         CommunityInfoComponentDTO communityInfoComponent = getCommunityInfo(userId);
-        WeekendFarmComponentDTO weekendFarmComponent = getWeekendFarm(userId);
+        WeekendFarmComponentDTO weekendFarmComponent = getWeekendFarm(userId); // 완성
 
         return new MainPageResponseDTO(todoInfoComponent, beginnerInfoComponent, myFarmListInfoComponent, farmGuideInfoComponent, favoritesInfoComponent,
                 myPlantInfoComponent, recommendInfoComponent, communityInfoComponent, weekendFarmComponent);
@@ -205,6 +208,7 @@ public class MainPageService {
      * 9. 주말농장 컴포넌트
      */
     private WeekendFarmComponentDTO getWeekendFarm(Long userId) {
-        return new WeekendFarmComponentDTO();
+        User user = userRepository.findById(userId).orElseThrow();
+        return new WeekendFarmComponentDTO(true, user.getAddress());
     }
 }
