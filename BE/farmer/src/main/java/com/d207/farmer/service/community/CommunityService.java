@@ -1,16 +1,10 @@
 package com.d207.farmer.service.community;
 
-import com.d207.farmer.domain.community.Community;
-import com.d207.farmer.domain.community.CommunityImage;
-import com.d207.farmer.domain.community.CommunitySelectedTag;
-import com.d207.farmer.domain.community.CommunityTag;
+import com.d207.farmer.domain.community.*;
 import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.community.CommunityRegisterDTO;
 import com.d207.farmer.dto.community.CommunityResponseDTO;
-import com.d207.farmer.repository.community.CommunityImageRepository;
-import com.d207.farmer.repository.community.CommunityRepository;
-import com.d207.farmer.repository.community.CommunitySelectedTagRespository;
-import com.d207.farmer.repository.community.CommunityTagRepository;
+import com.d207.farmer.repository.community.*;
 import com.d207.farmer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +28,7 @@ public class CommunityService {
     private final CommunityTagRepository communityTagRepository;
     private final CommunitySelectedTagRespository communitySelectedTagRespository;
     private final CommunityImageRepository communityImageRepository;
+    private final CommunityHeartRepository communityHeartRepository;
 
     public List<CommunityResponseDTO> getCommunity() {
         List<Community> communities =communityRepository.findAll();
@@ -90,5 +85,26 @@ public class CommunityService {
 
 
         return "register Success";
+    }
+
+    @Transactional
+    public String registerHeart(Long userId, Long communityid) {
+
+        User user = userRepository.findById(userId).orElseThrow();
+        Community community = communityRepository.findById(communityid).orElseThrow();;
+        CommunityHeart communityHeart = communityHeartRepository.findByCommunityAndUser(community, user).orElse(null);
+        if(communityHeart !=null){
+            communityHeartRepository.delete(communityHeart);
+            return "delete Heart success";
+        }
+        else{
+            communityHeartRepository.save(new CommunityHeart(community, user));
+            return "register Heart success";
+        }
+
+
+
+
+
     }
 }

@@ -1,5 +1,6 @@
 package com.d207.farmer.controller.community;
 
+import com.d207.farmer.dto.community.CommunityOneArticleResponseDTO;
 import com.d207.farmer.dto.community.CommunityRegisterDTO;
 import com.d207.farmer.dto.community.CommunityResponseDTO;
 import com.d207.farmer.dto.place.PlaceRegisterRequestDTO;
@@ -39,6 +40,22 @@ public class CommunityController {
         log.info("CommunityController] Post Community {}", authorization);
 
         return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunity(userId, communityRegisterDTO));
+    }
+
+//    @GetMapping("{id}")
+//    public ResponseEntity<CommunityOneArticleResponseDTO> getCommunity(@PathVariable Long id) {
+//
+//
+//    }
+
+    @PostMapping("{id}")
+    public ResponseEntity<String> registerHeart(@RequestHeader("Authorization") String authorization,
+                                                @PathVariable Long id){
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("CommunityController] Post Community {}", authorization);
+
+
+        return ResponseEntity.created(URI.create("/")).body(communityService.registerHeart(userId, id));
     }
 
 

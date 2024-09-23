@@ -9,8 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 public class CommunityRegisterDTO {
 
-    String communityTitle;
-    String communityContent;
-    List<String> imagePath;
-    List<String> communityTagList;
+    private String communityTitle;
+    private String communityContent;
+    private List<String> imagePath;
+    private List<String> communityTagList;
 }

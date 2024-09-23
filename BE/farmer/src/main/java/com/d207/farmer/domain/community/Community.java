@@ -36,6 +36,9 @@ public class Community {
     @Column(name = "community_date")
     private LocalDateTime writeDate;
 
+    @Column(name = "community_check_delete")
+    private boolean checkDelete;
+
 
     public Community(User user, String communityTitle, String communityContent) {
 
@@ -43,5 +46,6 @@ public class Community {
         this.title = communityTitle;
         this.content = communityContent;
         this.writeDate = LocalDateTime.now();
+        this.checkDelete = false;
     }
 }
