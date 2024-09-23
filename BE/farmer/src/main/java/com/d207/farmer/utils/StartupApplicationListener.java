@@ -1,13 +1,22 @@
 package com.d207.farmer.utils;
 
+import com.d207.farmer.domain.common.Address;
 import com.d207.farmer.domain.user.Gender;
 import com.d207.farmer.domain.user.User;
+import com.d207.farmer.dto.farm.register.FarmPlaceRegisterDTO;
+import com.d207.farmer.dto.farm.register.FarmPlantRegisterDTO;
+import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
+import com.d207.farmer.dto.myplant.ManagePlantRequestDTO;
+import com.d207.farmer.dto.myplant.StartGrowPlantRequestDTO;
 import com.d207.farmer.dto.place.PlaceRegisterRequestDTO;
 import com.d207.farmer.dto.plant.PlantRegisterRequestDTO;
+import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.UserRegisterRequestDTO;
 import com.d207.farmer.dto.weekend_farm.WeekendFarmRegisterRequestDTO;
+import com.d207.farmer.service.farm.FarmService;
 import com.d207.farmer.service.place.PlaceService;
 import com.d207.farmer.service.plant.PlantService;
+import com.d207.farmer.service.user.MyPlantService;
 import com.d207.farmer.service.user.UserService;
 import com.d207.farmer.service.weekend_farm.WeekendFarmService;
 import jakarta.annotation.PostConstruct;
@@ -17,6 +26,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Boolean.TRUE;
 
@@ -37,25 +49,49 @@ public class StartupApplicationListener {
     private final PlantService plantService;
     private final PlaceService placeService;
     private final WeekendFarmService weekendFarmService;
-
+    private final FarmService farmService;
+    private final MyPlantService myPlantService;
 
     @EventListener
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent event) {
         log.info("Application ready");
-        createUserSample();
         createPlantSample();
         createPlaceSample();
         createWeekendFarmSample();
+        createUserSample();
+        createFarmSample();
     }
 
     private void createUserSample() {
         for (int i = 1; i < USER_NUM + 1; i++) {
             UserRegisterRequestDTO u = new UserRegisterRequestDTO(
-                    "test" + i + "@email.com", "1234", "test" + i, 20 + i, Gender.MALE, "대구", TRUE
+                    "test" + i + "@email.com", "1234", "test" + i, 20 + i, Gender.MALE, "대구광역시 달서구", true
             );
             userService.registerUser(u);
         }
+        UserRegisterRequestDTO u1 = new UserRegisterRequestDTO( // id 11번
+                "farm1@email.com", "1234", "farmer1", 25, Gender.MALE, "경상북도 구미시", true
+        );
+        userService.registerUser(u1);
+
+        // 설문조사 추가
+        SurveyRegisterRequestDTO.Place surveyPlace = new SurveyRegisterRequestDTO.Place(1L);
+        SurveyRegisterRequestDTO.Plant surveyPlant = new SurveyRegisterRequestDTO.Plant(1L);
+        List<SurveyRegisterRequestDTO.Place> surveyPlaces = new ArrayList<>();
+        List<SurveyRegisterRequestDTO.Plant> surveyPlants = new ArrayList<>();
+        surveyPlaces.add(surveyPlace);
+        surveyPlants.add(surveyPlant);
+        userService.registerSurvey(11L, new SurveyRegisterRequestDTO(surveyPlants, surveyPlaces));
+
+        UserRegisterRequestDTO u2 = new UserRegisterRequestDTO(
+                "farm2@email.com", "1234", "farmer2", 25, Gender.MALE, "경상북도 구미시", true
+        );
+        userService.registerUser(u2);
+        UserRegisterRequestDTO u3 = new UserRegisterRequestDTO(
+                "mainpage@email.com", "1234", "mainpage", 30, Gender.MALE, "경상북도 포항시", true
+        );
+        userService.registerUser(u3);
     }
 
     private void createPlantSample() {
@@ -77,4 +113,22 @@ public class StartupApplicationListener {
         }
     }
 
+    private void createFarmSample() {
+        Address address = new Address("경북", "구미시", "", "임수동", null, "경북 구미시 임수동 94-1", "39388");
+
+        FarmPlaceRegisterDTO farmPlace1 = new FarmPlaceRegisterDTO(1L, null, address);
+        FarmPlantRegisterDTO farmPlant1 = new FarmPlantRegisterDTO(1L, "토순이", "토마토 냠냠");
+        FarmRegisterRequestDTO farmRegister1 = new FarmRegisterRequestDTO(farmPlace1, farmPlant1);
+        farmService.registerFarm(11L, farmRegister1);
+        myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(1L, 1));
+
+        FarmPlaceRegisterDTO farmPlace2 = new FarmPlaceRegisterDTO(2L, null, address);
+        FarmPlantRegisterDTO farmPlant2 = new FarmPlantRegisterDTO(2L, "작매고", "작은 고추가 매움");
+        FarmRegisterRequestDTO farmRegister2 = new FarmRegisterRequestDTO(farmPlace2, farmPlant2);
+        farmService.registerFarm(11L, farmRegister2);
+        myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(2L, 1));
+        myPlantService.harvestPlant(11L, new ManagePlantRequestDTO(2L));
+        myPlantService.endPlant(11L, new ManagePlantRequestDTO(2L));
+
+    }
 }

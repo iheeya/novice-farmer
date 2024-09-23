@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 public class MainPageResponseDTO {
     TodoInfoComponentDTO todoInfo;
     BeginnerInfoComponentDTO beginnerInfo;
@@ -18,4 +18,16 @@ public class MainPageResponseDTO {
     RecommendInfoComponentDTO recommendInfo;
     CommunityInfoComponentDTO communityInfo;
     WeekendFarmComponentDTO weekendFarm;
+
+    public MainPageResponseDTO() {
+        this.todoInfo = new TodoInfoComponentDTO();
+        this.beginnerInfo = new BeginnerInfoComponentDTO();
+        this.myFarmListInfo = new MyFarmListInfoComponentDTO();
+        this.farmGuideInfo = new FarmGuideInfoComponentDTO();
+        this.favoritesInfo = new FavoritesInfoComponentDTO();
+        this.myPlantInfo = new MyPlantInfoComponentDTO();
+        this.recommendInfo = new RecommendInfoComponentDTO();
+        this.communityInfo = new CommunityInfoComponentDTO();
+        this.weekendFarm = new WeekendFarmComponentDTO();
+    }
 }
