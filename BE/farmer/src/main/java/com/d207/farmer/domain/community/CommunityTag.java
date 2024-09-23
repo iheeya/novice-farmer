@@ -17,9 +17,6 @@ public class CommunityTag {
     @Column(name = "community_tag_id")
     private Long id;
 
-    @Column(name = "community_tag_type")
-    @Enumerated(STRING)
-    private TagType tagType;
 
     @Column(name = "community_tag_name")
     private String tagName;
