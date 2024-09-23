@@ -169,13 +169,17 @@ public class UserController {
     }
 
 
+    /**
+     * 마이페이지 - 과거 기른 작물 출력List<Farm>
+     */
     // 확인해봐야함!
     @GetMapping("/mypage/history")
-    public ResponseEntity<List<Farm>> getFarmHistory(@RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<?> getFarmHistory(@RequestHeader("Authorization") String authorization) {
         Long userId;
         userId = jwtUtil.getUserId(authorization);
         log.info("[UserController] Received get mypage- My Farm history");
         return ResponseEntity.ok().body(userService.getFarmHistory(userId));
+
     }
 
 
