@@ -129,4 +129,15 @@ public class MyPlantController {
         Long userId = jwtUtil.getUserId(authorization);
         return ResponseEntity.ok().body(myPlantService.inspectionGrowthStep(userId, request));
     }
+
+    /**
+     * 생장 정보 업데이트 반영
+     */
+    @PostMapping("/growth")
+    public ResponseEntity<String> updateGrowthStepByInspection(@RequestHeader("Authorization") String authorization,
+                                                               @RequestBody UpdateGrowthStepRequestDTO request) {
+        log.info("[MyPlantController] Received updateGrowthStepByInspection request for {}", request);
+        Long userId = jwtUtil.getUserId(authorization);
+        return ResponseEntity.ok().body(myPlantService.updateGrowthStepByInspection(userId, request));
+    }
 }

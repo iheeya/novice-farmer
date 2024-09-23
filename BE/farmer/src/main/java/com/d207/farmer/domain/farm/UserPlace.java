@@ -56,6 +56,9 @@ public class UserPlace {
     @Column(name = "user_place_direction")
     private Direction direction;
 
+    /**
+     * 비즈니스 메서드
+     */
     public UserPlace(User user, Place place, String lati, String longi, String defaultPlaceName, Address address, Direction direction) {
         this.user = user;
         this.place = place;
@@ -66,4 +69,7 @@ public class UserPlace {
         this.direction = direction;
     }
 
+    public void modifyName(String userPlaceName) {
+        this.name = userPlaceName;
+    }
 }
