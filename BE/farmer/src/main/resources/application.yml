@@ -53,7 +53,8 @@ spring:
 
   data:
     redis:
-      host: 127.0.0.1
+      #host: 127.0.0.1
+      host: j11d207.p.ssafy.io
       port: 6379
 external:
   api:
@@ -70,3 +71,6 @@ logging:
       hibernate:
         SQL: debug
         type: trace
+
+server:
+  port: 8081
