@@ -3,6 +3,7 @@ package com.d207.farmer.service.user;
 import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
+import com.d207.farmer.domain.plant.PlantGrowthIllust;
 import com.d207.farmer.domain.user.*;
 import com.d207.farmer.dto.place.PlaceResponseDTO;
 import com.d207.farmer.dto.place.PlaceResponseWithIdDTO;
@@ -10,9 +11,11 @@ import com.d207.farmer.dto.plant.PlantResponseDTO;
 import com.d207.farmer.dto.plant.PlantResponseWithIdDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.*;
+import com.d207.farmer.dto.user.mypage.UserMypageHistoryResponseDTO;
 import com.d207.farmer.exception.FailedAuthenticateUserException;
 import com.d207.farmer.exception.FailedInvalidUserException;
 import com.d207.farmer.repository.farm.FarmRepository;
+import com.d207.farmer.repository.plant.PlantIllustRepository;
 import com.d207.farmer.repository.user.*;
 import com.d207.farmer.repository.place.PlaceRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
@@ -45,6 +48,7 @@ public class UserService {
     private final RecommendPlantRepository recommendPlantRepository;
     private final RecommendPlaceRepository recommendPlaceRepository;
     private final FarmRepository farmRepository;
+    private final PlantIllustRepository plantIllustRepository;
 
     @Transactional
     public UserInfoResponseDTO registerUser(UserRegisterRequestDTO request) {
@@ -323,9 +327,28 @@ public class UserService {
         return userRepository.findByNickname(nickname) == null;
     }
 
-    public List<Farm> getFarmHistory(Long userId) {
+    public List<UserMypageHistoryResponseDTO> getFarmHistory(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
-        List<Farm> farm = farmRepository.findByUserAndIsCompletedTrue(user);
-        return farm;
+        List<Farm> farms = farmRepository.findByUserAndIsCompletedTrue(user);
+        List<UserMypageHistoryResponseDTO> userMypageHistoryResponseDTOS = farms.stream()
+                .map(farm -> {
+                    // farm의 growthStep을 통해 PlantGrowthIllust에서 이미지 경로를 가져옵니다.
+                    String imageUrl = plantIllustRepository.findByPlantAndStep(farm.getPlant(), farm.getGrowthStep())
+                            .map(PlantGrowthIllust::getImagePath)
+                            .orElse(null); // 이미지가 없을 경우 null 처리 // 이미지가 없을 경우 null 처리
+
+                    return UserMypageHistoryResponseDTO.builder()
+                            .id(farm.getId())
+                            .plantname(farm.getPlant().getName()) // Plant의 이름을 가져온다고 가정
+                            .plantmyname(farm.getMyPlantName())
+                            .placename(farm.getUserPlace().getName()) // UserPlace의 이름을 가져온다고 가정
+                            .seedDate(farm.getSeedDate())
+                            .firstHarvestDate(farm.getFirstHarvestDate())
+                            .imageurl(imageUrl) // 가져온 이미지 경로를 설정
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return userMypageHistoryResponseDTOS;
     }
 }
