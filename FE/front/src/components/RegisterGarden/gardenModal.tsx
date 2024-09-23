@@ -153,8 +153,9 @@ function GardenModal({ placeName, placeId, onClose }: GardenModalProps) {
             <Button
               variant="contained"
               onClick={handlePostcode}
+              color="success"
               disabled={!isScriptLoaded} // 스크립트가 로드되기 전에는 버튼 비활성화
-              sx={{backgroundColor: '#B0D085', opacity:1, position:'absolute', left: '70%'}}
+              sx={{opacity:1, position:'absolute', left: '70%'}}
               
             >
               주소 찾기
