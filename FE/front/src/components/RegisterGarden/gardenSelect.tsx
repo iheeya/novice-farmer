@@ -8,6 +8,8 @@ import farmPlace from '../../assets/dummydata/farmPlace.json'
 import '../../styles/RegisterGarden/gardenSelect.css'
 import { FaHeart } from "react-icons/fa";
 import GardenModal from './gardenModal'
+import { useDispatch } from 'react-redux'
+import {setFarmData} from '../../store/store'
 
 
 // farm/place api 사용해서 텃밭 리스트 가져오기
@@ -16,6 +18,7 @@ interface GardenLoadingProps{
 }
 
 function GardenSelect({onLoading}:GardenLoadingProps) {
+    const dispatch = useDispatch(); // 디스패치 함수 
     const [selectedPlace, setSelectedPlace] = useState<string | null>(null); // 선택된 장소를 저장할 상태
     const [isModalOpen, setIsModalOpen] = useState(false)  // 모달 열림 상태
     const [selectPlaceId, setSelectPalceId] = useState<number|null>(null) // 장소 id 저장
@@ -30,9 +33,10 @@ function GardenSelect({onLoading}:GardenLoadingProps) {
 
     const handleImageClick = (placeName :string, placeId:number) => {
         // setSelectedPlace(place); // 선택한 장소 저장
-        console.log(`${placeName}`)
-        console.log(`${placeId}`)
+        // console.log(`${placeName}`)
+        // console.log(`${placeId}`)
         setSelectedPlace(placeName)
+        dispatch(setFarmData(placeName))   //farm 데이터에 선택한 장소 이름 저장
         setSelectPalceId(placeId)
         setIsModalOpen(true)
     }
@@ -63,7 +67,7 @@ function GardenSelect({onLoading}:GardenLoadingProps) {
                 </div>
                 ))}
             </div>
-            {isModalOpen && <GardenModal placeName={selectedPlace} placeId={selectPlaceId} onClose={closeModal} onLoading={onLoading} />} {/* 모달 조건부 렌더링 */}
+            {isModalOpen && <GardenModal  placeId={selectPlaceId} onClose={closeModal} onLoading={onLoading} />} {/* 모달 조건부 렌더링 */}
         </div>
     )
 }
