@@ -1,5 +1,6 @@
 package com.d207.farmer.service.user;
 
+import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.user.*;
@@ -11,6 +12,7 @@ import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.*;
 import com.d207.farmer.exception.FailedAuthenticateUserException;
 import com.d207.farmer.exception.FailedInvalidUserException;
+import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.user.*;
 import com.d207.farmer.repository.place.PlaceRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
@@ -42,6 +44,7 @@ public class UserService {
     private final FavoritePlaceRepository favoritePlaceRepository;
     private final RecommendPlantRepository recommendPlantRepository;
     private final RecommendPlaceRepository recommendPlaceRepository;
+    private final FarmRepository farmRepository;
 
     @Transactional
     public UserInfoResponseDTO registerUser(UserRegisterRequestDTO request) {
@@ -318,5 +321,11 @@ public class UserService {
         User user = userRepository.findByEmail(nickname);
         log.info("user = {}, {}", user, nickname);
         return userRepository.findByNickname(nickname) == null;
+    }
+
+    public List<Farm> getFarmHistory(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        List<Farm> farm = farmRepository.findByUserAndIsCompletedTrue(user);
+        return farm;
     }
 }
