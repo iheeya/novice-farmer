@@ -13,6 +13,7 @@ import com.d207.farmer.dto.plant.PlantRegisterRequestDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.UserRegisterRequestDTO;
 import com.d207.farmer.dto.weekend_farm.WeekendFarmRegisterRequestDTO;
+import com.d207.farmer.service.common.SampleService;
 import com.d207.farmer.service.farm.FarmService;
 import com.d207.farmer.service.place.PlaceService;
 import com.d207.farmer.service.plant.PlantService;
@@ -46,6 +47,7 @@ public class StartupApplicationListener {
     };
 
     private final UserService userService;
+    private final SampleService sampleService;
     private final PlantService plantService;
     private final PlaceService placeService;
     private final WeekendFarmService weekendFarmService;
@@ -68,30 +70,30 @@ public class StartupApplicationListener {
             UserRegisterRequestDTO u = new UserRegisterRequestDTO(
                     "test" + i + "@email.com", "1234", "test" + i, 20 + i, Gender.MALE, "대구광역시 달서구", true
             );
-            userService.registerUser(u);
+            sampleService.registerUser(u);
         }
         UserRegisterRequestDTO u1 = new UserRegisterRequestDTO( // id 11번
                 "farm1@email.com", "1234", "farmer1", 25, Gender.MALE, "경상북도 구미시", true
         );
-        userService.registerUser(u1);
+        User user = sampleService.registerUser(u1);
 
-        // 설문조사 추가
+        // 설문조사 추가(farm1@email.com)
         SurveyRegisterRequestDTO.Place surveyPlace = new SurveyRegisterRequestDTO.Place(1L);
         SurveyRegisterRequestDTO.Plant surveyPlant = new SurveyRegisterRequestDTO.Plant(1L);
         List<SurveyRegisterRequestDTO.Place> surveyPlaces = new ArrayList<>();
         List<SurveyRegisterRequestDTO.Plant> surveyPlants = new ArrayList<>();
         surveyPlaces.add(surveyPlace);
         surveyPlants.add(surveyPlant);
-        userService.registerSurvey(11L, new SurveyRegisterRequestDTO(surveyPlants, surveyPlaces));
+        sampleService.registerFavorites(user, new SurveyRegisterRequestDTO(surveyPlants, surveyPlaces));
 
         UserRegisterRequestDTO u2 = new UserRegisterRequestDTO(
                 "farm2@email.com", "1234", "farmer2", 25, Gender.MALE, "경상북도 구미시", true
         );
-        userService.registerUser(u2);
+        sampleService.registerUser(u2);
         UserRegisterRequestDTO u3 = new UserRegisterRequestDTO(
                 "mainpage@email.com", "1234", "mainpage", 30, Gender.MALE, "경상북도 포항시", true
         );
-        userService.registerUser(u3);
+        sampleService.registerUser(u3);
     }
 
     private void createPlantSample() {
