@@ -84,6 +84,9 @@ public class Farm {
         this.predDate = LocalDateTime.now().plusDays(plant.getGrowthDay());
         this.growthStep = 1;
         this.createDate = LocalDateTime.now();
+        this.isCompleted = false;
+        this.isDeleted = false;
+        this.isFirstHarvest = false;
     }
 
     // 작물 키우기 시작하기
@@ -116,5 +119,9 @@ public class Farm {
 
     public void updateMemo(String memo) {
         this.memo = memo;
+    }
+
+    public void updateGrowthStep(int growthStep) {
+        this.growthStep = growthStep;
     }
 }
