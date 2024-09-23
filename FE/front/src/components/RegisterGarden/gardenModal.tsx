@@ -6,9 +6,11 @@ import Button from '@mui/material/Button';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 import TextField from '@mui/material/TextField';
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux';
+import { setLocationData, setPlantData } from '../../store/store';
+import { RootState } from '../../store/store';
 
 interface GardenModalProps {
-    placeName: string | null; // placeName은 string 또는 null
     placeId: number |null;
     onClose: () => void; // onClose는 함수 타입
     onLoading: () => void;
@@ -39,11 +41,12 @@ const customModalStyles: ReactModal.Styles = {
     },
 };
 
-function GardenModal({ placeName, placeId, onClose, onLoading }: GardenModalProps) {
+function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
+  const dispatch = useDispatch();
   const addressRef = useRef<HTMLInputElement>(null); // 주소 입력 필드 참조
   const [isScriptLoaded, setIsScriptLoaded] = useState(false); // 스크립트 로드 상태
   const [postcodeData, setPostcodeData] = useState<any>(null); // 우편번호 데이터 상태
-
+  const farmData = useSelector((state: RootState) => state.farmSelect.farm)
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -96,6 +99,7 @@ function GardenModal({ placeName, placeId, onClose, onLoading }: GardenModalProp
 
           if (addressRef.current) {
             addressRef.current.value = addr; // 주소 필드에 값 설정
+            dispatch(setPlantData(addr))
           }
         }
       }).open();
@@ -132,7 +136,7 @@ function GardenModal({ placeName, placeId, onClose, onLoading }: GardenModalProp
         <div className='instruction'>텃밭에 적합한 작물을 알려드려요</div>
         <div className='box-color'>
           <div className='box-title'>텃밭</div>
-          <div className='box-content'>{placeName}</div>
+          <div className='box-content'>{farmData}</div>
         </div>
         <div className='box-color'>
           <div className='box-title'>위치</div>
