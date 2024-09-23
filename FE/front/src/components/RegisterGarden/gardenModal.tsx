@@ -11,6 +11,7 @@ interface GardenModalProps {
     placeName: string | null; // placeName은 string 또는 null
     placeId: number |null;
     onClose: () => void; // onClose는 함수 타입
+    onLoading: () => void;
 }
 
 const customModalStyles: ReactModal.Styles = {
@@ -24,7 +25,7 @@ const customModalStyles: ReactModal.Styles = {
       height: "40%",
       zIndex: 150,
       position: "absolute",
-      top: "80%",
+      top: "72.7%",
       left: "50%",
       transform: "translate(-50%, -50%)",
       borderRadius: "10px",
@@ -38,7 +39,7 @@ const customModalStyles: ReactModal.Styles = {
     },
 };
 
-function GardenModal({ placeName, placeId, onClose }: GardenModalProps) {
+function GardenModal({ placeName, placeId, onClose, onLoading }: GardenModalProps) {
   const addressRef = useRef<HTMLInputElement>(null); // 주소 입력 필드 참조
   const [isScriptLoaded, setIsScriptLoaded] = useState(false); // 스크립트 로드 상태
   const [postcodeData, setPostcodeData] = useState<any>(null); // 우편번호 데이터 상태
@@ -73,16 +74,16 @@ function GardenModal({ placeName, placeId, onClose }: GardenModalProps) {
           }
           
           // post요청 보낼것들 console로 찍어보기
-          console.log(data.sido)  //도
-          console.log(data.sigungu)  // 시
-          console.log(data.bname1) //법정리의 읍/면 이름 ("동"지역일 경우에는 공백, "리"지역일 경우에는 "읍" 또는 "면" 정보가 들어갑니다.)
-          console.log(data.bname2)
-          console.log(data.bunji)
-          console.log(data.jibunAddress) //
-          console.log(data.zonecode)
+          // console.log(data.sido)  //도
+          // console.log(data.sigungu)  // 시
+          // console.log(data.bname1) //법정리의 읍/면 이름 ("동"지역일 경우에는 공백, "리"지역일 경우에는 "읍" 또는 "면" 정보가 들어갑니다.)
+          // console.log(data.bname2)
+          // console.log(data.bunji)
+          // console.log(data.jibunAddress) //
+          // console.log(data.zonecode)
     
 
-           // 우편번호 데이터를 상태에 저장
+           // 우편번호 데이터 저장
            setPostcodeData({
             sido: data.sido,
             sigungu: data.sigungu,
@@ -138,19 +139,27 @@ function GardenModal({ placeName, placeId, onClose }: GardenModalProps) {
           <div className='box-content'>
             <TextField
               id="sample2_address"
-              label="주소입력"
               variant="standard"
               inputRef={addressRef}
-              fullWidth
+              sx={{
+              '& .MuiInput-underline:before': {
+                borderBottom: 'none', // 비활성화 상태에서의 밑줄 제거
+              },
+              '& .MuiInput-underline:after': {
+                borderBottom: 'none', // 활성화 상태에서의 밑줄 제거
+              },
+            }}
+              style={{ flex: 1, position: 'absolute', left: '25%' }}
             />
             <Button
               variant="contained"
-              color="primary"
               onClick={handlePostcode}
+              color="success"
               disabled={!isScriptLoaded} // 스크립트가 로드되기 전에는 버튼 비활성화
-              style={{ marginTop: '10px' }}
+              sx={{opacity:1, position:'absolute', left: '70%'}}
+              
             >
-              우편번호 찾기
+              주소 찾기
             </Button>
           </div>
         </div>
@@ -189,7 +198,8 @@ function GardenModal({ placeName, placeId, onClose }: GardenModalProps) {
                 // 선택완료 버튼 클릭 시 동작 추가
                 // 예: 주소를 상위 컴포넌트로 전달하거나 상태 업데이트
                 handleSubmit();  // post 요청 보내기
-                onClose();
+                // onClose();
+                onLoading();
               }}
             >
               선택완료
