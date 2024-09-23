@@ -26,8 +26,6 @@ public class MyPlaceService {
 
     public MyPlaceResponseDTO getMyPlace(Long userId, MyPlaceRequestDTO request) {
         UserPlace userPlace = userPlaceRepository.findByIdWithPlace(request.getUserPlaceId()).orElseThrow();
-        // FIXME customRepository 생성 후 querydsl로 조회
-        // FIXME 키우기 진행중인 농장의 경우 조건문 재사용성 큼
         List<Farm> farms = farmRepository.findByUserPlaceIdWithCurrentGrowing(request.getUserPlaceId()).orElse(null);
         int farmCount = farms == null ? 0 : farms.size();
 

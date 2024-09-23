@@ -14,8 +14,9 @@ public class TodoInfoComponentDTO {
     private Boolean isUsable;
     private TodoType todoType;
     private String title;
-    private String description;
-    private String imagePath;
+    private String farmName;
+    private String cropName;
+    private String plantImagePath;
     private LocalDateTime todoDate;
     private String address;
     private String temperature;

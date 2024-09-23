@@ -5,6 +5,8 @@ import com.d207.farmer.dto.myplace.MyPlaceResponseDTO;
 import com.d207.farmer.dto.myplace.UpdateMyPlaceNameRequestDTO;
 import com.d207.farmer.service.user.MyPlaceService;
 import com.d207.farmer.utils.JWTUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/myplace")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@Tag(name = "내 장소", description = "myplace")
 public class MyPlaceController {
 
     private final MyPlaceService myPlaceService;
@@ -23,6 +26,7 @@ public class MyPlaceController {
     /**
      * 선택된 텃밭과 그 텃밭의 작물들 조회
      */
+    @Operation(summary = "선택된 텃밭의 작물들 조회", description = "선택된 텃밭과, 그 텃밭의 작물들 조회")
     @GetMapping
     public ResponseEntity<MyPlaceResponseDTO> getMyPlace(@RequestHeader("Authorization") String authorization,
                                                          @RequestBody MyPlaceRequestDTO request) {
@@ -34,6 +38,7 @@ public class MyPlaceController {
     /**
      * 내 텃밭 이름 변경
      */
+    @Operation(summary = "내 텃밭 이름 변경", description = "텃밭 이름 변경(변경할 이름 보내기)")
     @PostMapping("/name")
     public ResponseEntity<String> updateMyPlaceName(@RequestHeader("Authorization") String authorization,
                                                     @RequestBody UpdateMyPlaceNameRequestDTO request) {
