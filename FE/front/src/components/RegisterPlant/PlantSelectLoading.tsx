@@ -3,12 +3,12 @@ import loading from '../../assets/img/loading/loading.png'
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/AddFarm/store';
 
-function GardenSelectLoading(){
-    const farmData = useSelector((state:RootState) => state.farmSelect.farm)
+function PlanSelectLoading(){
+    const plantData = useSelector((state:RootState) => state.farmSelect.plant)
 
     return(
         <div className="loading-instruction">
-            <div>{farmData}에서 키우기 좋은 </div>
+            <div>{plantData}에서 키우기 좋은 </div>
             <div> 작물을 분석중이에요! </div>
 
             <img
@@ -19,4 +19,4 @@ function GardenSelectLoading(){
     )
 }
 
-export default GardenSelectLoading;
+export default PlanSelectLoading;

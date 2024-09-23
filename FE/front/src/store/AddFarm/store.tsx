@@ -6,6 +6,7 @@ interface FarmState {
   plant: string | null;
   location: string | null
   placeId: number | null
+  plantId: number | null
 }
 
 
@@ -28,6 +29,7 @@ let farmSelect = createSlice({
     plant: null,
     location: null,
     placeId: null,
+    plantId: null,
   },
   reducers: {
     setFarmData(state, action) {
@@ -42,12 +44,16 @@ let farmSelect = createSlice({
     setPlaceIdData(state, action){
       state.placeId = action.payload;
     },
+    setPlantIdData(state,action){
+      state.plantId = action.payload
+    },
     clearFarmData() {
       return {
         farm: null,
         plant: null,
         location: null,
         placeId: null,
+        plantId: null,
       }; // farm 데이터 초기화
     },
   },
@@ -72,7 +78,7 @@ let address = createSlice({
 
 
 
-export const { setFarmData, setPlaceIdData, setPlantData, setLocationData, clearFarmData } = farmSelect.actions;
+export const { setFarmData, setPlaceIdData, setPlantIdData, setPlantData, setLocationData, clearFarmData } = farmSelect.actions;
 export const {setAddressData, clearAddressData} = address.actions;
 
 export interface RootState{

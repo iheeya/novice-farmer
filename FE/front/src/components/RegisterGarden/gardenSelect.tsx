@@ -10,7 +10,7 @@ import { FaHeart } from "react-icons/fa";
 // import GardenModal from './GardenModal'
 import GardenModal from './gardenModal'
 import { useDispatch } from 'react-redux'
-import {setFarmData, setPlaceIdData} from '../../store/store'
+import {setFarmData, setPlaceIdData} from '../../store/AddFarm/store'
 
 
 // farm/place api 사용해서 텃밭 리스트 가져오기

@@ -8,8 +8,8 @@ import DaumPostcodeEmbed from 'react-daum-postcode';
 import TextField from '@mui/material/TextField';
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
-import { setLocationData, setPlantData } from '../../store/store';
-import { RootState } from '../../store/store';
+import { setLocationData, setPlantData } from '../../store/AddFarm/store';
+import { RootState } from '../../store/AddFarm/store';
 import { Root } from 'react-dom/client';
 
 interface GardenModalProps {
