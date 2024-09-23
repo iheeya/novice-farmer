@@ -14,7 +14,12 @@ function RegisterGarden(){
     return(
         <>
           <SelectTab />
-          <GardenSelect/>
+          {isLoading? (
+            <Loading/>) :(
+              <GardenSelect onLoading={handleModalClick}/>
+            )
+          }
+     
         </>
         
     )

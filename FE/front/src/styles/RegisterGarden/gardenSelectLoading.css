@@ -1,0 +1,15 @@
+.loading-instruction {
+    color: #5B8E55;
+    margin-top: 20%;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+
+.loading-image-size{
+    width: 50vw;    
+    height: 80vw;
+    aspect-ratio: 1 / 1; /* 1:1 비율 유지 */
+    object-fit: cover; /* 이미지 크기에 맞게 자르기 */
+    margin-top: 5%;
+}

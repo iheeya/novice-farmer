@@ -11,6 +11,7 @@ interface GardenModalProps {
     placeName: string | null; // placeName은 string 또는 null
     placeId: number |null;
     onClose: () => void; // onClose는 함수 타입
+    onLoading: () => void;
 }
 
 const customModalStyles: ReactModal.Styles = {
@@ -38,7 +39,7 @@ const customModalStyles: ReactModal.Styles = {
     },
 };
 
-function GardenModal({ placeName, placeId, onClose }: GardenModalProps) {
+function GardenModal({ placeName, placeId, onClose, onLoading }: GardenModalProps) {
   const addressRef = useRef<HTMLInputElement>(null); // 주소 입력 필드 참조
   const [isScriptLoaded, setIsScriptLoaded] = useState(false); // 스크립트 로드 상태
   const [postcodeData, setPostcodeData] = useState<any>(null); // 우편번호 데이터 상태
@@ -197,7 +198,8 @@ function GardenModal({ placeName, placeId, onClose }: GardenModalProps) {
                 // 선택완료 버튼 클릭 시 동작 추가
                 // 예: 주소를 상위 컴포넌트로 전달하거나 상태 업데이트
                 handleSubmit();  // post 요청 보내기
-                onClose();
+                // onClose();
+                onLoading();
               }}
             >
               선택완료
