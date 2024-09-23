@@ -1,6 +1,11 @@
 package com.d207.farmer.utils;
 
 import com.d207.farmer.domain.common.Address;
+import com.d207.farmer.domain.farm.Farm;
+import com.d207.farmer.domain.farm.FarmTodo;
+import com.d207.farmer.domain.farm.TodoType;
+import com.d207.farmer.domain.plant.Plant;
+import com.d207.farmer.domain.plant.PlantGrowthIllust;
 import com.d207.farmer.domain.user.Gender;
 import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.farm.register.FarmPlaceRegisterDTO;
@@ -13,6 +18,10 @@ import com.d207.farmer.dto.plant.PlantRegisterRequestDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.UserRegisterRequestDTO;
 import com.d207.farmer.dto.weekend_farm.WeekendFarmRegisterRequestDTO;
+import com.d207.farmer.repository.farm.FarmRepository;
+import com.d207.farmer.repository.farm.FarmTodoRepository;
+import com.d207.farmer.repository.plant.PlantIllustRepository;
+import com.d207.farmer.repository.plant.PlantRepository;
 import com.d207.farmer.service.common.SampleService;
 import com.d207.farmer.service.farm.FarmService;
 import com.d207.farmer.service.place.PlaceService;
@@ -28,6 +37,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,8 +61,12 @@ public class StartupApplicationListener {
     private final PlantService plantService;
     private final PlaceService placeService;
     private final WeekendFarmService weekendFarmService;
+    private final PlantIllustRepository plantIllustRepository;
     private final FarmService farmService;
     private final MyPlantService myPlantService;
+    private final FarmTodoRepository farmTodoRepository;
+    private final FarmRepository farmRepository;
+    private final PlantRepository plantRepository;
 
     @EventListener
     @Transactional
@@ -61,8 +75,10 @@ public class StartupApplicationListener {
         createPlantSample();
         createPlaceSample();
         createWeekendFarmSample();
+        createPlantIllustSample();
         createUserSample();
         createFarmSample();
+        createTodoSample();
     }
 
     private void createUserSample() {
@@ -115,6 +131,15 @@ public class StartupApplicationListener {
         }
     }
 
+    private void createPlantIllustSample() {
+        List<Plant> plants = plantRepository.findAll();
+        for (Plant plant : plants) {
+            for (int i = 0; i < 4; i++) {
+                plantIllustRepository.save(new PlantGrowthIllust(plant, i, "sample illust image path for " + plant.getName() + " " + i + "단계"));
+            }
+        }
+    }
+
     private void createFarmSample() {
         Address address = new Address("경북", "구미시", "", "임수동", null, "경북 구미시 임수동 94-1", "39388");
 
@@ -132,5 +157,17 @@ public class StartupApplicationListener {
         myPlantService.harvestPlant(11L, new ManagePlantRequestDTO(2L));
         myPlantService.endPlant(11L, new ManagePlantRequestDTO(2L));
 
+        FarmPlaceRegisterDTO farmPlace3 = new FarmPlaceRegisterDTO(3L, address);
+        FarmPlantRegisterDTO farmPlant3 = new FarmPlantRegisterDTO(1L, "상충", "쌈쌈");
+        FarmRegisterRequestDTO farmRegister3 = new FarmRegisterRequestDTO(farmPlace3, farmPlant3);
+        farmService.registerFarm(11L, farmRegister3);
+        myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(3L, 1));
+
+    }
+
+    private void createTodoSample() {
+        Farm farm = farmRepository.findById(1L).orElseThrow();
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, false, LocalDateTime.now().plusDays(5), null));
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, false, LocalDateTime.now().plusDays(6), null));
     }
 }

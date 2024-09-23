@@ -1,16 +1,16 @@
 package com.d207.farmer.service.mainpage;
 
 import com.d207.farmer.domain.farm.Farm;
+import com.d207.farmer.domain.farm.FarmTodo;
+import com.d207.farmer.domain.farm.TodoType;
 import com.d207.farmer.domain.farm.UserPlace;
 import com.d207.farmer.domain.plant.Plant;
+import com.d207.farmer.domain.plant.PlantGrowthIllust;
 import com.d207.farmer.domain.user.FavoritePlace;
 import com.d207.farmer.domain.user.FavoritePlant;
 import com.d207.farmer.dto.mainpage.MainPageResponseDTO;
 import com.d207.farmer.dto.mainpage.components.*;
-import com.d207.farmer.repository.farm.FarmRepository;
-import com.d207.farmer.repository.farm.FavoritePlaceForFarmRepository;
-import com.d207.farmer.repository.farm.FavoritePlantForFarmRepository;
-import com.d207.farmer.repository.farm.UserPlaceRepository;
+import com.d207.farmer.repository.farm.*;
 import com.d207.farmer.repository.plant.PlantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +32,7 @@ public class MainPageService {
     private final FavoritePlantForFarmRepository favoritePlantRepository;
     private final PlantRepository plantRepository;
     private final UserPlaceRepository userPlaceRepository;
+    private final FarmTodoRepository todoRepository;
 
     public MainPageResponseDTO getMainPage(Long userId) {
         // db 조회
@@ -42,7 +43,7 @@ public class MainPageService {
         List<UserPlace> userPlaces = userPlaceRepository.findByUserIdWithPlace(userId);
         List<Plant> plants = plantRepository.findAll();
 
-        TodoInfoComponentDTO todoInfoComponent = getTodoInfo(userId);
+        TodoInfoComponentDTO todoInfoComponent = getTodoInfo(userId, farms);
         BeginnerInfoComponentDTO beginnerInfoComponent = getBeginnerInfo(userId, farms, favoritePlants); // 완성
         MyFarmListInfoComponentDTO myFarmListInfoComponent = getMyFarmListInfo(userId, farms, userPlaces); // 완성
         FarmGuideInfoComponentDTO farmGuideInfoComponent = getFarmGuideInfo(userId); // 완성
@@ -59,8 +60,38 @@ public class MainPageService {
     /**
      * 1. TO DO 컴포넌트
      */
-    private TodoInfoComponentDTO getTodoInfo(Long userId) {
-        return null;
+    private TodoInfoComponentDTO getTodoInfo(Long userId, List<Farm> farms) {
+        if(farms == null) return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null);
+
+        List<Long> farmIds = farms.stream().map(Farm::getId).toList();
+        List<FarmTodo> farmTodos = todoRepository.findByFarmIdInAndIsCompletedFalseOrderByTodoDate(farmIds);
+
+        if(farmTodos == null || farmTodos.isEmpty()) {
+            return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null);
+        }
+        FarmTodo farmTodo = farmTodos.get(0);
+        String title = switch (farmTodo.getTodoType()) {
+            case WATERING -> "물을 줘야해요!";
+            case FERTILIZERING -> "비료를 줘야해요!";
+            case HARVESTING -> "수확을 해아해요!";
+            case NATURE -> "기상특보!";
+            case PANDEMIC -> "전염병 주의!";
+        };
+
+        String imagePath = "";
+        // 일러스트 이미지 경로
+        for (PlantGrowthIllust pgi : farmTodo.getFarm().getPlant().getPlantGrowthIllusts()) {
+            if(pgi.getStep() == farmTodo.getFarm().getGrowthStep()) {
+                imagePath = pgi.getImagePath();
+                break;
+            }
+        }
+
+        // TODO 기온
+        String temperature = "25도";
+
+        return new TodoInfoComponentDTO(true, farmTodo.getTodoType(), title, farmTodo.getFarm().getMyPlantName(),
+                farmTodo.getFarm().getPlant().getName(), imagePath, farmTodo.getTodoDate(), farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
     }
 
     /**
