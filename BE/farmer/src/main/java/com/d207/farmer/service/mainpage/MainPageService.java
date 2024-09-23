@@ -35,6 +35,7 @@ public class MainPageService {
     public MainPageResponseDTO getMainPage(Long userId) {
         // db 조회
         List<Farm> farms = farmRepository.findByUserIdWithCurrentGrowing(userId).orElse(null);
+        farms = farms.isEmpty() ? null : farms;
         List<FavoritePlant> favoritePlants = favoritePlantRepository.findByUserId(userId);
         List<FavoritePlace> favoritePlaces = favoritePlaceRepository.findByUserId(userId);
         List<UserPlace> userPlaces = userPlaceRepository.findByUserIdWithPlace(userId);
