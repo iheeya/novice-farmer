@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface FarmRepositoryCustom {
     Optional<List<Farm>> findByUserPlaceIdWithCurrentGrowing(Long userPlaceId);
     Optional<List<Farm>> findByUserIdWithCurrentGrowing(Long userId);
+    Optional<Farm> findByIdWithJoin(Long myPlantId);
 }
