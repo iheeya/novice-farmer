@@ -116,13 +116,13 @@ public class StartupApplicationListener {
     private void createFarmSample() {
         Address address = new Address("경북", "구미시", "", "임수동", null, "경북 구미시 임수동 94-1", "39388");
 
-        FarmPlaceRegisterDTO farmPlace1 = new FarmPlaceRegisterDTO(1L, null, address);
+        FarmPlaceRegisterDTO farmPlace1 = new FarmPlaceRegisterDTO(1L, address);
         FarmPlantRegisterDTO farmPlant1 = new FarmPlantRegisterDTO(1L, "토순이", "토마토 냠냠");
         FarmRegisterRequestDTO farmRegister1 = new FarmRegisterRequestDTO(farmPlace1, farmPlant1);
         farmService.registerFarm(11L, farmRegister1);
         myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(1L, 1));
 
-        FarmPlaceRegisterDTO farmPlace2 = new FarmPlaceRegisterDTO(2L, null, address);
+        FarmPlaceRegisterDTO farmPlace2 = new FarmPlaceRegisterDTO(2L, address);
         FarmPlantRegisterDTO farmPlant2 = new FarmPlantRegisterDTO(2L, "작매고", "작은 고추가 매움");
         FarmRegisterRequestDTO farmRegister2 = new FarmRegisterRequestDTO(farmPlace2, farmPlant2);
         farmService.registerFarm(11L, farmRegister2);
