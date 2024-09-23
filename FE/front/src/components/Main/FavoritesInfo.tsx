@@ -1,37 +1,70 @@
 import React from 'react';
-import styles from '../../styles/Main/FavoritesInfo.module.css'; // CSS 경로
+import styles from '../../styles/Main/FavoritesInfo.module.css';
+import { getImageForCrop, getImageForLocation } from '../../utils/imageMapping';  // 이미지 매핑 함수 가져오기
 
 interface FavoritesInfoProps {
   data: {
-    crops: string[];
-    farms: string[];
+    isUsable: boolean;
+    favoritePlants: {
+      plantId: number;
+      plantName: string;
+    }[];
+    favoritePlaces: {
+      placeId: number;
+      placeName: string;
+    }[];
   };
 }
 
 const FavoritesInfo: React.FC<FavoritesInfoProps> = ({ data }) => {
   return (
     <div className={styles.favoritesContainer}>
-      <h2>즐겨찾는 작물 및 농장</h2>
-      <div className={styles.section}>
-        <h3>즐겨찾는 작물</h3>
-        <ul className={styles.favoritesList}>
-          {data.crops.map((crop, index) => (
-            <li key={index} className={styles.favoritesItem}>
-              {crop}
-            </li>
-          ))}
-        </ul>
+      {/* 나의 관심 작물 섹션 */}
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.interestHeader}>나의 관심 작물</h2>
+        <img src={getImageForCrop('Default')} alt="기본 작물 이미지" className={styles.headerImage} />
       </div>
-      <div className={styles.section}>
-        <h3>즐겨찾는 농장</h3>
-        <ul className={styles.favoritesList}>
-          {data.farms.map((farm, index) => (
-            <li key={index} className={styles.favoritesItem}>
-              {farm}
-            </li>
-          ))}
-        </ul>
+
+      {/* 해시태그 리스트 */}
+      <div className={styles.hashTags}>
+        {data.favoritePlants.map((plant) => (
+          <span key={plant.plantId} className={styles.hashTag}>#{plant.plantName}</span>
+        ))}
       </div>
+
+      {/* 작물 정보 리스트 */}
+      <ul className={styles.favoritesList}>
+        {data.favoritePlants.map((plant) => (
+          <li key={plant.plantId} className={styles.favoritesItemWithImage}>
+            <p className={styles.plantText}>{plant.plantName} 재배방법?</p>
+            <img src={getImageForCrop(plant.plantName)} alt={plant.plantName} className={styles.plantImage} />
+          </li>
+        ))}
+      </ul>
+
+      <hr />
+
+      {/* 나의 관심 텃밭 섹션 */}
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.interestHeader}>나의 관심 텃밭</h2>
+        <img src={getImageForLocation(0)} alt="기본 텃밭 이미지" className={styles.headerImage} />
+      </div>
+
+      {/* 해시태그 리스트 */}
+      <div className={styles.hashTags}>
+        {data.favoritePlaces.map((place) => (
+          <span key={place.placeId} className={styles.hashTag}>#{place.placeName}</span>
+        ))}
+      </div>
+
+      {/* 텃밭 정보 리스트 */}
+      <ul className={styles.favoritesList}>
+        {data.favoritePlaces.map((place) => (
+          <li key={place.placeId} className={styles.favoritesItemNoImage}>
+            <p className={styles.placeText}>{place.placeName}에서 키울만한 작물</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
