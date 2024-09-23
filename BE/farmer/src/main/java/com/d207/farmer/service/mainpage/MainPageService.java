@@ -45,6 +45,7 @@ public class MainPageService {
         RecommendInfoComponentDTO recommendInfoComponent = getRecommendInfo(userId);
         CommunityInfoComponentDTO communityInfoComponent = getCommunityInfo(userId);
         WeekendFarmComponentDTO weekendFarmComponent = getWeekendFarm(userId);
+
         return new MainPageResponseDTO(todoInfoComponent, beginnerInfoComponent, myFarmListInfoComponent, farmGuideInfoComponent, favoritesInfoComponent,
                 myPlantInfoComponent, recommendInfoComponent, communityInfoComponent, weekendFarmComponent);
     }

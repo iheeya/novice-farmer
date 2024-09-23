@@ -27,7 +27,7 @@ public class FarmRepositoryCustomImpl implements FarmRepositoryCustom {
      */
     @Override
     public Optional<List<Farm>> findByUserPlaceIdWithCurrentGrowing(Long userPlaceId) {
-        return Optional.of(queryFactory.selectFrom(farm)
+        return Optional.ofNullable(queryFactory.selectFrom(farm)
                 .join(farm.plant).fetchJoin()
                 .where(
                         userPlaceIdEq(userPlaceId),
@@ -42,13 +42,30 @@ public class FarmRepositoryCustomImpl implements FarmRepositoryCustom {
      */
     @Override
     public Optional<List<Farm>> findByUserIdWithCurrentGrowing(Long userId) {
-        return Optional.of(queryFactory.selectFrom(farm)
+        return Optional.ofNullable(queryFactory.selectFrom(farm)
                 .join(farm.plant).fetchJoin()
                 .where(
                         userIdEq(userId),
                         isCurrentGrowingFarm()
                 )
                 .fetch());
+    }
+
+    /**
+     * id로 조회
+     * 작물, 회원_장소 join
+     */
+    @Override
+    public Optional<Farm> findByIdWithJoin(Long myPlantId) {
+        return Optional.ofNullable(queryFactory.selectFrom(farm)
+                .join(farm.plant).fetchJoin()
+                .join(farm.userPlace).fetchJoin()
+                .where(farmIdEq(myPlantId))
+                .fetchOne());
+    }
+
+    private BooleanExpression farmIdEq(Long farmId) {
+        return farm.id.eq(farmId);
     }
 
     private BooleanExpression userIdEq(Long userId) {
@@ -58,6 +75,7 @@ public class FarmRepositoryCustomImpl implements FarmRepositoryCustom {
     private BooleanExpression userPlaceIdEq(Long userPlaceId) {
         return farm.userPlace.id.eq(userPlaceId);
     }
+
     private BooleanExpression isCurrentGrowingFarm() {
         return farm.isCompleted.not().and(farm.isDeleted.not());
     }

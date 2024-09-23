@@ -5,11 +5,9 @@ import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.farm.register.FarmPlantRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +16,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class Farm {
 
     @Id @GeneratedValue
