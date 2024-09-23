@@ -1,5 +1,5 @@
 .todoContainer {
-  background-color: white;
+  background-color: #F8FAF8;
   padding: 5%;
   border-radius: 10px;
   box-shadow: 0 4% 8% rgba(0, 0, 0, 0.1);
@@ -17,7 +17,7 @@
 
 .title {
   font-size: 200%;
-  color: #1565c0;
+  color: #3D7537;
   margin-top: 0;
   margin-bottom: 3%;
 }
@@ -52,23 +52,26 @@
 
 .textSection p {
   margin: 1% 0;
-  font-size: 0.8rem;
   color: #555;
 }
 
 .info {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
+  width: 100%;
+  padding: 0 2%;
 }
 
 .date, .location {
+  font-size: 0.9rem;
   font-weight: bold;
   color: #333;
 }
 
 .temperature {
-  font-size: 200%;
+  font-size: 2rem;
+  font-weight: bold;
   color: #d32f2f;
-  margin-right: 15%;
+  margin-left: auto;
 }

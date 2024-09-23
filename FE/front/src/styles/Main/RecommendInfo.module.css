@@ -1,45 +1,82 @@
 .recommendContainer {
-    padding: 20px;
-    background-color: #f3e5f5;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .recommendSection {
-    margin-bottom: 20px;
-  }
-  
-  .recommendList {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .recommendItem {
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #e1bee7;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  h2 {
-    color: #8e24aa;
-    font-size: 24px;
-  }
-  
-  h3 {
-    color: #7b1fa2;
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  
-  h4 {
-    color: #6a1b9a;
-    font-size: 18px;
-  }
-  
-  p {
-    color: #555;
-    font-size: 16px;
-  }
-  
+  padding: 1.25rem 1.25rem 0.2rem 1.25rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 1.8rem;
+  color: #3D7537;
+  margin-bottom: 1rem;
+}
+
+.headerImage {
+  width: 15vw;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.recommendSection {
+  margin-bottom: 1.5rem;
+}
+
+.comment {
+  font-size: 1.4rem;
+  color: #3D7537;
+  margin-bottom: 1rem;
+}
+
+.recommendList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.recommendItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 10vw;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  background-color: rgba(235, 236, 210, 0.41);
+  border-radius: 8px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+}
+
+.recommendItem:last-child {
+  margin-bottom: 0;
+}
+
+.itemContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.itemContent h4 {
+  font-size: 1.2rem;
+  color: #3D7537;
+}
+
+
+.plantImage {
+  width: 25%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+
