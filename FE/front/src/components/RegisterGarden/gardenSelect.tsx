@@ -10,7 +10,7 @@ import { FaHeart } from "react-icons/fa";
 // import GardenModal from './GardenModal'
 import GardenModal from './gardenModal'
 import { useDispatch } from 'react-redux'
-import {setFarmData} from '../../store/store'
+import {setFarmData, setPlaceIdData} from '../../store/store'
 
 
 // farm/place api 사용해서 텃밭 리스트 가져오기
@@ -39,6 +39,7 @@ function GardenSelect({onLoading}:GardenLoadingProps) {
         setSelectedPlace(placeName)
         dispatch(setFarmData(placeName))   //farm 데이터에 선택한 장소 이름 저장
         setSelectPalceId(placeId)
+        dispatch(setPlaceIdData(placeId))
         setIsModalOpen(true)
     }
 

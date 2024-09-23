@@ -8,18 +8,16 @@ import farmPlants from '../../assets/dummydata/plantRecommend.json'
 import '../../styles/RegisterGarden/gardenSelect.css'
 import { FaHeart } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
-import GardenModal from './gardenModal'
-import { useDispatch, useSelector } from 'react-redux'
-import { UseSelector } from 'react-redux'
+import GardenFinalModal from '../RegisterGarden/GardenFInalModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPlantData } from '../../store/store'
 import { RootState } from '../../store/store'
-import { Root } from 'react-dom/client'
 
 function RecommendPlant() {
 
-    // const dispatch = useDispatch(); // 디스패치 함수 
-    const [selectedPlace, setSelectedPlace] = useState<string | null>(null); // 선택된 장소를 저장할 상태
+    const [selectedPlant, setSelectedPlant] = useState<string | null>(null); // 선택된 장소를 저장할 상태
     const [isModalOpen, setIsModalOpen] = useState(false)  // 모달 열림 상태
-    const [selectPlaceId, setSelectPalceId] = useState<number|null>(null) // 장소 id 저장
+    const [selectPlantId, setSelectPlanteId] = useState<number|null>(null) // 장소 id 저장
     const farmData = useSelector((state:RootState) => state.farmSelect.farm)
 
     const imageMapping: {[key:string]: string} = {
@@ -30,13 +28,10 @@ function RecommendPlant() {
         5: cabbage
     }
 
-    const handleImageClick = (placeName :string, placeId:number) => {
-        // setSelectedPlace(place); // 선택한 장소 저장
-        // console.log(`${placeName}`)
-        // console.log(`${placeId}`)
-        setSelectedPlace(placeName)
-        // dispatch(setFarmData(placeName))   //farm 데이터에 선택한 장소 이름 저장
-        setSelectPalceId(placeId)
+    const handleImageClick = (plantName :string, plantId:number) => {
+        setSelectedPlant(plantName)
+        setSelectPlanteId(plantId)
+       
         setIsModalOpen(true)
     }
 
@@ -66,7 +61,7 @@ function RecommendPlant() {
                 </div>
                 ))}
             </div>
-            {/* {isModalOpen && <GardenModal  placeId={selectPlaceId}  />} 모달 조건부 렌더링 */}
+            {isModalOpen && <GardenFinalModal plantName={selectedPlant} plantId={selectPlantId} onClose={closeModal}/>} 
         </div>
     )
 }
