@@ -72,7 +72,7 @@ const Main = () => {
         comment: "토마토를 키우는 20대 남성들에게 인기있는 작물들은?",
         recommendPlants: [
           { plantId: 3, plantName: "딸기",  plantDescription : "비타민B 풍부!" },
-          { plantId: 4, plantName: "알로에" ,  plantDescription : "철분 가득!"}
+          { plantId: 4, plantName: "알로에" ,  plantDescription : "실내 허브"}
         ]
       }
     },

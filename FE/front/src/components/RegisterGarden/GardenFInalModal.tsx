@@ -1,5 +1,6 @@
 import Modal from 'react-modal'
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/RegisterGarden/gardenModal.css'
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
@@ -7,13 +8,14 @@ import DaumPostcodeEmbed from 'react-daum-postcode';
 import TextField from '@mui/material/TextField';
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
-import { setLocationData, setAddressData } from '../../store/store';
+import { setLocationData, setPlantData } from '../../store/store';
 import { RootState } from '../../store/store';
+import { Root } from 'react-dom/client';
 
 interface GardenModalProps {
-    placeId: number |null;
-    onClose: () => void; // onClose는 함수 타입
-    onLoading: () => void;
+  plantId: number| null;
+  plantName: string | null;
+  onClose: () => void; // onClose는 함수 타입
 }
 
 const customModalStyles: ReactModal.Styles = {
@@ -41,86 +43,39 @@ const customModalStyles: ReactModal.Styles = {
     },
 };
 
-function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
+function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
   const dispatch = useDispatch();
-  const addressRef = useRef<HTMLInputElement>(null); // 주소 입력 필드 참조
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false); // 스크립트 로드 상태
-  const [postcodeData, setPostcodeData] = useState<any>(null); // 우편번호 데이터 상태
-  const farmData = useSelector((state: RootState) => state.farmSelect.farm)
-
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
-    script.async = true;
-
-    script.onload = () => {
-      setIsScriptLoaded(true);
-    };
-
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  const handlePostcode = () => {
-    if (window.daum && window.daum.Postcode) {
-      new window.daum.Postcode({
-        oncomplete: function (data: any) {
-          let addr = '';
-
-          if (data.userSelectedType === 'R') {
-            addr = data.roadAddress;
-          } else {
-            addr = data.jibunAddress;
-          }
-          
-          // post요청 보낼것들 console로 찍어보기
-          // console.log(data.sido)  //도
-          // console.log(data.sigungu)  // 시
-          // console.log(data.bname1) //법정리의 읍/면 이름 ("동"지역일 경우에는 공백, "리"지역일 경우에는 "읍" 또는 "면" 정보가 들어갑니다.)
-          // console.log(data.bname2)
-          // console.log(data.bunji)
-          // console.log(data.jibunAddress) //
-          // console.log(data.zonecode)
-
-          const newPostcodeData = {
-            sido: data.sido ||null,
-            sigungu: data.sigungu||null,
-            bname1: data.bname1||null,
-            bname2: data.bname2||null,
-            jibun: data.jibunAddress||null,
-            zonecode: data.zonecode||null,
-          }
-
-           // 우편번호 데이터 저장
-           setPostcodeData(newPostcodeData);
-
-          dispatch(setAddressData(newPostcodeData))
+  const farmData = useSelector((state: RootState) => state.farmSelect.farm);
+  const locationData = useSelector((state:RootState) => state.farmSelect.location);
+  const addressData = useSelector((state: RootState) => state.address.address);
+  const placeId = useSelector((state: RootState) => state.farmSelect.placeId)
+  const [memo, setMemo] = useState(''); // 메모 상태 추가
+  const navigate = useNavigate();
 
 
-          if (addressRef.current) {
-            addressRef.current.value = addr; // 주소 필드에 값 설정
-            dispatch(setLocationData(addr))
-          }
-        }
-      }).open();
-    }
-  };
-
+  if (addressData) {
+    console.log(`addressData: ${addressData}`);
+  }
+  
   const handleSubmit = async () => {
-    if (postcodeData) {
+    if (addressData) {
       const payload = {
-        placeId,
+        palce : {
+        placeId: {placeId},
         address: {
-          sido: postcodeData.sido || null,
-          sigungu: postcodeData.sigungu|| null,
-          bname1: postcodeData.bname1|| null,
-          bname2: postcodeData.bname2|| null,
-          jibun: postcodeData.jibun|| null,
-          zonecode: postcodeData.zonecode|| null,
+          sido: addressData.sido || null,
+          sigungu: addressData.sigungu|| null,
+          bname1: addressData.bname1|| null,
+          bname2: addressData.bname2|| null,
+          jibun: addressData.jibun|| null,
+          zonecode: addressData.zonecode|| null,
         }
+      }, 
+      plant: {
+        plantId: {plantId},
+        myPlantName: {plantName},
+        memo: {memo}
+      }
       };
 
       try {
@@ -133,6 +88,10 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
     }
   };
 
+  const handleMain = () => {
+    navigate('/');
+  }
+
   return (
     <Modal isOpen={true} style={customModalStyles} onRequestClose={onClose}>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
@@ -141,14 +100,27 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
           <div className='box-title'>텃밭</div>
           <div className='box-content'>{farmData}</div>
         </div>
+
+        <div className='box-color'>
+          <div className='box-title'>작물</div>
+          <div className='box-content'>{plantName}</div>
+        </div>
+
         <div className='box-color'>
           <div className='box-title'>위치</div>
+          <div className='box-content'>{locationData}</div>
+        </div>
+
+        <div className='box-color'>
+          <div className='box-title'>메모</div>
           <div className='box-content'>
-            <TextField
+          <TextField
               id="sample2_address"
               variant="standard"
-              inputRef={addressRef}
+              inputProps={{ maxLength: 10 }}
+              onChange={(e) => setMemo(e.target.value)} // 상태 업데이트
               sx={{
+                width: '40%',
               '& .MuiInput-underline:before': {
                 borderBottom: 'none', // 비활성화 상태에서의 밑줄 제거
               },
@@ -156,18 +128,8 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
                 borderBottom: 'none', // 활성화 상태에서의 밑줄 제거
               },
             }}
-              style={{ flex: 1, position: 'absolute', left: '25%' }}
+              style={{ flex: 1, position: 'absolute', left: '45%' }}
             />
-            <Button
-              variant="contained"
-              onClick={handlePostcode}
-              color="success"
-              disabled={!isScriptLoaded} // 스크립트가 로드되기 전에는 버튼 비활성화
-              sx={{opacity:1, position:'absolute', left: '70%'}}
-              
-            >
-              주소 찾기
-            </Button>
           </div>
         </div>
 
@@ -201,15 +163,13 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
                   backgroundColor: '#A0C075',
                 },
               }}
-              onClick={() => {
-                // 선택완료 버튼 클릭 시 동작 추가
-                // 예: 주소를 상위 컴포넌트로 전달하거나 상태 업데이트
-                handleSubmit();  // post 요청 보내기
-                // onClose();
-                onLoading();
+              onClick={async () => {
+                await handleSubmit(); // post 요청 보내기
+                onClose(); // 모달 닫기
+                handleMain(); // 메인 페이지로 이동
               }}
             >
-              선택완료
+              등록
             </Button>
           </ButtonGroup>
         </div>
@@ -218,4 +178,4 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
   );
 }
 
-export default GardenModal;
+export default GardenFinalModal;
