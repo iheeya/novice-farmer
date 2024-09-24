@@ -22,8 +22,8 @@ public class Plant {
     @Column(name = "plant_name")
     private String name;
 
-    @Column(name = "plant_growth_day")
-    private Integer growthDay;
+    @Column(name = "plant_degree_day")
+    private Integer degreeDay;
 
     @Column(name = "plant_is_on")
     private Boolean isOn;
@@ -42,7 +42,7 @@ public class Plant {
      */
     public Plant(PlantRegisterRequestDTO request) {
         this.name = request.getName();
-        this.growthDay = request.getGrowthDay();
+        this.degreeDay = request.getDegreeDay();
         this.isOn = request.getIsOn();
     }
 }

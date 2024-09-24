@@ -9,6 +9,6 @@ import lombok.ToString;
 @ToString
 public class PlantRegisterRequestDTO {
     private String name;
-    private Integer growthDay;
+    private Integer degreeDay;
     private Boolean isOn;
 }
