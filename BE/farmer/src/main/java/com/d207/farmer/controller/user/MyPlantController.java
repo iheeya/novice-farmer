@@ -1,5 +1,6 @@
 package com.d207.farmer.controller.user;
 
+import com.d207.farmer.domain.farm.TodoType;
 import com.d207.farmer.dto.common.FastAPIConnectTestResponseDTO;
 import com.d207.farmer.dto.myplant.*;
 import com.d207.farmer.service.user.MyPlantService;
@@ -83,7 +84,11 @@ public class MyPlantController {
                                              @RequestBody ManagePlantRequestDTO request) {
         log.info("[MyPlantController] Received waterPlant request for {}", request);
         Long userId = jwtUtil.getUserId(authorization);
-        return ResponseEntity.ok().body(myPlantService.waterPlant(userId, request));
+        String result = myPlantService.waterPlant(userId, request);
+
+        String fastApiResult = myPlantService.updateTodoByFastApi(request.getFarmId(), TodoType.WATERING);
+
+        return ResponseEntity.ok().body(result);
     }
 
     /**
