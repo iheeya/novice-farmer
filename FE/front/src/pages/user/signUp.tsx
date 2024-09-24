@@ -240,6 +240,7 @@ function SignUp() {
     제주특별자치도: ["제주시", "서귀포시"],
   };
 
+
   // 회원가입을 위한 상태 변수
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -272,7 +273,7 @@ function SignUp() {
       nickName,
       age,
       gender,
-      address: selectedCity, // 선택된 시/군/구 값을 address로 사용
+      address: `${selectedProvince} ${selectedCity}`, // 선택된 시/군/구 값을 address로 사용
       pushNotification,
     };
 
@@ -286,10 +287,11 @@ function SignUp() {
   return (
     <Box
   sx={{
-    width: "80%",
-    minWidth: "360px",
+    // width: "80%",
+    // minWidth: "3px",
     margin: "0 auto", // 좌우 중앙 정렬
-    paddingY:"3%",
+    // paddingY:"2%",
+    height: "100%",
     paddingX: "5%",
     backgroundColor: "white",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
@@ -301,7 +303,7 @@ function SignUp() {
     alignItems: "center", // 수평 중앙 정렬
   }}
 >
-      <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%", marginTop: "5%" }} />
+      <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%" }} />
       <form onSubmit={handleSignUp}>
         <TextField
           label="이메일"
