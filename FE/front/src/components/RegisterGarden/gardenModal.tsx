@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLocationData, setAddressData } from '../../store/AddFarm/store';
 import { RootState } from '../../store/AddFarm/store';
 import { motion } from "framer-motion";
+import { CSSTransition } from 'react-transition-group';
 
 
 interface GardenModalProps {
@@ -147,12 +148,19 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
 
   const handleClose = () => {
     setIsModalOpen(false);
-    onClose(); // Call the original onClose function
+    // onClose(); // Call the original onClose function
   };
   
   return (
-
-    <Modal isOpen={isModalOpen} style={customModalStyles} onRequestClose={handleClose}>
+    <CSSTransition
+    in={isModalOpen}
+    timeout={{ enter: 300, exit: 300 }}
+    classNames="slide"
+    mountOnEnter
+    unmountOnExit
+    onExited={onClose} // Close modal after the exit transition
+  >
+    <Modal isOpen={true} style={customModalStyles} onRequestClose={handleClose}>
   <motion.div
     initial="hidden"
     animate="visible"
@@ -208,7 +216,10 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
               backgroundColor: '#f5f5f5',
             },
           }}
-          onClick={onClose}
+          onClick={() => {
+            setIsModalOpen(false);
+            // onClose();
+          }}
         >
           취소
         </Button>
@@ -235,6 +246,7 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
     </div>
   </motion.div>
 </Modal>
+</CSSTransition>
 
 
   );

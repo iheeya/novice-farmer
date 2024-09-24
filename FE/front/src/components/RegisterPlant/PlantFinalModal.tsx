@@ -9,7 +9,8 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import { setLocationData, setPlantData } from '../../store/AddFarm/store';
 import { RootState } from '../../store/AddFarm/store';
-import { Root } from 'react-dom/client';
+import { motion } from "framer-motion";
+import { CSSTransition } from 'react-transition-group';
 
 interface GardenModalProps {
   placeId: number| null;
@@ -51,7 +52,7 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
   const navigate = useNavigate();
   const plantName = useSelector((state: RootState) => state.farmSelect.plant)
   const plantId = useSelector((state:RootState) => state.farmSelect.plantId)
-
+  const [isModalOpen, setIsModalOpen] = useState(true); // 모달 오픈 상태 관리
  
   useEffect(() => {
     const script = document.createElement("script");
@@ -113,6 +114,7 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
       }).open();
     }
   };
+
   
   const handleSubmit = async () => {
     const payload = {
@@ -142,14 +144,41 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
       console.error("Error posting data:", error);
     }
   };
+
   
+  const modalVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 50 },
+  };
+
+   const handleClose = () => {
+    setIsModalOpen(false);
+    // onClose(); // Call the original onClose function
+  };
 
   const handleMain = () => {
     navigate('/');
   }
 
   return (
-    <Modal isOpen={true} style={customModalStyles} onRequestClose={onClose}>
+    <CSSTransition
+    in={isModalOpen}
+    timeout={{ enter: 300, exit: 300 }}
+    classNames="slide"
+    mountOnEnter
+    unmountOnExit
+    onExited={onClose} // Close modal after the exit transition
+  >
+    <Modal isOpen={true} style={customModalStyles} onRequestClose={handleClose}>
+    <motion.div
+    initial="hidden"
+    animate="visible"
+    exit="exit"
+    variants={modalVariants}
+    transition={{ duration: 0.3 }}
+    style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
+  >
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
         <div className='instruction'>텃밭과 작물을 등록해주세요.</div>
         <div className='box-color'>
@@ -228,7 +257,10 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
                   backgroundColor: '#f5f5f5',
                 },
               }}
-              onClick={onClose}
+              onClick={() => {
+                setIsModalOpen(false);
+                // onClose();
+              }}
             >
               취소
             </Button>
@@ -255,7 +287,9 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
           </ButtonGroup>
         </div>
       </div>
+      </motion.div>
     </Modal>
+    </CSSTransition>
   );
 }
 

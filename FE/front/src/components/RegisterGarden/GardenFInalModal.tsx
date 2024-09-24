@@ -10,7 +10,8 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import { setLocationData, setPlantData } from '../../store/AddFarm/store';
 import { RootState } from '../../store/AddFarm/store';
-import { Root } from 'react-dom/client';
+import { motion } from "framer-motion";
+import { CSSTransition } from 'react-transition-group';
 
 interface GardenModalProps {
   plantId: number| null;
@@ -51,7 +52,7 @@ function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
   const placeId = useSelector((state: RootState) => state.farmSelect.placeId)
   const [memo, setMemo] = useState(''); // 메모 상태 추가
   const navigate = useNavigate();
-
+  const [isModalOpen, setIsModalOpen] = useState(true); // Modal open state
 
   if (addressData) {
     console.log(`addressData: ${addressData}`);
@@ -88,12 +89,39 @@ function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
     }
   };
 
+  const modalVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 50 },
+  };
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+    // onClose(); // Call the original onClose function
+  };
+
   const handleMain = () => {
     navigate('/');
   }
 
   return (
-    <Modal isOpen={true} style={customModalStyles} onRequestClose={onClose}>
+    <CSSTransition
+    in={isModalOpen}
+    timeout={{ enter: 300, exit: 300 }}
+    classNames="slide"
+    mountOnEnter
+    unmountOnExit
+    onExited={onClose} // Close modal after the exit transition
+  >
+    <Modal isOpen={true} style={customModalStyles} onRequestClose={handleClose}>
+    <motion.div
+    initial="hidden"
+    animate="visible"
+    exit="exit"
+    variants={modalVariants}
+    transition={{ duration: 0.3 }}
+    style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
+  >
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
         <div className='instruction'>텃밭과 작물을 등록해주세요.</div>
         <div className='box-color'>
@@ -147,7 +175,10 @@ function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
                   backgroundColor: '#f5f5f5',
                 },
               }}
-              onClick={onClose}
+              onClick={() => {
+                setIsModalOpen(false);
+                // onClose();
+              }}
             >
               취소
             </Button>
@@ -174,7 +205,10 @@ function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
           </ButtonGroup>
         </div>
       </div>
-    </Modal>
+      </motion.div>
+      </Modal>
+      </CSSTransition>
+  
   );
 }
 

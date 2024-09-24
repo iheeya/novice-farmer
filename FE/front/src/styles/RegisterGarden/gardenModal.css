@@ -39,3 +39,27 @@
 }
 
 
+
+
+.slide-enter {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  
+  .slide-enter-active {
+    transform: translateY(0);
+    opacity: 1;
+    transition: transform 200ms ease-in, opacity 200ms ease-in;
+  }
+  
+  .slide-exit {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  .slide-exit-active {
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform 200ms ease-in, opacity 200ms ease-in;
+  }
+  
