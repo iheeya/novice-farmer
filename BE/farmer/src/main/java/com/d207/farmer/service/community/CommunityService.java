@@ -2,6 +2,7 @@ package com.d207.farmer.service.community;
 
 import com.d207.farmer.domain.community.*;
 import com.d207.farmer.domain.user.User;
+import com.d207.farmer.dto.community.CommunityCommentRegisterDTO;
 import com.d207.farmer.dto.community.CommunityRegisterDTO;
 import com.d207.farmer.dto.community.CommunityResponseDTO;
 import com.d207.farmer.repository.community.*;
@@ -29,6 +30,7 @@ public class CommunityService {
     private final CommunitySelectedTagRespository communitySelectedTagRespository;
     private final CommunityImageRepository communityImageRepository;
     private final CommunityHeartRepository communityHeartRepository;
+    private final CommunityCommentRepository communityCommentRepository;
 
     public List<CommunityResponseDTO> getCommunity() {
         List<Community> communities =communityRepository.findAll();
@@ -108,11 +110,30 @@ public class CommunityService {
 
     }
 
+
+    @Transactional
     public String deleteCommunityArticle(Long userId, Long id) {
         User user = userRepository.findById(userId).orElseThrow();
         Community community = communityRepository.findById(id).orElseThrow();
-//        if(community.getUser().get)
-//        communityRepository.de
-        return null;
+
+        // Community의 User와 주어진 User를 비교
+        if (community.getUser().getId().equals(user.getId())) {
+            community.setCheckDelete(true);
+            return "delete Community success";
+        } else {
+            return "delete Community fail (Different User)";
+        }
+    }
+
+
+    @Transactional
+    public String registerCommunityComment(Long userId, Long id, CommunityCommentRegisterDTO communityCommentRegisterDTO) {
+        Community community = communityRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
+
+        CommunityComment communityComment = new CommunityComment(community, user, communityCommentRegisterDTO.getCommentContent());
+        communityCommentRepository.save(communityComment);
+
+        return "Community Comment register Success";
     }
 }

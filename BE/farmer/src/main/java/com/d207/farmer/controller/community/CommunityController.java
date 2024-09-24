@@ -1,5 +1,6 @@
 package com.d207.farmer.controller.community;
 
+import com.d207.farmer.dto.community.CommunityCommentRegisterDTO;
 import com.d207.farmer.dto.community.CommunityOneArticleResponseDTO;
 import com.d207.farmer.dto.community.CommunityRegisterDTO;
 import com.d207.farmer.dto.community.CommunityResponseDTO;
@@ -25,6 +26,7 @@ public class CommunityController {
     private final CommunityService communityService;
     private final JWTUtil jwtUtil;
 
+
     @GetMapping
     public ResponseEntity<List<CommunityResponseDTO>> getCommunityNew(@RequestHeader("Authorization") String authorization) {
         Long userId = jwtUtil.getUserId(authorization);
@@ -33,39 +35,58 @@ public class CommunityController {
         return ResponseEntity.created(URI.create("/")).body(communityService.getCommunity());
     }
 
+    /**
+     * 커뮤니티 글 올리기
+     */
     @PostMapping
     public ResponseEntity<String> registerCommunity(@RequestHeader("Authorization") String authorization,
                                                     @RequestBody CommunityRegisterDTO communityRegisterDTO) {
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("CommunityController] Post Community {}", authorization);
+        log.info("CommunityController] Post Community {}", userId);
 
         return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunity(userId, communityRegisterDTO));
     }
 
-//    @GetMapping("{id}")
-//    public ResponseEntity<CommunityOneArticleResponseDTO> getCommunity(@PathVariable Long id) {
-//
-//
-//    }
 
+
+    /**
+     * 커뮤니티 좋아요 누르기! (처음누르면 좋아요 on! / 이미 눌렀는걸 눌렀으면 좋아요 off!)
+     */
     @PostMapping("{id}")
     public ResponseEntity<String> registerHeart(@RequestHeader("Authorization") String authorization,
                                                 @PathVariable Long id){
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("CommunityController] Post Community {}", authorization);
+        log.info("CommunityController] Post Community {}", userId);
 
 
         return ResponseEntity.created(URI.create("/")).body(communityService.registerHeart(userId, id));
     }
 
-    @PostMapping("{id}/all")
+
+    /**
+     * 커뮤니티 게시물 삭제하기
+     */
+    @DeleteMapping("{id}")
     public ResponseEntity<String> deleteCommunityArticle(@RequestHeader("Authorization") String authorization,
                                                 @PathVariable Long id){
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("CommunityController] Post Community {}", authorization);
+        log.info("CommunityController] delete Community {}", userId);
+
+        return ResponseEntity.ok(communityService.deleteCommunityArticle(userId, id));
+    }
+
+    /**
+     *  커뮤니티 특정 게시물의 댓글 작성
+     */
+    @PostMapping("{id}/all/comment")
+    public ResponseEntity<String> registerCommunityComment(@RequestHeader("Authorization") String authorization,
+                                                           @PathVariable Long id,
+                                                           @RequestBody CommunityCommentRegisterDTO communityCommentRegisterDTO){
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[CommunityController] Post Community Comment {} // {}", userId, communityCommentRegisterDTO.getCommentContent());
 
 
-        return ResponseEntity.created(URI.create("/")).body(communityService.deleteCommunityArticle(userId, id));
+        return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunityComment(userId, id, communityCommentRegisterDTO));
     }
 
 
