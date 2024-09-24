@@ -1,8 +1,9 @@
 package com.d207.farmer.service.mainpage;
 
+import com.d207.farmer.domain.community.CommunityFavoriteTag;
+import com.d207.farmer.domain.community.CommunityTag;
 import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.farm.FarmTodo;
-import com.d207.farmer.domain.farm.TodoType;
 import com.d207.farmer.domain.farm.UserPlace;
 import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.plant.PlantGrowthIllust;
@@ -12,6 +13,7 @@ import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.mainpage.MainPageResponseDTO;
 import com.d207.farmer.dto.mainpage.components.*;
 import com.d207.farmer.repository.farm.*;
+import com.d207.farmer.repository.mainpage.CommunityFavoriteTagForMainPageRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
 import com.d207.farmer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,7 @@ public class MainPageService {
     private final UserPlaceRepository userPlaceRepository;
     private final FarmTodoRepository todoRepository;
     private final UserRepository userRepository;
+    private final CommunityFavoriteTagForMainPageRepository communityFavoriteTagRepository;
 
     public MainPageResponseDTO getMainPage(Long userId) {
         // db 조회
@@ -53,7 +56,7 @@ public class MainPageService {
         FavoritesInfoComponentDTO favoritesInfoComponent = getFavoritesInfo(userId, farms, favoritePlants, favoritePlaces); // 완성
         MyPlantInfoComponentDTO myPlantInfoComponent = getMyPlantInfo(userId, farms); // 완성
         RecommendInfoComponentDTO recommendInfoComponent = getRecommendInfo(userId, plants); // 완성(추천없이)
-        CommunityInfoComponentDTO communityInfoComponent = getCommunityInfo(userId);
+        CommunityInfoComponentDTO communityInfoComponent = getCommunityInfo(userId, favoritePlants);
         WeekendFarmComponentDTO weekendFarmComponent = getWeekendFarm(userId); // 완성
 
         return new MainPageResponseDTO(todoInfoComponent, beginnerInfoComponent, myFarmListInfoComponent, farmGuideInfoComponent, favoritesInfoComponent,
@@ -198,11 +201,28 @@ public class MainPageService {
     /**
      * 8. 커뮤니티 컴포넌트
      */
-    private CommunityInfoComponentDTO getCommunityInfo(Long userId) {
-        // 내가 선택해놓은 태그가 뜨거나, 선택해놓은 태그가 없으면 선호하는 작물 태그가 뜨거나
+    private CommunityInfoComponentDTO getCommunityInfo(Long userId, List<FavoritePlant> favoritePlants) {
+        // 선택해놓은 태그가 없으면 선호하는 작물 태그가 뜨거나
         // 그거도 없으면 키우고 있는 작물 태그 뜨거나, 그거도 없으면 그냥 토마토
+        List<CommunityFavoriteTag> communityFavoriteTags = communityFavoriteTagRepository.findByUserId(userId);
+
+        // 내가 선택해놓은 선호태그가 뜨거나
+        if(communityFavoriteTags != null) {
+            Collections.shuffle(communityFavoriteTags, new Random(LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli()));
+            return getCommunityInfoComponent(userId, communityFavoriteTags.get(0).getCommunitytag());
+        }
+
+        if(favoritePlants != null) {
+            
+        }
+
         return new CommunityInfoComponentDTO();
     }
+
+    private CommunityInfoComponentDTO getCommunityInfoComponent(Long userId, CommunityTag communitytag) {
+        return null;
+    }
+
 
     /**
      * 9. 주말농장 컴포넌트

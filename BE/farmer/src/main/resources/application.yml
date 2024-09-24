@@ -71,5 +71,5 @@ logging:
       hibernate:
         SQL: debug
         type: trace
-server:
- port: 8081
+#server:
+# port: 8081
