@@ -4,6 +4,7 @@
 
 
 import api from "../../utils/axios";
+import { handleSignup } from "../../services/user/userapi";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -257,47 +258,7 @@ function SignUp() {
   const isPasswordValid = useMemo(() => validatePassword(password), [password]);
   const isPasswordConfirmed = useMemo(() => passwordConfirm({ password, passwordConf }), [password, passwordConf]);
   const isNicknameValid = useMemo(() => validateNickname(nickName), [nickName]);
-
-  const navigate = useNavigate();
-
-  // 회원가입 API 핸들러
-  const handleSignUp = (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-
-    // API 요청을 위한 데이터
-    const signUpData = {
-      email,
-      password,
-      nickName,
-      age: parseInt(age, 10),
-      gender,
-      address: `${selectedProvince} ${selectedCity}`,
-      pushAllow,
-    };
-    // 회원가입 데이터 콘솔출력
-    console.log(signUpData)
-    // 회원가입 API 호출 
-    api
-      .post("/user", {
-        email,
-        password,
-        nickname:nickName,
-        age: parseInt(age, 10),
-        gender,
-        address: `${selectedProvince} ${selectedCity}`,
-        pushAllow,
-      })
-      .then((response) => {
-        alert("회원가입이 완료되었습니다.");
-        console.log(response)
-      })
-      .catch((error) => {
-        console.error("회원가입 실패", error);
-      });
-
-    // 회원가입 후 로그인 페이지로 이동 (실제 API 요청 후에 추가해야 함)
-    // navigate("/login");
-  };
+ 
 
   return (
     <Box
@@ -319,7 +280,16 @@ function SignUp() {
       }}
     >
       <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%" }} />
-      <form onSubmit={handleSignUp}>
+      <form onSubmit={(event)=>{
+        event.preventDefault();
+        handleSignup({email, password, nickname:nickName, age: parseInt(age, 10), gender, address:`${selectedProvince} ${selectedCity}`, pushAllow})
+        .then((response)=>{
+          console.log("signup success")
+        })
+        .catch((err)=>{
+          console.log('signupfailed',err)
+        })
+      }}>
         <TextField
           label="이메일"
           variant="outlined"

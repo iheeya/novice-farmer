@@ -3,38 +3,16 @@
 // Todo
 // 1. 소셜 로그인 연결
 // 2. 시큐리티 프론트 할게 있으면 하기
-import api from "../../utils/axios";
-import { useMemo, useState } from "react";
+// 3. 로그인 시 토큰 저장, cookie 설정
+import { handleLogin } from "../../services/user/userapi";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  Box,
-  ImageList,
-  ImageListItem,
-} from "@mui/material";
+import { TextField, Button, Box, ImageList, ImageListItem } from "@mui/material";
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleLogin = (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-    // 로그인 API 호출
-    api
-      .post("/user/login", { email, password })
-      .then((res) => {
-        // 로그인 성공
-        console.log("로그인 성공");
-        console.log(res.data);
-      })
-      .catch((err) => {
-        // 로그인 실패
-        console.log("로그인 실패");
-        console.error(err);
-      });
-  };
 
   return (
     <Box
@@ -56,7 +34,24 @@ export default function Login() {
       }}
     >
       <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%" }} />
-      <form onSubmit={handleLogin}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleLogin({ email, password })
+            .then(({ firstLogin }) => {
+              if (firstLogin) {
+                console.log("firstLogin")
+                // navigate("/user/survey");
+              } else {
+                console.log("not firstLogin")
+                // navigate("/main");
+              }
+            })
+            .catch((error) => {
+              console.error("Login failed:", error);
+            });
+        }}
+      >
         <TextField
           label="이메일"
           variant="outlined"
@@ -104,9 +99,13 @@ export default function Login() {
           <img src="/user/kakao_login_medium_narrow.png" alt="kakao_login" />
         </ImageListItem>
         <ImageListItem>
-          <img src="/user/android_neutral_sq_SU@1x.png" alt="google_login" style={{
-            borderRadius: "5px",
-          }} />
+          <img
+            src="/user/android_neutral_sq_SU@1x.png"
+            alt="google_login"
+            style={{
+              borderRadius: "5px",
+            }}
+          />
         </ImageListItem>
       </ImageList>
     </Box>
