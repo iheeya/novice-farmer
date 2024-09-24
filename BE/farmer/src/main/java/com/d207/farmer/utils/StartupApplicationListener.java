@@ -1,6 +1,7 @@
 package com.d207.farmer.utils;
 
 import com.d207.farmer.domain.common.Address;
+import com.d207.farmer.domain.community.*;
 import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.farm.FarmTodo;
 import com.d207.farmer.domain.farm.TodoType;
@@ -18,10 +19,16 @@ import com.d207.farmer.dto.plant.PlantRegisterRequestDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.UserRegisterRequestDTO;
 import com.d207.farmer.dto.weekend_farm.WeekendFarmRegisterRequestDTO;
+import com.d207.farmer.repository.community.CommunityHeartRepository;
+import com.d207.farmer.repository.community.CommunityRepository;
+import com.d207.farmer.repository.community.CommunitySelectedTagRespository;
+import com.d207.farmer.repository.community.CommunityTagRepository;
 import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.farm.FarmTodoRepository;
+import com.d207.farmer.repository.mainpage.CommunityFavoriteTagForMainPageRepository;
 import com.d207.farmer.repository.plant.PlantIllustRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
+import com.d207.farmer.repository.user.UserRepository;
 import com.d207.farmer.service.common.SampleService;
 import com.d207.farmer.service.farm.FarmService;
 import com.d207.farmer.service.place.PlaceService;
@@ -67,6 +74,12 @@ public class StartupApplicationListener {
     private final FarmTodoRepository farmTodoRepository;
     private final FarmRepository farmRepository;
     private final PlantRepository plantRepository;
+    private final CommunityTagRepository communityTagRepository;
+    private final CommunityRepository communityRepository;
+    private final UserRepository userRepository;
+    private final CommunityHeartRepository communityHeartRepository;
+    private final CommunitySelectedTagRespository communitySelectedTagRespository;
+    private final CommunityFavoriteTagForMainPageRepository communityFavoriteTagRepository;
 
     @EventListener
     @Transactional
@@ -79,6 +92,8 @@ public class StartupApplicationListener {
         createUserSample();
         createFarmSample();
         createTodoSample();
+        createCommunityTagSample();
+        createCommunitySample();
     }
 
     private void createUserSample() {
@@ -169,5 +184,52 @@ public class StartupApplicationListener {
         Farm farm = farmRepository.findById(1L).orElseThrow();
         farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, false, LocalDateTime.now().plusDays(5), null));
         farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, false, LocalDateTime.now().plusDays(6), null));
+    }
+
+    private void createCommunityTagSample() {
+        String[] tagNames = {"토마토", "고추", "상추", "깻잎", "배추", "베란다", "주말농장", "개인 텃밭", "스쿨팜"};
+        for (String tagName : tagNames) {
+            communityTagRepository.save(new CommunityTag(tagName));
+        }
+    }
+
+    private void createCommunitySample() {
+        User user = userRepository.findById(11L).orElseThrow();
+        CommunityTag communityTag = communityTagRepository.findById(1L).orElseThrow();
+        
+        // 선호 태그
+        CommunityFavoriteTag communityFavoriteTag = new CommunityFavoriteTag();
+        communityFavoriteTag.setUser(user);
+        communityFavoriteTag.setCommunitytag(communityTag);
+        communityFavoriteTagRepository.save(communityFavoriteTag);
+
+        String content = "토마토는 맛있다 토마토는 맛있다 토마토는 맛있다 토마토는 맛있다 토마토는 맛있다";
+        Community community1 = communityRepository.save(new Community(user, "토마토는 맛있다1", content));
+        communitySelectedTagRespository.save(new CommunitySelectedTag(community1, communityTag));
+        communityHeartRepository.save(new CommunityHeart(community1, user));
+
+        Community community2 = communityRepository.save(new Community(user, "토마토는 맛있다2", content));
+        communitySelectedTagRespository.save(new CommunitySelectedTag(community2, communityTag));
+        for (int i = 0; i < 2; i++) {
+            communityHeartRepository.save(new CommunityHeart(community2, user));
+        }
+
+        Community community3 = communityRepository.save(new Community(user, "토마토는 맛있다3", content));
+        communitySelectedTagRespository.save(new CommunitySelectedTag(community3, communityTag));
+        for (int i = 0; i < 3; i++) {
+            communityHeartRepository.save(new CommunityHeart(community3, user));
+        }
+
+        Community community4 = communityRepository.save(new Community(user, "토마토는 맛있다4", content));
+        communitySelectedTagRespository.save(new CommunitySelectedTag(community4, communityTag));
+        for (int i = 0; i < 4; i++) {
+            communityHeartRepository.save(new CommunityHeart(community4, user));
+        }
+
+        Community community5 = communityRepository.save(new Community(user, "토마토는 맛있다5", content));
+        communitySelectedTagRespository.save(new CommunitySelectedTag(community5, communityTag));
+        for (int i = 0; i < 5; i++) {
+            communityHeartRepository.save(new CommunityHeart(community5, user));
+        }
     }
 }

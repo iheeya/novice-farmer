@@ -212,12 +212,15 @@ public class MainPageService {
 
         // 내가 선택해놓은 선호태그가 뜨거나
         if(communityFavoriteTags != null && !communityFavoriteTags.isEmpty()) {
+            log.info("in communityFavoriteTags");
             Collections.shuffle(communityFavoriteTags, new Random(LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli()));
             return getCommunityInfoComponent(userId, communityFavoriteTags.get(0).getCommunitytag());
         }
 
         // 선택해놓은 선호태그가 없으면 선호하는 작물/장소 태그가 뜨거나
+        // TODO 장소 빠짐
         if(favoritePlants != null && !favoritePlants.isEmpty()) {
+            log.info("in favoritePlants");
             String plantName = favoritePlants.get(0).getPlant().getName();
             List<CommunityTag> communityTags = communityTagRepository.findByTagName(plantName);
             return getCommunityInfoComponent(userId, communityTags.get(0));
@@ -225,12 +228,14 @@ public class MainPageService {
 
         // 그것도 없으면 키우고 있는 작물 태그가 뜨거나
         if(farms != null) {
+            log.info("in farms");
             String plantName = farms.get(0).getPlant().getName();
             List<CommunityTag> communityTags = communityTagRepository.findByTagName(plantName);
             return getCommunityInfoComponent(userId, communityTags.get(0));
         }
 
         // 그거도 없으면 그냥 토마토
+        log.info("in tomato");
         List<CommunityTag> communityTagsTomato = communityTagRepository.findByTagName("토마토");
         return getCommunityInfoComponent(userId, communityTagsTomato.get(0));
     }
