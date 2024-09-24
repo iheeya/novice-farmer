@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../../styles/Main/MyFarmListInfo.module.css';
 import { getImageForLocation } from '../../utils/imageMapping';  // 이미지 매핑 함수 가져오기
+import { useNavigate } from 'react-router-dom';
 
 interface MyFarmListInfoProps {
   data: {
@@ -15,9 +16,16 @@ interface MyFarmListInfoProps {
 }
 
 const MyFarmListInfo: React.FC<MyFarmListInfoProps> = ({ data }) => {
+  const navigate = useNavigate();
+
+  const AddPlantClick = () => {
+    navigate("/register/garden"); // 클릭 시 /register/garden로 이동
+  };
+  
+
   return (
     <div className={styles.farmListContainer}>
-      <h2>나의 텃밭을 관리해보세요!</h2>
+      <h2 className={styles.farmListTitle}>나의 텃밭을 관리해보세요!</h2>
       {data.farms.length > 0 ? (
         <ul className={styles.farmList}>
           {data.farms.map((farm) => (
@@ -37,7 +45,7 @@ const MyFarmListInfo: React.FC<MyFarmListInfoProps> = ({ data }) => {
       <div className={styles.addFarmContainer}>
         <p className={styles.addFarmText}>텃밭을 추가하세요</p>
         <p className={styles.addFarmSubtitle}>나의 작물을 등록해서 관리해요</p>
-        <button className={styles.addButton}>
+        <button className={styles.addButton} onClick={AddPlantClick}>
           <img src={require('../../assets/icons/Plus.png')} alt="Add farm" />
         </button>
       </div>

@@ -1,64 +1,92 @@
 .communityInfoContainer {
-    padding: 20px;
-    background-color: #fff3e0;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .postList {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .postItem {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: #ffffff;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .postImage {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 6px;
-    margin-right: 15px;
-  }
-  
-  .postContent {
-    flex-grow: 1;
-  }
-  
-  .authorInfo {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-    color: #666;
-    font-size: 14px;
-  }
-  
-  .authorImage {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  
-  h2 {
-    font-size: 24px;
-  }
-  
-  h3 {
-    color: #d84315;
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-  p {
-    color: #666;
-    font-size: 16px;
-  }
-  
+  padding: 0.5rem;
+  background-color: #f9f9f9;
+  border-radius: 0.5rem; 
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1); /* 그림자 */
+  text-align: center; 
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5%;
+  margin-bottom: 0;
+}
+
+h2 {
+  margin-top: 1.5vh; 
+  font-size: 2rem; 
+  font-weight: bold;
+}
+
+.tabs button {
+  margin-top: 0;
+  background: none;
+  border: none;
+  font-size: 1.5rem; 
+  cursor: pointer;
+}
+
+.activeTab {
+  font-weight: bold;
+  color: green;
+  border-bottom: 0.125rem solid green; 
+}
+
+.postWrapper {
+  position: relative;
+  margin-top: 1vh; /* 상대 높이로 변환 */
+}
+
+.postImage {
+  width: 100%;
+  height: 35vw; 
+  border-radius: 0.625rem; 
+  object-fit: cover; 
+}
+
+.postContent {
+  padding: 0.5rem; 
+  font-size: 1.2rem;
+  margin-bottom: 0;
+}
+
+
+
+h3 {
+  margin-top: 0.3125rem; /* 5px을 rem으로 변환 */
+  margin-bottom: 0.3125rem; /* 5px을 rem으로 변환 */
+}
+
+p {
+  text-align: left; /* 왼쪽 정렬 */
+}
+
+.authorPaginationWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.authorInfo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 1rem; 
+}
+
+.authorImage {
+  width: 1.875rem; 
+  height: 1.875rem; 
+  border-radius: 50%;
+  margin-right: 0.625rem; /* 10px을 rem으로 변환 */
+}
+
+.pagination {
+  margin-top: 1rem;
+  padding: 0.3rem;
+  font-size: 1rem; /* 폰트 크기 그대로 유지 */
+  border-radius: 15%;
+  background-color: #EBECD2;
+}

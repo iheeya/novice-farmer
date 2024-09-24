@@ -4,11 +4,6 @@
   border-radius: 8px;
 }
 
-h2 {
-  font-size: 1.5rem;
-  color: #3d7537;
-  text-align: center;
-}
 
 .farmList {
   list-style: none;
@@ -16,6 +11,14 @@ h2 {
   margin: 0;
   display: flex;
   flex-direction: column;
+}
+
+.farmListTitle {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #3d7537;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .farmItem {
