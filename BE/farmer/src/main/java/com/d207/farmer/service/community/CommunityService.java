@@ -113,5 +113,6 @@ public class CommunityService {
         Community community = communityRepository.findById(id).orElseThrow();
 //        if(community.getUser().get)
 //        communityRepository.de
+        return null;
     }
 }
