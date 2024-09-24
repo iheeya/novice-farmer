@@ -1,7 +1,9 @@
 package com.d207.farmer.controller.user;
 
+import com.d207.farmer.dto.common.FastAPIConnectTestResponseDTO;
 import com.d207.farmer.dto.myplant.*;
 import com.d207.farmer.service.user.MyPlantService;
+import com.d207.farmer.utils.FastApiUtil;
 import com.d207.farmer.utils.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +24,7 @@ public class MyPlantController {
 
     private final MyPlantService myPlantService;
     private final JWTUtil jwtUtil;
+    private final FastApiUtil fastApiUtil;
 
     /**
      * 작물 키우기 시작하기
@@ -165,5 +168,13 @@ public class MyPlantController {
         log.info("[MyPlantController] Received getMyPlant request for {}", request);
         Long userId = jwtUtil.getUserId(authorization);
         return ResponseEntity.ok().body(myPlantService.getMyPlantInfo(userId, request));
+    }
+
+    /**
+     * Fast API 통신 테스트
+     */
+    @GetMapping("/test")
+    public ResponseEntity<FastAPIConnectTestResponseDTO> testFastApiConnect() {
+        return ResponseEntity.ok().body(fastApiUtil.testFastApiConnect());
     }
 }

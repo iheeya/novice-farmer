@@ -1,7 +1,6 @@
 package com.d207.farmer.service.mainpage;
 
-import com.d207.farmer.domain.community.CommunityFavoriteTag;
-import com.d207.farmer.domain.community.CommunityTag;
+import com.d207.farmer.domain.community.*;
 import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.farm.FarmTodo;
 import com.d207.farmer.domain.farm.UserPlace;
@@ -13,7 +12,7 @@ import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.mainpage.MainPageResponseDTO;
 import com.d207.farmer.dto.mainpage.components.*;
 import com.d207.farmer.repository.farm.*;
-import com.d207.farmer.repository.mainpage.CommunityFavoriteTagForMainPageRepository;
+import com.d207.farmer.repository.mainpage.*;
 import com.d207.farmer.repository.plant.PlantRepository;
 import com.d207.farmer.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +38,11 @@ public class MainPageService {
     private final FarmTodoRepository todoRepository;
     private final UserRepository userRepository;
     private final CommunityFavoriteTagForMainPageRepository communityFavoriteTagRepository;
+    private final CommunityTagForMainPageRepository communityTagRepository;
+    private final CommunitySelectedTagForMainPageRepository communitySelectedTagRepository;
+    private final CommunityHeartForMainPageRepository communityHeartRepository;
+    private final CommunityCommentForMainPageRepository communityCommentRepository;
+
 
     public MainPageResponseDTO getMainPage(Long userId) {
         // db 조회
@@ -56,7 +60,7 @@ public class MainPageService {
         FavoritesInfoComponentDTO favoritesInfoComponent = getFavoritesInfo(userId, farms, favoritePlants, favoritePlaces); // 완성
         MyPlantInfoComponentDTO myPlantInfoComponent = getMyPlantInfo(userId, farms); // 완성
         RecommendInfoComponentDTO recommendInfoComponent = getRecommendInfo(userId, plants); // 완성(추천없이)
-        CommunityInfoComponentDTO communityInfoComponent = getCommunityInfo(userId, favoritePlants);
+        CommunityInfoComponentDTO communityInfoComponent = getCommunityInfo(userId, favoritePlants, farms);
         WeekendFarmComponentDTO weekendFarmComponent = getWeekendFarm(userId); // 완성
 
         return new MainPageResponseDTO(todoInfoComponent, beginnerInfoComponent, myFarmListInfoComponent, farmGuideInfoComponent, favoritesInfoComponent,
@@ -201,9 +205,7 @@ public class MainPageService {
     /**
      * 8. 커뮤니티 컴포넌트
      */
-    private CommunityInfoComponentDTO getCommunityInfo(Long userId, List<FavoritePlant> favoritePlants) {
-        // 선택해놓은 태그가 없으면 선호하는 작물 태그가 뜨거나
-        // 그거도 없으면 키우고 있는 작물 태그 뜨거나, 그거도 없으면 그냥 토마토
+    private CommunityInfoComponentDTO getCommunityInfo(Long userId, List<FavoritePlant> favoritePlants, List<Farm> farms) {
         List<CommunityFavoriteTag> communityFavoriteTags = communityFavoriteTagRepository.findByUserId(userId);
 
         // 내가 선택해놓은 선호태그가 뜨거나
@@ -212,15 +214,58 @@ public class MainPageService {
             return getCommunityInfoComponent(userId, communityFavoriteTags.get(0).getCommunitytag());
         }
 
+        // 선택해놓은 선호태그가 없으면 선호하는 작물/장소 태그가 뜨거나
         if(favoritePlants != null) {
-            
+            String plantName = favoritePlants.get(0).getPlant().getName();
+            List<CommunityTag> communityTags = communityTagRepository.findByTagName(plantName);
+            return getCommunityInfoComponent(userId, communityTags.get(0));
         }
 
-        return new CommunityInfoComponentDTO();
+        // 그것도 없으면 키우고 있는 작물 태그가 뜨거나
+        if(farms != null) {
+            String plantName = farms.get(0).getPlant().getName();
+            List<CommunityTag> communityTags = communityTagRepository.findByTagName(plantName);
+            return getCommunityInfoComponent(userId, communityTags.get(0));
+        }
+
+        // 그거도 없으면 그냥 토마토
+        List<CommunityTag> communityTagsTomato = communityTagRepository.findByTagName("토마토");
+        return getCommunityInfoComponent(userId, communityTagsTomato.get(0));
     }
 
     private CommunityInfoComponentDTO getCommunityInfoComponent(Long userId, CommunityTag communitytag) {
-        return null;
+        List<CommunitySelectedTag> communitySelectedTags = communitySelectedTagRepository.findByCommunityTagId(communitytag.getId());
+        List<Community> communities = new ArrayList<>();
+        for (CommunitySelectedTag cst : communitySelectedTags) {
+            communities.add(cst.getCommunity());
+        }
+        List<CommunityInfoComponentDTO.CommunitySortedByRecent> communitySortedByRecents = new ArrayList<>();
+        int communityCnt = 0;
+
+        List<Long> communityIds = new ArrayList<>();
+        for (Community community : communities) {
+            if(++communityCnt > 5) break;
+            communityIds.add(community.getId());
+        }
+        communityCnt = 0;
+        List<CommunityHeart> communityHearts = communityHeartRepository.findByCommunityIdIn(communityIds);
+        Map<Long, Integer> communityHeartCountMap = new HashMap<>();
+        for (CommunityHeart ch : communityHearts) {
+            communityHeartCountMap.put(ch.getCommunity().getId(), communityHeartCountMap.getOrDefault(ch.getCommunity().getId(), 0) + 1);
+        }
+
+        for (Community community : communities) {
+            if(++communityCnt > 5) break;
+            // TODO 여기 할 차례(이미지 찾아와야함)
+//            CommunityInfoComponentDTO.CommunitySortedByRecent communityDTO = new CommunityInfoComponentDTO.CommunitySortedByRecent(
+//                    community.getId(), community.getTitle(), community.getContent().substring(0, 20),
+//            );
+        }
+
+        List<CommunityInfoComponentDTO.CommunitySortedByPopularity> communitySortedByPopularities = new ArrayList<>();
+        communityCnt = 0;
+
+        return new CommunityInfoComponentDTO();
     }
 
 

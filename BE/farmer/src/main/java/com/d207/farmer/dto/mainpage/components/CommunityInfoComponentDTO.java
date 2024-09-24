@@ -20,7 +20,7 @@ public class CommunityInfoComponentDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    private static class CommunitySortedByPopularity {
+    public static class CommunitySortedByPopularity {
         private Long communityId;
         private String title;
         private String content;
@@ -35,7 +35,7 @@ public class CommunityInfoComponentDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    private static class CommunitySortedByRecent {
+    public static class CommunitySortedByRecent {
         private Long communityId;
         private String title;
         private String content;

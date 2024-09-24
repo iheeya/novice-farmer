@@ -84,7 +84,16 @@ public class MyPlantService {
     public InspectionPestResponseDTO inspectionPest(Long userId, InspectionPlantRequestDTO request) {
         InspectionPestResponseByFastApiDTO response = fastApiUtil.getInspectionPest(request.getImagePath());
         // TODO response에서 병해충 이름 받아서 몽고db 조회 후 반환
-        return null;
+        if(!response.getHasPast()) {
+            InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(false, request.getImagePath());
+            InspectionPestResponseDTO.PestInfoDTO pestInfoDTO = new InspectionPestResponseDTO.PestInfoDTO();
+            return new InspectionPestResponseDTO(isPestDTO, pestInfoDTO);
+        }
+        InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(true, request.getImagePath());
+        InspectionPestResponseDTO.PestInfoDTO pestInfoDTO = new InspectionPestResponseDTO.PestInfoDTO(response.getPestInfo().getPestImagePath(),
+                response.getPestInfo().getPestName(), response.getPestInfo().getPestDesc(), response.getPestInfo().getPestCureDesc());
+
+        return new InspectionPestResponseDTO(isPestDTO, pestInfoDTO);
     }
 
     public InspectionGrowthStepResponseDTO inspectionGrowthStep(Long userId, InspectionPlantRequestDTO request) {
