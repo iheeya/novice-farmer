@@ -104,6 +104,8 @@ public class MyPlantService {
         if(farm.getSeedDate() == null) {
             return new MyPlantInfoResponseDTO(false, false, new MyPlantInfoResponseDTO.PlantInfoDTO(), new MyPlantInfoResponseDTO.TodoInfoDTO());
         }
+        // TODO 파종일시, 예상완료일시, 현재일시 비교해서 생장단계 업데이트
+        
         // 일러스트 이미지 경로
         String imagePath = "";
         for (PlantGrowthIllust pgi : farm.getPlant().getPlantGrowthIllusts()) {

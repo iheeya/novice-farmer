@@ -76,7 +76,7 @@ public class FarmService {
         Address newAddress = createAddressWithJibun(address);
 
         // userPlace 생성
-        return new UserPlace(user, place, latitude, longitude, place.getName(), newAddress, request.getPlace().getDirection());
+        return new UserPlace(user, place, latitude, longitude, place.getName(), newAddress);
     }
 
     private Address createAddressWithJibun(Address addr) {

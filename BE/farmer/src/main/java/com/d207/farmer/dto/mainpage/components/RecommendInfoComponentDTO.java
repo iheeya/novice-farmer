@@ -36,5 +36,6 @@ public class RecommendInfoComponentDTO {
     public static class RecommendPlantDTO {
         private Long plantId;
         private String plantName;
+        private String plantDescription;
     }
 }

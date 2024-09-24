@@ -17,7 +17,7 @@ public class PlantResponseDTO {
     public PlantResponseDTO(Plant plant) {
         this.id = plant.getId();
         this.name = plant.getName();
-        this.growthDay = plant.getGrowthDay();
+        this.growthDay = plant.getDegreeDay();
         this.isOn = plant.getIsOn();
     }
 }

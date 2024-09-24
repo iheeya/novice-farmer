@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,4 +20,21 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
     // spring security 사용시 변경 필요
 
+        @Bean
+        public OpenAPI openAPI() {
+             String jwtSchemaName = "jwtAuth";
+                SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwtSchemaName);
+
+                Components components = new Components()
+                        .addSecuritySchemes(jwtSchemaName, new SecurityScheme()
+                                .name(jwtSchemaName)
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer"));
+//                                .bearerFormat("JWT"));
+
+                return new OpenAPI()
+                        .components(new Components())
+                        .addSecurityItem(securityRequirement)
+                        .components(components);
+        }
 }

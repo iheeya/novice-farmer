@@ -18,10 +18,10 @@ public class MyFarmListInfoComponentDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class myFarmDTO {
-        private Long plantId;
-        private String plantName;
-        private Long myPlantId;
-        private String myPlantName;
+        private Long placeId;
+        private String placeName;
+        private Long myPlaceId;
+        private String myPlaceName;
     }
 
     public MyFarmListInfoComponentDTO() {
