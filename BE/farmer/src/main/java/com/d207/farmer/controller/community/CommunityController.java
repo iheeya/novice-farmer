@@ -1,6 +1,7 @@
 package com.d207.farmer.controller.community;
 
 import com.d207.farmer.dto.community.CommunityCommentRegisterDTO;
+
 import com.d207.farmer.dto.community.CommunityOneArticleResponseDTO;
 import com.d207.farmer.dto.community.CommunityRegisterDTO;
 import com.d207.farmer.dto.community.CommunityResponseDTO;
@@ -48,6 +49,20 @@ public class CommunityController {
     }
 
 
+    /**
+     * 특정 게시물 불러오기!
+     */
+    @GetMapping("{id}")
+    public ResponseEntity<CommunityOneArticleResponseDTO> getOneCommunity(@RequestHeader("Authorization") String authorization,
+                                                                          @PathVariable Long id){
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("CommunityController] Post One Community {}", userId);
+
+
+        return ResponseEntity.created(URI.create("/")).body(communityService.getOneCommunity(userId, id));
+    }
+
+
 
     /**
      * 커뮤니티 좋아요 누르기! (처음누르면 좋아요 on! / 이미 눌렀는걸 눌렀으면 좋아요 off!)
@@ -88,6 +103,15 @@ public class CommunityController {
 
         return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunityComment(userId, id, communityCommentRegisterDTO));
     }
+
+    /**
+     *  커뮤니티 특정 게시물의 댓글 커뮤니티 특정 게시물의 전체 댓글보기
+     *  나중에 하기!!!!!!!!!!!!!!!!!!!!!
+     */
+//    @GetMapping("{id}/all/comment")
+//    public ResponseEntity<List<>>{
+//
+//    }
 
 
 

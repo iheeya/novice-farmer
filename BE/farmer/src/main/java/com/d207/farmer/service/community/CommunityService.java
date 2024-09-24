@@ -3,6 +3,7 @@ package com.d207.farmer.service.community;
 import com.d207.farmer.domain.community.*;
 import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.community.CommunityCommentRegisterDTO;
+import com.d207.farmer.dto.community.CommunityOneArticleResponseDTO;
 import com.d207.farmer.dto.community.CommunityRegisterDTO;
 import com.d207.farmer.dto.community.CommunityResponseDTO;
 import com.d207.farmer.repository.community.*;
@@ -12,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -136,4 +139,73 @@ public class CommunityService {
 
         return "Community Comment register Success";
     }
+
+
+    public CommunityOneArticleResponseDTO getOneCommunity(Long userId, Long id) {
+        Community community = communityRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
+
+
+        String nicknamedto = community.getUser().getNickname();
+        String imagePathdto = community.getUser().getImagePath();
+        String communityTitledto = community.getTitle();
+        //.substring(0,20)
+        String communityContentdto = community.getContent();
+
+        if (communityContentdto.length() > 15) {
+            communityContentdto = communityContentdto.substring(0, 15); // 20글자만 잘라냄
+            communityContentdto += "..."; // 예시로 '...' 추가
+        }
+
+
+
+
+        // 커뮤니티에 관련된 이미지를 조회
+        List<CommunityImage> communityImages = communityImageRepository.findByCommunity(community);
+        List<String> communityImagePath = new ArrayList<>();
+        // 이미지 경로를 리스트에 추가
+        for (CommunityImage communityImage : communityImages) {
+            communityImagePath.add(communityImage.getImagePath());
+        }
+
+        List<CommunitySelectedTag> communitySelectedTags = communitySelectedTagRespository.findByCommunity(community);
+        List<String> communityTagListdto = new ArrayList<>();
+        // 커뮤니티 Tags의 tag를 추가!
+        for (CommunitySelectedTag CommunitySelectedtagtem : communitySelectedTags) {
+            communityTagListdto.add(CommunitySelectedtagtem.getCommunityTag().getTagName());
+        }
+
+
+        List<CommunityHeart> communityHearts = communityHeartRepository.findByCommunity(community);
+        Long communtyHeartcountdto = (long) communityHearts.size();
+
+
+        List<CommunityComment> communityComments = communityCommentRepository.findByCommunity(community);
+        Long communityCommentcountdto = (long) communityComments.size();
+
+        boolean checkIPushHeart = true;
+        if(communityHeartRepository.findByCommunityAndUser(community, user).isEmpty()){
+            checkIPushHeart=false;
+        }
+
+
+
+
+        boolean checkMyarticle = community.getUser().getId().equals(userId);
+
+        // Community 객체에서 writeDate를 가져옵니다.
+        LocalDateTime writeDate = community.getWriteDate();
+
+        // 연도, 월, 일을 추출합니다.
+        String year = String.valueOf(writeDate.getYear());
+        String month = String.format("%02d", writeDate.getMonthValue()); // 2자리로 포맷팅
+        String day = String.format("%02d", writeDate.getDayOfMonth()); // 2자리로 포맷팅
+
+        CommunityOneArticleResponseDTO communityOneArticleResponseDTO = new CommunityOneArticleResponseDTO( nicknamedto, imagePathdto, communityTitledto, communityContentdto
+                                                                                ,communityImagePath,  communityTagListdto, communtyHeartcountdto, communityCommentcountdto, checkIPushHeart, checkMyarticle, year, month, day);
+
+        return communityOneArticleResponseDTO;
+    }
+
+
 }
