@@ -24,9 +24,9 @@ public class MyPlaceService {
     private final UserPlaceRepository userPlaceRepository;
     private final FarmRepository farmRepository;
 
-    public MyPlaceResponseDTO getMyPlace(Long userId, MyPlaceRequestDTO request) {
-        UserPlace userPlace = userPlaceRepository.findByIdWithPlace(request.getUserPlaceId()).orElseThrow();
-        List<Farm> farms = farmRepository.findByUserPlaceIdWithCurrentGrowing(request.getUserPlaceId()).orElse(null);
+    public MyPlaceResponseDTO getMyPlace(Long userId, Long myPlaceId) {
+        UserPlace userPlace = userPlaceRepository.findByIdWithPlace(myPlaceId).orElseThrow();
+        List<Farm> farms = farmRepository.findByUserPlaceIdWithCurrentGrowing(myPlaceId).orElse(null);
         int farmCount = farms == null ? 0 : farms.size();
 
         // FIXME 날씨 정보 어떻게 받아올지

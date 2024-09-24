@@ -1,8 +1,10 @@
 package com.d207.farmer.utils;
 
 import com.d207.farmer.domain.common.Address;
+import com.d207.farmer.domain.farm.TodoType;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
+import com.d207.farmer.dto.common.FastAPIConnectTestResponseDTO;
 import com.d207.farmer.dto.farm.get.RecommendPlaceRequestDTO;
 import com.d207.farmer.dto.farm.get.RecommendPlaceResponseDTO;
 import com.d207.farmer.dto.farm.get.RecommendPlantRequestDTO;
@@ -142,10 +144,10 @@ public class FastApiUtil {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         // json data
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("imagePath", imagePath);
+//        Map<String, Object> requestBody = new HashMap<>();
+//        requestBody.put("imagePath", imagePath);
 
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(headers);
 
         String url = fastApiUrl + "/plant/growth";
 
@@ -160,6 +162,65 @@ public class FastApiUtil {
         // 응답 오류 처리
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new IllegalStateException("생장정보 업데이트 api 오류");
+        }
+
+        return response.getBody();
+    }
+
+    public FastAPIConnectTestResponseDTO testFastApiConnect() {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 요청 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(headers);
+
+        String url = fastApiUrl + "/items/1";
+
+        // 요청 및 응답
+        ResponseEntity<FastAPIConnectTestResponseDTO> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                FastAPIConnectTestResponseDTO.class
+        );
+
+        // 응답 오류 처리
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new IllegalStateException("테스트 api 오류");
+        }
+
+        return response.getBody();
+    }
+
+    public String updateTodo(Long farmId, TodoType todoType) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 요청 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // json data
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("farmId", farmId);
+        requestBody.put("todoType", todoType);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(headers);
+
+        String url = fastApiUrl + "/plant/todo";
+
+        // 요청 및 응답
+        ResponseEntity<String> response = restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                entity,
+                String.class
+        );
+
+        // 응답 오류 처리
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new IllegalStateException("TODO 업데이트 api 오류");
         }
 
         return response.getBody();

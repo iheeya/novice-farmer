@@ -49,7 +49,7 @@ import static java.lang.Boolean.TRUE;
 public class StartupApplicationListener {
 
     private static final int USER_NUM = 10;
-    private final Object[][] plantSamples = {{"토마토", 90, true}, {"고추", 30, true}, {"상추", 15, false}, {"깻잎", 15, false}, {"배추", 120, false}};
+    private final Object[][] plantSamples = {{"토마토", 1980, true}, {"고추", 30, true}, {"상추", 15, false}, {"깻잎", 15, false}, {"배추", 120, false}};
     private final Object[][] placeSamples = {{"베란다", "베란다 접근성 미쳤고", true}, {"주말농장", "주말농장 재밌음", true}, {"개인 텃밭", "개인 땅이라니 부럽다", false}, {"스쿨팜", "잼민이 주의", false}};
     private final String[][] weekendFarmSamples = {
             {"쭌이네, BINIL HAUS", "경북 구미시 산동읍 성수4길 65 쭌이네비닐하우스", "0507-1317-4536", "36.1573359", "128.4209952", "https://image.com/fdf", "성수리 현대정비에서 산길따라~~쭈우쭈욱 올라오세요^^ (현대정비를 왼쪽에두고 굴다리지남^^)"},

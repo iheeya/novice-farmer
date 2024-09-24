@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MyPlaceRequestDTO {
-    private Long userPlaceId;
+    private Long myPlaceId;
 }

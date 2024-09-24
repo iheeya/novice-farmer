@@ -1,6 +1,8 @@
 package com.d207.farmer.service.user;
 
 import com.d207.farmer.domain.farm.Farm;
+import com.d207.farmer.domain.farm.FarmTodo;
+import com.d207.farmer.domain.farm.TodoType;
 import com.d207.farmer.domain.plant.PlantGrowthIllust;
 import com.d207.farmer.dto.myplant.*;
 import com.d207.farmer.repository.farm.FarmRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -53,18 +56,30 @@ public class MyPlantService {
 
     @Transactional
     public String waterPlant(Long userId, ManagePlantRequestDTO request) {
-        Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
-        // TODO 원래 최근에 있던 물주기 todo를 업데이트하거나, 없으면 새로 추가
-
-
-        return "작물 물주기 성공";
+        // TODO 원래 최근에 있던 물주기 todo를 업데이트
+        // TODO fast에 todo 업데이트 해달라고 요청
+        List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalseAndTodoType(request.getFarmId(), TodoType.WATERING);
+        if(farmTodos == null || farmTodos.isEmpty()) { // todo가 없으면 임의 생성인데 그럴 일 있나
+            Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
+            farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, true, null, LocalDateTime.now()));
+            return "작물 물주기 성공(todo 생성)";
+        }
+        farmTodos.get(0).updateTodoComplete();
+        return "작물 물주기 성공(todo 업데이트)";
     }
 
     @Transactional
     public String fertilizerPlant(Long userId, ManagePlantRequestDTO request) {
-        Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
-        // TODO 원래 최근에 있던 비료주기 todo를 업데이트하거나, 없으면 새로 추가
-        return "작물 비료주기 성공";
+        // TODO 원래 최근에 있던 비료주기 todo를 업데이트
+
+        List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalseAndTodoType(request.getFarmId(), TodoType.FERTILIZERING);
+        if(farmTodos == null || farmTodos.isEmpty()) {
+            Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
+            farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, true, null, LocalDateTime.now()));
+            return "작물 비료주기 성공(todo 생성)";
+        }
+        farmTodos.get(0).updateTodoComplete();
+        return "작물 비료주기 성공(todo 업데이트)";
     }
 
     @Transactional
@@ -84,7 +99,16 @@ public class MyPlantService {
     public InspectionPestResponseDTO inspectionPest(Long userId, InspectionPlantRequestDTO request) {
         InspectionPestResponseByFastApiDTO response = fastApiUtil.getInspectionPest(request.getImagePath());
         // TODO response에서 병해충 이름 받아서 몽고db 조회 후 반환
-        return null;
+        if(!response.getHasPast()) {
+            InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(false, request.getImagePath());
+            InspectionPestResponseDTO.PestInfoDTO pestInfoDTO = new InspectionPestResponseDTO.PestInfoDTO();
+            return new InspectionPestResponseDTO(isPestDTO, pestInfoDTO);
+        }
+        InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(true, request.getImagePath());
+        InspectionPestResponseDTO.PestInfoDTO pestInfoDTO = new InspectionPestResponseDTO.PestInfoDTO(response.getPestInfo().getPestImagePath(),
+                response.getPestInfo().getPestName(), response.getPestInfo().getPestDesc(), response.getPestInfo().getPestCureDesc());
+
+        return new InspectionPestResponseDTO(isPestDTO, pestInfoDTO);
     }
 
     public InspectionGrowthStepResponseDTO inspectionGrowthStep(Long userId, InspectionPlantRequestDTO request) {
@@ -120,5 +144,9 @@ public class MyPlantService {
 
         // TODO todo 생기면 todo dto 생성해서 넣기
         return new MyPlantInfoResponseDTO(true, farm.getIsFirstHarvest(), plantInfo, new MyPlantInfoResponseDTO.TodoInfoDTO());
+    }
+
+    public String updateTodoByFastApi(Long farmId, TodoType todoType) {
+        return fastApiUtil.updateTodo(farmId, todoType);
     }
 }
