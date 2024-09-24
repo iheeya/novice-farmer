@@ -1,22 +1,20 @@
 import Modal from 'react-modal'
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../../styles/RegisterGarden/gardenModal.css'
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 import TextField from '@mui/material/TextField';
 import axios from 'axios'
-import { useDispatch, useSelector } from 'react-redux';
-import { setLocationData, setPlantData } from '../../store/AddFarm/store';
+import {  useSelector } from 'react-redux';
 import { RootState } from '../../store/AddFarm/store';
 import { motion } from "framer-motion";
 import { CSSTransition } from 'react-transition-group';
 
 interface GardenModalProps {
-  plantId: number| null;
-  plantName: string | null;
-  onClose: () => void; // onClose는 함수 타입
+    plantId: number |null;
+    onClose: () => void; // onClose는 함수 타입
+    onLoading: () => void;
 }
 
 const customModalStyles: ReactModal.Styles = {
@@ -44,39 +42,29 @@ const customModalStyles: ReactModal.Styles = {
     },
 };
 
-function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
-  const dispatch = useDispatch();
-  const farmData = useSelector((state: RootState) => state.farmSelect.farm);
-  const locationData = useSelector((state:RootState) => state.farmSelect.location);
-  const addressData = useSelector((state: RootState) => state.address.address);
-  const placeId = useSelector((state: RootState) => state.farmSelect.placeId)
-  const [memo, setMemo] = useState(''); // 메모 상태 추가
-  const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(true); // Modal open state
-
-  if (addressData) {
-    console.log(`addressData: ${addressData}`);
-  }
+function GardenModal({ plantId, onClose, onLoading }: GardenModalProps) {
   
+
+  const plantData = useSelector((state: RootState) => state.farmSelect.plant)
+  const [isModalOpen, setIsModalOpen] = useState(true); // 모달 오픈 상태 관리
+ 
+
+  const modalVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 50 },
+  };
+
+   const handleClose = () => {
+    setIsModalOpen(false);
+    // onClose(); // Call the original onClose function
+  };
+  
+
   const handleSubmit = async () => {
-    if (addressData) {
+   
       const payload = {
-        palce : {
-        placeId: {placeId},
-        address: {
-          sido: addressData.sido || null,
-          sigungu: addressData.sigungu|| null,
-          bname1: addressData.bname1|| null,
-          bname2: addressData.bname2|| null,
-          jibun: addressData.jibun|| null,
-          zonecode: addressData.zonecode|| null,
-        }
-      }, 
-      plant: {
-        plantId: {plantId},
-        myPlantName: {plantName},
-        memo: {memo}
-      }
+        plantId: plantId
       };
 
       try {
@@ -86,23 +74,8 @@ function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
       } catch (error) {
         console.error("Error posting data:", error);
       }
-    }
+    
   };
-
-  const modalVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: 50 },
-  };
-
-  const handleClose = () => {
-    setIsModalOpen(false);
-    // onClose(); // Call the original onClose function
-  };
-
-  const handleMain = () => {
-    navigate('/');
-  }
 
   return (
     <CSSTransition
@@ -123,43 +96,12 @@ function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
     style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
   >
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
-        <div className='instruction'>텃밭과 작물을 등록해주세요.</div>
-        <div className='box-color'>
-          <div className='box-title'>텃밭</div>
-          <div className='box-content'>{farmData}</div>
-        </div>
-
+        <div className='instruction'>작물에 적합한 텃밭을 알려드려요</div>
         <div className='box-color'>
           <div className='box-title'>작물</div>
-          <div className='box-content'>{plantName}</div>
+          <div className='box-content'>{plantData}</div>
         </div>
-
-        <div className='box-color'>
-          <div className='box-title'>위치</div>
-          <div className='box-content'>{locationData}</div>
-        </div>
-
-        <div className='box-color'>
-          <div className='box-title'>메모</div>
-          <div className='box-content'>
-          <TextField
-              id="sample2_address"
-              variant="standard"
-              inputProps={{ maxLength: 10 }}
-              onChange={(e) => setMemo(e.target.value)} // 상태 업데이트
-              sx={{
-                width: '40%',
-              '& .MuiInput-underline:before': {
-                borderBottom: 'none', // 비활성화 상태에서의 밑줄 제거
-              },
-              '& .MuiInput-underline:after': {
-                borderBottom: 'none', // 활성화 상태에서의 밑줄 제거
-              },
-            }}
-              style={{ flex: 1, position: 'absolute', left: '45%' }}
-            />
-          </div>
-        </div>
+       
 
         <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'center' }}>
           <ButtonGroup sx={{ width: '100%', padding: 0, margin: 0, boxSizing: 'border-box' }}>
@@ -194,22 +136,23 @@ function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
                   backgroundColor: '#A0C075',
                 },
               }}
-              onClick={async () => {
-                await handleSubmit(); // post 요청 보내기
-                onClose(); // 모달 닫기
-                handleMain(); // 메인 페이지로 이동
+              onClick={() => {
+                // 선택완료 버튼 클릭 시 동작 추가
+                // 예: 주소를 상위 컴포넌트로 전달하거나 상태 업데이트
+                handleSubmit();  // post 요청 보내기
+                // onClose();
+                onLoading();
               }}
             >
-              등록
+              선택완료
             </Button>
           </ButtonGroup>
         </div>
       </div>
       </motion.div>
-      </Modal>
-      </CSSTransition>
-  
+    </Modal>
+    </CSSTransition>
   );
 }
 
-export default GardenFinalModal;
+export default GardenModal;

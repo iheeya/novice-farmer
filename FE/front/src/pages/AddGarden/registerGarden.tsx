@@ -1,9 +1,9 @@
 import {useState, useEffect} from 'react' 
-import SelectTab from "../components/RegisterGarden/selectTab";
-import GardenSelect from "../components/RegisterGarden/gardenSelect";
-import Loading from "../components/RegisterGarden/gardenSelectLoading";
-import RecommendPlant from "../components/RegisterGarden/recommendPlant";
-import plantRecommend from "../assets/dummydata/plantRecommend.json";
+import SelectTab from "../../components/RegisterGarden/selectTab";
+import GardenSelect from "../../components/RegisterGarden/gardenSelect";
+import Loading from "../../components/RegisterGarden/gardenSelectLoading";
+import RecommendPlant from "../../components/RegisterGarden/recommendPlant";
+import plantRecommend from "../../assets/dummydata/plantRecommend.json";
 
 function RegisterGarden(){
     const [isLoading, setIsLoading] = useState(false)

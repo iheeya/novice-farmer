@@ -34,7 +34,7 @@
 .star-icon{
   position: absolute;
   top: 9%;
-  right: 25%;
+  left: 10%;
   color : #f5945c;
   font-size: 1rem;
   z-index: 1;

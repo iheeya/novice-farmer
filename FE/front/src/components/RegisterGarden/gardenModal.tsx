@@ -3,12 +3,14 @@ import { useEffect, useRef, useState } from 'react';
 import '../../styles/RegisterGarden/gardenModal.css'
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
-import DaumPostcodeEmbed from 'react-daum-postcode';
 import TextField from '@mui/material/TextField';
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
-import { setLocationData, setAddressData } from '../../store/store';
-import { RootState } from '../../store/store';
+import { setLocationData, setAddressData } from '../../store/AddFarm/store';
+import { RootState } from '../../store/AddFarm/store';
+import { motion } from "framer-motion";
+import { CSSTransition } from 'react-transition-group';
+
 
 interface GardenModalProps {
     placeId: number |null;
@@ -47,7 +49,8 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false); // 스크립트 로드 상태
   const [postcodeData, setPostcodeData] = useState<any>(null); // 우편번호 데이터 상태
   const farmData = useSelector((state: RootState) => state.farmSelect.farm)
-
+  const [isModalOpen, setIsModalOpen] = useState(true); // 모달 오픈 상태 관리
+  
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
@@ -109,6 +112,15 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
     }
   };
 
+  const modalVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 50 },
+  };
+  
+
+
+
   const handleSubmit = async () => {
     if (postcodeData) {
       const payload = {
@@ -125,7 +137,7 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
 
       try {
         const response = await axios.post('/your-endpoint', payload);
-        console.log(response.data); // 응답 처리
+        console.log(response.data); 
         onClose(); // 모달 닫기
       } catch (error) {
         console.error("Error posting data:", error);
@@ -133,88 +145,110 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
     }
   };
 
-  return (
-    <Modal isOpen={true} style={customModalStyles} onRequestClose={onClose}>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
-        <div className='instruction'>텃밭에 적합한 작물을 알려드려요</div>
-        <div className='box-color'>
-          <div className='box-title'>텃밭</div>
-          <div className='box-content'>{farmData}</div>
-        </div>
-        <div className='box-color'>
-          <div className='box-title'>위치</div>
-          <div className='box-content'>
-            <TextField
-              id="sample2_address"
-              variant="standard"
-              inputRef={addressRef}
-              sx={{
-              '& .MuiInput-underline:before': {
-                borderBottom: 'none', // 비활성화 상태에서의 밑줄 제거
-              },
-              '& .MuiInput-underline:after': {
-                borderBottom: 'none', // 활성화 상태에서의 밑줄 제거
-              },
-            }}
-              style={{ flex: 1, position: 'absolute', left: '25%' }}
-            />
-            <Button
-              variant="contained"
-              onClick={handlePostcode}
-              color="success"
-              disabled={!isScriptLoaded} // 스크립트가 로드되기 전에는 버튼 비활성화
-              sx={{opacity:1, position:'absolute', left: '70%'}}
-              
-            >
-              주소 찾기
-            </Button>
-          </div>
-        </div>
 
-        <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'center' }}>
-          <ButtonGroup sx={{ width: '100%', padding: 0, margin: 0, boxSizing: 'border-box' }}>
-            <Button
-              sx={{
-                backgroundColor: 'white',
-                border: '1px solid #E2E2E2',
-                color: '#71717A',
-                padding: '10px 20px',
-                flexGrow: 1,
-                width: '50%',
-                '&:hover': {
-                  backgroundColor: '#f5f5f5',
-                },
-              }}
-              onClick={onClose}
-            >
-              취소
-            </Button>
-            <Button
-              sx={{
-                backgroundColor: '#B0D085',
-                border: '1px solid #E2E2E2',
-                color: 'white',
-                padding: '10px 20px',
-                flexGrow: 1,
-                width: '50%',
-                '&:hover': {
-                  backgroundColor: '#A0C075',
-                },
-              }}
-              onClick={() => {
-                // 선택완료 버튼 클릭 시 동작 추가
-                // 예: 주소를 상위 컴포넌트로 전달하거나 상태 업데이트
-                handleSubmit();  // post 요청 보내기
-                // onClose();
-                onLoading();
-              }}
-            >
-              선택완료
-            </Button>
-          </ButtonGroup>
-        </div>
+  const handleClose = () => {
+    setIsModalOpen(false);
+    // onClose(); // Call the original onClose function
+  };
+  
+  return (
+    <CSSTransition
+    in={isModalOpen}
+    timeout={{ enter: 300, exit: 300 }}
+    classNames="slide"
+    mountOnEnter
+    unmountOnExit
+    onExited={onClose} // Close modal after the exit transition
+  >
+    <Modal isOpen={true} style={customModalStyles} onRequestClose={handleClose}>
+  <motion.div
+    initial="hidden"
+    animate="visible"
+    exit="exit"
+    variants={modalVariants}
+    transition={{ duration: 0.3 }}
+    style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
+  >
+    <div className='instruction'>텃밭에 적합한 작물을 알려드려요</div>
+    <div className='box-color'>
+      <div className='box-title'>텃밭</div>
+      <div className='box-content'>{farmData}</div>
+    </div>
+    <div className='box-color'>
+      <div className='box-title'>위치</div>
+      <div className='box-content'>
+        <TextField
+          id="sample2_address"
+          variant="standard"
+          inputRef={addressRef}
+          sx={{
+            '& .MuiInput-underline:before': {
+              borderBottom: 'none', // 비활성화 상태에서의 밑줄 제거
+            },
+            '& .MuiInput-underline:after': {
+              borderBottom: 'none', // 활성화 상태에서의 밑줄 제거
+            },
+          }}
+          style={{ flex: 1, position: 'absolute', left: '25%' }}
+        />
+        <Button
+          variant="contained"
+          onClick={handlePostcode}
+          color="success"
+          disabled={!isScriptLoaded} // 스크립트가 로드되기 전에는 버튼 비활성화
+          sx={{ opacity: 1, position: 'absolute', left: '70%' }}
+        >
+          주소 찾기
+        </Button>
       </div>
-    </Modal>
+    </div>
+    <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'center' }}>
+      <ButtonGroup sx={{ width: '100%', padding: 0, margin: 0, boxSizing: 'border-box' }}>
+        <Button
+          sx={{
+            backgroundColor: 'white',
+            border: '1px solid #E2E2E2',
+            color: '#71717A',
+            padding: '10px 20px',
+            flexGrow: 1,
+            width: '50%',
+            '&:hover': {
+              backgroundColor: '#f5f5f5',
+            },
+          }}
+          onClick={() => {
+            setIsModalOpen(false);
+            // onClose();
+          }}
+        >
+          취소
+        </Button>
+        <Button
+          sx={{
+            backgroundColor: '#B0D085',
+            border: '1px solid #E2E2E2',
+            color: 'white',
+            padding: '10px 20px',
+            flexGrow: 1,
+            width: '50%',
+            '&:hover': {
+              backgroundColor: '#A0C075',
+            },
+          }}
+          onClick={() => {
+            handleSubmit();  // post 요청 보내기
+            onLoading();
+          }}
+        >
+          선택완료
+        </Button>
+      </ButtonGroup>
+    </div>
+  </motion.div>
+</Modal>
+</CSSTransition>
+
+
   );
 }
 
