@@ -1,22 +1,18 @@
 import React from 'react';
-import styles from '../../styles/Main/FarmGuideInfo.module.css'; // CSS 경로
+import styles from '../../styles/Main/FarmGuideInfo.module.css';
 
-interface FarmGuideInfoProps {
-  data: {
-    guide: string[];
-  };
-}
-
-const FarmGuideInfo: React.FC<FarmGuideInfoProps> = ({ data }) => {
+const FarmGuideInfo: React.FC = () => {
   return (
     <div className={styles.farmGuideContainer}>
-      <h2>텃밭 가꾸기 가이드</h2>
+      <h2 className={styles.farmGuideTitle}>아직 텃밭이 없으시네요!</h2>
+      <p className={styles.subtitle}>텃밭 재배에 대해서 알려드릴게요</p>
       <ul className={styles.guideList}>
-        {data.guide.map((item, index) => (
-          <li key={index} className={styles.guideItem}>
-            {item}
-          </li>
-        ))}
+        <li className={styles.guideItem}>
+          <p>텃밭 가꾸기 기초 방법</p>
+        </li>
+        <li className={styles.guideItem}>
+          <p>파종 기초 방법</p>
+        </li>
       </ul>
     </div>
   );
