@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../../styles/Main/Main.module.css'; // CSS 모듈 임포트
 
 // 각 컴포넌트 임포트
@@ -14,6 +15,8 @@ import CommunityInfo from '../../components/Main/CommunityInfo';
 import WeekendFarm from '../../components/Main/WeekendFarm';
 
 const Main = () => {
+  const navigate = useNavigate(); // 라우팅을 위해 useNavigate 사용
+
   const [componentData, setComponentData] = useState({
     todoInfo: {
       isUsable: true,
@@ -84,33 +87,33 @@ const Main = () => {
           communityId: 1,
           title: "토마토 베란다 재배 성공기",
           content: "토마토는 이렇게 베란다에서...",
-          imagePath: "/assets/community1.jpg",
+          imagePath: "http://image.dongascience.com/Photo/2018/10/1e4e9eb4a36aaff4874434582f414eae.jpg",
           heartCount: 12,
           commentCount: 4,
-          writer: "홍길동",
-          writerImagePath: "/assets/profile1.jpg",
+          writer: "농사장인",
+          writerImagePath: "https://www.urbanbrush.net/web/wp-content/uploads/edd/2022/04/urbanbrush-20220404144009535832.jpg",
           registerDate: "2024-09-20T02:31:05.668Z"
         },
         {
           communityId: 2,
           title: "유기농 토마토 재배법",
           content: "유기농으로 토마토를 키우는 방법은...",
-          imagePath: "/assets/community2.jpg",
+          imagePath: "https://cdn.imweb.me/upload/S201909034d88b63749dfc/3f0e26124348b.jpg",
           heartCount: 15,
           commentCount: 6,
-          writer: "김철수",
-          writerImagePath: "/assets/profile2.jpg",
+          writer: "말랑카우",
+          writerImagePath: "https://www.handmk.com/news/photo/202306/16714_40371_5250.jpg",
           registerDate: "2024-09-19T02:31:05.668Z"
         },
         {
           communityId: 3,
           title: "베란다에서 키운 토마토",
           content: "작은 공간에서 토마토를 키우는 팁...",
-          imagePath: "/assets/community3.jpg",
+          imagePath: "https://www.treeinfo.net/data/file/ti_gallery/thumb-2084243718_a7f6fbcc_DSC_0090_400x300.jpg",
           heartCount: 10,
           commentCount: 2,
-          writer: "이영희",
-          writerImagePath: "/assets/profile3.jpg",
+          writer: "마가렛트",
+          writerImagePath: "https://cdn.pixabay.com/photo/2020/05/17/20/21/cat-5183427_1280.jpg",
           registerDate: "2024-09-18T02:31:05.668Z"
         }
       ],
@@ -119,33 +122,33 @@ const Main = () => {
           communityId: 4,
           title: "토마토 실내 재배 방법",
           content: "실내에서도 토마토를 재배하는 법...",
-          imagePath: "/assets/community4.jpg",
+          imagePath: "https://src.hidoc.co.kr/image/lib/2023/5/26/1685090646233_0.png",
           heartCount: 5,
           commentCount: 2,
-          writer: "최민정",
-          writerImagePath: "/assets/profile4.jpg",
+          writer: "김새싹",
+          writerImagePath: "https://cdn.pixabay.com/photo/2021/10/07/15/24/microgreen-6688950_640.jpg",
           registerDate: "2024-09-22T02:31:05.668Z"
         },
         {
           communityId: 5,
           title: "여름철 토마토 관리법",
           content: "여름철에 토마토를 잘 관리하는 법...",
-          imagePath: "/assets/community5.jpg",
+          imagePath: "https://www.kfia.or.kr/kfia/webzine/201907/images/sub/sub_visual_food_recipe.jpg",
           heartCount: 8,
           commentCount: 3,
-          writer: "박철민",
-          writerImagePath: "/assets/profile5.jpg",
+          writer: "마가렛트",
+          writerImagePath: "https://cdn.pixabay.com/photo/2020/05/17/20/21/cat-5183427_1280.jpg",
           registerDate: "2024-09-21T02:31:05.668Z"
         },
         {
           communityId: 6,
           title: "베란다에서 키운 토마토의 수확",
           content: "베란다에서 키운 토마토를 수확하는 시기...",
-          imagePath: "/assets/community6.jpg",
+          imagePath: "https://flexgcdn-natural8127.moall.shop/data/goods/natural8127/small/thum2/1000000241_magnify_087.jpg",
           heartCount: 11,
           commentCount: 5,
-          writer: "이철수",
-          writerImagePath: "/assets/profile6.jpg",
+          writer: "농사장인",
+          writerImagePath: "https://www.urbanbrush.net/web/wp-content/uploads/edd/2022/04/urbanbrush-20220404144009535832.jpg",
           registerDate: "2024-09-20T02:31:05.668Z"
         }
       ]
@@ -167,6 +170,11 @@ const Main = () => {
     communityInfo: true,
     weekendFarm: true,
   });
+
+  // 주말농장 클릭 핸들러
+  const handleWeekendFarmClick = () => {
+    navigate("/weekendFarm-recommend"); // 클릭 시 /weekendFarm-recommend로 이동
+  };
 
   return (
     <div className={styles.mainContainer}>
@@ -192,7 +200,10 @@ const Main = () => {
         <div className={styles.componentWrapper}><RecommendInfo data={componentData.recommendInfo} /></div>
       )}
       <div className={styles.componentWrapper}><CommunityInfo data={componentData.communityInfo} /></div>
-      <div className={styles.componentWrapper}><WeekendFarm data={componentData.weekendFarm} /></div>
+      {/* WeekendFarm 클릭 시 라우팅 */}
+      <div className={styles.componentWrapper} onClick={handleWeekendFarmClick}>
+        <WeekendFarm data={componentData.weekendFarm} />
+      </div>
     </div>
   );
 };
