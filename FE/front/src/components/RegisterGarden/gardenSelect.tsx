@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import veranda from '../../assets/img/farms/1.png'
 import weekend from '../../assets/img/farms/2.png'
 import individual from '../../assets/img/farms/3.png'
@@ -8,6 +8,7 @@ import farmPlace from '../../assets/dummydata/farmPlace.json'
 import '../../styles/RegisterGarden/gardenSelect.css'
 import { FaHeart } from "react-icons/fa";
 // import GardenModal from './GardenModal'
+import {getFarmSelect} from '../../services/AddGarden/AddGardenGet'
 import GardenModal from './gardenModal'
 import { useDispatch } from 'react-redux'
 import {setFarmData, setPlaceIdData} from '../../store/AddFarm/store'
@@ -23,7 +24,8 @@ function GardenSelect({onLoading}:GardenLoadingProps) {
     const [selectedPlace, setSelectedPlace] = useState<string | null>(null); // 선택된 장소를 저장할 상태
     const [isModalOpen, setIsModalOpen] = useState(false)  // 모달 열림 상태
     const [selectPlaceId, setSelectPalceId] = useState<number|null>(null) // 장소 id 저장
-
+    const [farmPlaceData, setFarmPlaceData] = useState<any[]>([]); // API에서 받아온 텃밭 리스트 상태
+    
     const imageMapping: {[key:string]: string} = {
         1:veranda,
         2:weekend,
@@ -31,6 +33,21 @@ function GardenSelect({onLoading}:GardenLoadingProps) {
         4: school,
         5: rooftop
     }
+
+    // API 요청을 통해 farmPlace 데이터 받아오기
+    useEffect(() => {
+        async function fetchFarmData() {
+            const data = await getFarmSelect();
+            if (data) {
+                setFarmPlaceData(data); 
+                console.log(`data: ${data}`)
+            }
+        }
+
+       
+
+        fetchFarmData(); // API 요청 실행
+    }, []);
 
     const handleImageClick = (placeName :string, placeId:number) => {
         // setSelectedPlace(place); // 선택한 장소 저장
