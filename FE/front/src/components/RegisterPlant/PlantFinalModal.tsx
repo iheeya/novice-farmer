@@ -13,8 +13,8 @@ import { RootState } from '../../store/AddFarm/store';
 import { Root } from 'react-dom/client';
 
 interface GardenModalProps {
-  plantId: number| null;
-  plantName: string | null;
+  placeId: number| null;
+  placeName: string | null;
   onClose: () => void; // onClose는 함수 타입
 }
 
@@ -43,50 +43,47 @@ const customModalStyles: ReactModal.Styles = {
     },
 };
 
-function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
+function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
   const dispatch = useDispatch();
-  const farmData = useSelector((state: RootState) => state.farmSelect.farm);
-  const locationData = useSelector((state:RootState) => state.farmSelect.location);
-  const addressData = useSelector((state: RootState) => state.address.address);
-  const placeId = useSelector((state: RootState) => state.farmSelect.placeId)
   const [memo, setMemo] = useState(''); // 메모 상태 추가
   const navigate = useNavigate();
+  const plantName = useSelector((state: RootState) => state.farmSelect.plant)
 
 
-  if (addressData) {
-    console.log(`addressData: ${addressData}`);
-  }
+//   if (addressData) {
+//     console.log(`addressData: ${addressData}`);
+//   }
   
-  const handleSubmit = async () => {
-    if (addressData) {
-      const payload = {
-        palce : {
-        placeId: {placeId},
-        address: {
-          sido: addressData.sido || null,
-          sigungu: addressData.sigungu|| null,
-          bname1: addressData.bname1|| null,
-          bname2: addressData.bname2|| null,
-          jibun: addressData.jibun|| null,
-          zonecode: addressData.zonecode|| null,
-        }
-      }, 
-      plant: {
-        plantId: {plantId},
-        myPlantName: {plantName},
-        memo: {memo}
-      }
-      };
+//   const handleSubmit = async () => {
+//     if (addressData) {
+//       const payload = {
+//         palce : {
+//         placeId: {placeId},
+//         address: {
+//           sido: addressData.sido || null,
+//           sigungu: addressData.sigungu|| null,
+//           bname1: addressData.bname1|| null,
+//           bname2: addressData.bname2|| null,
+//           jibun: addressData.jibun|| null,
+//           zonecode: addressData.zonecode|| null,
+//         }
+//       }, 
+//       plant: {
+//         plantId: {plantId},
+//         myPlantName: {plantName},
+//         memo: {memo}
+//       }
+//       };
 
-      try {
-        const response = await axios.post('/your-endpoint', payload);
-        console.log(response.data); // 응답 처리
-        onClose(); // 모달 닫기
-      } catch (error) {
-        console.error("Error posting data:", error);
-      }
-    }
-  };
+//       try {
+//         const response = await axios.post('/your-endpoint', payload);
+//         console.log(response.data); // 응답 처리
+//         onClose(); // 모달 닫기
+//       } catch (error) {
+//         console.error("Error posting data:", error);
+//       }
+//     }
+//   };
 
   const handleMain = () => {
     navigate('/');
@@ -98,7 +95,7 @@ function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
         <div className='instruction'>텃밭과 작물을 등록해주세요.</div>
         <div className='box-color'>
           <div className='box-title'>텃밭</div>
-          <div className='box-content'>{farmData}</div>
+          <div className='box-content'>{placeName}</div>
         </div>
 
         <div className='box-color'>
@@ -108,7 +105,7 @@ function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
 
         <div className='box-color'>
           <div className='box-title'>위치</div>
-          <div className='box-content'>{locationData}</div>
+          <div className='box-content'></div>
         </div>
 
         <div className='box-color'>
@@ -164,7 +161,7 @@ function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
                 },
               }}
               onClick={async () => {
-                await handleSubmit(); // post 요청 보내기
+                // await handleSubmit(); // post 요청 보내기
                 onClose(); // 모달 닫기
                 handleMain(); // 메인 페이지로 이동
               }}
@@ -178,4 +175,4 @@ function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
   );
 }
 
-export default GardenFinalModal;
+export default PlantFinalModal;

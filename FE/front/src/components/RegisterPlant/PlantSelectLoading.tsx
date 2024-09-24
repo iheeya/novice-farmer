@@ -8,8 +8,8 @@ function PlanSelectLoading(){
 
     return(
         <div className="loading-instruction">
-            <div>{plantData}에서 키우기 좋은 </div>
-            <div> 작물을 분석중이에요! </div>
+            <div>{plantData}를 키우기 좋은 </div>
+            <div> 텃밭을 분석중이에요! </div>
 
             <img
                 src={loading}
