@@ -1,7 +1,9 @@
 // 해야 할 것들
-// 1. 이메일 유효성 검사 ()
-// 회원
+// 1. 이메일 중복 검사 추가
+// 2. 닉네임 중복 검사 추가
 
+
+import api from "../../utils/axios";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -240,7 +242,6 @@ function SignUp() {
     제주특별자치도: ["제주시", "서귀포시"],
   };
 
-
   // 회원가입을 위한 상태 변수
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -250,35 +251,49 @@ function SignUp() {
   const [gender, setGender] = useState("");
   const [selectedProvince, setSelectedProvince] = useState(""); // 도/특별시/광역시
   const [selectedCity, setSelectedCity] = useState(""); // 시/군/구
-  const [pushNotification, setPushNotification] = useState(false); // 푸시 알림 동의 여부
+  const [pushAllow, setPushAllow] = useState(false); // 푸시 알림 동의 여부
 
   const isEmailValid = useMemo(() => validateEmail(email), [email]);
   const isPasswordValid = useMemo(() => validatePassword(password), [password]);
-  const isPasswordConfirmed = useMemo(
-    () => passwordConfirm({ password, passwordConf }),
-    [password, passwordConf]
-  );
+  const isPasswordConfirmed = useMemo(() => passwordConfirm({ password, passwordConf }), [password, passwordConf]);
   const isNicknameValid = useMemo(() => validateNickname(nickName), [nickName]);
 
   const navigate = useNavigate();
 
   // 회원가입 API 핸들러
   const handleSignUp = (event: { preventDefault: () => void }) => {
-    event.preventDefault();    
+    event.preventDefault();
 
     // API 요청을 위한 데이터
     const signUpData = {
       email,
       password,
       nickName,
-      age,
+      age: parseInt(age, 10),
       gender,
-      address: `${selectedProvince} ${selectedCity}`, // 선택된 시/군/구 값을 address로 사용
-      pushNotification,
+      address: `${selectedProvince} ${selectedCity}`,
+      pushAllow,
     };
-
-    // 회원가입 API 호출 (여기서는 예시로 콘솔에 출력)
-    console.log("회원가입 데이터:", signUpData);
+    // 회원가입 데이터 콘솔출력
+    console.log(signUpData)
+    // 회원가입 API 호출 
+    api
+      .post("/user", {
+        email,
+        password,
+        nickname:nickName,
+        age: parseInt(age, 10),
+        gender,
+        address: `${selectedProvince} ${selectedCity}`,
+        pushAllow,
+      })
+      .then((response) => {
+        alert("회원가입이 완료되었습니다.");
+        console.log(response)
+      })
+      .catch((error) => {
+        console.error("회원가입 실패", error);
+      });
 
     // 회원가입 후 로그인 페이지로 이동 (실제 API 요청 후에 추가해야 함)
     // navigate("/login");
@@ -286,23 +301,23 @@ function SignUp() {
 
   return (
     <Box
-  sx={{
-    // width: "80%",
-    // minWidth: "3px",
-    margin: "0 auto", // 좌우 중앙 정렬
-    // paddingY:"2%",
-    height: "100%",
-    paddingX: "5%",
-    backgroundColor: "white",
-    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-    borderRadius: "20px",
-    textAlign: "center",
-    display: "flex", // Flexbox 사용
-    flexDirection: "column", // Flex 방향을 세로로 설정
-    justifyContent: "center", // 수직 중앙 정렬
-    alignItems: "center", // 수평 중앙 정렬
-  }}
->
+      sx={{
+        // width: "80%",
+        // minWidth: "3px",
+        margin: "0 auto", // 좌우 중앙 정렬
+        // paddingY:"2%",
+        height: "100%",
+        paddingX: "5%",
+        backgroundColor: "white",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        borderRadius: "20px",
+        textAlign: "center",
+        display: "flex", // Flexbox 사용
+        flexDirection: "column", // Flex 방향을 세로로 설정
+        justifyContent: "center", // 수직 중앙 정렬
+        alignItems: "center", // 수평 중앙 정렬
+      }}
+    >
       <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%" }} />
       <form onSubmit={handleSignUp}>
         <TextField
@@ -428,13 +443,7 @@ function SignUp() {
 
         {/* 푸시 알림 동의 체크박스 */}
         <FormControlLabel
-          control={
-            <Checkbox
-              checked={pushNotification}
-              onChange={(e) => setPushNotification(e.target.checked)}
-              color="primary"
-            />
-          }
+          control={<Checkbox checked={pushAllow} onChange={(e) => setPushAllow(e.target.checked)} color="primary" />}
           label="푸시 알림 동의"
         />
 
