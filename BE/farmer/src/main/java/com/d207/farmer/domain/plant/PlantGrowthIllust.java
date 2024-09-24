@@ -33,4 +33,10 @@ public class PlantGrowthIllust {
         this.step = request.getGrowthStep();
         this.imagePath = request.getImagePath();
     }
+
+    public PlantGrowthIllust(Plant plant, int step, String imagePath) {
+        this.step = step;
+        this.imagePath = imagePath;
+        this.plant = plant;
+    }
 }

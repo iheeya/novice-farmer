@@ -58,6 +58,16 @@ public class CommunityController {
         return ResponseEntity.created(URI.create("/")).body(communityService.registerHeart(userId, id));
     }
 
+    @PostMapping("{id}/all")
+    public ResponseEntity<String> deleteCommunityArticle(@RequestHeader("Authorization") String authorization,
+                                                @PathVariable Long id){
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("CommunityController] Post Community {}", authorization);
+
+
+        return ResponseEntity.created(URI.create("/")).body(communityService.deleteCommunityArticle(userId, id));
+    }
+
 
 
 }
