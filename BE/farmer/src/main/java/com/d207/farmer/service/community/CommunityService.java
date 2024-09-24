@@ -107,4 +107,11 @@ public class CommunityService {
 
 
     }
+
+    public String deleteCommunityArticle(Long userId, Long id) {
+        User user = userRepository.findById(userId).orElseThrow();
+        Community community = communityRepository.findById(id).orElseThrow();
+//        if(community.getUser().get)
+//        communityRepository.de
+    }
 }
