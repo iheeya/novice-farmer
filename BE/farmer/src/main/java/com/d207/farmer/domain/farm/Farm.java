@@ -80,7 +80,7 @@ public class Farm {
         this.plant = plant;
         this.myPlantName = request.getMyPlantName();
         this.memo = request.getMemo();
-        this.predDate = LocalDateTime.now().plusDays(plant.getGrowthDay());
+        this.predDate = LocalDateTime.now().plusDays(plant.getDegreeDay());
         this.growthStep = 1;
         this.createDate = LocalDateTime.now();
         this.isCompleted = false;
