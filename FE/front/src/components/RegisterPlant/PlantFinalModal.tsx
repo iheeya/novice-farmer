@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import '../../styles/RegisterGarden/gardenModal.css'
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
-import DaumPostcodeEmbed from 'react-daum-postcode';
 import TextField from '@mui/material/TextField';
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
@@ -46,44 +45,104 @@ const customModalStyles: ReactModal.Styles = {
 function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
   const dispatch = useDispatch();
   const [memo, setMemo] = useState(''); // 메모 상태 추가
+  const addressRef = useRef<HTMLInputElement>(null); // 주소 입력 필드 참조
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false); // 스크립트 로드 상태
+  const [postcodeData, setPostcodeData] = useState<any>(null); // 우편번호 데이터 상태
   const navigate = useNavigate();
   const plantName = useSelector((state: RootState) => state.farmSelect.plant)
+  const plantId = useSelector((state:RootState) => state.farmSelect.plantId)
+
+ 
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    script.async = true;
+
+    script.onload = () => {
+      setIsScriptLoaded(true);
+    };
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const handlePostcode = () => {
+    if (window.daum && window.daum.Postcode) {
+      new window.daum.Postcode({
+        oncomplete: function (data: any) {
+          let addr = '';
+
+          if (data.userSelectedType === 'R') {
+            addr = data.roadAddress;
+          } else {
+            addr = data.jibunAddress;
+          }
+          
+          // post요청 보낼것들 console로 찍어보기
+          // console.log(data.sido)  //도
+          // console.log(data.sigungu)  // 시
+          // console.log(data.bname1) //법정리의 읍/면 이름 ("동"지역일 경우에는 공백, "리"지역일 경우에는 "읍" 또는 "면" 정보가 들어갑니다.)
+          // console.log(data.bname2)
+          // console.log(data.bunji)
+          // console.log(data.jibunAddress) //
+          // console.log(data.zonecode)
+
+          const newPostcodeData = {
+            sido: data.sido ||null,
+            sigungu: data.sigungu||null,
+            bname1: data.bname1||null,
+            bname2: data.bname2||null,
+            jibun: data.jibunAddress||null,
+            zonecode: data.zonecode||null,
+          }
+
+           // 우편번호 데이터 저장
+           setPostcodeData(newPostcodeData);
+
+     
 
 
-//   if (addressData) {
-//     console.log(`addressData: ${addressData}`);
-//   }
+          if (addressRef.current) {
+            addressRef.current.value = addr; // 주소 필드에 값 설정
+            dispatch(setLocationData(addr))
+          }
+        }
+      }).open();
+    }
+  };
   
-//   const handleSubmit = async () => {
-//     if (addressData) {
-//       const payload = {
-//         palce : {
-//         placeId: {placeId},
-//         address: {
-//           sido: addressData.sido || null,
-//           sigungu: addressData.sigungu|| null,
-//           bname1: addressData.bname1|| null,
-//           bname2: addressData.bname2|| null,
-//           jibun: addressData.jibun|| null,
-//           zonecode: addressData.zonecode|| null,
-//         }
-//       }, 
-//       plant: {
-//         plantId: {plantId},
-//         myPlantName: {plantName},
-//         memo: {memo}
-//       }
-//       };
-
-//       try {
-//         const response = await axios.post('/your-endpoint', payload);
-//         console.log(response.data); // 응답 처리
-//         onClose(); // 모달 닫기
-//       } catch (error) {
-//         console.error("Error posting data:", error);
-//       }
-//     }
-//   };
+  const handleSubmit = async () => {
+    const payload = {
+      palce: {
+        placeId: placeId,
+        address: {
+          sido: postcodeData?.sido || null,
+          sigungu: postcodeData?.sigungu || null,
+          bname1: postcodeData?.bname1 || null,
+          bname2: postcodeData?.bname2 || null,
+          jibun: postcodeData?.jibun || null,
+          zonecode: postcodeData?.zonecode || null,
+        }
+      },
+      plant: {
+        plantId: plantId,
+        myPlantName: plantName,
+        memo: memo
+      }
+    };
+  
+    try {
+      const response = await axios.post('/farm', payload);
+      console.log(response.data); // 응답 처리
+      onClose(); // 모달 닫기
+    } catch (error) {
+      console.error("Error posting data:", error);
+    }
+  };
+  
 
   const handleMain = () => {
     navigate('/');
@@ -105,7 +164,32 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
 
         <div className='box-color'>
           <div className='box-title'>위치</div>
-          <div className='box-content'></div>
+          <div className='box-content'>
+          <TextField
+              id="sample2_address"
+              variant="standard"
+              inputRef={addressRef}
+              sx={{
+              '& .MuiInput-underline:before': {
+                borderBottom: 'none', // 비활성화 상태에서의 밑줄 제거
+              },
+              '& .MuiInput-underline:after': {
+                borderBottom: 'none', // 활성화 상태에서의 밑줄 제거
+              },
+            }}
+              style={{ flex: 1, position: 'absolute', left: '25%' }}
+            />
+             <Button
+              variant="contained"
+              onClick={handlePostcode}
+              color="success"
+              disabled={!isScriptLoaded} // 스크립트가 로드되기 전에는 버튼 비활성화
+              sx={{opacity:1, position:'absolute', left: '70%'}}
+              
+            >
+              주소 찾기
+            </Button>
+          </div>
         </div>
 
         <div className='box-color'>
@@ -161,7 +245,7 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
                 },
               }}
               onClick={async () => {
-                // await handleSubmit(); // post 요청 보내기
+                await handleSubmit(); // post 요청 보내기
                 onClose(); // 모달 닫기
                 handleMain(); // 메인 페이지로 이동
               }}

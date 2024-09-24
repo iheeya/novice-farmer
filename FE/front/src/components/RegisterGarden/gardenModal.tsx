@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import '../../styles/RegisterGarden/gardenModal.css'
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
-import DaumPostcodeEmbed from 'react-daum-postcode';
 import TextField from '@mui/material/TextField';
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
