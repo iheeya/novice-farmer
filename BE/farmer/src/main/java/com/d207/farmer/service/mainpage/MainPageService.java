@@ -54,7 +54,9 @@ public class MainPageService {
         List<Farm> farms = farmRepository.findByUserIdWithCurrentGrowing(userId).orElse(null);
         farms = farms.isEmpty() ? null : farms;
         List<FavoritePlant> favoritePlants = favoritePlantRepository.findByUserId(userId);
+        favoritePlants = favoritePlants.isEmpty() ? null : favoritePlants;
         List<FavoritePlace> favoritePlaces = favoritePlaceRepository.findByUserId(userId);
+        favoritePlaces = favoritePlaces.isEmpty() ? null : favoritePlaces;
         List<UserPlace> userPlaces = userPlaceRepository.findByUserIdWithPlace(userId);
         List<Plant> plants = plantRepository.findAll();
 
@@ -138,7 +140,7 @@ public class MainPageService {
      * 3. 내 텃밭 컴포넌트
      */
     private MyFarmListInfoComponentDTO getMyFarmListInfo(Long userId, List<Farm> farms, List<UserPlace> userPlaces) {
-        if(farms == null) {
+        if(farms == null) { // 항상 떠있어야 하는 컴포넌트이기 때문에 isUsable은 항상 true
             return new MyFarmListInfoComponentDTO(true, new ArrayList<>());
         }
         List<MyFarmListInfoComponentDTO.myFarmDTO> myFarms = new ArrayList<>();
@@ -170,16 +172,20 @@ public class MainPageService {
         }
         int componentSize = 0;
         List<FavoritesInfoComponentDTO.FavoritePlantDTO> favoritePlantDTOs = new ArrayList<>();
-        for (FavoritePlant fp : favoritePlants) {
-            if(++componentSize > 2) break;
-            favoritePlantDTOs.add(new FavoritesInfoComponentDTO.FavoritePlantDTO(fp.getPlant().getId(), fp.getPlant().getName()));
+        if(favoritePlants != null) {
+            for (FavoritePlant fp : favoritePlants) {
+                if(++componentSize > 2) break;
+                favoritePlantDTOs.add(new FavoritesInfoComponentDTO.FavoritePlantDTO(fp.getPlant().getId(), fp.getPlant().getName()));
+            }
         }
 
         componentSize = 0;
         List<FavoritesInfoComponentDTO.FavoritePlaceDTO> favoritePlaceDTOs = new ArrayList<>();
-        for (FavoritePlace fp : favoritePlaces) {
-            if(++componentSize > 2) break;
-            favoritePlaceDTOs.add(new FavoritesInfoComponentDTO.FavoritePlaceDTO(fp.getPlace().getId(), fp.getPlace().getName()));
+        if(favoritePlaces != null) {
+            for (FavoritePlace fp : favoritePlaces) {
+                if(++componentSize > 2) break;
+                favoritePlaceDTOs.add(new FavoritesInfoComponentDTO.FavoritePlaceDTO(fp.getPlace().getId(), fp.getPlace().getName()));
+            }
         }
         return new FavoritesInfoComponentDTO(true, favoritePlantDTOs, favoritePlaceDTOs);
     }
