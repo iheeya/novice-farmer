@@ -333,7 +333,7 @@ public class UserService {
         List<UserMypageHistoryResponseDTO> userMypageHistoryResponseDTOS = farms.stream()
                 .map(farm -> {
                     // farm의 growthStep을 통해 PlantGrowthIllust에서 이미지 경로를 가져옵니다.
-                    String imageUrl = plantIllustRepository.findByPlantAndStep(farm.getPlant(), farm.getGrowthStep())
+                    String imageUrl = plantIllustRepository.findByPlantAndStep(farm.getPlant(), 4)
                             .map(PlantGrowthIllust::getImagePath)
                             .orElse(null); // 이미지가 없을 경우 null 처리 // 이미지가 없을 경우 null 처리
 

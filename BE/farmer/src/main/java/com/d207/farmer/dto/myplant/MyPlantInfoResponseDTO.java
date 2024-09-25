@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -14,7 +15,7 @@ public class MyPlantInfoResponseDTO {
     private Boolean isStarted;
     private Boolean isAlreadyFirstHarvest;
     private PlantInfoDTO plantInfo;
-    private TodoInfoDTO todo;
+    private List<TodoInfoDTO> todos;
 
     @Getter
     @AllArgsConstructor
@@ -28,7 +29,6 @@ public class MyPlantInfoResponseDTO {
         private String placeName;
         private String plantImagePath;
         private LocalDateTime startDate;
-        private LocalDateTime predEndDate;
         private LocalDateTime curDate;
     }
 
