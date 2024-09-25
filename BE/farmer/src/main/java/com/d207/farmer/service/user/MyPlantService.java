@@ -8,12 +8,14 @@ import com.d207.farmer.dto.myplant.*;
 import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.farm.FarmTodoRepository;
 import com.d207.farmer.utils.FastApiUtil;
+import com.sun.xml.bind.v2.TODO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -29,7 +31,7 @@ public class MyPlantService {
     @Transactional
     public String startGrowPlant(Long userId, StartGrowPlantRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
-        farm.startGrow(request.getStep());
+        farm.startGrow();
         return "작물 키우기 시작하기 성공";
     }
 
@@ -56,22 +58,23 @@ public class MyPlantService {
 
     @Transactional
     public String waterPlant(Long userId, ManagePlantRequestDTO request) {
-        // TODO 원래 최근에 있던 물주기 todo를 업데이트
-        // TODO fast에 todo 업데이트 해달라고 요청
         List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalseAndTodoType(request.getFarmId(), TodoType.WATERING);
+        Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow(); // MVP 끝나면 아래 if문 안에 넣기
         if(farmTodos == null || farmTodos.isEmpty()) { // todo가 없으면 임의 생성인데 그럴 일 있나
-            Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
+//            Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
             farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, true, null, LocalDateTime.now()));
             return "작물 물주기 성공(todo 생성)";
         }
         farmTodos.get(0).updateTodoComplete();
+
+        // TODO MVP 발표용 FAST와 통신 단절 후 임의로 칼럼 추가
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, false, LocalDateTime.now(), null));
+
         return "작물 물주기 성공(todo 업데이트)";
     }
 
     @Transactional
     public String fertilizerPlant(Long userId, ManagePlantRequestDTO request) {
-        // TODO 원래 최근에 있던 비료주기 todo를 업데이트
-
         List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalseAndTodoType(request.getFarmId(), TodoType.FERTILIZERING);
         if(farmTodos == null || farmTodos.isEmpty()) {
             Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
@@ -116,34 +119,33 @@ public class MyPlantService {
         return null;
     }
 
-    @Transactional
-    public String updateGrowthStepByInspection(Long userId, UpdateGrowthStepRequestDTO request) {
-        Farm farm = farmRepository.findById(request.getMyPlantId()).orElseThrow();
-        farm.updateGrowthStep(request.getGrowthStep());
-        return "생장단계 업데이트 성공";
-    }
+//    @Transactional
+//    public String updateGrowthStepByInspection(Long userId, UpdateDegreeDayRequestDTO request) {
+//        Farm farm = farmRepository.findById(request.getMyPlantId()).orElseThrow();
+//        farm.updateDegreeDay(request.getDegreeDay());
+//        return "생장단계 업데이트 성공";
+//    }
 
     public MyPlantInfoResponseDTO getMyPlantInfo(Long userId, MyPlantInfoRequestDTO request) {
         Farm farm = farmRepository.findByIdWithJoin(request.getMyPlantId()).orElseThrow();
         if(farm.getSeedDate() == null) {
-            return new MyPlantInfoResponseDTO(false, false, new MyPlantInfoResponseDTO.PlantInfoDTO(), new MyPlantInfoResponseDTO.TodoInfoDTO());
+            return new MyPlantInfoResponseDTO(false, false, new MyPlantInfoResponseDTO.PlantInfoDTO(), new ArrayList<>());
         }
-        // TODO 파종일시, 예상완료일시, 현재일시 비교해서 생장단계 업데이트
-        
+
         // 일러스트 이미지 경로
         String imagePath = "";
         for (PlantGrowthIllust pgi : farm.getPlant().getPlantGrowthIllusts()) {
-            if(pgi.getStep() == farm.getGrowthStep()) {
+            if(pgi.getStep() == farm.getDegreeDay()) {
                 imagePath = pgi.getImagePath();
                 break;
             }
         }
 
         MyPlantInfoResponseDTO.PlantInfoDTO plantInfo = new MyPlantInfoResponseDTO.PlantInfoDTO(farm.getUserPlace().getId(), farm.getUserPlace().getName(),
-                farm.getMyPlantName(), farm.getGrowthStep(), farm.getPlant().getName(), farm.getUserPlace().getPlace().getName(), imagePath, farm.getSeedDate(), farm.getPredDate(), LocalDateTime.now());
+                farm.getMyPlantName(), farm.getDegreeDay(), farm.getPlant().getName(), farm.getUserPlace().getPlace().getName(), imagePath, farm.getSeedDate(), LocalDateTime.now());
 
         // TODO todo 생기면 todo dto 생성해서 넣기
-        return new MyPlantInfoResponseDTO(true, farm.getIsFirstHarvest(), plantInfo, new MyPlantInfoResponseDTO.TodoInfoDTO());
+        return new MyPlantInfoResponseDTO(true, farm.getIsFirstHarvest(), plantInfo, new ArrayList<>());
     }
 
     public String updateTodoByFastApi(Long farmId, TodoType todoType) {

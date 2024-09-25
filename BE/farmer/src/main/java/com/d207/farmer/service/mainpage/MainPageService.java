@@ -6,6 +6,7 @@ import com.d207.farmer.domain.farm.FarmTodo;
 import com.d207.farmer.domain.farm.UserPlace;
 import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.plant.PlantGrowthIllust;
+import com.d207.farmer.domain.plant.PlantThreshold;
 import com.d207.farmer.domain.user.FavoritePlace;
 import com.d207.farmer.domain.user.FavoritePlant;
 import com.d207.farmer.domain.user.User;
@@ -15,6 +16,7 @@ import com.d207.farmer.repository.farm.*;
 import com.d207.farmer.repository.mainpage.*;
 import com.d207.farmer.repository.plant.PlantRepository;
 import com.d207.farmer.repository.user.UserRepository;
+import com.d207.farmer.utils.DateUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,7 @@ public class MainPageService {
     private final CommunityHeartForMainPageRepository communityHeartRepository;
     private final CommunityCommentForMainPageRepository communityCommentRepository;
     private final CommunityImageForMainPageRepository communityImageRepository;
+    private final DateUtil dateUtil;
 
     public MainPageResponseDTO getMainPage(Long userId) {
         // db 조회
@@ -62,7 +65,7 @@ public class MainPageService {
         FavoritesInfoComponentDTO favoritesInfoComponent = getFavoritesInfo(userId, farms, favoritePlants, favoritePlaces); // 완성
         MyPlantInfoComponentDTO myPlantInfoComponent = getMyPlantInfo(userId, farms); // 완성
         RecommendInfoComponentDTO recommendInfoComponent = getRecommendInfo(userId, plants); // 완성(추천없이)
-        CommunityInfoComponentDTO communityInfoComponent = getCommunityInfo(userId, favoritePlants, farms);
+        CommunityInfoComponentDTO communityInfoComponent = getCommunityInfo(userId, favoritePlants, farms); // 완성
         WeekendFarmComponentDTO weekendFarmComponent = getWeekendFarm(userId); // 완성
 
         return new MainPageResponseDTO(todoInfoComponent, beginnerInfoComponent, myFarmListInfoComponent, farmGuideInfoComponent, favoritesInfoComponent,
@@ -90,10 +93,19 @@ public class MainPageService {
             case PANDEMIC -> "전염병 주의!";
         };
 
+        // 현재 생장단계 구하기
+        int growthStep = 1;
+        for (PlantThreshold pt : farmTodo.getFarm().getPlant().getPlantThresholds()) {
+            if(farmTodo.getFarm().getDegreeDay() < pt.getDegreeDay()) {
+                break;
+            }
+            growthStep++;
+        }
+
         String imagePath = "";
         // 일러스트 이미지 경로
         for (PlantGrowthIllust pgi : farmTodo.getFarm().getPlant().getPlantGrowthIllusts()) {
-            if(pgi.getStep() == farmTodo.getFarm().getGrowthStep()) {
+            if(pgi.getStep() == growthStep) {
                 imagePath = pgi.getImagePath();
                 break;
             }
@@ -103,7 +115,7 @@ public class MainPageService {
         String temperature = "25도";
 
         return new TodoInfoComponentDTO(true, farmTodo.getTodoType(), title, farmTodo.getFarm().getMyPlantName(),
-                farmTodo.getFarm().getPlant().getName(), imagePath, farmTodo.getTodoDate(), farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
+                farmTodo.getFarm().getPlant().getName(), imagePath, dateUtil.timeStampToYmd(farmTodo.getTodoDate()), farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
     }
 
     /**
@@ -310,7 +322,7 @@ public class MainPageService {
                         c.getId(), c.getTitle(),
                         (c.getContent().length() > 20 ? c.getContent().substring(0, 20) : c.getContent()) + "...",
                         imageMap.get(c.getId()), heartCntMap.get(c.getId()), commentCntMap.get(c.getId()),
-                        c.getUser().getNickname(), c.getUser().getImagePath(), c.getWriteDate()
+                        c.getUser().getNickname(), c.getUser().getImagePath(), dateUtil.timeStampToYmd(c.getWriteDate())
                 ));
                 break;
             }
@@ -358,7 +370,7 @@ public class MainPageService {
                     c.getId(), c.getTitle(),
                     (c.getContent().length() > 20 ? c.getContent().substring(0, 20) : c.getContent()) + "...",
                     imageMap.get(c.getId()), heartCntMap.get(c.getId()), commentCntMap.get(c.getId()),
-                    c.getUser().getNickname(), c.getUser().getImagePath(), c.getWriteDate()
+                    c.getUser().getNickname(), c.getUser().getImagePath(), dateUtil.timeStampToYmd(c.getWriteDate())
             ));
         }
         return communitySortedByRecents;
