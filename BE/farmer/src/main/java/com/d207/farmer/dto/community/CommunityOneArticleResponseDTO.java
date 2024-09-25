@@ -4,21 +4,49 @@ import com.d207.farmer.domain.community.CommunityComment;
 import com.d207.farmer.domain.community.CommunityHeart;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 public class CommunityOneArticleResponseDTO {
 
-    private Long userId;
+    private String nickname;
+    private String imagePath;
     private String communityTitle;
-    private String communitycontent;
-    private List<String> imagePath;
+    private String communityContent;
+    private List<String> communityImagePath;
     private List<String> communityTagList;
-    private List<CommunityHeart> communityHeartList;
-    private List<CommunityComment> commnunityCommentList;
+    private Long communityHeartcount;
+    private Long communityCommentcount;
     boolean checkIPushHeart;
-    private LocalDateTime communityDate;
+    boolean checkMyarticle;
+    private String year;
+    private String month;
+    private String day;
+
+
+    public CommunityOneArticleResponseDTO(String nickname, String imagePath, String communityTitle, String communityContent, List<String> communityImagePath,
+                                          List<String> communityTagList, Long communityHeartcount, Long communityCommentcount, boolean checkIPushHeart, boolean checkMyarticle, String year, String month, String day) {
+
+        this.nickname = nickname;
+        this.imagePath = imagePath;
+        this.communityCommentcount=communityCommentcount;
+        this.communityTitle = communityTitle;
+        this.communityContent = communityContent;
+        this.communityImagePath = communityImagePath;
+        this.communityTagList = communityTagList;
+        this.communityHeartcount=communityHeartcount;
+        this.checkIPushHeart=checkIPushHeart;
+        this.year =year;
+        this.month =month;
+        this.day =day;
+        this.checkMyarticle=checkMyarticle;
+
+    }
+
+
+
 }

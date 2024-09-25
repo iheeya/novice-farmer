@@ -104,7 +104,6 @@ public class UserController {
      * 설문조사(선택 후 제출)
      */
     @PostMapping("/survey")
-    //public ResponseEntity<Map<String, List<?>>> savesurvey() {
     public ResponseEntity<?> registerSurvey(@RequestHeader("Authorization") String authorization,
                                             @RequestBody SurveyRegisterRequestDTO surveyRegisterRequestDTO) {
         Long userId;
