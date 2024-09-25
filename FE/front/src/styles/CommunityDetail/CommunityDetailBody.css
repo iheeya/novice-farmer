@@ -19,7 +19,7 @@
     border-radius: 3%;
     border-radius: 3%;
     width: 100%;   /* 부모 요소 너비에 맞춤 */
-    height: auto;  /* 높이는 자동으로 이미지 비율에 맞춤 */
+    height: auto;
     object-fit: cover; /* 이미지가 영역을 넘지 않도록 맞춤 */
 }
 
@@ -31,6 +31,7 @@
     margin-left:5%;
     margin-right: 5%;
 }
+
 
 .community-detail-content{
     color: #5B8E55;

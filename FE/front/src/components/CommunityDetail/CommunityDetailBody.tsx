@@ -12,6 +12,8 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import Avatar from '@mui/material/Avatar';
+import empty from '../../assets/img/community/empty.png'
 
 // DetailData 타입 정의
 interface DetailData {
@@ -30,7 +32,7 @@ function CommunityDetailBody(){
   // 케로셀 세팅
   const settings = {
     dots: true, 
-    infinite: true, 
+    infinite: false, 
     speed: 500,
     slidesToShow: 1, 
     slidesToScroll:1
@@ -86,7 +88,7 @@ const handleHeartClick = () => {
     return(
         <>
             <div className='community-detail-body-header'>
-                <img src={Data.imagePath} className='detail-profile-img'/>
+                {detailData?.imagePath ? <img src={detailData?.imagePath} className='detail-profile-img'/>: <Avatar sx={{ bgcolor: '#5B8E55'}} className='detail-profile-img'>{ detailData?.nickname.charAt(0)}</Avatar>}
                 <div className='detail-body-header-profile'>
                     <div style={{fontSize: '1.2rem'}}>{detailData?.nickname}</div>
                     <div style={{color: 'gray', fontSize: '0.8rem'}}>{detailData?.year}.{detailData?.month}.{detailData?.day}</div>
@@ -95,11 +97,15 @@ const handleHeartClick = () => {
             </div>
 
             <div className='community-detail-body-body'>
-              <Slider {...settings}>
-                {Data.communityImagePath.map(article => (
-                        <img src={article} className='article-img'/>
-                    ))}
-              </Slider>
+            {detailData?.communityImagePath && detailData.communityImagePath.length > 0 ? (
+                 <Slider {...settings} className='carousel'>
+                 {Data.communityImagePath.map((article, index) => (
+                   <img key={index} src={article} className='article-img' alt={`Article ${index}`} />
+                 ))}
+               </Slider>
+              ) : (
+                <img src={empty} className='article-img' alt="이미지 없음"/>
+              )}
             </div>
 
             <div className='community-detail-content'>
