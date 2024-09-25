@@ -35,8 +35,31 @@
     justify-content: center;
     margin-left: 10%;
     margin-right: 10%;
+    margin-top: 5%;
 }
 
 .community-detail-title{
     font-size: 1.4rem;
+    margin-bottom: 2%;
 }
+
+
+.community-detail-body-footer{
+    margin-top: 5%;
+    color: #5B8E55;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.community-detail-count{
+    display: flex;
+}
+
+.count-position{
+    margin-left: 5%;
+}
+
+
+

@@ -27,8 +27,8 @@ export function handleLogin({ email, password }: HandleLoginProps): Promise<Logi
     })
     .then((response) => {
       const { firstLogin, accessToken, refreshToken } = response.data;
-      sessionStorage.setItem("accesstoken", accessToken);
-      sessionStorage.setItem("refreshtoken", refreshToken);
+      sessionStorage.setItem("accessToken", accessToken);
+      sessionStorage.setItem("refreshToken", refreshToken);
       return Promise.resolve({ firstLogin });
     })
     .catch((error) => {

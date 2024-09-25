@@ -4,12 +4,19 @@ import Data from '../../assets/dummydata/CommunityId.json'
 import { Carousel } from "@material-tailwind/react";
 import { useParams } from 'react-router-dom';
 import { communityDetail } from '../../services/CommunityDetail/CommuniyDetailGet';
+import { IsLikePost } from '../../services/CommunityDetail/CommunityDetailPost';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import DeleteIcon from '@mui/icons-material/Delete';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 function CommunityDetailBody(){
 
   const { id } = useParams<{ id: string }>(); // id를 string으로 추출 (useParams는 기본적으로 string으로 추출)
   const Id = Number(id);
-  const [detailData, setDetailData] = useState(null);
+  const [detailData, setDetailData] = useState<any>(null);
+  const [isHeart, setIsHeart] = useState<Boolean>(detailData?.checkIPushHeart)
+  const [isHeartCount, setIsHeartCount] = useState<number>(detailData?.communityHeartcount)
 
   useEffect(() => {
     const getData = async () => {
@@ -18,23 +25,53 @@ function CommunityDetailBody(){
     }
         try {
             const data = await communityDetail(Id);
-            setDetailData(data);
-            console.log(detailData)
+            console.log(data)
+            setDetailData(data)
         } catch (error) {
             console.log(error)
         }
     };
 
     getData();
+
+    console.log('isHeart:', isHeart)
 }, [id]); // id가 변경될 때마다 요청 실행
+
+useEffect(() => {
+  if (detailData) {
+    setIsHeart(detailData.checkIPushHeart); // detailData가 업데이트될 때 isHeart를 설정
+    setIsHeartCount(detailData.communityHeartcount); // detailData가 업데이트될 때 isHeartCount를 설정
+  }
+}, [detailData]); // detailData가 변경될 때마다 실행
+
+const handleHeartClick = () => {
+  setIsHeart((prevState) => {
+    const newState = !prevState; // 하트 상태 토글
+    const newCount = newState ? isHeartCount + 1 : isHeartCount - 1; // 카운트 업데이트
+    setIsHeartCount(newCount); // 하트 개수 업데이트
+    return newState; // 새로운 하트 상태 반환
+  });
+  
+
+  const postLike = async() => {
+    try{
+      const data =await IsLikePost(Id);
+      console.log('응답데이터: ',data)
+    } catch (e){
+      console.log(e)
+    }
+  }
+
+  postLike();
+};
 
     return(
         <>
             <div className='community-detail-body-header'>
                 <img src={Data.imagePath} className='detail-profile-img'/>
                 <div className='detail-body-header-profile'>
-                    <div style={{fontSize: '1.2rem'}}>{Data.nickname}</div>
-                    <div style={{color: 'gray', fontSize: '0.8rem'}}>{Data.year}.{Data.month}.{Data.day}</div>
+                    <div style={{fontSize: '1.2rem'}}>{detailData?.nickname}</div>
+                    <div style={{color: 'gray', fontSize: '0.8rem'}}>{detailData?.year}.{detailData?.month}.{detailData?.day}</div>
                 </div>
             </div>
 
@@ -46,8 +83,26 @@ function CommunityDetailBody(){
             </div>
 
             <div className='community-detail-content'>
-              <div className='community-detail-title'>{Data.communityTitle}</div>
-              <div>{Data.communityContent}</div>
+              <div className='community-detail-title'>{detailData?.communityTitle}</div>
+              <div>{detailData?.communityContent}</div>
+            </div>
+
+
+            <div className='community-detail-body-footer'>
+              <div className='community-detail-count' onClick={handleHeartClick}>
+                {isHeart? <FavoriteIcon/>:<FavoriteBorderIcon/>}
+                <div className='count-position'>{isHeartCount}</div>
+              </div>
+
+              <div  className='community-detail-count'>
+                <ChatBubbleOutlineIcon/>
+                <div className='count-position'>{detailData?.communityCommentcount}</div>
+              </div>
+              {detailData?.checkMyarticle ? (
+                    <DeleteIcon />
+                  ) : (
+                    <div style={{ width: '24px', height: '24px' }} />  // DeleteIcon과 동일한 크기의 빈 공간
+                  )}
             </div>
 
     {/* <Carousel className="rounded-xl">
