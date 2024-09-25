@@ -29,3 +29,14 @@
     display: flex;
     justify-content: center;
 }
+
+.community-detail-content{
+    color: #5B8E55;
+    justify-content: center;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.community-detail-title{
+    font-size: 1.4rem;
+}

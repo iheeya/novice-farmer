@@ -1,10 +1,32 @@
+import { useEffect, useState } from 'react';
 import  '../../styles/CommunityDetail/CommunityDetailBody.css'
 import Data from '../../assets/dummydata/CommunityId.json'
 import { Carousel } from "@material-tailwind/react";
+import { useParams } from 'react-router-dom';
+import { communityDetail } from '../../services/CommunityDetail/CommuniyDetailGet';
 
 function CommunityDetailBody(){
 
+  const { id } = useParams<{ id: string }>(); // id를 string으로 추출 (useParams는 기본적으로 string으로 추출)
+  const Id = Number(id);
+  const [detailData, setDetailData] = useState(null);
 
+  useEffect(() => {
+    const getData = async () => {
+      if (!id) {
+        return; // 데이터 요청 중지
+    }
+        try {
+            const data = await communityDetail(Id);
+            setDetailData(data);
+            console.log(detailData)
+        } catch (error) {
+            console.log(error)
+        }
+    };
+
+    getData();
+}, [id]); // id가 변경될 때마다 요청 실행
 
     return(
         <>
@@ -21,6 +43,11 @@ function CommunityDetailBody(){
                     <img src={article} className='article-img'/>
                 ))}
                 
+            </div>
+
+            <div className='community-detail-content'>
+              <div className='community-detail-title'>{Data.communityTitle}</div>
+              <div>{Data.communityContent}</div>
             </div>
 
     {/* <Carousel className="rounded-xl">
