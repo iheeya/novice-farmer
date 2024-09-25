@@ -28,7 +28,9 @@ public class DateUtil {
         } else {
             return years + "년 전";
         }
+    } // getTime 메서드의 중괄호 닫기
+
     public String timeStampToYmd(LocalDateTime date) {
-        return date.toString().substring(0, 11);
+        return date.toString().substring(0, 10); // 날짜 형식 수정
     }
 }
