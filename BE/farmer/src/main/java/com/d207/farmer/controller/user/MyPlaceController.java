@@ -27,12 +27,12 @@ public class MyPlaceController {
      * 선택된 텃밭과 그 텃밭의 작물들 조회
      */
     @Operation(summary = "선택된 텃밭의 작물들 조회", description = "선택된 텃밭과, 그 텃밭의 작물들 조회")
-    @GetMapping
+    @GetMapping("{myPlaceId}")
     public ResponseEntity<MyPlaceResponseDTO> getMyPlace(@RequestHeader("Authorization") String authorization,
-                                                         @RequestBody MyPlaceRequestDTO request) {
-        log.info("[MyPlaceController] Received getMyPlace request for {}", request);
+                                                         @PathVariable("myPlaceId") Long myPlaceId) {
+        log.info("[MyPlaceController] Received getMyPlace request for {}", myPlaceId);
         Long userId = jwtUtil.getUserId(authorization);
-        return ResponseEntity.ok().body(myPlaceService.getMyPlace(userId, request));
+        return ResponseEntity.ok().body(myPlaceService.getMyPlace(userId, myPlaceId));
     }
 
     /**

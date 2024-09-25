@@ -2,23 +2,27 @@ package com.d207.farmer.dto.myplant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class InspectionPestResponseDTO {
     private IsPestDTO isPest;
     private PestInfoDTO pestInfo;
 
     @Getter
     @AllArgsConstructor
-    private static class IsPestDTO {
+    @NoArgsConstructor
+    public static class IsPestDTO {
         private Boolean hasPest;
         private String myImagePath;
     }
 
     @Getter
     @AllArgsConstructor
-    private static class PestInfoDTO {
+    @NoArgsConstructor
+    public static class PestInfoDTO {
         private String pestImagePath;
         private String pestName;
         private String pestDesc;

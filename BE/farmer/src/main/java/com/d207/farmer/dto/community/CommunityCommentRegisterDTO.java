@@ -1,4 +1,4 @@
-package com.d207.farmer.dto.myplant;
+package com.d207.farmer.dto.community;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InspectionPlantRequestDTO {
-    private String imagePath;
+public class CommunityCommentRegisterDTO {
+    private String commentContent;
+
+
 }

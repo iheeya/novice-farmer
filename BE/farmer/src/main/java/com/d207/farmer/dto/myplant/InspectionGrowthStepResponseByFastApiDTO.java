@@ -5,11 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
 public class InspectionGrowthStepResponseByFastApiDTO {
-    private int step;
-
-    public InspectionGrowthStepResponseByFastApiDTO(int step) {
-        this.step = step;
-    }
+    private int degreeDay;
 }
