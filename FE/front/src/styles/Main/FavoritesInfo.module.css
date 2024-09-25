@@ -1,0 +1,97 @@
+.favoritesContainer {
+  padding: 1.25rem 1.25rem 0.2rem 1.25rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.interestHeader {
+  font-size: 2rem; /* 글자 크기를 키움 */
+  color: #3D7537;
+  margin-bottom: 1rem;
+  text-align: center;
+  flex: 1;
+}
+
+.headerImage {
+  width: 15vw;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-left: 1rem;
+}
+
+.hashTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.hashTag {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #3D7537;
+  background-color: rgb(220, 241, 228);
+  padding: 0.2rem 0.5rem;
+  border-radius: 1rem;
+  margin: 0.5rem;
+}
+
+.favoritesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.favoritesItemWithImage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 10vw; /* 이미지가 있는 리스트 아이템의 높이 */
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  background-color: rgba(235, 236, 210, 0.41);
+  border-radius: 8px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+}
+
+.favoritesItemWithImage:last-child {
+  margin-bottom: 5%;
+}
+
+.favoritesItemNoImage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 6vw; /* 이미지가 없는 리스트 아이템의 높이 */
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  background-color: rgba(235, 236, 210, 0.41);
+  border-radius: 8px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+}
+
+.plantText, .placeText {
+  text-align: center;
+  font-size: 1.3rem;
+  color:black;
+  width: 100%;
+  margin: 0;
+}
+
+.plantImage {
+  background-color: rgba(235, 236, 210, 0.41);
+  width: 30%;
+  height: auto;
+  object-fit: cover;
+}

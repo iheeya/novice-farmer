@@ -1,0 +1,10 @@
+.mainContainer {
+  padding: 5%;
+  background-color: rgb(220, 241, 228);
+  min-height: 100vh; /* 화면 전체를 덮도록 최소 높이 설정 */
+}
+  
+  .componentWrapper {
+    margin-bottom: 5%;
+  }
+  
