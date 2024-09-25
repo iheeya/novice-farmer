@@ -4,16 +4,16 @@ import math
 
 app = FastAPI()
 
-@app.get("/")
+@app.get("/data-api/test")
 def read_root():
     return {"message": "Hello, FastAPI!"}
 
-@app.get("/items/{item_id}")
+@app.get("/data-api/items/{item_id}")
 def read_item(item_id: int, q: str = None):
     return {"item_id": item_id, "q": q}
 
 @app.get("/data-api/plant/growth")
-def crops_growth():
+def crops_growth(): # 현재는 토마토에 대한 값만 계산 중.
     thi, tlow = 33.33, 7.22
     def docalcs_S(max_val, min_val):
         if min_val > thi:
@@ -49,8 +49,8 @@ def crops_growth():
             theta -= 3.1416
         heat = (diff * math.cos(theta) - d2 * (pihlf - theta)) / twopi
         return heat
-
-    tmax, tmin = map(float, input().split())
+    
+    tmax, tmin = 21.56, 14.95
     DD1 = 2*docalcs_S(tmax, tmin)
     tmep_tlow, temp_thi = tlow, tmin
     tlow, thi = thi, 2*thi - tlow
