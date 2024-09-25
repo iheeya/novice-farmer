@@ -1,6 +1,8 @@
 package com.d207.farmer.exception.advice;
 
 import com.d207.farmer.dto.exception.ErrorResponseDTO;
+import com.d207.farmer.exception.FailedInvalidUserException;
+import com.d207.farmer.exception.plant.FailedRegisterPlantIllustException;
 import jakarta.validation.UnexpectedTypeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,20 @@ public class ExControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ErrorResponseDTO HttpMessageNotReadableExHandle(HttpMessageNotReadableException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorResponseDTO("BAD_REQUEST", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FailedInvalidUserException.class)
+    public ErrorResponseDTO HttpMessageNotFound(FailedInvalidUserException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorResponseDTO("BAD_REQUEST", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FailedRegisterPlantIllustException.class)
+    public ErrorResponseDTO FailedRegisterPlantIllust(FailedRegisterPlantIllustException e) {
         log.error("[exceptionHandle] ex", e);
         return new ErrorResponseDTO("BAD_REQUEST", e.getMessage());
     }

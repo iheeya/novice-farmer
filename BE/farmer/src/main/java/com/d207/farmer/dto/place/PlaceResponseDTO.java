@@ -20,4 +20,5 @@ public class PlaceResponseDTO {
         this.desc = place.getDesc();
         this.isOn = place.getIsOn();
     }
+
 }

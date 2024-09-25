@@ -22,4 +22,9 @@ public class RecommendPlant {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "plant_id")
     private Plant plant;
+
+    public RecommendPlant(User user, Plant plantDomain) {
+        this.user = user;
+        this.plant = plantDomain;
+    }
 }

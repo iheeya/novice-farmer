@@ -4,6 +4,7 @@ spring:
       path: /farmer-api
   datasource:
     url: jdbc:mysql://j11d207.p.ssafy.io:3306/farmer?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    #url: jdbc:mysql://localhost:3306/farmer?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: ssafy
     ***REMOVED***
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -25,7 +26,7 @@ spring:
 #    auth-code-expiration-millis: 1800000
   jpa:
     hibernate:
-      ddl-auto: create # 또는 필요에 따라 create, create-drop, validate로 변경
+      ddl-auto: create      # 또는 필요에 따라 create, create-drop, validate로 변경
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -46,15 +47,23 @@ spring:
   jwt:
     salt: "urban-farmer-240911-urban-farmer-240911-urban-farmer-240911-urban-farmer-240911-urban-farmer-240911-urban-farmer-240911"
     access-token:
-      expiretime: 86400000  # 1000*60*60*24 #하루
+      expiretime: 8640000000  # 1000*60*60*24 #하루*100 해놓은상태
     refresh-token:
       expiretime: 31536000000 # 1000*60*60*24*365 #1년
 
   data:
     redis:
-      host: 127.0.0.1
+      #host: 127.0.0.1
+      host: j11d207.p.ssafy.io
       port: 6379
-
+external:
+  api:
+    naver:
+      apigw:
+        ***REMOVED***
+        ***REMOVED***
+    fastAPI:
+      url: http://j11d207.p.ssafy.io/data-api
 # 로그 설정
 logging:
   level:
@@ -62,3 +71,5 @@ logging:
       hibernate:
         SQL: debug
         type: trace
+server:
+  port: 8081
