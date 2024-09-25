@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import  '../../styles/CommunityDetail/CommunityDetailBody.css'
 import Data from '../../assets/dummydata/CommunityId.json'
-import { Carousel } from "@material-tailwind/react";
 import { useParams } from 'react-router-dom';
 import { communityDetail } from '../../services/CommunityDetail/CommuniyDetailGet';
 import { IsLikePost } from '../../services/CommunityDetail/CommunityDetailPost';
@@ -9,6 +8,16 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
+// DetailData 타입 정의
+interface DetailData {
+  communityTagList: string[]; 
+  // 다른 필드들 추가...
+}
 
 function CommunityDetailBody(){
 
@@ -17,6 +26,15 @@ function CommunityDetailBody(){
   const [detailData, setDetailData] = useState<any>(null);
   const [isHeart, setIsHeart] = useState<Boolean>(detailData?.checkIPushHeart)
   const [isHeartCount, setIsHeartCount] = useState<number>(detailData?.communityHeartcount)
+  
+  // 케로셀 세팅
+  const settings = {
+    dots: true, 
+    infinite: true, 
+    speed: 500,
+    slidesToShow: 1, 
+    slidesToScroll:1
+  }
 
   useEffect(() => {
     const getData = async () => {
@@ -73,18 +91,25 @@ const handleHeartClick = () => {
                     <div style={{fontSize: '1.2rem'}}>{detailData?.nickname}</div>
                     <div style={{color: 'gray', fontSize: '0.8rem'}}>{detailData?.year}.{detailData?.month}.{detailData?.day}</div>
                 </div>
+                {detailData?.checkMyarticle &&<CreateOutlinedIcon className='article-pencil'/>}
             </div>
 
             <div className='community-detail-body-body'>
+              <Slider {...settings}>
                 {Data.communityImagePath.map(article => (
-                    <img src={article} className='article-img'/>
-                ))}
-                
+                        <img src={article} className='article-img'/>
+                    ))}
+              </Slider>
             </div>
 
             <div className='community-detail-content'>
               <div className='community-detail-title'>{detailData?.communityTitle}</div>
               <div>{detailData?.communityContent}</div>
+              <div>
+                {detailData?.communityTagList.map((tag: string, index: number) => (
+                  <div key={index}>#{tag}</div> // key 속성 추가
+                ))}
+            </div>
             </div>
 
 
@@ -104,6 +129,7 @@ const handleHeartClick = () => {
                     <div style={{ width: '24px', height: '24px' }} />  // DeleteIcon과 동일한 크기의 빈 공간
                   )}
             </div>
+
 
     {/* <Carousel className="rounded-xl">
       <img

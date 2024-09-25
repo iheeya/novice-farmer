@@ -25,17 +25,19 @@
 
 .community-detail-body-body{
     margin-top: 5%;
-    width: 85%;
-    display: flex;
+    /* width: 100%; */
+    /* display: flex; */
     justify-content: center;
+    margin-left:5%;
+    margin-right: 5%;
 }
 
 .community-detail-content{
     color: #5B8E55;
     justify-content: center;
-    margin-left: 10%;
-    margin-right: 10%;
-    margin-top: 5%;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 10%;
 }
 
 .community-detail-title{
@@ -49,8 +51,8 @@
     color: #5B8E55;
     display: flex;
     justify-content: space-between;
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 .community-detail-count{
@@ -61,5 +63,9 @@
     margin-left: 5%;
 }
 
-
+.article-pencil{
+    color: lightgray;
+    margin-left: 2%;
+    margin-top: 5%;
+}
 
