@@ -1,3 +1,4 @@
+import api from "./axios";
 // 공용 함수
 interface PasswordProps {
   password: string;
@@ -26,3 +27,4 @@ export function validatePassword(value: string): boolean {
 export function passwordConfirm({ password, passwordConf }: PasswordProps) {
   return password === passwordConf;
 }
+
