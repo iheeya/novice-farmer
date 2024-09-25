@@ -3,7 +3,7 @@
 // 2. 닉네임 중복 검사 추가
 
 
-import api from "../../utils/axios";
+// import api from "../../utils/axios";
 import { handleSignup } from "../../services/user/userapi";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -258,6 +258,8 @@ function SignUp() {
   const isPasswordValid = useMemo(() => validatePassword(password), [password]);
   const isPasswordConfirmed = useMemo(() => passwordConfirm({ password, passwordConf }), [password, passwordConf]);
   const isNicknameValid = useMemo(() => validateNickname(nickName), [nickName]);
+
+  const navigate = useNavigate();
  
 
   return (
@@ -285,9 +287,13 @@ function SignUp() {
         handleSignup({email, password, nickname:nickName, age: parseInt(age, 10), gender, address:`${selectedProvince} ${selectedCity}`, pushAllow})
         .then((response)=>{
           console.log("signup success")
+          // 회원가입 성공 -> 로그인 페이지로 연결
+          navigate("/user/login");
+          
         })
         .catch((err)=>{
           console.log('signupfailed',err)
+          // 로그인 실패 -> 에러 출력
         })
       }}>
         <TextField

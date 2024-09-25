@@ -52,3 +52,25 @@ export function handleSignup({email,password,nickname,age,gender,address,pushAll
     return Promise.reject(error);
   });
 }
+
+export function getSurveyInfo():Promise<any>{
+  return api
+  .get("/user/survey")
+  .then((response) => {
+    return Promise.resolve(response.data);
+  })
+  .catch((error) => {
+    return Promise.reject(error);
+  });
+}
+
+export function postSurveyInfo():Promise<any>{
+  return api
+  .post("/user/survey")
+  .then((response) => {
+    return Promise.resolve();
+  })
+  .catch((error) => {
+    return Promise.reject(error);
+  });
+}
