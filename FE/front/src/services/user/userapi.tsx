@@ -94,4 +94,3 @@ export function postSurveyInfo({ plant, place }: postSurveyInfoProps): Promise<a
       return Promise.reject(error);
     });
 }
-
