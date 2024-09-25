@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKURL,
+  baseURL: "http://j11d207.p.ssafy.io:8081/farmer-api",
   timeout: 10000,
 });
 
@@ -19,7 +19,7 @@ api.interceptors.request.use(
  */
 
 api.interceptors.request.use(
-  config => {
+  (config) => {
     // 엑세스 토큰을 세션 스토리지에서 가져오고,
     const accessToken = sessionStorage.getItem("accessToken");
     // 토큰이 있으면 토큰을 넣어서 요청을 보냅니다.
@@ -28,7 +28,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  error => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
 /*
@@ -66,8 +66,8 @@ api.interceptors.response.use(
  */
 
 api.interceptors.response.use(
-  response => response,
-  error => Promise.reject(error),
+  (response) => response,
+  (error) => Promise.reject(error)
 );
 
 export default api;
