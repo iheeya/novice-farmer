@@ -63,7 +63,8 @@ external:
         ***REMOVED***
         ***REMOVED***
     fastAPI:
-      url: https://j11d207.p.ssafy.io/data-api
+#      url: https://j11d207.p.ssafy.io/data-api
+      url: https://j11d207.p.ssafy.io
 # 로그 설정
 logging:
   level:

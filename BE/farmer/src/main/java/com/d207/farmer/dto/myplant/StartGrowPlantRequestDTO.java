@@ -9,5 +9,4 @@ import lombok.ToString;
 @ToString
 public class StartGrowPlantRequestDTO {
     private Long farmId;
-    private int step;
 }

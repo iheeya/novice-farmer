@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UpdateGrowthStepRequestDTO {
+public class UpdateDegreeDayRequestDTO {
     private Long myPlantId;
-    private int growthStep;
+    private int degreeDay;
 }

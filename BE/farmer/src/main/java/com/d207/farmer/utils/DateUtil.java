@@ -28,5 +28,7 @@ public class DateUtil {
         } else {
             return years + "년 전";
         }
+    public String timeStampToYmd(LocalDateTime date) {
+        return date.toString().substring(0, 11);
     }
 }

@@ -41,11 +41,8 @@ public class Farm {
     @Column(name = "farm_seed_date")
     private LocalDateTime seedDate;
 
-    @Column(name = "farm_pred_date")
-    private LocalDateTime predDate;
-
-    @Column(name = "farm_growth_step")
-    private int growthStep;
+    @Column(name = "farm_degree_day")
+    private int degreeDay;
 
     @Column(name = "farm_is_completed")
     private Boolean isCompleted;
@@ -80,8 +77,7 @@ public class Farm {
         this.plant = plant;
         this.myPlantName = request.getMyPlantName();
         this.memo = request.getMemo();
-        this.predDate = LocalDateTime.now().plusDays(plant.getDegreeDay());
-        this.growthStep = 1;
+        this.degreeDay = plant.getDegreeDay();
         this.createDate = LocalDateTime.now();
         this.isCompleted = false;
         this.isDeleted = false;
@@ -89,9 +85,8 @@ public class Farm {
     }
 
     // 작물 키우기 시작하기
-    public void startGrow(int step) {
+    public void startGrow() {
         this.seedDate = LocalDateTime.now();
-        this.growthStep = step;
     }
 
     // 작물 삭제
@@ -120,7 +115,7 @@ public class Farm {
         this.memo = memo;
     }
 
-    public void updateGrowthStep(int growthStep) {
-        this.growthStep = growthStep;
-    }
+//    public void updateDegreeDay(int degreeDay) {
+//        this.degreeDay = degreeDay;
+//    }
 }

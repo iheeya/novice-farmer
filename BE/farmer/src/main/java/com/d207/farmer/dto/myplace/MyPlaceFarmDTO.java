@@ -15,5 +15,5 @@ public class MyPlaceFarmDTO {
     private int myPlantGrowthStep;
     private String imagePath;
     private String todoInfo;
-    private LocalDateTime seedDate;
+    private String seedDate;
 }

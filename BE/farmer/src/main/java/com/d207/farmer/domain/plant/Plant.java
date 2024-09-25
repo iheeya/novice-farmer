@@ -37,6 +37,9 @@ public class Plant {
         plantGrowthIllust.setPlant(this);
     }
 
+    @OneToMany(mappedBy = "plant")
+    private List<PlantThreshold> plantThresholds = new ArrayList<>();
+
     /**
      * 비즈니스 로직
      */

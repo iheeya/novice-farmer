@@ -7,6 +7,7 @@ import com.d207.farmer.domain.farm.FarmTodo;
 import com.d207.farmer.domain.farm.TodoType;
 import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.plant.PlantGrowthIllust;
+import com.d207.farmer.domain.plant.PlantThreshold;
 import com.d207.farmer.domain.user.Gender;
 import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.farm.register.FarmPlaceRegisterDTO;
@@ -28,6 +29,7 @@ import com.d207.farmer.repository.farm.FarmTodoRepository;
 import com.d207.farmer.repository.mainpage.CommunityFavoriteTagForMainPageRepository;
 import com.d207.farmer.repository.plant.PlantIllustRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
+import com.d207.farmer.repository.plant.PlantThresholdRepository;
 import com.d207.farmer.repository.user.UserRepository;
 import com.d207.farmer.service.common.SampleService;
 import com.d207.farmer.service.farm.FarmService;
@@ -69,6 +71,7 @@ public class StartupApplicationListener {
     private final PlaceService placeService;
     private final WeekendFarmService weekendFarmService;
     private final PlantIllustRepository plantIllustRepository;
+    private final PlantThresholdRepository plantThresholdRepository;
     private final FarmService farmService;
     private final MyPlantService myPlantService;
     private final FarmTodoRepository farmTodoRepository;
@@ -89,6 +92,7 @@ public class StartupApplicationListener {
         createPlaceSample();
         createWeekendFarmSample();
         createPlantIllustSample();
+        createPlantThresholdSample();
         createUserSample();
         createFarmSample();
         createTodoSample();
@@ -155,6 +159,13 @@ public class StartupApplicationListener {
         }
     }
 
+    private void createPlantThresholdSample() {
+        Plant plant = plantRepository.findById(1L).orElseThrow();
+        plantThresholdRepository.save(new PlantThreshold(plant, 1, 300));
+        plantThresholdRepository.save(new PlantThreshold(plant, 2, 1000));
+        plantThresholdRepository.save(new PlantThreshold(plant, 3, 1500));
+    }
+
     private void createFarmSample() {
         Address address = new Address("경북", "구미시", "", "임수동", null, "경북 구미시 임수동 94-1", "39388");
 
@@ -162,13 +173,13 @@ public class StartupApplicationListener {
         FarmPlantRegisterDTO farmPlant1 = new FarmPlantRegisterDTO(1L, "토순이", "토마토 냠냠");
         FarmRegisterRequestDTO farmRegister1 = new FarmRegisterRequestDTO(farmPlace1, farmPlant1);
         farmService.registerFarm(11L, farmRegister1);
-        myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(1L, 1));
+        myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(1L));
 
         FarmPlaceRegisterDTO farmPlace2 = new FarmPlaceRegisterDTO(2L, address);
         FarmPlantRegisterDTO farmPlant2 = new FarmPlantRegisterDTO(2L, "작매고", "작은 고추가 매움");
         FarmRegisterRequestDTO farmRegister2 = new FarmRegisterRequestDTO(farmPlace2, farmPlant2);
         farmService.registerFarm(11L, farmRegister2);
-        myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(2L, 1));
+        myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(2L));
         myPlantService.harvestPlant(11L, new ManagePlantRequestDTO(2L));
         myPlantService.endPlant(11L, new ManagePlantRequestDTO(2L));
 
@@ -176,13 +187,13 @@ public class StartupApplicationListener {
         FarmPlantRegisterDTO farmPlant3 = new FarmPlantRegisterDTO(1L, "상충", "쌈쌈");
         FarmRegisterRequestDTO farmRegister3 = new FarmRegisterRequestDTO(farmPlace3, farmPlant3);
         farmService.registerFarm(11L, farmRegister3);
-        myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(3L, 1));
+        myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(3L));
 
     }
 
     private void createTodoSample() {
         Farm farm = farmRepository.findById(1L).orElseThrow();
-        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, false, LocalDateTime.now().plusDays(5), null));
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, false, LocalDateTime.now().plusDays(1), null));
         farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, false, LocalDateTime.now().plusDays(6), null));
     }
 
