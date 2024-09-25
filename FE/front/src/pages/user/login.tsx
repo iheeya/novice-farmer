@@ -4,7 +4,7 @@
 // 1. 소셜 로그인 연결
 // 2. 시큐리티 프론트 할게 있으면 하기
 // 3. 로그인 시 토큰 저장, cookie 설정
-import { handleLogin } from "../../services/user/userapi";
+import { handleLogin } from "../../services/user/userApi";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextField, Button, Box, ImageList, ImageListItem } from "@mui/material";
