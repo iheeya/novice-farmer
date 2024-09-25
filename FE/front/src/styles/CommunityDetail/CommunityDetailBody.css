@@ -1,0 +1,31 @@
+.community-detail-body-header{
+    margin-left: 5%;
+    display: flex;
+    margin-top: 5%;
+}
+
+.detail-profile-img{
+    width: 12%;
+    height: 12%;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+}
+
+.detail-body-header-profile{
+    margin-left: 5%;
+}
+
+.article-img{
+    border-radius: 3%;
+    border-radius: 3%;
+    width: 100%;   /* 부모 요소 너비에 맞춤 */
+    height: auto;  /* 높이는 자동으로 이미지 비율에 맞춤 */
+    object-fit: cover; /* 이미지가 영역을 넘지 않도록 맞춤 */
+}
+
+.community-detail-body-body{
+    margin-top: 5%;
+    width: 85%;
+    display: flex;
+    justify-content: center;
+}
