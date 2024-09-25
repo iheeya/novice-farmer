@@ -461,7 +461,7 @@ function SignUp() {
           variant="contained"
           color="success"
           fullWidth
-          sx={{ marginTop: "1.5rem", marginBottom: "1.5rem", padding: "0.75rem", backgroundColor: "#84b366" }}
+          sx={{ marginTop: "1.5rem", marginBottom: "1.5rem", padding: "0.75rem", backgroundColor: "#5B8E55" }}
         >
           회원가입 하기
         </Button>
