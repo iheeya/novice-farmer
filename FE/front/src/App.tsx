@@ -10,7 +10,7 @@ import SignUp from "./pages/user/signUp";
 import Login from "./pages/user/login";
 import Survey from "./pages/user/survey";
 import MyGarden from "./pages/Detail/myGarden";  
-
+import MyPlant from "./pages/Detail/myPlant";
 import Footer from "./components/Footer";  // 푸터 컴포넌트 임포트
 
 
@@ -28,6 +28,7 @@ function App() {
         <Route path="/user/login" element={<Login />} />
         <Route path="/user/survey" element={<Survey />} />
         <Route path="/myGarden/:myPlaceId" element={<MyGarden />} />
+        <Route path="/myGarden/:myPlaceId/:myPlantId" element={<MyPlant />} />
       </Routes>
       <Footer />
     </Router>
