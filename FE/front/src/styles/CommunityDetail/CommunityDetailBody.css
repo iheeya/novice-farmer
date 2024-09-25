@@ -51,13 +51,13 @@
     margin-top: 5%;
     color: #5B8E55;
     display: flex;
-    justify-content: space-between;
     margin-left: 5%;
     margin-right: 5%;
 }
 
 .community-detail-count{
     display: flex;
+    margin-right: 5%;
 }
 
 .count-position{
