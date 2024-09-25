@@ -4,11 +4,12 @@ import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.farm.FarmTodo;
 import com.d207.farmer.domain.farm.TodoType;
 import com.d207.farmer.domain.plant.PlantGrowthIllust;
+import com.d207.farmer.domain.plant.PlantThreshold;
 import com.d207.farmer.dto.myplant.*;
 import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.farm.FarmTodoRepository;
+import com.d207.farmer.utils.DateUtil;
 import com.d207.farmer.utils.FastApiUtil;
-import com.sun.xml.bind.v2.TODO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class MyPlantService {
     private final FarmRepository farmRepository;
     private final FarmTodoRepository farmTodoRepository;
     private final FastApiUtil fastApiUtil;
+    private final DateUtil dateUtil;
 
     @Transactional
     public String startGrowPlant(Long userId, StartGrowPlantRequestDTO request) {
@@ -126,29 +128,67 @@ public class MyPlantService {
 //        return "생장단계 업데이트 성공";
 //    }
 
-    public MyPlantInfoResponseDTO getMyPlantInfo(Long userId, MyPlantInfoRequestDTO request) {
-        Farm farm = farmRepository.findByIdWithJoin(request.getMyPlantId()).orElseThrow();
+    public MyPlantInfoResponseDTO getMyPlantInfo(Long userId, Long myPlantId) {
+        Farm farm = farmRepository.findByIdWithJoin(myPlantId).orElseThrow();
         if(farm.getSeedDate() == null) {
             return new MyPlantInfoResponseDTO(false, false, new MyPlantInfoResponseDTO.PlantInfoDTO(), new ArrayList<>());
+        }
+
+        // 작물 growthStep 계산
+        int growthStep = 1;
+        for(PlantThreshold pt : farm.getPlant().getPlantThresholds()) {
+            if(farm.getDegreeDay() < pt.getDegreeDay()) break;
+            growthStep++;
         }
 
         // 일러스트 이미지 경로
         String imagePath = "";
         for (PlantGrowthIllust pgi : farm.getPlant().getPlantGrowthIllusts()) {
-            if(pgi.getStep() == farm.getDegreeDay()) {
+            if(pgi.getStep() == growthStep) {
                 imagePath = pgi.getImagePath();
                 break;
             }
         }
 
-        MyPlantInfoResponseDTO.PlantInfoDTO plantInfo = new MyPlantInfoResponseDTO.PlantInfoDTO(farm.getUserPlace().getId(), farm.getUserPlace().getName(),
-                farm.getMyPlantName(), farm.getDegreeDay(), farm.getPlant().getName(), farm.getUserPlace().getPlace().getName(), imagePath, farm.getSeedDate(), LocalDateTime.now());
+        MyPlantInfoResponseDTO.ThresholdDTO thresholdDTO = new MyPlantInfoResponseDTO.ThresholdDTO(
+                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(0).getDegreeDay(), farm.getPlant().getDegreeDay()),
+                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(1).getDegreeDay(), farm.getPlant().getDegreeDay()),
+                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(2).getDegreeDay(), farm.getPlant().getDegreeDay())
+                );
 
-        // TODO todo 생기면 todo dto 생성해서 넣기
-        return new MyPlantInfoResponseDTO(true, farm.getIsFirstHarvest(), plantInfo, new ArrayList<>());
+        MyPlantInfoResponseDTO.PlantInfoDTO plantInfo = new MyPlantInfoResponseDTO.PlantInfoDTO(
+                farm.getUserPlace().getPlace().getName(), farm.getUserPlace().getId(), farm.getUserPlace().getName(),
+                farm.getPlant().getName(), farm.getMyPlantName(), imagePath, dateUtil.timeStampToYmd(farm.getSeedDate()),
+                growthStep, dateUtil.degreeDayToRatio(farm.getDegreeDay(), farm.getPlant().getDegreeDay()), thresholdDTO
+
+        );
+
+        List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalse(myPlantId);
+        // remain day 0보다 아래면 안넣기
+        List<MyPlantInfoResponseDTO.TodoInfoDTO> todoInfoDTOs = new ArrayList<>();
+        int todoCnt = 0;
+        for (FarmTodo ft : farmTodos) {
+            if(++todoCnt > 2) break;
+            if(ft.getTodoDate().isBefore(LocalDateTime.now())) continue;
+            int remainDay = ft.getTodoDate().getDayOfYear() - LocalDateTime.now().getDayOfYear();
+            if(remainDay < 0) { // 내년 넘어갈 때
+                remainDay = ft.getTodoDate().getDayOfYear() + 365 - LocalDateTime.now().getDayOfYear();
+            }
+            todoInfoDTOs.add(new MyPlantInfoResponseDTO.TodoInfoDTO(dateUtil.timeStampToYmd(ft.getTodoDate()),
+                    ft.getTodoType(), remainDay));
+        }
+
+        return new MyPlantInfoResponseDTO(true, farm.getIsFirstHarvest(), plantInfo, todoInfoDTOs);
     }
 
     public String updateTodoByFastApi(Long farmId, TodoType todoType) {
         return fastApiUtil.updateTodo(farmId, todoType);
+    }
+
+    @Transactional
+    public String updateMyPlantDegreeDay(Long myPlantId, UpdateDegreeDayRequestDTO request) {
+        Farm farm = farmRepository.findById(myPlantId).orElseThrow();
+        farm.updateDegreeDay(request.getDegreeDay());
+        return "degreeDay Update 완료";
     }
 }
