@@ -5,7 +5,9 @@ import {
   Box,
   Typography,
   Chip,
+  IconButton
 } from "@mui/material";
+import { useNavigate } from "react-router-dom"; // React Router's useNavigate for navigation
 
 interface Plant {
   id: number;
@@ -26,6 +28,7 @@ export default function Survey() {
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlants, setSelectedPlants] = useState<number[]>([]);
   const [selectedPlaces, setSelectedPlaces] = useState<number[]>([]);
+  const navigate = useNavigate();
 
   const NO_OPTION_ID = 0; // "없음"에 해당하는 ID
 
@@ -75,6 +78,12 @@ export default function Survey() {
     }
   };
 
+  // SKIP 버튼 클릭 시 "없음"으로 설정
+  const handleSkip = () => {
+    setSelectedPlants([NO_OPTION_ID]);
+    setSelectedPlaces([NO_OPTION_ID]);
+  };
+
   // 설문 제출 함수
   const handleSubmit = () => {
     const selectedData = {
@@ -87,11 +96,11 @@ export default function Survey() {
     // postSurveyInfo(selectedData)
     //   .then(() => {
     //     console.log("Survey submitted successfully.");
-    //     // 제출 성공 시 추가 처리 (예: 알림, 페이지 이동)
+    //     // 제출 후 다른 페이지로 이동 (예: 메인 페이지)
+    //     navigate("/");
     //   })
     //   .catch((error) => {
     //     console.error("Error submitting survey:", error);
-    //     // 제출 실패 시 에러 처리 (예: 사용자 알림)
     //   });
   };
 
@@ -99,7 +108,7 @@ export default function Survey() {
     <Box
       sx={{
         margin: "0 auto",
-        height: "100%",
+        height: "90vh",
         paddingX: "5%",
         backgroundColor: "white",
         borderRadius: "20px",
@@ -108,15 +117,29 @@ export default function Survey() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+        maxWidth: "100%", // 모바일 화면 크기에 맞춤
+        position: "relative", // for placing the skip button at the top
       }}
     >
+      {/* SKIP 버튼 (오른쪽 상단) */}
+      <IconButton
+        sx={{ position: "absolute", top: "10%", right: "5%", fontSize: "4vw", color: "#84b366" }}
+        onClick={handleSkip}
+      >
+        SKIP
+      </IconButton>
+
       {/* 제목 */}
-      <Typography variant="h6" sx={{ marginBottom: 2 }}>
+      
+      <Typography
+        variant="h6"
+        sx={{ marginBottom: "2vh", fontSize: "4vw", color: "#67823a", fontWeight: "normal" }}
+      >
         선호하는 작물을 선택해주세요
       </Typography>
 
       {/* 작물 선택 부분 */}
-      <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 2 }}>
+      <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "2vh" }}>
         {plants.map((plant) => (
           <Chip
             key={plant.id}
@@ -124,18 +147,28 @@ export default function Survey() {
             color={selectedPlants.includes(plant.id) ? "success" : "default"}
             onClick={() => handlePlantSelect(plant.id)}
             clickable
+            sx={{
+              padding: "1vh", // Chip의 내부 여백을 화면 비례로 조정
+              fontSize: "3vw", // 텍스트 크기를 반응형으로 설정
+              borderColor: selectedPlants.includes(plant.id) ? "#84b366" : "#67823a",
+              borderWidth: "2px",
+              color: selectedPlants.includes(plant.id) ? "#84b366" : "#67823a",
+            }}
             variant="outlined"
           />
         ))}
       </Box>
 
       {/* 장소 선택 질문 */}
-      <Typography variant="h6" sx={{ marginTop: 4, marginBottom: 2 }}>
+      <Typography
+        variant="h6"
+        sx={{ marginTop: "4vh", marginBottom: "2vh", fontSize: "4vw", color: "#67823a" }}
+      >
         키우고 싶은 장소가 어디인가요?
       </Typography>
 
       {/* 장소 선택 부분 */}
-      <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 2 }}>
+      <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "2vh" }}>
         {places.map((place) => (
           <Chip
             key={place.id}
@@ -143,6 +176,13 @@ export default function Survey() {
             color={selectedPlaces.includes(place.id) ? "success" : "default"}
             onClick={() => handlePlaceSelect(place.id)}
             clickable
+            sx={{
+              padding: "1vh", // Chip의 내부 여백을 화면 비례로 조정
+              fontSize: "3vw", // 텍스트 크기를 반응형으로 설정
+              borderColor: selectedPlaces.includes(place.id) ? "#84b366" : "#67823a",
+              borderWidth: "2px",
+              color: selectedPlaces.includes(place.id) ? "#84b366" : "#67823a",
+            }}
             variant="outlined"
           />
         ))}
@@ -152,7 +192,7 @@ export default function Survey() {
       <Button
         variant="contained"
         color="success"
-        sx={{ marginTop: 4 }}
+        sx={{ marginTop: "4vh", padding: "1.5vh 3vw", fontSize: "4vw", backgroundColor: "#84b366" }}
         onClick={handleSubmit}
       >
         완료
