@@ -3,9 +3,13 @@ package com.d207.farmer.service.user;
 import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.farm.UserPlace;
 import com.d207.farmer.domain.plant.PlantGrowthIllust;
+import com.d207.farmer.domain.plant.PlantThreshold;
 import com.d207.farmer.dto.myplace.*;
 import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.farm.UserPlaceRepository;
+import com.d207.farmer.repository.plant.PlantIllustRepository;
+import com.d207.farmer.repository.plant.PlantThresholdRepository;
+import com.d207.farmer.utils.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +27,7 @@ public class MyPlaceService {
 
     private final UserPlaceRepository userPlaceRepository;
     private final FarmRepository farmRepository;
+    private final DateUtil dateUtil;
 
     public MyPlaceResponseDTO getMyPlace(Long userId, Long myPlaceId) {
         UserPlace userPlace = userPlaceRepository.findByIdWithPlace(myPlaceId).orElseThrow();
@@ -45,11 +50,15 @@ public class MyPlaceService {
             String plantName = farm.getPlant().getName();
             Long myPlantId = farm.getId();
             String myPlantName = farm.getMyPlantName();
-            int myPlantGrowthStep = farm.getGrowthStep();
+
+            int myPlantGrowthStep = 1;
+            for (PlantThreshold pt : farm.getPlant().getPlantThresholds()) {
+                if(farm.getDegreeDay() < pt.getDegreeDay()) break;
+                myPlantGrowthStep++;
+            }
 
             String imagePath = "";
             // 일러스트 이미지 경로 불러오기
-            // FIXME 쿼리 겁나 나갈듯 -> 수정 필요
             for (PlantGrowthIllust pgi : farm.getPlant().getPlantGrowthIllusts()) {
                 if(pgi.getStep() == myPlantGrowthStep) {
                     imagePath = pgi.getImagePath();
@@ -60,7 +69,7 @@ public class MyPlaceService {
             String todoInfo = "5일 후에 물을 줘야 해요"; // FIXME TODO 정보 어떻게 받아올지
             LocalDateTime seedDate = farm.getSeedDate();
             myPlaceFarmDTOs.add(new MyPlaceFarmDTO(plantId, plantName, myPlantId, myPlantName,
-                    myPlantGrowthStep, imagePath, todoInfo, seedDate));
+                    myPlantGrowthStep, imagePath, todoInfo, dateUtil.timeStampToYmd(seedDate)));
         }
 
         return new MyPlaceResponseDTO(placeInfoDTO, myPlaceFarmDTOs);
