@@ -58,7 +58,7 @@ def crops_growth():
     tlow, thi = tmep_tlow, temp_thi
 
     DDs = round((DD1-DD2) * (9/5), 2)
-    return { 'DDs' : DDs}
+    return { 'degreeDay' : DDs}
 
 from fastapi import FastAPI, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
