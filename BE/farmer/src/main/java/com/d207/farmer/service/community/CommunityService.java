@@ -142,8 +142,14 @@ public class CommunityService {
 
 
     public CommunityOneArticleResponseDTO getOneCommunity(Long userId, Long id) {
-        Community community = communityRepository.findById(id).orElseThrow();
+
         User user = userRepository.findById(userId).orElseThrow();
+
+        // 지연로딩!!!
+//        Community community = communityRepository.findById(id).orElseThrow();
+        Community community = communityRepository.findByIdWithUser(id).orElseThrow();
+
+
 
 
         String nicknamedto = community.getUser().getNickname();
@@ -232,6 +238,31 @@ public class CommunityService {
     }
 
 
+    public CommunityOneModifyResponseDTO responseCommunityOneInModity(Long userId, Long id) {
+        //User user = userRepository.findById(userId).orElseThrow();
+        // 지연로딩!!!
+//        Community community = communityRepository.findById(id).orElseThrow();
+        Community community = communityRepository.findByIdWithUser(id).orElseThrow();
+
+        boolean checkMyarticle = community.getUser().getId().equals(userId);
+        if(checkMyarticle){
+        List<CommunityImage> communityImagePath =communityImageRepository.findByCommunity(community);
+        List<String> communityImagePathDto = new ArrayList<>();
+        for (CommunityImage communityImage : communityImagePath) {
+            communityImagePathDto.add(communityImage.getImagePath());
+        }
+
+        List<CommunitySelectedTag> communitySelectedTags = communitySelectedTagRespository.findByCommunity(community);
+        List<String> communityTagList = new ArrayList<>();
+
+        for (CommunitySelectedTag communitySelectedTag : communitySelectedTags) {
+            communityTagList.add(communitySelectedTag.getCommunityTag().getTagName());
+        }
 
 
+           return new CommunityOneModifyResponseDTO(community.getTitle(), community.getContent(), communityImagePathDto, communityTagList);
+        }
+
+        return  new CommunityOneModifyResponseDTO();
+    }
 }
