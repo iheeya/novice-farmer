@@ -29,7 +29,7 @@ public class CommunityInfoComponentDTO {
         private Long commentCount;
         private String writer;
         private String writerImagePath;
-        private LocalDateTime registerDate;
+        private String registerDate;
     }
 
     @Getter
@@ -44,7 +44,7 @@ public class CommunityInfoComponentDTO {
         private Long commentCount;
         private String writer;
         private String writerImagePath;
-        private LocalDateTime registerDate;
+        private String registerDate;
     }
 
     public CommunityInfoComponentDTO() {

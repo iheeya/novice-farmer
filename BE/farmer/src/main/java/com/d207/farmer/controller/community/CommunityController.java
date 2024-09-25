@@ -1,10 +1,7 @@
 package com.d207.farmer.controller.community;
 
-import com.d207.farmer.dto.community.CommunityCommentRegisterDTO;
+import com.d207.farmer.dto.community.*;
 
-import com.d207.farmer.dto.community.CommunityOneArticleResponseDTO;
-import com.d207.farmer.dto.community.CommunityRegisterDTO;
-import com.d207.farmer.dto.community.CommunityResponseDTO;
 import com.d207.farmer.dto.place.PlaceRegisterRequestDTO;
 import com.d207.farmer.dto.user.UserInfoResponseDTO;
 import com.d207.farmer.service.community.CommunityService;
@@ -106,12 +103,28 @@ public class CommunityController {
 
     /**
      *  커뮤니티 특정 게시물의 댓글 커뮤니티 특정 게시물의 전체 댓글보기
-     *  나중에 하기!!!!!!!!!!!!!!!!!!!!!
      */
-//    @GetMapping("{id}/all/comment")
-//    public ResponseEntity<List<>>{
-//
-//    }
+    @GetMapping("{id}/all/comment")
+    public ResponseEntity<List<CommunityCommentResponseDTO> > responseCommunityComment (@RequestHeader("Authorization") String authorization,
+                                                                                        @PathVariable Long id)   {
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[CommunityController] Get Community Comment {} ", userId);
+        return ResponseEntity.ok(communityService.responseCommunitycomment(userId, id));
+    }
+
+    /**
+     *  커뮤니티 내가 글쓴거 수정하기 버튼 눌렀을때 가져오기!
+     */
+    @GetMapping("{id}/all/modify")
+    public ResponseEntity<CommunityOneModifyResponseDTO> communityOneModify (@RequestHeader("Authorization") String authorization,
+                                                                             @PathVariable Long id)   {
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[CommunityController] Get communityOneModify {} ", userId);
+        return ResponseEntity.ok(communityService.responseCommunityOneInModity(userId, id));
+
+
+
+    }
 
 
 
