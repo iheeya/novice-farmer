@@ -175,6 +175,9 @@ public class StartupApplicationListener {
         farmService.registerFarm(11L, farmRegister1);
         myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(1L));
 
+        Farm farm = farmRepository.findById(1L).orElseThrow();
+        farm.updateDegreeDay(1000);
+
         FarmPlaceRegisterDTO farmPlace2 = new FarmPlaceRegisterDTO(2L, address);
         FarmPlantRegisterDTO farmPlant2 = new FarmPlantRegisterDTO(2L, "작매고", "작은 고추가 매움");
         FarmRegisterRequestDTO farmRegister2 = new FarmRegisterRequestDTO(farmPlace2, farmPlant2);

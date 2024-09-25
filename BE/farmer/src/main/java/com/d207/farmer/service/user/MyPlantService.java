@@ -128,6 +128,7 @@ public class MyPlantService {
 //        return "생장단계 업데이트 성공";
 //    }
 
+    @Transactional // TODO MVP 끝나면 지워야함
     public MyPlantInfoResponseDTO getMyPlantInfo(Long userId, Long myPlantId) {
         Farm farm = farmRepository.findByIdWithJoin(myPlantId).orElseThrow();
         if(farm.getSeedDate() == null) {
@@ -177,6 +178,11 @@ public class MyPlantService {
             todoInfoDTOs.add(new MyPlantInfoResponseDTO.TodoInfoDTO(dateUtil.timeStampToYmd(ft.getTodoDate()),
                     ft.getTodoType(), remainDay));
         }
+
+        // TODO MVP용 degreeDay update -> mvp 끝나면 지워야함
+        farm.updateDegreeDay(farm.getDegreeDay() + 90);
+        if(farm.getDegreeDay() > 1980) farm.updateDegreeDay(1980);
+        /////////////////////////////////////////////////
 
         return new MyPlantInfoResponseDTO(true, farm.getIsFirstHarvest(), plantInfo, todoInfoDTOs);
     }
