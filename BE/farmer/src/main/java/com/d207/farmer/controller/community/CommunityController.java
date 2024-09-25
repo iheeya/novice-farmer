@@ -103,7 +103,6 @@ public class CommunityController {
 
     /**
      *  커뮤니티 특정 게시물의 댓글 커뮤니티 특정 게시물의 전체 댓글보기
-     *
      */
     @GetMapping("{id}/all/comment")
     public ResponseEntity<List<CommunityCommentResponseDTO> > responseCommunityComment (@RequestHeader("Authorization") String authorization,
@@ -111,6 +110,20 @@ public class CommunityController {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Get Community Comment {} ", userId);
         return ResponseEntity.ok(communityService.responseCommunitycomment(userId, id));
+    }
+
+    /**
+     *  커뮤니티 내가 글쓴거 수정하기 버튼 눌렀을때 가져오기!
+     */
+    @GetMapping("{id}/all/modify")
+    public ResponseEntity<CommunityOneModifyResponseDTO> communityOneModify (@RequestHeader("Authorization") String authorization,
+                                                                             @PathVariable Long id)   {
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[CommunityController] Get communityOneModify {} ", userId);
+        return ResponseEntity.ok(communityService.responseCommunityOneInModity(userId, id));
+
+
+
     }
 
 
