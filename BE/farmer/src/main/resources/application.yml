@@ -47,7 +47,7 @@ spring:
   jwt:
     salt: "urban-farmer-240911-urban-farmer-240911-urban-farmer-240911-urban-farmer-240911-urban-farmer-240911-urban-farmer-240911"
     access-token:
-      expiretime: 86400000  # 1000*60*60*24 #하루
+      expiretime: 8640000000  # 1000*60*60*24 #하루*100 해놓은상태
     refresh-token:
       expiretime: 31536000000 # 1000*60*60*24*365 #1년
 
@@ -72,4 +72,4 @@ logging:
         SQL: debug
         type: trace
 server:
-port: 8081
+  port: 8081
