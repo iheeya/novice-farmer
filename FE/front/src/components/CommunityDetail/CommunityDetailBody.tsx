@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import  '../../styles/CommunityDetail/CommunityDetailBody.css'
-import Data from '../../assets/dummydata/CommunityId.json'
 import { useParams } from 'react-router-dom';
 import { communityDetail } from '../../services/CommunityDetail/CommuniyDetailGet';
 import { IsLikePost } from '../../services/CommunityDetail/CommunityDetailPost';
@@ -99,7 +98,7 @@ const handleHeartClick = () => {
             <div className='community-detail-body-body'>
             {detailData?.communityImagePath && detailData.communityImagePath.length > 0 ? (
                  <Slider {...settings} className='carousel'>
-                 {Data.communityImagePath.map((article, index) => (
+                 {detailData?.communityImagePath.map((article:string, index:number) => (
                    <img key={index} src={article} className='article-img' alt={`Article ${index}`} />
                  ))}
                </Slider>
