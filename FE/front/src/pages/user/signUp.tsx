@@ -2,9 +2,8 @@
 // 1. 이메일 중복 검사 추가
 // 2. 닉네임 중복 검사 추가
 
-
 // import api from "../../utils/axios";
-import { handleSignup } from "../../services/user/userapi";
+import { handleSignup } from "../../services/user/userApi";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -18,7 +17,7 @@ import {
   FormControlLabel,
   Box,
 } from "@mui/material";
-import { validateEmail, validateNickname, validatePassword, passwordConfirm } from "../../utils/util";
+import { validateEmail, validateNickname, validatePassword, passwordConfirm } from "../../utils/signUpValidate";
 
 function SignUp() {
   // 행정구역 정보
@@ -260,7 +259,6 @@ function SignUp() {
   const isNicknameValid = useMemo(() => validateNickname(nickName), [nickName]);
 
   const navigate = useNavigate();
- 
 
   return (
     <Box
@@ -282,20 +280,29 @@ function SignUp() {
       }}
     >
       <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%" }} />
-      <form onSubmit={(event)=>{
-        event.preventDefault();
-        handleSignup({email, password, nickname:nickName, age: parseInt(age, 10), gender, address:`${selectedProvince} ${selectedCity}`, pushAllow})
-        .then((response)=>{
-          console.log("signup success")
-          // 회원가입 성공 -> 로그인 페이지로 연결
-          navigate("/user/login");
-          
-        })
-        .catch((err)=>{
-          console.log('signupfailed',err)
-          // 로그인 실패 -> 에러 출력
-        })
-      }}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleSignup({
+            email,
+            password,
+            nickname: nickName,
+            age: parseInt(age, 10),
+            gender,
+            address: `${selectedProvince} ${selectedCity}`,
+            pushAllow,
+          })
+            .then((response) => {
+              console.log("signup success");
+              // 회원가입 성공 -> 로그인 페이지로 연결
+              navigate("/user/login");
+            })
+            .catch((err) => {
+              console.log("signupfailed", err);
+              // 로그인 실패 -> 에러 출력
+            });
+        }}
+      >
         <TextField
           label="이메일"
           variant="outlined"
@@ -345,7 +352,6 @@ function SignUp() {
           helperText={!isNicknameValid ? "자음과 모음을 단독으로 사용할 수 없습니다" : ""}
           required
         />
-
         <TextField
           label="나이"
           type="number"
@@ -353,7 +359,26 @@ function SignUp() {
           fullWidth
           margin="normal"
           value={age}
-          onChange={(e) => setAge(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+
+            // 빈 값 허용
+            if (value === "") {
+              setAge(value);
+              return;
+            }
+
+            const numericValue = parseInt(value, 10);
+
+            // 음수 및 최대값 제한
+            if (numericValue >= 0 && numericValue <= 150) {
+              setAge(value);
+            }
+          }}
+          inputProps={{
+            min: 0,
+            max: 150,
+          }}
           required
         />
 
