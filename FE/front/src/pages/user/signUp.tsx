@@ -284,8 +284,12 @@ function SignUp() {
         onSubmit={async (event) => {
           event.preventDefault();
           const isDuplicate = await isEmailDuplicate(email);
+          const isDuplicateNickName = await isNickNameDuplicate(nickName);
           if (!isDuplicate) {
             alert("이미 존재하는 이메일입니다");
+            return;
+          } else if (!isDuplicateNickName) {
+            alert("이미 존재하는 닉네임입니다");
             return;
           } else {
             handleSignup({
