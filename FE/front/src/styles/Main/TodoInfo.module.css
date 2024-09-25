@@ -1,0 +1,77 @@
+.todoContainer {
+  background-color: #F8FAF8;
+  padding: 5%;
+  border-radius: 10px;
+  box-shadow: 0 4% 8% rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.titleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.title {
+  font-size: 200%;
+  color: #3D7537;
+  margin-top: 0;
+  margin-bottom: 3%;
+}
+
+.weatherImage {
+  width: 15%;
+  height: auto;
+  margin-left: 10%;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.plantImage {
+  width: 35%;
+  height: auto;
+  object-fit: cover;
+  margin-right: 5%;
+  border-radius: 8%;
+  box-shadow: 0 2% 4% rgba(0, 0, 0, 0.1);
+}
+
+.textSection {
+  text-align: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  width: 60%;
+}
+
+.textSection p {
+  margin: 1% 0;
+  color: #555;
+}
+
+.info {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 0 2%;
+}
+
+.date, .location {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.temperature {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #d32f2f;
+  margin-left: auto;
+}
