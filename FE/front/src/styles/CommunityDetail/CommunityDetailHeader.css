@@ -1,0 +1,28 @@
+.community-header-container{
+    display: flex;
+    align-items: center;
+}
+
+.my-profile{
+    border-radius: 50%;
+    width: 12%;
+    height: 12%;
+    background-color: #D2EABD;
+    color: #5B8E55;
+    aspect-ratio: 1 / 1; /* 1:1 비율로 유지 */
+    display: flex;
+    justify-content: center; /* 수평 가운데 정렬 */
+    align-items: center; /* 수직 가운데 정렬 */
+    margin-right: 5%;
+    margin-left: auto;
+    margin-top: 5%;
+}
+
+.search{
+    top: 3.7%; 
+    right: 22%;
+    left: auto;
+    color: #5B8E55;
+    font-size: 1.8rem; 
+    position:absolute;
+}

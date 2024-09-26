@@ -10,7 +10,6 @@ export const getImageForLocation = (placeId: number): string => {
 };
 
 
-
 // 작물 이름에 따른 이미지 경로 매핑 함수
 export const getImageForCrop = (cropName: string): string => {
   try {
@@ -34,6 +33,16 @@ export const getImageForCrop = (cropName: string): string => {
     return require('../assets/img/plants/Default.png');
   }
 };
+
+// 작물 이름과 성장 단계에 따른 일러스트 이미지 경로 매핑 함수
+export const getImageForPlantGrowthStep = (plantName: string, growthStep: number): string => {
+  try {
+    return require(`../assets/img/illustration/${plantName}${growthStep}.png`);
+  } catch (error) {
+    return require('../assets/img/illustration/Default.png');
+  }
+};
+
 
 // 날씨 제목에 따른 이미지 경로 매핑 함수
 export const getImageForWeather = (title: string): string => {
