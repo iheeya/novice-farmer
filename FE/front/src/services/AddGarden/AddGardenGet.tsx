@@ -13,3 +13,15 @@ export function getFarmSelect() {
 }
 
 
+export function getPlantData(){
+    return api
+        .get('farm/plant')
+        .then((response) => {
+            return Promise.resolve(response.data)
+        })
+        .catch((e) => {
+            return Promise.reject(e)
+        })
+}
+
+

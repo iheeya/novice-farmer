@@ -10,6 +10,7 @@ import {  useSelector } from 'react-redux';
 import { RootState } from '../../store/AddFarm/store';
 import { motion } from "framer-motion";
 import { CSSTransition } from 'react-transition-group';
+import { selectPlantPost } from '../../services/AddGarden/AddGardenPost';
 
 interface GardenModalProps {
     plantId: number |null;
@@ -64,11 +65,12 @@ function GardenModal({ plantId, onClose, onLoading }: GardenModalProps) {
   const handleSubmit = async () => {
    
       const payload = {
-        plantId: plantId
+        plantId: plantId,
+        plantName: plantData
       };
 
       try {
-        const response = await axios.post('/your-endpoint', payload);
+        const response = await selectPlantPost(payload);
         console.log(response.data); // 응답 처리
         onClose(); // 모달 닫기
       } catch (error) {

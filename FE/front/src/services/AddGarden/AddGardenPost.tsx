@@ -22,6 +22,11 @@ interface Final{
     };
 }
 
+interface SelectPlant{
+    plantId : number | null,
+    plantName : string | null
+}
+
 export function selectGardenPost(payload:GardenPayload){
     return api
         .post('farm/plant/recommend', payload)
@@ -37,6 +42,18 @@ export function selectGardenPost(payload:GardenPayload){
 export function gardenFinishPost(payload:Final){
     return api
         .post('farm', payload)
+        .then((response) => {
+            return Promise.resolve(response.data)
+        })
+        .catch((e) => {
+            return Promise.reject(e)
+        })
+}
+
+
+export function selectPlantPost(payload:SelectPlant){
+    return api
+        .post('farm/place/recommend', payload)
         .then((response) => {
             return Promise.resolve(response.data)
         })
