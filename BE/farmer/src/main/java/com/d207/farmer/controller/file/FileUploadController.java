@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Slf4j
-@RestController
+//@RestController
 @RequiredArgsConstructor
 @RequestMapping("/file")
 @Tag(name = "파일업로드", description = "file")
