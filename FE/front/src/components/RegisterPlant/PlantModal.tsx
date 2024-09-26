@@ -16,6 +16,7 @@ interface GardenModalProps {
     plantId: number |null;
     onClose: () => void; // onClose는 함수 타입
     onLoading: () => void;
+    onResponse: (response:any) => void;
 }
 
 const customModalStyles: ReactModal.Styles = {
@@ -43,7 +44,7 @@ const customModalStyles: ReactModal.Styles = {
     },
 };
 
-function GardenModal({ plantId, onClose, onLoading }: GardenModalProps) {
+function GardenModal({ plantId, onClose, onLoading , onResponse}: GardenModalProps) {
   
 
   const plantData = useSelector((state: RootState) => state.farmSelect.plant)
@@ -72,6 +73,7 @@ function GardenModal({ plantId, onClose, onLoading }: GardenModalProps) {
       try {
         const response = await selectPlantPost(payload);
         console.log(response.data); // 응답 처리
+        onResponse(response)
         onClose(); // 모달 닫기
       } catch (error) {
         console.error("Error posting data:", error);

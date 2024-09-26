@@ -14,6 +14,7 @@ import { getPlantData } from '../../services/AddGarden/AddGardenGet'
 // farm/place api 사용해서 텃밭 리스트 가져오기
 interface GardenLoadingProps{
     onLoading : () => void;
+    onResponse: (data: any) => void;
 }
 
 interface Plant {
@@ -23,7 +24,7 @@ interface Plant {
     isFavorite : boolean;
 }
 
-function PlantSelect({onLoading}: GardenLoadingProps) {
+function PlantSelect({onLoading, onResponse}: GardenLoadingProps) {
     const dispatch = useDispatch(); // 디스패치 함수 
     const [selectedPlant, setSelectedPlant] = useState<string | null>(null); // 선택된 장소를 저장할 상태
     const [isModalOpen, setIsModalOpen] = useState(false)  // 모달 열림 상태
@@ -89,7 +90,7 @@ function PlantSelect({onLoading}: GardenLoadingProps) {
                 </div>
                 ))}
             </div>
-            {isModalOpen && <PlantModal  plantId={selectPlantId} onClose={closeModal} onLoading={onLoading} />} 
+            {isModalOpen && <PlantModal  plantId={selectPlantId} onClose={closeModal} onLoading={onLoading} onResponse={onResponse}/>} 
         </div>
     )
 }

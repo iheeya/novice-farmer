@@ -41,7 +41,7 @@ export function selectGardenPost(payload:GardenPayload){
 
 export function gardenFinishPost(payload:Final){
     return api
-        .post('farm', payload)
+        .post('/farm', payload)
         .then((response) => {
             return Promise.resolve(response.data)
         })
@@ -53,7 +53,7 @@ export function gardenFinishPost(payload:Final){
 
 export function selectPlantPost(payload:SelectPlant){
     return api
-        .post('farm/place/recommend', payload)
+        .post('/farm/place/recommend', payload)
         .then((response) => {
             return Promise.resolve(response.data)
         })
@@ -61,3 +61,5 @@ export function selectPlantPost(payload:SelectPlant){
             return Promise.reject(e)
         })
 }
+
+
