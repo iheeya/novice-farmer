@@ -3,11 +3,12 @@ import { communityComment } from "../../services/CommunityDetail/CommuniyDetailG
 import { CommentPost } from "../../services/CommunityDetail/CommunityDetailPost";
 import { useParams } from "react-router-dom";
 import '../../styles/CommunityDetail/CommunityComment.css'
-import '../../styles/CommunityDetail/CommunityDetailBody.css'
 
 function CommunityComment(){
     const {id} = useParams<{id:string}>();
     const Id = Number(id);
+    const [startY, setStartY] = useState(0);
+    const [translateY, setTranslateY] = useState(0);
     const [commentList, setCommentList] = useState<any>(null);
 
     useEffect(() => {
@@ -30,6 +31,7 @@ function CommunityComment(){
 
     return(
         <div className='comment-size modal-background' >댓글 창...    </div>
+       
     )
 }
 

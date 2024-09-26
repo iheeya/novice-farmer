@@ -30,6 +30,44 @@ function CommunityDetailBody(){
   const [isHeartCount, setIsHeartCount] = useState<number>(detailData?.communityHeartcount)
   const [isComment, setIsComment] = useState(false)
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [translateY, setTranslateY] = useState(0);
+
+  // 댓글 아이콘 클릭 시 모달 열기
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  // 모달 닫기
+  const closeModal = () => {
+    setIsOpen(false);
+    setTranslateY(0); // 위치 초기화
+  };
+
+  // 터치 시작
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setStartY(e.touches[0].clientY);
+  };
+
+  // 터치 이동
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const currentY = e.touches[0].clientY;
+    const deltaY = currentY - startY;
+    if (deltaY > 0) {
+      setTranslateY(deltaY); // 스와이프 시 댓글창이 따라 내려옴
+    }
+  };
+
+  // 터치 종료 (스와이프 내려가면 닫기)
+  const handleTouchEnd = () => {
+    if (translateY > 100) {
+      closeModal(); // 스와이프 거리가 충분히 크면 모달 닫기
+    } else {
+      setTranslateY(0); // 스와이프가 작으면 원래 위치로 복구
+    }
+  };
+
   // 케로셀 세팅
   const settings = {
     dots: true, 
@@ -148,6 +186,10 @@ const handleCommentClick =() => {
             <div className='comment-modal-size'>
               {isComment? <CommunityComment /> : ''}
             </div>
+
+
+
+
 
 
 
