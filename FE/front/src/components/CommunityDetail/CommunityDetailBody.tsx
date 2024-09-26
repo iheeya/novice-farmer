@@ -13,6 +13,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Avatar from '@mui/material/Avatar';
 import empty from '../../assets/img/community/empty.png'
+import CommunityComment from './CommunityComment';
 
 // DetailData 타입 정의
 interface DetailData {
@@ -27,7 +28,8 @@ function CommunityDetailBody(){
   const [detailData, setDetailData] = useState<any>(null);
   const [isHeart, setIsHeart] = useState<Boolean>(detailData?.checkIPushHeart)
   const [isHeartCount, setIsHeartCount] = useState<number>(detailData?.communityHeartcount)
-  
+  const [isComment, setIsComment] = useState(false)
+
   // 케로셀 세팅
   const settings = {
     dots: true, 
@@ -71,7 +73,6 @@ const handleHeartClick = () => {
     return newState; // 새로운 하트 상태 반환
   });
   
-
   const postLike = async() => {
     try{
       const data =await IsLikePost(Id);
@@ -83,6 +84,14 @@ const handleHeartClick = () => {
 
   postLike();
 };
+
+
+const handleCommentClick =() => {
+  setIsComment((prevState) => {
+    const commentState = !prevState; // 댓글 클릭 상태 토글
+    return commentState
+  });
+}
 
     return(
         <>
@@ -125,7 +134,7 @@ const handleHeartClick = () => {
               </div>
 
               <div  className='community-detail-count'>
-                <ChatBubbleOutlineIcon/>
+                <ChatBubbleOutlineIcon onClick={handleCommentClick}/>
                 <div className='count-position'>{detailData?.communityCommentcount}</div>
               </div>
               {detailData?.checkMyarticle ? (
@@ -136,23 +145,12 @@ const handleHeartClick = () => {
             </div>
 
 
-    {/* <Carousel className="rounded-xl">
-      <img
-        src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2560&q=80"
-        alt="image 1"
-        className="h-full w-full object-cover"
-      />
-      <img
-        src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80"
-        alt="image 2"
-        className="h-full w-full object-cover"
-      />
-      <img
-        src="https://images.unsplash.com/photo-1518623489648-a173ef7824f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2762&q=80"
-        alt="image 3"
-        className="h-full w-full object-cover"
-      />
-    </Carousel> */}
+            <div className='comment-modal-size'>
+              {isComment? <CommunityComment /> : ''}
+            </div>
+
+
+
         </>
     )
 }

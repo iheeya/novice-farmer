@@ -13,6 +13,16 @@ export function IsLikePost(Id:number){
 }
 
 
+export function CommentPost(Id:number){
+    return api
+        .post(`community/${Id}/all/comment`)
+        .then((response)=>{
+            return Promise.resolve()
+        })
+        .catch((e) => {
+            return Promise.reject(e)
+        })
+}
 
 
 
