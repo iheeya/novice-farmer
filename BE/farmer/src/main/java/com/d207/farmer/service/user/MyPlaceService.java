@@ -10,6 +10,7 @@ import com.d207.farmer.repository.farm.UserPlaceRepository;
 import com.d207.farmer.repository.plant.PlantIllustRepository;
 import com.d207.farmer.repository.plant.PlantThresholdRepository;
 import com.d207.farmer.utils.DateUtil;
+import com.d207.farmer.utils.UserAuthUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,9 +29,11 @@ public class MyPlaceService {
     private final UserPlaceRepository userPlaceRepository;
     private final FarmRepository farmRepository;
     private final DateUtil dateUtil;
+    private final UserAuthUtil userAuthUtil;
 
     public MyPlaceResponseDTO getMyPlace(Long userId, Long myPlaceId) {
         UserPlace userPlace = userPlaceRepository.findByIdWithPlace(myPlaceId).orElseThrow();
+        userAuthUtil.authorizationUser(userId, userPlace); // 회원 일치 여부
         List<Farm> farms = farmRepository.findByUserPlaceIdWithCurrentGrowing(myPlaceId).orElse(null);
         int farmCount = farms == null ? 0 : farms.size();
 
@@ -78,6 +81,7 @@ public class MyPlaceService {
     @Transactional
     public String updateMyPlaceName(Long userId, UpdateMyPlaceNameRequestDTO request) {
         UserPlace userPlace = userPlaceRepository.findById(request.getUserPlaceId()).orElseThrow();
+        userAuthUtil.authorizationUser(userId, userPlace); // 회원 일치 여부
         userPlace.modifyName(request.getUserPlaceName());
         return "장소 이름 변경 성공";
     }
