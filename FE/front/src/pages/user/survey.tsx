@@ -56,15 +56,15 @@ export default function Survey() {
     >
       {/* SKIP 버튼 (오른쪽 상단) */}
       <IconButton
-        sx={{ position: "absolute", top: "10%", right: "5%", fontSize: "4vw", color: "#84b366" }}
+        sx={{ position: "absolute", top: "20%", right: "5%", fontSize: "4vw", color: "#67823a" }}
         onClick={() => handleSkip(setSelectedPlants, setSelectedPlaces, navigate)}
       >
         SKIP
       </IconButton>
 
       {/* 제목 */}
-      <Typography variant="h6" sx={{ marginBottom: "2vh", fontSize: "4vw", color: "#67823a", fontWeight: "normal" }}>
-        선호하는 작물을 선택해주세요
+      <Typography variant="h6" sx={{ marginBottom: "2vh", fontSize: "6vw", color: "#67823a", fontWeight: "normal" }}>
+        어떤 작물에 관심이 있으신가요?
       </Typography>
 
       {/* 작물 선택 부분 */}
@@ -79,9 +79,9 @@ export default function Survey() {
             sx={{
               padding: "1vh",
               fontSize: "3vw",
-              borderColor: selectedPlants.includes(plant.id) ? "#84b366" : "#67823a",
+              borderColor: selectedPlants.includes(plant.id) ? "#67823a" : "#84b366",
               borderWidth: "2px",
-              color: selectedPlants.includes(plant.id) ? "#84b366" : "#67823a",
+              color: selectedPlants.includes(plant.id) ? "#67823a" : "#84b366",
             }}
             variant="outlined"
           />
@@ -89,8 +89,8 @@ export default function Survey() {
       </Box>
 
       {/* 장소 선택 질문 */}
-      <Typography variant="h6" sx={{ marginTop: "4vh", marginBottom: "2vh", fontSize: "4vw", color: "#67823a" }}>
-        키우고 싶은 장소가 어디인가요?
+      <Typography variant="h6" sx={{ marginTop: "4vh", marginBottom: "2vh", fontSize: "6vw", color: "#67823a" }}>
+        어디서 키우고 싶으신가요?
       </Typography>
 
       {/* 장소 선택 부분 */}
@@ -105,24 +105,36 @@ export default function Survey() {
             sx={{
               padding: "1vh",
               fontSize: "3vw",
-              borderColor: selectedPlaces.includes(place.id) ? "#84b366" : "#67823a",
+              borderColor: selectedPlaces.includes(place.id) ? "#67823a" : "#84b366",
               borderWidth: "2px",
-              color: selectedPlaces.includes(place.id) ? "#84b366" : "#67823a",
+              color: selectedPlaces.includes(place.id) ? "#67823a" : "#84b366",
             }}
             variant="outlined"
           />
         ))}
       </Box>
-
       {/* 완료 버튼 */}
-      <Button
-        variant="contained"
-        color="success"
-        sx={{ marginTop: "4vh", padding: "1.5vh 3vw", fontSize: "4vw", backgroundColor: "#84b366" }}
-        onClick={() => handleSubmit(selectedPlants, selectedPlaces, navigate)}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end", // 버튼을 우측에 정렬
+          width: "100%", // 버튼의 부모 박스가 화면 너비를 차지하도록 설정
+        }}
       >
-        완료
-      </Button>
+        <Button
+          variant="contained"
+          color="success"
+          sx={{
+            marginTop: "4vh",
+            padding: "0.7vh 3vw",
+            fontSize: "4vw",
+            backgroundColor: "#67823a",
+          }}
+          onClick={() => handleSubmit(selectedPlants, selectedPlaces, navigate)}
+        >
+          완료
+        </Button>
+      </Box>
     </Box>
   );
 }
