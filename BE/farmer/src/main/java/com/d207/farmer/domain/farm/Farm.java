@@ -77,7 +77,7 @@ public class Farm {
         this.plant = plant;
         this.myPlantName = request.getMyPlantName();
         this.memo = request.getMemo();
-        this.degreeDay = plant.getDegreeDay();
+        this.degreeDay = 0;
         this.createDate = LocalDateTime.now();
         this.isCompleted = false;
         this.isDeleted = false;
@@ -115,7 +115,7 @@ public class Farm {
         this.memo = memo;
     }
 
-//    public void updateDegreeDay(int degreeDay) {
-//        this.degreeDay = degreeDay;
-//    }
+    public void updateDegreeDay(int degreeDay) {
+        this.degreeDay = degreeDay;
+    }
 }
