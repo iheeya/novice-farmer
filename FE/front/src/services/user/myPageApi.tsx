@@ -1,5 +1,28 @@
 import api from "../../utils/axios";
 
+// 프로필 이미지 URL 은 어디에?
+interface userInfoProps{
+  email: string;
+  nickname: string;
+  regDate: string;
+  isFirstLogin: boolean;
+  gender: string;
+  age: number;
+  address: string;
+  pushAllow: boolean;
+}
+
+
+export interface PlantProps {
+  id: number;
+  plantname: string;
+  plantmyname: string;
+  placename: string;
+  seedDate: string;
+  firstHarvestDate: string;
+  imageurl: string | null; 
+}
+
 export function getSurveyInfo(): Promise<any> {
   return api
     .get("/user/survey")
@@ -11,18 +34,21 @@ export function getSurveyInfo(): Promise<any> {
     });
 }
 
-export function getMyPage(): Promise<{
-    email: string;
-    nickname: string;
-    regDate: string;
-    isFirstLogin: boolean;
-    gender: string;
-    age: number;
-    address: string;
-    pushAllow: boolean;
-  }> {
+export function getMyInfo(): Promise<userInfoProps> {
   return api
     .get("/user/mypage")
+    .then((response) => {
+      console.log(response.data);
+      return Promise.resolve(response.data);
+    })
+    .catch((error) => {
+      return Promise.reject(error);
+    });
+}
+
+export function getMyHistory(): Promise<PlantProps[]> {
+  return api
+    .get("/user/mypage/history")
     .then((response) => {
       console.log(response.data);
       return Promise.resolve(response.data);

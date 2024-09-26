@@ -1,5 +1,8 @@
+// 프로필 페이지에서 프로필 이미지 URL 을 안줌
+// s3 사용법도 알아야함. URL 로 사진 받아와서 출력하고 등등
+
 import { useEffect, useState } from "react";
-import { getMyPage } from "../../../services/user/myPageApi";
+import { getMyInfo } from "../../../services/user/myPageApi";
 import { Box, Typography, Button, Avatar, Paper } from "@mui/material";
 
 interface UserInfo {
@@ -18,7 +21,7 @@ export default function MyInfo() {
 
   // API 호출
   useEffect(() => {
-    getMyPage()
+    getMyInfo()
       .then((res) => {
         setUserInfo(res);
       })
