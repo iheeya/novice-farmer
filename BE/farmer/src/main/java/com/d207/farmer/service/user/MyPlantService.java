@@ -10,6 +10,7 @@ import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.farm.FarmTodoRepository;
 import com.d207.farmer.utils.DateUtil;
 import com.d207.farmer.utils.FastApiUtil;
+import com.d207.farmer.utils.UserAuthUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,10 +30,12 @@ public class MyPlantService {
     private final FarmTodoRepository farmTodoRepository;
     private final FastApiUtil fastApiUtil;
     private final DateUtil dateUtil;
+    private final UserAuthUtil userAuthUtil;
 
     @Transactional
     public String startGrowPlant(Long userId, StartGrowPlantRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
+        userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
         farm.startGrow();
         return "작물 키우기 시작하기 성공";
     }
@@ -40,6 +43,7 @@ public class MyPlantService {
     @Transactional
     public String deletePlant(Long userId, ManagePlantRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
+        userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
         farm.delete();
         return "작물 삭제 성공";
     }
@@ -47,6 +51,7 @@ public class MyPlantService {
     @Transactional
     public String harvestPlant(Long userId, ManagePlantRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
+        userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
         farm.harvest();
         return "작물 첫수확 성공";
     }
@@ -54,6 +59,7 @@ public class MyPlantService {
     @Transactional
     public String endPlant(Long userId, ManagePlantRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
+        userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
         farm.end();
         return "작물 키우기 종료하기 성공";
     }
@@ -62,6 +68,7 @@ public class MyPlantService {
     public String waterPlant(Long userId, ManagePlantRequestDTO request) {
         List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalseAndTodoType(request.getFarmId(), TodoType.WATERING);
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow(); // MVP 끝나면 아래 if문 안에 넣기
+        userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
         if(farmTodos == null || farmTodos.isEmpty()) { // todo가 없으면 임의 생성인데 그럴 일 있나
 //            Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
             farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, true, null, LocalDateTime.now()));
@@ -80,6 +87,7 @@ public class MyPlantService {
         List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalseAndTodoType(request.getFarmId(), TodoType.FERTILIZERING);
         if(farmTodos == null || farmTodos.isEmpty()) {
             Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
+            userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
             farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, true, null, LocalDateTime.now()));
             return "작물 비료주기 성공(todo 생성)";
         }
@@ -90,6 +98,7 @@ public class MyPlantService {
     @Transactional
     public String updateName(Long userId, UpdatePlantNameRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
+        userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
         farm.updateName(request.getPlantName());
         return "이름 변경 성공";
     }
@@ -97,6 +106,7 @@ public class MyPlantService {
     @Transactional
     public String updateMemo(Long userId, UpdatePlantMemoRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
+        userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
         farm.updateMemo(request.getMemo());
         return "메모 변경 성공";
     }
@@ -131,6 +141,7 @@ public class MyPlantService {
     @Transactional // TODO MVP 끝나면 지워야함
     public MyPlantInfoResponseDTO getMyPlantInfo(Long userId, Long myPlantId) {
         Farm farm = farmRepository.findByIdWithJoin(myPlantId).orElseThrow();
+        userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
         if(farm.getSeedDate() == null) {
             return new MyPlantInfoResponseDTO(false, false, new MyPlantInfoResponseDTO.PlantInfoDTO(), new ArrayList<>());
         }
