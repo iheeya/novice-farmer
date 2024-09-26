@@ -30,6 +30,7 @@ public class MyPlantInfoResponseDTO {
         private int plantGrowthStep;
         private int plantDegreeRatio;
         private ThresholdDTO threshold;
+        // FIXME DTO 수정
     }
 
     @Getter

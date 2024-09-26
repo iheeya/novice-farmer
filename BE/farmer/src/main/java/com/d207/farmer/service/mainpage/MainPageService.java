@@ -97,12 +97,12 @@ public class MainPageService {
 
         // 현재 생장단계 구하기
         int growthStep = 1;
+        int maxDegreeDay = farmTodo.getFarm().getPlant().getDegreeDay();
         for (PlantThreshold pt : farmTodo.getFarm().getPlant().getPlantThresholds()) {
-            if(farmTodo.getFarm().getDegreeDay() < pt.getDegreeDay()) {
-                break;
-            }
+            if(farmTodo.getFarm().getDegreeDay() < pt.getDegreeDay()) break;
             growthStep++;
         }
+        if(farmTodo.getFarm().getDegreeDay() == maxDegreeDay) growthStep++;
 
         String imagePath = "";
         // 일러스트 이미지 경로

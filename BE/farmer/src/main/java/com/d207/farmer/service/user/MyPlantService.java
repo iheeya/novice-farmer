@@ -148,10 +148,12 @@ public class MyPlantService {
 
         // 작물 growthStep 계산
         int growthStep = 1;
+        int maxDegreeDay = farm.getPlant().getDegreeDay();
         for(PlantThreshold pt : farm.getPlant().getPlantThresholds()) {
             if(farm.getDegreeDay() < pt.getDegreeDay()) break;
             growthStep++;
         }
+        if(farm.getDegreeDay() == maxDegreeDay) growthStep++;
 
         // 일러스트 이미지 경로
         String imagePath = "";
@@ -192,7 +194,7 @@ public class MyPlantService {
 
         // TODO MVP용 degreeDay update -> mvp 끝나면 지워야함
         farm.updateDegreeDay(farm.getDegreeDay() + 90);
-        if(farm.getDegreeDay() > 1980) farm.updateDegreeDay(1980);
+        if(farm.getDegreeDay() > 1960) farm.updateDegreeDay(1960);
         /////////////////////////////////////////////////
 
         return new MyPlantInfoResponseDTO(true, farm.getIsFirstHarvest(), plantInfo, todoInfoDTOs);
