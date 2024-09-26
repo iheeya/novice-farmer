@@ -12,6 +12,10 @@ interface userInfoProps{
   pushAllow: boolean;
 }
 
+interface getMyLikeInfoProps {
+  plant: { id: number, plantname: string, isFavorited: boolean }[];
+  place: { id: number, plantname: string, isFavorited: boolean }[];
+}
 
 export interface PlantProps {
   id: number;
@@ -51,6 +55,17 @@ export function getMyHistory(): Promise<PlantProps[]> {
     .get("/user/mypage/history")
     .then((response) => {
       console.log(response.data);
+      return Promise.resolve(response.data);
+    })
+    .catch((error) => {
+      return Promise.reject(error);
+    });
+}
+
+export function getMyLike():Promise<getMyLikeInfoProps>{
+  return api
+    .get("/user/mypage/like")
+    .then((response) => {
       return Promise.resolve(response.data);
     })
     .catch((error) => {

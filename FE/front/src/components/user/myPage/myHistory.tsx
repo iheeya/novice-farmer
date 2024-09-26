@@ -21,25 +21,7 @@ export default function MyHistory() {
         setError("데이터를 불러오는 데 실패했습니다."); // 에러 메시지 설정
         setLoading(false); // 로딩 상태 종료
       });
-  }, []);
-
-  // 로딩 중일 때
-  if (loading) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-        <CircularProgress /> {/* 로딩 중 스피너 */}
-      </Box>
-    );
-  }
-
-  // 에러 발생 시
-  if (error) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-        <Typography variant="h6" color="error">{error}</Typography>
-      </Box>
-    );
-  }
+  }, []); 
 
   // 데이터가 없는 경우
   if (history.length === 0) {

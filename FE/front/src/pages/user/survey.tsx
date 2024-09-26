@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getSurveyInfo } from "../../services/user/surveyApi";
 import { Button, Box, Typography, Chip, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { handlePlantSelect, handlePlaceSelect, handleSubmit, handleSkip } from "../../services/user/surveyHandler";
+
 
 interface Plant {
   id: number;
@@ -54,14 +54,6 @@ export default function Survey() {
         position: "relative", // for placing the skip button at the top
       }}
     >
-      {/* SKIP 버튼 (오른쪽 상단) */}
-      <IconButton
-        sx={{ position: "absolute", top: "20%", right: "5%", fontSize: "4vw", color: "#67823a" }}
-        onClick={() => handleSkip(setSelectedPlants, setSelectedPlaces, navigate)}
-      >
-        SKIP
-      </IconButton>
-
       {/* 제목 */}
       <Typography variant="h6" sx={{ marginBottom: "2vh", fontSize: "6vw", color: "#67823a", fontWeight: "normal" }}>
         어떤 작물에 관심이 있으신가요?
