@@ -9,6 +9,7 @@ import java.time.temporal.ChronoUnit;
 @Slf4j
 @Component
 public class DateUtil {
+
     public String getTime(LocalDateTime writeDate) {
         LocalDateTime now = LocalDateTime.now();
         long minutes = ChronoUnit.MINUTES.between(writeDate, now);
@@ -28,7 +29,11 @@ public class DateUtil {
         } else {
             return years + "년 전";
         }
-    } // getTime 메서드의 중괄호 닫기
+    }
+
+    public int degreeDayToRatio(int degreeDay, int maxDegreeDay) {
+        return (int) ((double) degreeDay / maxDegreeDay * 100);
+    }
 
     public String timeStampToYmd(LocalDateTime date) {
         return date.toString().substring(0, 10); // 날짜 형식 수정

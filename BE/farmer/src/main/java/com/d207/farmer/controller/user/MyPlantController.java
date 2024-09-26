@@ -1,6 +1,5 @@
 package com.d207.farmer.controller.user;
 
-import com.d207.farmer.domain.farm.TodoType;
 import com.d207.farmer.dto.common.FastAPIConnectTestResponseDTO;
 import com.d207.farmer.dto.myplant.*;
 import com.d207.farmer.service.user.MyPlantService;
@@ -8,10 +7,8 @@ import com.d207.farmer.utils.FastApiUtil;
 import com.d207.farmer.utils.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.sql.Update;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -170,12 +167,23 @@ public class MyPlantController {
      * 내 작물 상세
      */
     @Operation(summary = "내 작물 상세페이지 조회", description = "내 작물 상세페이지 조회")
-    @GetMapping
+    @GetMapping("{myPlantId}")
     public ResponseEntity<MyPlantInfoResponseDTO> getMyPlantInfo(@RequestHeader("Authorization") String authorization,
-                                                             @RequestBody MyPlantInfoRequestDTO request) {
-        log.info("[MyPlantController] Received getMyPlant request for {}", request);
+                                                                 @PathVariable("myPlantId") Long myPlantId) {
+        log.info("[MyPlantController] Received getMyPlant request for {}", myPlantId);
         Long userId = jwtUtil.getUserId(authorization);
-        return ResponseEntity.ok().body(myPlantService.getMyPlantInfo(userId, request));
+        return ResponseEntity.ok().body(myPlantService.getMyPlantInfo(userId, myPlantId));
+    }
+
+    /**
+     * 내 작물 degreeDay 업데이트
+     */
+    @Operation(summary = "내 작물 degreeDay 업데이트", description = "내 작물 degreeDay 업데이트")
+    @PatchMapping({"{myPlantId}"})
+    public ResponseEntity<String> updateMyPlantDegreeDay(@PathVariable("myPlantId") Long myPlantId,
+                                                         @RequestBody UpdateDegreeDayRequestDTO request) {
+        log.info("[MyPlantController] Received updateMyPlantDegreeDay request for {}", myPlantId);
+        return ResponseEntity.ok().body(myPlantService.updateMyPlantDegreeDay(myPlantId, request));
     }
 
     /**

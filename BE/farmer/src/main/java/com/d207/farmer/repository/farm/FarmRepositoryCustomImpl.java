@@ -60,6 +60,7 @@ public class FarmRepositoryCustomImpl implements FarmRepositoryCustom {
         return Optional.ofNullable(queryFactory.selectFrom(farm)
                 .join(farm.plant).fetchJoin()
                 .join(farm.userPlace).fetchJoin()
+                .join(farm.userPlace.place).fetchJoin()
                 .where(farmIdEq(myPlantId))
                 .fetchOne());
     }
