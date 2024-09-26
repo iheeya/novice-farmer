@@ -78,7 +78,7 @@ public class FarmController {
      * 장소 조회(with 추천, 즐겨찾기)
      */
     @Operation(summary = "장소 조회(with 추천, 즐겨찾기)", description = "장소 리스트 조회인데, 추천과 즐겨찾기 모두 있는 장소")
-    @GetMapping("/place/recommend")
+    @PostMapping("/place/recommend")
     public ResponseEntity<List<PlaceWithRecommendAndFavoriteResponseDTO>> getPlaceWithRecommendAndFavorite(@RequestHeader("Authorization") String authorization,
                                                                                                            @RequestBody @Valid RecommendPlaceRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
@@ -93,7 +93,7 @@ public class FarmController {
      * 작물 조회(with 추천, 즐겨찾기)
      */
     @Operation(summary = "작물 조회(with 추천, 즐겨찾기)", description = "작물 리스트 조회인데, 추천과 즐겨찾기 모두 있는 작물")
-    @GetMapping("/plant/recommend")
+    @PostMapping("/plant/recommend")
     public ResponseEntity<List<PlantWithRecommendAndFavoriteResponseDTO>> getPlantWithRecommendAndFavorite(@RequestHeader("Authorization") String authorization,
                                                                                                            @RequestBody @Valid RecommendPlantRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
