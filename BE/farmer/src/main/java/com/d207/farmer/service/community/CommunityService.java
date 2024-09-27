@@ -11,12 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -264,5 +261,14 @@ public class CommunityService {
         }
 
         return  new CommunityOneModifyResponseDTO();
+    }
+
+    @Transactional
+    public CommunityOneModifyRequestDTO communityOneModifyRequest(Long userId, Long id) {
+
+        Community community = communityRepository.findByIdWithUser(id).orElseThrow();
+
+        boolean checkMyarticle = community.getUser().getId().equals(userId);
+        return null;
     }
 }

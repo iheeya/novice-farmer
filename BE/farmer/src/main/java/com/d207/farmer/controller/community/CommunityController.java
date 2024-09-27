@@ -2,8 +2,6 @@ package com.d207.farmer.controller.community;
 
 import com.d207.farmer.dto.community.*;
 
-import com.d207.farmer.dto.place.PlaceRegisterRequestDTO;
-import com.d207.farmer.dto.user.UserInfoResponseDTO;
 import com.d207.farmer.service.community.CommunityService;
 import com.d207.farmer.utils.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -122,7 +120,17 @@ public class CommunityController {
         log.info("[CommunityController] Get communityOneModify {} ", userId);
         return ResponseEntity.ok(communityService.responseCommunityOneInModity(userId, id));
 
+    }
 
+    /**
+     *  커뮤니티 내가 글쓴거 수정하기 버튼 눌렀을때 가져오기!
+     */
+    @PostMapping("{id}/all/modify")
+    public ResponseEntity<CommunityOneModifyRequestDTO> communityOneModifyRequest (@RequestHeader("Authorization") String authorization,
+                                                                                   @PathVariable Long id)   {
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[CommunityController] Get communityOneModify {} ", userId);
+        return ResponseEntity.ok(communityService.communityOneModifyRequest(userId, id));
 
     }
 

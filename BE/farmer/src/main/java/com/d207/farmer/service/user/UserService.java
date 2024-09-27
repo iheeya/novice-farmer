@@ -99,6 +99,7 @@ public class UserService {
                 .gender(user.getGender())
                 .age(user.getAge())
                 .address(user.getAddress())
+                .imagepath(user.getImagePath())
                 .pushAllow(user.getPushAllow())
                 .build();
     }
