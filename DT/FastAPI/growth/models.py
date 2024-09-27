@@ -1,5 +1,4 @@
 # Column: 컬럼 설정, Integer: 정수 타입 지정, TypeDecorator: 커스텀 타입 정의 지원
-from typing import Any
 from sqlalchemy import Column, Dialect, Integer, String, Boolean, Date, DateTime, TypeDecorator, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 # MySQL의 BIT 타입 사용을 위해 dialect.mysql에서 가져온다.
