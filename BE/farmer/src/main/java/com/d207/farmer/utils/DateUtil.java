@@ -32,6 +32,7 @@ public class DateUtil {
     }
 
     public int degreeDayToRatio(int degreeDay, int maxDegreeDay) {
+        if(degreeDay >= maxDegreeDay) return 100;
         return (int) ((double) degreeDay / maxDegreeDay * 100);
     }
 
