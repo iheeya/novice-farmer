@@ -212,6 +212,8 @@ public class StartupApplicationListener {
         Farm farm = farmRepository.findById(1L).orElseThrow();
         farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, false, LocalDateTime.now().plusDays(1), null));
         farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, false, LocalDateTime.now().plusDays(6), null));
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, true, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(2)));
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, true, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
     }
 
     private void createCommunityTagSample() {
