@@ -1,37 +1,24 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
 
-interface BottomModalProps {
-  open: boolean;
-  handleClose: () => void; // handleClose 함수의 타입 정의
-}
-
-const Transition = React.forwardRef(function Transition(props: any, ref: React.Ref<any>) {
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const BottomModal: React.FC<BottomModalProps> = ({ open, handleClose }) => {
-  return (
-    <Dialog
-      open={open}
-      TransitionComponent={Transition}
-      keepMounted
-      onClose={handleClose}
-    >
-      <DialogTitle>모달 제목</DialogTitle>
-      <DialogContent>
-        <p>모달 내용이 여기에 표시됩니다.</p>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-const App: React.FC = () => {
-  const [open, setOpen] = useState(false);
+export default function AlertDialogSlide() {
+  const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -42,13 +29,29 @@ const App: React.FC = () => {
   };
 
   return (
-    <div>
+    <React.Fragment>
       <Button variant="outlined" onClick={handleClickOpen}>
-        모달 열기
+        Slide in alert dialog
       </Button>
-      <BottomModal open={open} handleClose={handleClose} />
-    </div>
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"Use Google's location service?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Let Google help apps determine location. This means sending anonymous
+            location data to Google, even when no apps are running.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleClose}>Agree</Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
   );
-};
-
-export default App;
+}

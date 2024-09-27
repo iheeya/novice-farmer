@@ -4,30 +4,5 @@
     background-color: antiquewhite;
 }
 
-/* CommentModal.css */
-.modal-overlay {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* 배경을 어둡게 */
-    display: flex;
-    justify-content: center;
-    align-items: flex-end; /* 아래에서부터 올라오게 설정 */
-  }
-  
-  .modal-content {
-    width: 100%;
-    max-height: 70vh; /* 화면 높이의 70%까지만 */
-    background-color: white;
-    border-radius: 10px 10px 0 0;
-    padding: 16px;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out; /* 부드럽게 애니메이션 */
-    transform: translateY(100%); /* 기본적으로 아래에 숨김 */
-  }
-  
-  .modal-content.open {
-    transform: translateY(0); /* 열리면 위로 올라옴 */
-  }
+
   
