@@ -61,3 +61,22 @@ export const getImageForWeather = (title: string): string => {
     return require('../assets/img/weathers/Cloudy.png');
   }
 };
+
+
+// 할 일 타입에 따른 이미지 경로 매핑 함수
+export const getImageForTodoType = (todoType: string): string => {
+  try {
+    switch (todoType) {
+      case 'WATERING':
+        return require('../assets/icons/Water.png');
+      case 'FERTILIZERING':
+        return require('../assets/icons/Fertilize.png');
+      case 'HARVESTING':
+        return require('../assets/icons/Harvest.png');
+      default:
+        return require('../assets/icons/Cloudy.png');
+    }
+  } catch (error) {
+    return require('../assets/icons/Cloudy.png');
+  }
+};
