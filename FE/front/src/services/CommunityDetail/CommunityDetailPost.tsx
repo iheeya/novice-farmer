@@ -13,7 +13,30 @@ export function IsLikePost(Id:number){
 }
 
 
+interface CommentPost {
+    commentContent: string
+}
+
+export function CommentPost(Id:number, payload: CommentPost){ 
+    return api
+        .post(`community/${Id}/all/comment`, payload)
+        .then((response)=>{
+            return Promise.resolve()
+        })
+        .catch((e) => {
+            return Promise.reject(e)
+        })
+}
 
 
-
+export function ContentDelete(Id:number){
+    return api
+        .delete(`/community/${Id}`)
+        .then((response) => {
+            return Promise.resolve()
+        })
+        .catch((e) => {
+            return Promise.reject(e)
+        })
+}
 
