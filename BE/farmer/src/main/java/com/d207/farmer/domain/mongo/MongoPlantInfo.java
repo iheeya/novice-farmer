@@ -1,4 +1,4 @@
-package com.d207.farmer.dto.mongo.plant;
+package com.d207.farmer.domain.mongo;
 
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -12,18 +12,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "plant")
-public class MongoPlantInfoDTO {
+public class MongoPlantInfo {
     @Id
     private String id;
 
     private String name;
 
-    private PlantInfoDTO info;
+    private PlantInfoInMongo info;
 
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PlantInfoDTO {
+    public static class PlantInfoInMongo {
         private String recommendSeedSeason;
         private List<String> farmMethod;
         private List<String> acceptFert;

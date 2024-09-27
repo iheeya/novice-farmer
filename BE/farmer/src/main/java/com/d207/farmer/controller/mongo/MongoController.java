@@ -1,6 +1,6 @@
 package com.d207.farmer.controller.mongo;
 
-import com.d207.farmer.dto.mongo.plant.MongoPlantInfoDTO;
+import com.d207.farmer.domain.mongo.MongoPlantInfo;
 import com.d207.farmer.service.mongo.MongoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class MongoController {
     private final MongoService mongoService;
 
     @GetMapping("/plant")
-    public ResponseEntity<List<MongoPlantInfoDTO>> getPlantInfoByMongo() {
+    public ResponseEntity<List<MongoPlantInfo>> getPlantInfoByMongo() {
         log.info("[MongoController] Received getPlantInfoByMongo request");
         return ResponseEntity.ok().body(mongoService.getPlantInfo());
     }
