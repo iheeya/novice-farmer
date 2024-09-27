@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import  '../../styles/CommunityDetail/CommunityDetailBody.css'
 import { useParams } from 'react-router-dom';
 import { communityDetail } from '../../services/CommunityDetail/CommuniyDetailGet';
@@ -42,8 +42,7 @@ function CommunityDetailBody(){
   const [detailData, setDetailData] = useState<any>(null);
   const [isHeart, setIsHeart] = useState<Boolean>(detailData?.checkIPushHeart)
   const [isHeartCount, setIsHeartCount] = useState<number>(detailData?.communityHeartcount)
-  const [commentText, setCommentText] = useState<string>(''); 
-
+  const commentInputRef = useRef<HTMLInputElement>(null); 
 
   const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -123,20 +122,21 @@ const handleHeartClick = () => {
 };
 
  
-const handleCommentPost = async() => {
+const handleCommentPost = async () => {
+  const commentContent = commentInputRef.current?.value; // ref를 통해 입력값 가져오기
+  if (!commentContent) return; // 빈 입력값이면 아무 작업도 하지 않음
 
   const payload = {
-      "commentContent": commentText
+    "commentContent": commentContent,
   };
 
   try {
-    const response = await CommentPost(Id, payload)
-    setCommentText(''); // 댓글 작성 후 입력창 비우기
-  } catch (e){
-    console.log(e)
-    
+    const response = await CommentPost(Id, payload);
+    commentInputRef.current.value = ''; // 댓글 작성 후 입력창 비우기
+  } catch (e) {
+    console.log(e);
   }
-}
+};
 
 
 
@@ -211,12 +211,11 @@ const handleCommentPost = async() => {
                     </Avatar>
                           
                     <TextField
+                      inputRef={commentInputRef} // ref 연결
                       sx={{paddingLeft: '0.2rem', paddingY: '0.5rem'}}
                       placeholder="댓글을 입력해주세요."
                       fullWidth
                       variant='outlined'
-                      // value={commentText} // 상태와 연결
-                      // onChange={(e) => setCommentText(e.target.value)} // 입력값 업데이트
                       InputProps={{
                         endAdornment : (
                           <InputAdornment position='end'>
