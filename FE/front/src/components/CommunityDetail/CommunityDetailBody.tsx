@@ -3,6 +3,7 @@ import  '../../styles/CommunityDetail/CommunityDetailBody.css'
 import { useParams } from 'react-router-dom';
 import { communityDetail } from '../../services/CommunityDetail/CommuniyDetailGet';
 import { IsLikePost } from '../../services/CommunityDetail/CommunityDetailPost';
+import { CommentPost } from '../../services/CommunityDetail/CommunityDetailPost';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -13,6 +14,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Avatar from '@mui/material/Avatar';
 import empty from '../../assets/img/community/empty.png'
+import sprout from '../../assets/img/community/sprout.png'
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -22,7 +24,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
-// import ModalTest from './ModalTest'
+import TextField  from '@mui/material/TextField';
+import InputAdornment  from '@mui/material/InputAdornment';
+import { Input } from '@mui/material';
 
 
 // DetailData 타입 정의
@@ -38,19 +42,8 @@ function CommunityDetailBody(){
   const [detailData, setDetailData] = useState<any>(null);
   const [isHeart, setIsHeart] = useState<Boolean>(detailData?.checkIPushHeart)
   const [isHeartCount, setIsHeartCount] = useState<number>(detailData?.communityHeartcount)
-  // const [isComment, setIsComment] = useState(false)
-  // const [isCommentOpen, setIsCommentOpen] = useState(false); // 모달 상태 관리
+  const [commentText, setCommentText] = useState<string>(''); 
 
-
-
-  // // 댓글 아이콘 클릭 시 모달 열기
-  // const handleCommentClick = () => {
-  //   setIsCommentOpen(true); // 댓글 아이콘 클릭 시 모달 열림
-  // };
-
-  // const handleCommentClose = () => {
-  //   setIsCommentOpen(false); // 모달 닫기
-  // };
 
   const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -72,10 +65,6 @@ function CommunityDetailBody(){
     setOpen(false);
     window.location.reload(); // 페이지 새로 고침
   };
-
-
-
-
 
 
   // 케로셀 세팅
@@ -132,6 +121,23 @@ const handleHeartClick = () => {
 
   postLike();
 };
+
+ 
+const handleCommentPost = async() => {
+
+  const payload = {
+      "commentContent": commentText
+  };
+
+  try {
+    const response = await CommentPost(Id, payload)
+    setCommentText(''); // 댓글 작성 후 입력창 비우기
+  } catch (e){
+    console.log(e)
+    
+  }
+}
+
 
 
 
@@ -197,11 +203,34 @@ const handleHeartClick = () => {
                       Let Google help apps determine location. This means sending anonymous
                       location data to Google, even when no apps are running.
                     </DialogContentText>
+                   
+                    {/* 댓글 입력 창 옆 프로필 본인 프로필 사진으로 바꾸기 */}
+                    <div className='comment-input'>
+                    <Avatar sx={{ bgcolor: "#D2EABD", marginRight: '0.5rem' }}> {/* 간격 조정 */}
+                      <img src={sprout} alt="Sprout" className='avatar-img' />
+                    </Avatar>
+                          
+                    <TextField
+                      sx={{paddingLeft: '0.2rem', paddingY: '0.5rem'}}
+                      placeholder="댓글을 입력해주세요."
+                      fullWidth
+                      variant='outlined'
+                      // value={commentText} // 상태와 연결
+                      // onChange={(e) => setCommentText(e.target.value)} // 입력값 업데이트
+                      InputProps={{
+                        endAdornment : (
+                          <InputAdornment position='end'>
+                            <Button type="submit" sx={{fontWeight:'bold', color:'#5B8E55'}} onClick={handleCommentPost}>작성</Button>
+                          </InputAdornment>
+                        )
+                      }} 
+                      />
+                      </div>
                   </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>
+                  {/* <DialogActions>
+                    <Button onClick={handleClose}>Disagree</Button>C
                     <Button onClick={handleClose}>Agree</Button>
-                  </DialogActions>
+                  </DialogActions> */}
                 </Dialog>
               </React.Fragment>
               </div>

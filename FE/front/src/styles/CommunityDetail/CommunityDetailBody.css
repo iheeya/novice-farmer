@@ -76,7 +76,17 @@
   width: 100%;
 }
 
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* 이미지 비율을 유지하면서 Avatar에 맞춤 */
+  }
 
+
+.comment-input{
+    display: flex;
+    align-items: center;
+  }
 
 
 

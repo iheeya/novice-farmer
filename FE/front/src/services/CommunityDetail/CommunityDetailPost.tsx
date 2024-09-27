@@ -13,9 +13,13 @@ export function IsLikePost(Id:number){
 }
 
 
-export function CommentPost(Id:number){
+interface CommentPost {
+    commentContent: string
+}
+
+export function CommentPost(Id:number, payload: CommentPost){ 
     return api
-        .post(`community/${Id}/all/comment`)
+        .post(`community/${Id}/all/comment`, payload)
         .then((response)=>{
             return Promise.resolve()
         })
