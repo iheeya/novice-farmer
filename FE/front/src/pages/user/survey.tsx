@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getSurveyInfo } from "../../services/user/surveyApi";
 import { Button, Box, Typography, Chip, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
+import {handlePlantSelect, handlePlaceSelect, handleSubmit} from "../../services/user/surveyHandler";
 
 interface Plant {
   id: number;

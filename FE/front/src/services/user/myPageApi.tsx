@@ -13,8 +13,8 @@ interface userInfoProps{
 }
 
 interface getMyLikeInfoProps {
-  plant: { id: number, plantname: string, isFavorited: boolean }[];
-  place: { id: number, plantname: string, isFavorited: boolean }[];
+  plant: { id: number, name: string, isFavorite: boolean }[];
+  place: { id: number, name: string, desc:string, isFavorite: boolean }[];
 }
 
 export interface PlantProps {
@@ -25,6 +25,11 @@ export interface PlantProps {
   seedDate: string;
   firstHarvestDate: string;
   imageurl: string | null; 
+}
+
+interface postMyLikeProps {
+  plant: { id: number }[];
+  place: { id: number }[];
 }
 
 export function getSurveyInfo(): Promise<any> {
@@ -65,6 +70,17 @@ export function getMyHistory(): Promise<PlantProps[]> {
 export function getMyLike():Promise<getMyLikeInfoProps>{
   return api
     .get("/user/mypage/like")
+    .then((response) => {
+      return Promise.resolve(response.data);
+    })
+    .catch((error) => {
+      return Promise.reject(error);
+    });
+}
+
+export function postMyLike({ plant, place }: postMyLikeProps):Promise<any>{
+  return api
+    .post("/user/mypage/like",{ plant, place })
     .then((response) => {
       return Promise.resolve(response.data);
     })

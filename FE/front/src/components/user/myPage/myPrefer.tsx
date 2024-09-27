@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react";
-import { getMyLike } from "../../../services/user/myPageApi";
+import { getMyLike, postMyLike } from "../../../services/user/myPageApi";
 import { Box, Chip, Typography, Button } from "@mui/material";
-import { handlePlantSelect, handlePlaceSelect } from "../../../services/user/myPageHandler";
-
+import { handlePlantSelect, handlePlaceSelect } from "../../../services/user/surveyHandler";
+import { useNavigate } from "react-router-dom";
 interface Plant {
-    id: number;
-    name: string;
-    growthDay: number;
-    isOn: boolean;
-  }
-  
-  interface Place {
-    id: number;
-    name: string;
-    desc: string;
-    isOn: boolean;
-  }
+  id: number;
+  name: string;
+  isFavorite: boolean;
+}
+
+interface Place {
+  id: number;
+  name: string;
+  desc: string;
+  isFavorite: boolean;
+}
 
 export default function MyPrefer() {
   const [plants, setPlants] = useState<Plant[]>([]);
@@ -26,17 +25,29 @@ export default function MyPrefer() {
   useEffect(() => {
     getMyLike()
       .then((res) => {
-        console.log(res);
+        setPlants(res.plant);
+        setPlaces(res.place);
+
+        const initialSelectedPlants = res.plant
+          .filter((plant: Plant) => plant.isFavorite)
+          .map((plant: Plant) => plant.id);
+
+        const initialSelectedPlaces = res.place
+          .filter((place: Place) => place.isFavorite)
+          .map((place: Place) => place.id);
+
+        setSelectedPlants(initialSelectedPlants);
+        setSelectedPlaces(initialSelectedPlaces);
       })
       .catch((err) => {
         console.error(err);
       });
-  });
+  }, []);
   return (
     <Box>
       {/* 제목 */}
-      <Typography variant="h6" sx={{ marginBottom: "2vh", fontSize: "6vw", color: "#67823a", fontWeight: "normal" }}>
-        어떤 작물에 관심이 있으신가요?
+      <Typography variant="h6" sx={{ marginBottom: "2vh", fontSize: "6vw", color: "#67823a", fontWeight: "bold" }}>
+        # 작물
       </Typography>
 
       {/* 작물 선택 부분 */}
@@ -61,8 +72,11 @@ export default function MyPrefer() {
       </Box>
 
       {/* 장소 선택 질문 */}
-      <Typography variant="h6" sx={{ marginTop: "4vh", marginBottom: "2vh", fontSize: "6vw", color: "#67823a" }}>
-        어디서 키우고 싶으신가요?
+      <Typography
+        variant="h6"
+        sx={{ marginTop: "4vh", marginBottom: "2vh", fontSize: "6vw", color: "#67823a", fontWeight: "bold" }}
+      >
+        # 텃밭
       </Typography>
 
       {/* 장소 선택 부분 */}
@@ -102,9 +116,34 @@ export default function MyPrefer() {
             fontSize: "4vw",
             backgroundColor: "#67823a",
           }}
-        //   onClick={() => handleSubmit(selectedPlants, selectedPlaces, navigate)}
+          onClick={() =>
+            postMyLike({
+              plant: selectedPlants.map((id) => ({ id })), // 숫자 배열을 객체 배열로 변환
+              place: selectedPlaces.map((id) => ({ id })), // 숫자 배열을 객체 배열로 변환
+            }).then((res) => {
+              getMyLike()
+                .then((res) => {
+                  setPlants(res.plant);
+                  setPlaces(res.place);
+
+                  const initialSelectedPlants = res.plant
+                    .filter((plant: Plant) => plant.isFavorite)
+                    .map((plant: Plant) => plant.id);
+
+                  const initialSelectedPlaces = res.place
+                    .filter((place: Place) => place.isFavorite)
+                    .map((place: Place) => place.id);
+
+                  setSelectedPlants(initialSelectedPlants);
+                  setSelectedPlaces(initialSelectedPlaces);
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            })
+          }
         >
-          완료
+          수정
         </Button>
       </Box>
     </Box>

@@ -13,7 +13,7 @@ export default function MyPage() {
   return (
     <Box
       sx={{
-        width: "100%", // 화면 전체 너비
+        width: "90%", // 화면 전체 너비
         margin: "auto",
         padding: "2% 0",
         textAlign: "center",
@@ -46,7 +46,7 @@ export default function MyPage() {
       </Tabs>
 
       {/* 탭 내용 */}
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: "90%" }}>
         {value === "one" && <MyInfo />}
         {value === "two" && <MyHistory />}
         {value === "three" && <MyPrefer />}
