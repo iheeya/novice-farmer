@@ -33,6 +33,7 @@ public class MyPlantInfoResponseDTO {
         private String firstHarvestDate;
         private String recentWateringDate;
         private String recentFertilizingDate;
+        private String memo;
     }
 
     @Getter

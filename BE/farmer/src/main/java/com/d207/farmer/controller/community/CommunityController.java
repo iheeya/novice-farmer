@@ -126,7 +126,7 @@ public class CommunityController {
      *  커뮤니티 내가 글쓴거 수정하기 버튼 눌렀을때 가져오기!
      */
     @PostMapping("{id}/all/modify")
-    public ResponseEntity<CommunityOneModifyRequestDTO> communityOneModifyRequest (@RequestHeader("Authorization") String authorization,
+    public ResponseEntity<String> communityOneModifyRequest (@RequestHeader("Authorization") String authorization,
                                                                                    @PathVariable Long id,
                                                                                    @RequestBody CommunityOneModifyRequestDTO communityOneModifyRequestDTO)   {
         Long userId = jwtUtil.getUserId(authorization);
@@ -134,6 +134,11 @@ public class CommunityController {
         return ResponseEntity.ok(communityService.communityOneModifyRequest(userId, id, communityOneModifyRequestDTO));
 
     }
+
+
+    /**
+     *  태그 불러오기 (먼저 내가 선택한 태그 & 인기태그)
+     */
 
 
 

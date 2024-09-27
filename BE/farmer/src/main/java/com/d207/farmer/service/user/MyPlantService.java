@@ -212,7 +212,7 @@ public class MyPlantService {
                 farm.getPlant().getName(), farm.getMyPlantName(), imagePath, dateUtil.timeStampToYmd(farm.getSeedDate()),
                 growthStep, dateUtil.degreeDayToRatio(farm.getDegreeDay(), farm.getPlant().getDegreeDay()), thresholdDTO,
                 farm.getIsFirstHarvest() ? dateUtil.timeStampToYmd(farm.getFirstHarvestDate()) : "",
-                recentWateringDate, recentFertilizingDate);
+                recentWateringDate, recentFertilizingDate, farm.getMemo());
 
         // TODO MVP용 degreeDay update -> mvp 끝나면 지워야함
         farm.updateDegreeDay(farm.getDegreeDay() + 90);
