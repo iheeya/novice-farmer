@@ -148,10 +148,12 @@ public class MyPlantService {
 
         // 작물 growthStep 계산
         int growthStep = 1;
+        int maxDegreeDay = farm.getPlant().getDegreeDay();
         for(PlantThreshold pt : farm.getPlant().getPlantThresholds()) {
             if(farm.getDegreeDay() < pt.getDegreeDay()) break;
             growthStep++;
         }
+        if(farm.getDegreeDay() == maxDegreeDay) growthStep++;
 
         // 일러스트 이미지 경로
         String imagePath = "";
@@ -161,19 +163,6 @@ public class MyPlantService {
                 break;
             }
         }
-
-        MyPlantInfoResponseDTO.ThresholdDTO thresholdDTO = new MyPlantInfoResponseDTO.ThresholdDTO(
-                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(0).getDegreeDay(), farm.getPlant().getDegreeDay()),
-                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(1).getDegreeDay(), farm.getPlant().getDegreeDay()),
-                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(2).getDegreeDay(), farm.getPlant().getDegreeDay())
-                );
-
-        MyPlantInfoResponseDTO.PlantInfoDTO plantInfo = new MyPlantInfoResponseDTO.PlantInfoDTO(
-                farm.getUserPlace().getPlace().getName(), farm.getUserPlace().getId(), farm.getUserPlace().getName(),
-                farm.getPlant().getName(), farm.getMyPlantName(), imagePath, dateUtil.timeStampToYmd(farm.getSeedDate()),
-                growthStep, dateUtil.degreeDayToRatio(farm.getDegreeDay(), farm.getPlant().getDegreeDay()), thresholdDTO
-
-        );
 
         List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalse(myPlantId);
         // remain day 0보다 아래면 안넣기
@@ -190,9 +179,44 @@ public class MyPlantService {
                     ft.getTodoType(), remainDay));
         }
 
+        List<PlantThreshold> plantThresholds = farm.getPlant().getPlantThresholds();
+        MyPlantInfoResponseDTO.ThresholdDTO thresholdDTO = new MyPlantInfoResponseDTO.ThresholdDTO(
+                plantThresholds.size() + 1,
+                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(0).getDegreeDay(), farm.getPlant().getDegreeDay()),
+                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(1).getDegreeDay(), farm.getPlant().getDegreeDay()),
+                plantThresholds.size() == 3 ?
+                        dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(2).getDegreeDay(), farm.getPlant().getDegreeDay()) : null);
+
+        List<FarmTodo> farmTodosIsCompleted = farmTodoRepository.findByFarmIdAndIsCompletedTrue(myPlantId, TodoType.WATERING, TodoType.FERTILIZERING);
+
+        // To Do의 최근 물주기 날짜구하기
+        String recentWateringDate = "";
+        for (FarmTodo ft : farmTodosIsCompleted) {
+            if(ft.getTodoType().equals(TodoType.WATERING)) {
+                recentWateringDate = dateUtil.timeStampToYmd(ft.getTodoDate());
+                break;
+            }
+        }
+
+        // To Do의 최근 비료주기 날짜구하기
+        String recentFertilizingDate = "";
+        for (FarmTodo ft : farmTodosIsCompleted) {
+            if(ft.getTodoType().equals(TodoType.FERTILIZERING)) {
+                recentFertilizingDate = dateUtil.timeStampToYmd(ft.getTodoDate());
+                break;
+            }
+        }
+
+        MyPlantInfoResponseDTO.PlantInfoDTO plantInfo = new MyPlantInfoResponseDTO.PlantInfoDTO(
+                farm.getUserPlace().getPlace().getName(), farm.getUserPlace().getId(), farm.getUserPlace().getName(),
+                farm.getPlant().getName(), farm.getMyPlantName(), imagePath, dateUtil.timeStampToYmd(farm.getSeedDate()),
+                growthStep, dateUtil.degreeDayToRatio(farm.getDegreeDay(), farm.getPlant().getDegreeDay()), thresholdDTO,
+                farm.getIsFirstHarvest() ? dateUtil.timeStampToYmd(farm.getFirstHarvestDate()) : "",
+                recentWateringDate, recentFertilizingDate);
+
         // TODO MVP용 degreeDay update -> mvp 끝나면 지워야함
         farm.updateDegreeDay(farm.getDegreeDay() + 90);
-        if(farm.getDegreeDay() > 1980) farm.updateDegreeDay(1980);
+        if(farm.getDegreeDay() > 1960) farm.updateDegreeDay(1960);
         /////////////////////////////////////////////////
 
         return new MyPlantInfoResponseDTO(true, farm.getIsFirstHarvest(), plantInfo, todoInfoDTOs);

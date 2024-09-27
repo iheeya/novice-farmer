@@ -20,5 +20,6 @@ public class UserInfoResponseDTO {
     private Gender gender;
     private Integer age;
     private String address;
+    private String imagepath;
     private Boolean pushAllow;
 }
