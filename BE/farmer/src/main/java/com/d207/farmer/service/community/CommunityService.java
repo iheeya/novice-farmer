@@ -146,6 +146,10 @@ public class CommunityService {
 //        Community community = communityRepository.findById(id).orElseThrow();
         Community community = communityRepository.findByIdWithUser(id).orElseThrow();
 
+        if(community.isCheckDelete()){
+            return null;
+        }
+
 
 
 
@@ -264,11 +268,38 @@ public class CommunityService {
     }
 
     @Transactional
-    public CommunityOneModifyRequestDTO communityOneModifyRequest(Long userId, Long id) {
+    public CommunityOneModifyRequestDTO communityOneModifyRequest(Long userId, Long id, CommunityOneModifyRequestDTO communityOneModifyRequestDTO) {
 
         Community community = communityRepository.findByIdWithUser(id).orElseThrow();
 
         boolean checkMyarticle = community.getUser().getId().equals(userId);
+        if(checkMyarticle){
+            // 삭제할 이미지 먼저 삭제처리!
+            List<String> imagePathdtos = communityOneModifyRequestDTO.getCommunityImageSubtractPaths();
+
+            for(String imagePathdto : imagePathdtos){
+                CommunityImage communityImage = communityImageRepository.findByImagePath(imagePathdto);
+
+                // 조회된 객체가 존재하면 삭제합니다.
+                if (communityImage != null) {
+                    communityImageRepository.delete(communityImage);
+                }
+            }
+
+            // 새로 추가한 이미지 추가!
+            imagePathdtos = communityOneModifyRequestDTO.getCommunityImageAddPaths();
+
+            for(String imagePathdto : imagePathdtos){
+                  communityImageRepository.save(new CommunityImage(community, imagePathdto));
+            }
+
+
+            List<String> tagpath = communityOneModifyRequestDTO.getCommunityTagSubtractList();
+            for(String tagpathdto : tagpath){
+//                CommunitySelectedTag communitySelectedTag = communitySelectedTagRespository.findByfsdfsdfsdfsdf
+            }
+
+        }
         return null;
     }
 }
