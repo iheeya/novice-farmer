@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { getMyInfo } from "../../../services/user/myPageApi";
 import { Box, Typography, Button, Avatar, Paper } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 interface UserInfo {
   email: string;
@@ -18,6 +19,7 @@ interface UserInfo {
 
 export default function MyInfo() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const navigate = useNavigate()
 
   // API 호출
   useEffect(() => {
@@ -116,6 +118,9 @@ export default function MyInfo() {
           color: "white",
           padding: "10px 30px",
           borderRadius: "20px",
+        }}
+        onClick={()=>{
+          navigate("/mypage/profile")
         }}
       >
         수정

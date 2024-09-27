@@ -382,11 +382,7 @@ function SignUp() {
             if (numericValue >= 0 && numericValue <= 150) {
               setAge(value);
             }
-          }}
-          inputProps={{
-            min: 0,
-            max: 150,
-          }}
+          }}          
           required
         />
 

@@ -41,15 +41,15 @@ export default function MyHistory() {
           <CardMedia
             component="img"
             height="140"
-            image={plant.imageurl || "/path/to/default_image.jpg"} // 기본 이미지 경로
-            alt={plant.plantmyname || "식물 이미지"}
+            // image={plant.imageurl || "/path/to/default_image.jpg"} // 기본 이미지 경로
+            alt={"식물 이미지"}            
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
               {plant.plantmyname}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {`식물 이름: ${plant.plantname}`}
+              {`종류: ${plant.plantname}`}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {`위치: ${plant.placename}`}

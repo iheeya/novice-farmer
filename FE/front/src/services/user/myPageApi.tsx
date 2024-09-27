@@ -55,6 +55,17 @@ export function getMyInfo(): Promise<userInfoProps> {
     });
 }
 
+export function postMyInfo (userInfo: userInfoProps): Promise<any> {
+  return api
+    .post("/user/mypage", userInfo)
+    .then((response) => {
+      return Promise.resolve(response.data);
+    })
+    .catch((error) => {
+      return Promise.reject(error);
+    });
+}
+
 export function getMyHistory(): Promise<PlantProps[]> {
   return api
     .get("/user/mypage/history")
