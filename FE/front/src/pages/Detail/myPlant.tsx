@@ -3,11 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getImageForPlantGrowthStep } from '../../utils/imageMapping'; // 이미지 매핑 함수
 import styles from '../../styles/Detail/myPlant.module.css'; // CSS 파일 경로
 import startIcon from '../../assets/icons/start.png'; // 시작하기 버튼 아이콘
-import deleteIcon from '../../assets/icons/Delete.png'; // 삭제 아이콘
-import harvestIcon from '../../assets/icons/Harvest.png'; // 첫수확 아이콘
-import endIcon from '../../assets/icons/End.png'; // 종료하기 아이콘
-import waterIcon from '../../assets/icons/Water.png'; // 물주기 아이콘
-import fertilizeIcon from '../../assets/icons/Fertilize.png'; // 비료주기 아이콘
+import Icons from '../../components/Detail/Icons'; // Icons 컴포넌트 임포트
+import TodoList from '../../components/Detail/TodoList';
+import PlantManagementInfo from '../../components/Detail/PlantManageInfo';
+import PestDetection from '../../components/Detail/PestDetection';
 
 // PlantData 타입 정의
 interface PlantData {
@@ -24,10 +23,14 @@ interface PlantData {
     plantGrowthStep: number;
     plantDegreeRatio: number;
     threshold: {
+      totalStep: number;
       step1: number;
       step2: number;
-      step3: number;
+      step3: number | null; // step3 could be null
     };
+    firstHarvestDate: string;
+    recentWateringDate: string;
+    recentFertilizingDate: string;
   };
   todos: {
     todoDate: string;
@@ -55,10 +58,14 @@ const MyPlant = () => {
       plantGrowthStep: 2,
       plantDegreeRatio: 88,
       threshold: {
+        totalStep: 4,
         step1: 10,
         step2: 40,
-        step3: 80,
+        step3: 100,
       },
+      firstHarvestDate: '',
+      recentWateringDate: '',
+      recentFertilizingDate: '',
     },
     todos: [
       { todoDate: '2024-09-26', todoType: 'WATERING', remainDay: 1 },
@@ -80,10 +87,14 @@ const MyPlant = () => {
       plantGrowthStep: 3,
       plantDegreeRatio: 92,
       threshold: {
-        step1: 10,
-        step2: 40,
-        step3: 80,
+        totalStep: 3,
+        step1: 40,
+        step2: 100,
+        step3: null // 마지막 스텝은 항상 100%
       },
+      firstHarvestDate: '2024-09-25',
+      recentWateringDate: '2024-09-25',
+      recentFertilizingDate: '2024-09-25',
     },
     todos: [
       { todoDate: '2024-09-27', todoType: 'WATERING', remainDay: 2 },
@@ -108,42 +119,50 @@ const MyPlant = () => {
     }
   }, [myPlantId]);
 
-  // 삭제 처리
-  const handleDelete = () => {
-    const confirmDelete = window.confirm("정말 작물을 삭제하시겠습니까?");
-    if (confirmDelete) {
-      alert("작물이 삭제되었습니다.");
-      // 실제 삭제 로직 추가
-    }
-  };
+ 
 
-  // 첫수확 처리 함수
-  const handleFirstHarvest = () => {
-    const confirmHarvest = window.confirm(`해당 ${plantData?.plantInfo.myPlantName}을(를) 첫 수확 하시겠습니까?`);
-    if (confirmHarvest && plantData) {
-      setPlantData({
-        ...plantData,
-        isAlreadyFirstHarvest: true,
-      });
-      alert("첫 수확 완료되었습니다.");
-    }
-  };
+const handleSaveNickname = () => {
+  if (tempNickname.length > 12) {
+    setErrorMessage("이름은 12자 이하로 입력해주세요.");
+    return;
+  }
+  if (plantData) {
+    setPlantData({
+      ...plantData,
+      plantInfo: { ...plantData.plantInfo, myPlantName: tempNickname },
+    });
+    setIsEditing(false);
+    setErrorMessage('');
+  }
+};
 
-  // 별명 저장
-  const handleSaveNickname = () => {
-    if (tempNickname.length > 12) {
-      setErrorMessage("이름은 12자 이하로 입력해주세요.");
-      return;
-    }
-    if (plantData) {
-      setPlantData({
-        ...plantData,
-        plantInfo: { ...plantData.plantInfo, myPlantName: tempNickname },
-      });
-      setIsEditing(false);
-      setErrorMessage('');
-    }
-  };
+
+
+const handleDelete = () => {
+  alert(`해당 ${plantData?.plantInfo.myPlantName} 작물을 삭제하였습니다.`);
+  // 삭제 로직 추가
+};
+
+ // 첫수확 확인 함수
+ const confirmHarvest = () => {
+  if (plantData) {
+    setPlantData({
+      ...plantData,
+      isAlreadyFirstHarvest: true, // 첫 수확 완료 후 상태 변경
+    });
+  }
+};
+
+const handleWater = () => {
+  alert(`해당 ${plantData?.plantInfo.myPlantName}에 물을 주었습니다.`);
+  // 물주기 로직 추가
+};
+
+const handleFertilize = () => {
+  alert(`해당 ${plantData?.plantInfo.myPlantName}에 비료를 주었습니다.`);
+  // 비료주기 로직 추가
+};
+
 
   // 로딩 상태 처리
   if (!plantData) return <div>Loading...</div>;
@@ -166,47 +185,44 @@ const MyPlant = () => {
       {/* Plant Image & Name Container */}
       <div className={styles.plantImageContainer}>
         <div className={styles.nameAndIconContainer}>
-            {isEditing ? (
+          {isEditing ? (
             <div>
-                <input
+              <input
                 value={tempNickname}
                 onChange={(e) => {
-                    if (e.target.value.length <= 10) {
+                  if (e.target.value.length <= 10) {
                     setTempNickname(e.target.value);
-                    } else {
+                  } else {
                     alert("작물 이름은 10자 이내로 입력해주세요.");
-                    }
+                  }
                 }}
                 className={styles.nicknameInput}
                 placeholder="작물이름을 입력하세요"
                 // 엔터키를 누르면 저장하도록 처리
                 onKeyDown={(e) => {
-                    if (e.key === "Enter") {
+                  if (e.key === "Enter") {
                     handleSaveNickname();
-                    }
+                  }
                 }}
-                />
+              />
             </div>
-            ) : (
+          ) : (
             <h2 className={styles.plantName}>{plantData.plantInfo.myPlantName}</h2>
-            )}
-            <img
+          )}
+          <img
             src={require(`../../assets/icons/${isEditing ? 'Check.png' : 'Write.png'}`)}
             alt={isEditing ? 'Save' : 'Edit'}
             className={styles.editIcon}
             onClick={isEditing ? handleSaveNickname : () => setIsEditing(true)}
-            />
+          />
         </div>
 
         <img
-            src={getImageForPlantGrowthStep(plantData.plantInfo.plantName, plantData.plantInfo.plantGrowthStep)}
-            alt="Plant Illustration"
-            className={styles.plantImage}
+          src={getImageForPlantGrowthStep(plantData.plantInfo.plantName, plantData.plantInfo.plantGrowthStep)}
+          alt="Plant Illustration"
+          className={styles.plantImage}
         />
-        </div>
-
-
-
+      </div>
 
       {/* 에러 메시지 표시 */}
       {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
@@ -232,37 +248,41 @@ const MyPlant = () => {
             }
           />
           <span>시작하기</span>
-          </div>
+        </div>
       )}
 
+      {/* Icons 컴포넌트 */}
+      <Icons
+        onDelete={handleDelete}
+        onHarvest={confirmHarvest}
+        onWater={handleWater}
+        onFertilize={handleFertilize}
+        placeName={plantData.plantInfo.myPlaceName}
+        plantName={plantData.plantInfo.myPlantName}
+        myPlaceId={plantData.plantInfo.myPlaceId}
+        isAlreadyFirstHarvest={plantData.isAlreadyFirstHarvest} // 첫 수확 여부 전달
+        recentWateringDate={plantData.plantInfo.recentWateringDate}  // 물 준 날짜 전달
+        recentFertilizingDate={plantData.plantInfo.recentFertilizingDate}  // 비료 준 날짜 전달
+        firstHarvestDate={plantData.plantInfo.firstHarvestDate}  // 첫 수확일 전달
+      />
 
-      {/* 네 가지 아이콘 섹션 */}
-      <div className={styles.actionIcons}>
-        <div className={styles.iconContainer} onClick={handleDelete}>
-          <img src={deleteIcon} alt="Delete" className={styles.actionIcon} />
-          <p>삭제</p>
-        </div>
-        {!plantData.isAlreadyFirstHarvest ? (
-          <div className={styles.iconContainer} onClick={handleFirstHarvest}>
-            <img src={harvestIcon} alt="Harvest" className={styles.actionIcon} />
-            <p>첫수확하기</p>
-          </div>
-        ) : (
-          <div className={styles.iconContainer}>
-            <img src={endIcon} alt="End" className={styles.actionIcon} />
-            <p>재배종료하기</p>
-          </div>
-        )}
-        <div className={styles.iconContainer}>
-          <img src={waterIcon} alt="Water" className={styles.actionIcon} />
-          <p>물주기</p>
-        </div>
-        <div className={styles.iconContainer}>
-          <img src={fertilizeIcon} alt="Fertilize" className={styles.actionIcon} />
-          <p>비료주기</p>
-        </div>
+      {/* Todos 컴포넌트 */}
+      <TodoList todos={plantData.todos} />
+
+      <div className={styles.managementAndPestContainer}>
+        {/* 작물 관리 정보 컴포넌트 */}
+        <PlantManagementInfo
+          firstHarvestDate={plantData.plantInfo.firstHarvestDate}
+          recentWateringDate={plantData.plantInfo.recentWateringDate}
+          recentFertilizingDate={plantData.plantInfo.recentFertilizingDate}
+        />
+
+        {/* 병해충 검사 박스 */}
+        <PestDetection plantName={plantData.plantInfo.myPlantName} />
       </div>
+
     </div>
+
   );
 };
 
