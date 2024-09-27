@@ -17,10 +17,10 @@ class BooleanBit(TypeDecorator):
         # Python에서 준 value 값이 True면 1 반환, False면 0 반환.
         return 1 if value else 0
     
-    # # SQLAlchemy가 DB에서 값을 가져올 때 호출된다.
-    # def process_result_value(self, value, dialect):
-    #     # value를 boolean type으로 변환하여 True, False로 반환한다(사실 없어도 상관은 없다.)
-    #     return bool(value)
+    # SQLAlchemy가 DB에서 값을 가져올 때 호출된다.
+    def process_result_value(self, value, dialect):
+        # value를 boolean type으로 변환하여 True, False로 반환한다(사실 없어도 상관은 없으나 schemas에서 문제가 발생하지 않기 위해 사용 권장)
+        return bool(value)
     
 class UserFarm(Base):
     __tablename__ = 'farm'
