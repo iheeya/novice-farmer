@@ -71,10 +71,23 @@
 }
 
 
-.comment-modal-size {
-  height: 100vh; /* 화면 전체 높이 */
-  width: 100%;
-}
+.modal-size .MuiDialog-paper {
+    width: 100%;
+    height: auto; /* 내용에 맞게 조정 */
+    max-height: 60%; /* 최대 높이를 50%로 제한 */
+    position: fixed;
+    bottom: 0; /* 화면의 하단에 고정 */
+    margin: 0;
+    border-radius: 20px 20px 0 0; /* 위쪽 모서리 둥글게 */
+    padding: 1rem;
+  }
+  
+
+  .MuiDialogContent-root {
+    overflow-y: auto; /* 댓글이 많으면 스크롤 가능하게 설정 */
+    max-height: 40vh; /* 모달 내용의 최대 높이 설정 */
+  }
+  
 
 .avatar-img {
     width: 100%;

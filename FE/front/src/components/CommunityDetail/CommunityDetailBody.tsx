@@ -53,6 +53,7 @@ function CommunityDetailBody(){
   const [isHeart, setIsHeart] = useState<Boolean>(detailData?.checkIPushHeart)
   const [isHeartCount, setIsHeartCount] = useState<number>(detailData?.communityHeartcount)
   const commentInputRef = useRef<HTMLInputElement>(null); 
+  const [shouldSlide, setShouldSlide] = useState(true); // 슬라이드 애니메이션 여부
 
   const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -99,19 +100,6 @@ function CommunityDetailBody(){
         }
     };
 
-    const getComment = async ()=>{
-      if(!id){
-        return
-      }
-
-      try{
-        const data = await communityComment(Id);
-        console.log('댓글 데이터',data)
-        setCommentData(data)
-      } catch (e) {
-        console.log(e)
-      }
-    }
 
     getData();
     getComment();
@@ -146,6 +134,19 @@ const handleHeartClick = () => {
   postLike();
 };
 
+const getComment = async ()=>{
+  if(!id){
+    return
+  }
+
+  try{
+    const data = await communityComment(Id);
+    console.log('댓글 데이터',data)
+    setCommentData(data)
+  } catch (e) {
+    console.log(e)
+  }
+}
  
 const handleCommentPost = async () => {
   const commentContent = commentInputRef.current?.value; // ref를 통해 입력값 가져오기
@@ -158,6 +159,10 @@ const handleCommentPost = async () => {
   try {
     const response = await CommentPost(Id, payload);
     commentInputRef.current.value = ''; // 댓글 작성 후 입력창 비우기
+    
+    setShouldSlide(false);
+    await getComment(); 
+
   } catch (e) {
     console.log(e);
   }
@@ -212,15 +217,27 @@ const handleCommentPost = async () => {
 
                 {/* 댓글 아이콘 */}
               <div  className='community-detail-count'>
+              
+              {/* 댓글 모달 */}
               <React.Fragment>
                 <ChatBubbleOutlineIcon onClick={handleClickOpen}/>
                 <div className='count-position'>{detailData?.communityCommentcount}</div>
                 <Dialog
                   open={open}
-                  TransitionComponent={Transition}
+                  TransitionComponent={shouldSlide ?Transition : undefined}
                   keepMounted
                   onClose={handleClose}
+                  className='modal-size'
                   aria-describedby="alert-dialog-slide-description"
+                  PaperProps={{
+                    style: {
+                      position: 'fixed',
+                      bottom: 0,
+                      margin: 0,
+                      width: '93%',
+                      maxWidth: '100%',
+                    },
+                  }}
                 >
                   <DialogTitle>{"댓글"}</DialogTitle>
                   <DialogContent>
@@ -241,9 +258,13 @@ const handleCommentPost = async () => {
                         ))}
                     </DialogContentText>
                    
-                    {/* 댓글 입력 창 옆 프로필 본인 프로필 사진으로 바꾸기 */}
-                    <div className='comment-input'>
-                    <Avatar sx={{ bgcolor: "#D2EABD", marginRight: '0.5rem' }}> {/* 간격 조정 */}
+                  </DialogContent>
+
+                  {/* 댓글 입력 창 */}
+                  <div className='comment-input'>
+                  <DialogActions>
+                       {/* 댓글 입력 창 옆 프로필 본인 프로필 사진으로 바꾸기 */}
+                    <Avatar sx={{ bgcolor: "#D2EABD"}}> {/* 간격 조정 */}
                       <img src={sprout} alt="Sprout" className='avatar-img' />
                     </Avatar>
                           
@@ -256,17 +277,14 @@ const handleCommentPost = async () => {
                       InputProps={{
                         endAdornment : (
                           <InputAdornment position='end'>
-                            <Button type="submit" sx={{fontWeight:'bold', color:'#5B8E55'}} onClick={handleCommentPost}>작성</Button>
+                            <Button sx={{fontWeight:'bold', color:'#5B8E55'}} onClick={handleCommentPost}>작성</Button>
                           </InputAdornment>
                         )
                       }} 
                       />
-                      </div>
-                  </DialogContent>
-                  {/* <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>C
-                    <Button onClick={handleClose}>Agree</Button>
-                  </DialogActions> */}
+                    
+                  </DialogActions>
+                  </div>
                 </Dialog>
               </React.Fragment>
               </div>
