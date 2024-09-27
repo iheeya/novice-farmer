@@ -181,7 +181,7 @@ public class MyPlantService {
 
         List<PlantThreshold> plantThresholds = farm.getPlant().getPlantThresholds();
         MyPlantInfoResponseDTO.ThresholdDTO thresholdDTO = new MyPlantInfoResponseDTO.ThresholdDTO(
-                plantThresholds.size(),
+                plantThresholds.size() + 1,
                 dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(0).getDegreeDay(), farm.getPlant().getDegreeDay()),
                 dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(1).getDegreeDay(), farm.getPlant().getDegreeDay()),
                 plantThresholds.size() == 3 ?
