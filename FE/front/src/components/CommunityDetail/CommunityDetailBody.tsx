@@ -13,8 +13,17 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Avatar from '@mui/material/Avatar';
 import empty from '../../assets/img/community/empty.png'
-import CommunityComment from './CommunityComment';
-import ModalTest from './ModalTest'
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
+// import ModalTest from './ModalTest'
+
 
 // DetailData 타입 정의
 interface DetailData {
@@ -30,18 +39,40 @@ function CommunityDetailBody(){
   const [isHeart, setIsHeart] = useState<Boolean>(detailData?.checkIPushHeart)
   const [isHeartCount, setIsHeartCount] = useState<number>(detailData?.communityHeartcount)
   // const [isComment, setIsComment] = useState(false)
-  const [isCommentOpen, setIsCommentOpen] = useState(false); // 모달 상태 관리
+  // const [isCommentOpen, setIsCommentOpen] = useState(false); // 모달 상태 관리
 
 
 
-  // 댓글 아이콘 클릭 시 모달 열기
-  const handleCommentClick = () => {
-    setIsCommentOpen(true); // 댓글 아이콘 클릭 시 모달 열림
+  // // 댓글 아이콘 클릭 시 모달 열기
+  // const handleCommentClick = () => {
+  //   setIsCommentOpen(true); // 댓글 아이콘 클릭 시 모달 열림
+  // };
+
+  // const handleCommentClose = () => {
+  //   setIsCommentOpen(false); // 모달 닫기
+  // };
+
+  const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & {
+      children: React.ReactElement<any, any>;
+    },
+    ref: React.Ref<unknown>,
+  ) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+  
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
-  const handleCommentClose = () => {
-    setIsCommentOpen(false); // 모달 닫기
+  const handleClose = () => {
+    setOpen(false);
+    window.location.reload(); // 페이지 새로 고침
   };
+
 
 
 
@@ -117,6 +148,7 @@ const handleHeartClick = () => {
             </div>
 
             <div className='community-detail-body-body'>
+              {/* 이미지 케로셀 */}
             {detailData?.communityImagePath && detailData.communityImagePath.length > 0 ? (
                  <Slider {...settings} className='carousel'>
                  {detailData?.communityImagePath.map((article:string, index:number) => (
@@ -128,6 +160,7 @@ const handleHeartClick = () => {
               )}
             </div>
 
+              {/* 커뮤니티 게시글 내용 */}
             <div className='community-detail-content'>
               <div className='community-detail-title'>{detailData?.communityTitle}</div>
               <div>{detailData?.communityContent}</div>
@@ -140,27 +173,46 @@ const handleHeartClick = () => {
 
 
             <div className='community-detail-body-footer'>
+              {/* 좋아요 아이콘 */}
               <div className='community-detail-count' onClick={handleHeartClick}>
                 {isHeart? <FavoriteIcon/>:<FavoriteBorderIcon/>}
                 <div className='count-position'>{isHeartCount}</div>
               </div>
 
+                {/* 댓글 아이콘 */}
               <div  className='community-detail-count'>
-                <ChatBubbleOutlineIcon onClick={handleCommentClick}/>
+              <React.Fragment>
+                <ChatBubbleOutlineIcon onClick={handleClickOpen}/>
                 <div className='count-position'>{detailData?.communityCommentcount}</div>
+                <Dialog
+                  open={open}
+                  TransitionComponent={Transition}
+                  keepMounted
+                  onClose={handleClose}
+                  aria-describedby="alert-dialog-slide-description"
+                >
+                  <DialogTitle>{"댓글"}</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                      Let Google help apps determine location. This means sending anonymous
+                      location data to Google, even when no apps are running.
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose}>Disagree</Button>
+                    <Button onClick={handleClose}>Agree</Button>
+                  </DialogActions>
+                </Dialog>
+              </React.Fragment>
               </div>
+
+              {/* 삭제 아이콘 */}
               {detailData?.checkMyarticle ? (
                     <DeleteIcon />
                   ) : (
                     <div style={{ width: '24px', height: '24px' }} />  // DeleteIcon과 동일한 크기의 빈 공간
                   )}
             </div>
-
-
-            
-      {/* 댓글 모달 열림 */}
-      <CommunityComment isOpen={isCommentOpen} onClose={handleCommentClose} />
-
         </>
     )
 }
