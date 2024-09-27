@@ -1,0 +1,25 @@
+.input-container{
+    display: flex; /* flex 컨테이너로 설정 */
+    flex-direction: column; /* 세로 방향으로 정렬 */
+    align-items: center; /* 수평 가운데 정렬 */
+    width: 100%; /* 필요에 따라 너비 조정 */
+}
+
+.article-title{
+    margin-top: 10%;
+    width: 90%;
+}
+
+.article-content{
+    margin-top: 5%;
+    width: 90%;
+}
+
+.article-tag{
+    margin-top: 5%;
+    width: 90%;
+}
+
+.write-button{
+    margin-top: 5%;
+}
