@@ -3,13 +3,13 @@
     display: flex;
     margin-top: 5%;
 }
-
+/* 
 .detail-profile-img{
     width: 12%;
     height: 12%;
     border-radius: 50%;
     aspect-ratio: 1/1;
-}
+} */
 
 .detail-body-header-profile{
     margin-left: 5%;
@@ -88,6 +88,22 @@
     align-items: center;
   }
 
+.comment{
+    margin-bottom: 7%;
+}
 
+.comment-item {
+display: flex;
+align-items: center; /* 세로 정렬 */
+}
 
+.comment-item > div {
+display: flex;
+flex-direction: column; /* 닉네임과 날짜를 수직으로 나열 */
+margin-left: 0.5rem; /* 이미지와의 간격 조정 */
+}
 
+.comment-content{
+margin-left: 20%;
+margin-top: 2%;
+}

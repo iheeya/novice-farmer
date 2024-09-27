@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { communityDetail } from '../../services/CommunityDetail/CommuniyDetailGet';
 import { IsLikePost } from '../../services/CommunityDetail/CommunityDetailPost';
 import { CommentPost } from '../../services/CommunityDetail/CommunityDetailPost';
+import { communityComment } from '../../services/CommunityDetail/CommuniyDetailGet';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -35,11 +36,20 @@ interface DetailData {
   // 다른 필드들 추가...
 }
 
+// 댓글 데이터 타입 정의
+interface Comment {
+  nickname: string;
+  imagePath: string;
+  commentContent: string;
+  writeDatestring: string;
+}
+
 function CommunityDetailBody(){
 
   const { id } = useParams<{ id: string }>(); // id를 string으로 추출 (useParams는 기본적으로 string으로 추출)
   const Id = Number(id);
   const [detailData, setDetailData] = useState<any>(null);
+  const [commentData, setCommentData] = useState<Comment[]|null>(null);
   const [isHeart, setIsHeart] = useState<Boolean>(detailData?.checkIPushHeart)
   const [isHeartCount, setIsHeartCount] = useState<number>(detailData?.communityHeartcount)
   const commentInputRef = useRef<HTMLInputElement>(null); 
@@ -89,7 +99,22 @@ function CommunityDetailBody(){
         }
     };
 
+    const getComment = async ()=>{
+      if(!id){
+        return
+      }
+
+      try{
+        const data = await communityComment(Id);
+        console.log('댓글 데이터',data)
+        setCommentData(data)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
     getData();
+    getComment();
 
     console.log('isHeart:', isHeart)
 }, [id]); // id가 변경될 때마다 요청 실행
@@ -145,7 +170,7 @@ const handleCommentPost = async () => {
     return(
         <>
             <div className='community-detail-body-header'>
-                {detailData?.imagePath ? <img src={detailData?.imagePath} className='detail-profile-img'/>: <Avatar sx={{ bgcolor: '#5B8E55'}} className='detail-profile-img'>{ detailData?.nickname.charAt(0)}</Avatar>}
+                {detailData?.imagePath ? <Avatar src={detailData?.imagePath} alt={detailData?.nickname}/>: <Avatar sx={{ bgcolor: '#5B8E55'}}>{ detailData?.nickname.charAt(0)}</Avatar>}
                 <div className='detail-body-header-profile'>
                     <div style={{fontSize: '1.2rem'}}>{detailData?.nickname}</div>
                     <div style={{color: 'gray', fontSize: '0.8rem'}}>{detailData?.year}.{detailData?.month}.{detailData?.day}</div>
@@ -200,8 +225,20 @@ const handleCommentPost = async () => {
                   <DialogTitle>{"댓글"}</DialogTitle>
                   <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                      Let Google help apps determine location. This means sending anonymous
-                      location data to Google, even when no apps are running.
+                      {/* 댓글 목록 로딩 */}
+                      {commentData?.map((comment, index) => (
+                        <div className='comment'>
+                          <div key={index} className="comment-item">
+                            {/* 유저 프로필 이미지 */}
+                            {comment.imagePath ? <Avatar src={comment.imagePath} alt={comment.nickname} sx={{ marginRight: '0.5rem' }} />: <Avatar sx={{ bgcolor: '#5B8E55', marginRight: '0.5rem'}}>{ comment.nickname.charAt(0)}</Avatar>}
+                            <div>
+                              <div style={{ fontWeight: 'bold' }}>{comment.nickname}</div>
+                              <div style={{ color: 'gray', fontSize: '0.8rem' }}>{comment.writeDatestring}</div>
+                            </div>
+                          </div>
+                          <div className='comment-content'>{comment.commentContent}</div>
+                          </div>
+                        ))}
                     </DialogContentText>
                    
                     {/* 댓글 입력 창 옆 프로필 본인 프로필 사진으로 바꾸기 */}
