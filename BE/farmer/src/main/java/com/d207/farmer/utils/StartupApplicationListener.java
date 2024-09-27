@@ -20,10 +20,7 @@ import com.d207.farmer.dto.plant.PlantRegisterRequestDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.UserRegisterRequestDTO;
 import com.d207.farmer.dto.weekend_farm.WeekendFarmRegisterRequestDTO;
-import com.d207.farmer.repository.community.CommunityHeartRepository;
-import com.d207.farmer.repository.community.CommunityRepository;
-import com.d207.farmer.repository.community.CommunitySelectedTagRespository;
-import com.d207.farmer.repository.community.CommunityTagRepository;
+import com.d207.farmer.repository.community.*;
 import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.farm.FarmTodoRepository;
 import com.d207.farmer.repository.mainpage.CommunityFavoriteTagForMainPageRepository;
@@ -87,6 +84,7 @@ public class StartupApplicationListener {
     private final CommunityHeartRepository communityHeartRepository;
     private final CommunitySelectedTagRespository communitySelectedTagRespository;
     private final CommunityFavoriteTagForMainPageRepository communityFavoriteTagRepository;
+    private final CommunityCommentRepository communityCommentRepository;
 
     @EventListener
     @Transactional
@@ -239,29 +237,34 @@ public class StartupApplicationListener {
         Community community1 = communityRepository.save(new Community(user, "토마토는 맛있다1", content));
         communitySelectedTagRespository.save(new CommunitySelectedTag(community1, communityTag));
         communityHeartRepository.save(new CommunityHeart(community1, user));
+        communityCommentRepository.save(new CommunityComment(community1, user, "토마토마토마토마토1"));
 
         Community community2 = communityRepository.save(new Community(user, "토마토는 맛있다2", content));
         communitySelectedTagRespository.save(new CommunitySelectedTag(community2, communityTag));
         for (int i = 0; i < 2; i++) {
             communityHeartRepository.save(new CommunityHeart(community2, user));
         }
+        communityCommentRepository.save(new CommunityComment(community2, user, "토마토마토마토마토2"));
 
         Community community3 = communityRepository.save(new Community(user, "토마토는 맛있다3", content));
         communitySelectedTagRespository.save(new CommunitySelectedTag(community3, communityTag));
         for (int i = 0; i < 3; i++) {
             communityHeartRepository.save(new CommunityHeart(community3, user));
         }
+        communityCommentRepository.save(new CommunityComment(community3, user, "토마토마토마토마토3"));
 
         Community community4 = communityRepository.save(new Community(user, "토마토는 맛있다4", content));
         communitySelectedTagRespository.save(new CommunitySelectedTag(community4, communityTag));
         for (int i = 0; i < 4; i++) {
             communityHeartRepository.save(new CommunityHeart(community4, user));
         }
+        communityCommentRepository.save(new CommunityComment(community4, user, "토마토마토마토마토4"));
 
         Community community5 = communityRepository.save(new Community(user, "토마토는 맛있다5", content));
         communitySelectedTagRespository.save(new CommunitySelectedTag(community5, communityTag));
         for (int i = 0; i < 5; i++) {
             communityHeartRepository.save(new CommunityHeart(community5, user));
         }
+        communityCommentRepository.save(new CommunityComment(community5, user, "토마토마토마토마토5"));
     }
 }
