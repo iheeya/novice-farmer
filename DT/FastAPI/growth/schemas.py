@@ -24,3 +24,4 @@ class Farm(BaseModel):
     # SQLAlchemy의 모델 객체를 Pydantic 스키마로 쉽게 변환할 수 있게 해서 FastAPI가 자동으로 데이터 직렬화를 해준다.    
     class Config:
         from_attributes = True
+        
