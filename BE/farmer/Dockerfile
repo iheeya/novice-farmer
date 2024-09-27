@@ -10,8 +10,11 @@ RUN ls -al
 RUN pwd
 # Gradle 빌드
 RUN rm -rf .gradle
+RUN ls -al
+RUN chmod +x ./gradlew
+RUN ./gradlew clean build
 
-RUN chmod +x ./gradlew && ./gradlew clean build
+
 RUN ls -al ./build/libs/
 RUN cp ./build/libs/farmer-0.0.1-SNAPSHOT.jar ./build/libs/farmer.jar
 
