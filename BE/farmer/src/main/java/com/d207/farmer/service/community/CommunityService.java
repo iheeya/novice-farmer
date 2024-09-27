@@ -30,6 +30,7 @@ public class CommunityService {
     private final CommunityImageRepository communityImageRepository;
     private final CommunityHeartRepository communityHeartRepository;
     private final CommunityCommentRepository communityCommentRepository;
+    private final CommunitySelectedTagRespository communitySelectedTagRepository;
     private final DateUtil dateUtil;
 
     public List<CommunityResponseDTO> getCommunity() {
@@ -268,7 +269,7 @@ public class CommunityService {
     }
 
     @Transactional
-    public CommunityOneModifyRequestDTO communityOneModifyRequest(Long userId, Long id, CommunityOneModifyRequestDTO communityOneModifyRequestDTO) {
+    public String communityOneModifyRequest(Long userId, Long id, CommunityOneModifyRequestDTO communityOneModifyRequestDTO) {
 
         Community community = communityRepository.findByIdWithUser(id).orElseThrow();
 
@@ -295,11 +296,33 @@ public class CommunityService {
 
 
             List<String> tagpath = communityOneModifyRequestDTO.getCommunityTagSubtractList();
-            for(String tagpathdto : tagpath){
-//                CommunitySelectedTag communitySelectedTag = communitySelectedTagRespository.findByfsdfsdfsdfsdf
+            for(String tag : tagpath){
+                // 태그 이름으로 CommunityTag 객체를 조회합니다.
+                CommunityTag communityTag = communityTagRepository.findByTagName(tag);
+                CommunitySelectedTag communitySelectedTag = communitySelectedTagRepository.findByCommunityAndCommunityTag(community, communityTag);
+
+                // 조회된 객체가 존재하면 삭제합니다.
+                if (communitySelectedTag != null) {
+                    communitySelectedTagRespository.delete(communitySelectedTag);
+                }
+            }
+            tagpath = communityOneModifyRequestDTO.getCommunityTagAddList();
+            for(String tag : tagpath){
+                communityTagRepository.save(new CommunityTag(tag));
+
             }
 
+            // CommunityTagRepository에서 태그 목록을 가져오기
+            List<CommunityTag> communityTags = communityTagRepository.findBytagNameIn(tagpath);
+
+            // community_selected_tag 안에 tag 집어넣기!
+            for(CommunityTag communityTag : communityTags){
+                communitySelectedTagRespository.save(new CommunitySelectedTag(community, communityTag));
+            }
+
+            community.setTitle(communityOneModifyRequestDTO.getCommunityTitle() );
+            community.setContent(communityOneModifyRequestDTO.getCommunityContent());
         }
-        return null;
+        return "success Modify Article";
     }
 }
