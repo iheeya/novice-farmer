@@ -11,6 +11,7 @@ import { setLocationData, setPlantData } from '../../store/AddFarm/store';
 import { RootState } from '../../store/AddFarm/store';
 import { motion } from "framer-motion";
 import { CSSTransition } from 'react-transition-group';
+import { gardenFinishPost } from '../../services/AddGarden/AddGardenPost';
 
 interface GardenModalProps {
   placeId: number| null;
@@ -92,12 +93,12 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
           // console.log(data.zonecode)
 
           const newPostcodeData = {
-            sido: data.sido ||null,
-            sigungu: data.sigungu||null,
-            bname1: data.bname1||null,
-            bname2: data.bname2||null,
-            jibun: data.jibunAddress||null,
-            zonecode: data.zonecode||null,
+            sido: data.sido,
+            sigungu: data.sigungu,
+            bname1: data.bname1,
+            bname2: data.bname2,
+            jibun: data.jibunAddress,
+            zonecode: data.zonecode,
           }
 
            // 우편번호 데이터 저장
@@ -118,26 +119,26 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
   
   const handleSubmit = async () => {
     const payload = {
-      palce: {
+      place: {
         placeId: placeId,
         address: {
-          sido: postcodeData?.sido || null,
-          sigungu: postcodeData?.sigungu || null,
-          bname1: postcodeData?.bname1 || null,
-          bname2: postcodeData?.bname2 || null,
-          jibun: postcodeData?.jibun || null,
-          zonecode: postcodeData?.zonecode || null,
+          sido: postcodeData?.sido ||"",
+          sigungu: postcodeData?.sigungu||"",
+          bname1: postcodeData?.bname1||"",
+          bname2: postcodeData?.bname2||"",
+          jibun: postcodeData?.jibun||"",
+          zonecode: postcodeData?.zonecode ||"",
         }
       },
       plant: {
         plantId: plantId,
-        myPlantName: plantName,
-        memo: memo
+        myPlantName: plantName||"",
+        memo: memo || ""
       }
     };
   
     try {
-      const response = await axios.post('/farm', payload);
+      const response = await gardenFinishPost(payload);
       console.log(response.data); // 응답 처리
       onClose(); // 모달 닫기
     } catch (error) {

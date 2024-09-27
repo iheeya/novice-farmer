@@ -1,25 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import styles from '../../styles/Detail/myGarden.module.css'; // 스타일링 파일 경로
+import styles from '../../styles/Detail/myGarden.module.css';
+import FarmDeleteModal from '../../components/Detail/FarmDeleteModal';
+import { getImageForPlantGrowthStep } from '../../utils/imageMapping'
+
+interface Plant {
+  plantId: number;
+  plantName: string;
+  myPlantId: number;
+  myPlantName: string;
+  myPlantGrowthStep: number;
+  todoInfo: string;
+  seedDate: string;
+}
 
 const MyGarden = () => {
-  const { myPlaceId } = useParams(); // URL에서 myPlaceId 가져오기
+  const { myPlaceId } = useParams();
   const navigate = useNavigate();
 
-  // 텃밭 별명을 수정 가능하게 하기 위한 상태
   const [isEditing, setIsEditing] = useState(false);
-  const [nickname, setNickname] = useState(''); // 텃밭 별명 초기값 비워둠
+  const [nickname, setNickname] = useState('');
   const [tempNickname, setTempNickname] = useState('');
   const [weatherInfo, setWeatherInfo] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
 
-  // 더미 데이터 (myPlaceId에 따라 다른 데이터 설정)
   const dummyData1 = {
     placeInfo: {
       placeId: 1,
       placeName: '베란다',
       myPlaceName: '우리집베란다',
       farmCount: 2,
-      weather: '오늘 비가 올 예정입니다'
+      weather: '오늘 비가 올 예정입니다',
     },
     farms: [
       {
@@ -28,9 +40,8 @@ const MyGarden = () => {
         myPlantId: 1,
         myPlantName: '토순이',
         myPlantGrowthStep: 2,
-        imagePath: 'https://i.ibb.co/7KJVPPh/Lettuce3.png',
         todoInfo: '5일 후에 물을 줘야해요',
-        seedDate: '2024-04-01'
+        seedDate: '2024-04-01',
       },
       {
         plantId: 2,
@@ -38,11 +49,10 @@ const MyGarden = () => {
         myPlantId: 2,
         myPlantName: '상춘이',
         myPlantGrowthStep: 3,
-        imagePath: 'https://i.ibb.co/7KJVPPh/Lettuce3.png',
         todoInfo: '5일 후에 비료를 줘야해요',
-        seedDate: '2024-04-02'
-      }
-    ]
+        seedDate: '2024-04-02',
+      },
+    ],
   };
 
   const dummyData2 = {
@@ -51,7 +61,7 @@ const MyGarden = () => {
       placeName: '주말농장',
       myPlaceName: '구미농장',
       farmCount: 3,
-      weather: '맑고 화창한 날씨입니다'
+      weather: '맑고 화창한 날씨입니다',
     },
     farms: [
       {
@@ -60,9 +70,8 @@ const MyGarden = () => {
         myPlantId: 3,
         myPlantName: '작고맵',
         myPlantGrowthStep: 1,
-        imagePath: 'https://i.ibb.co/7KJVPPh/Lettuce3.png',
         todoInfo: '3일 후에 물을 줘야해요',
-        seedDate: '2024-05-01'
+        seedDate: '2024-05-01',
       },
       {
         plantId: 4,
@@ -70,9 +79,8 @@ const MyGarden = () => {
         myPlantId: 4,
         myPlantName: '바질이',
         myPlantGrowthStep: 2,
-        imagePath: 'https://i.ibb.co/7KJVPPh/Lettuce3.png',
         todoInfo: '2일 후에 비료를 줘야해요',
-        seedDate: '2024-06-02'
+        seedDate: '2024-06-02',
       },
       {
         plantId: 5,
@@ -80,56 +88,60 @@ const MyGarden = () => {
         myPlantId: 5,
         myPlantName: '딸기이',
         myPlantGrowthStep: 3,
-        imagePath: 'https://i.ibb.co/7KJVPPh/Lettuce3.png',
         todoInfo: '내일 물을 줘야해요',
-        seedDate: '2024-07-01'
-      }
-    ]
+        seedDate: '2024-07-01',
+      },
+    ],
   };
 
-  // myPlaceId에 따라 더미 데이터 선택
   const dummyData = myPlaceId === '1' ? dummyData1 : dummyData2;
 
-  // 초기 별명 및 날씨 설정
   useEffect(() => {
     setNickname(dummyData.placeInfo.myPlaceName);
     setTempNickname(dummyData.placeInfo.myPlaceName);
     setWeatherInfo(dummyData.placeInfo.weather);
-  }, []);
+  }, [myPlaceId]);
 
-  // 별명 수정 시작
   const handleEditNickname = () => setIsEditing(true);
-
-  // 별명 수정 완료
   const handleSaveNickname = () => {
+    if (tempNickname.trim() === '') {
+      alert('별명을 입력해주세요.');
+      return;
+    }
     setNickname(tempNickname);
     setIsEditing(false);
   };
 
-  // 작물 삭제
-  const handleDeletePlant = (myPlantId: number) => {
-    const confirmDelete = window.confirm('정말로 이 작물을 삭제하시겠습니까?');
-    if (confirmDelete) {
-      console.log(`작물 ID: ${myPlantId} 삭제 완료`);
+  const handleDeletePlantClick = (plant: Plant) => {
+    setSelectedPlant(plant);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedPlant(null);
+  };
+
+  const handleDeletePlant = () => {
+    if (selectedPlant) {
+      console.log(`Deleting plant with ID: ${selectedPlant.myPlantId}`);
+      setIsModalOpen(false);
     }
   };
 
-  // 작물 등록 페이지로 이동
   const handleAddPlantClick = () => {
     navigate(`/myGarden/${myPlaceId}/register/plant`);
   };
 
-  // 뒤로 가기
-  const handleBackClick = () => navigate(-1); // 이전 페이지로 이동
-
-  // 날씨 삭제
-  const handleDeleteWeather = () => {
-    setWeatherInfo('');
-  };
-
-  // 작물 상세 페이지로 이동
+  const handleBackClick = () => navigate(-1);
+  
+  // 작물 클릭 시 작물 상세 페이지로 이동
   const handlePlantClick = (myPlantId: number) => {
     navigate(`/myGarden/${myPlaceId}/${myPlantId}`);
+  };
+
+  const handleDeleteWeather = () => {
+    setWeatherInfo('');
   };
 
   return (
@@ -154,13 +166,12 @@ const MyGarden = () => {
               if (e.target.value.length <= 10) {
                 setTempNickname(e.target.value);
               } else {
-                alert("이름은 10자 이하로 입력해주세요.");
+                alert('이름은 10자 이하로 입력해주세요.');
               }
             }}
             className={styles.nicknameInput}
-            // 엔터 키를 눌렀을 때 저장
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === 'Enter') {
                 handleSaveNickname();
               }
             }}
@@ -195,8 +206,16 @@ const MyGarden = () => {
       {/* Plant List */}
       <div className={styles.plantList}>
         {dummyData.farms.map((farm) => (
-          <div key={farm.myPlantId} className={styles.plantBox} onClick={() => handlePlantClick(farm.myPlantId)}>
-            <img src={farm.imagePath} alt={farm.myPlantName} className={styles.plantImage} />
+          <div
+            key={farm.myPlantId}
+            className={styles.plantBox}
+            onClick={() => handlePlantClick(farm.myPlantId)}  // 클릭 시 상세 페이지로 이동
+          >
+            <img
+              src={getImageForPlantGrowthStep(farm.plantName, farm.myPlantGrowthStep)}  // 이미지 경로 매핑 함수 적용
+              alt={farm.myPlantName}
+              className={styles.plantImage}
+            />
             <div className={styles.plantDetails}>
               <h3>{farm.plantName}</h3>
               <p>{farm.todoInfo}</p>
@@ -207,9 +226,9 @@ const MyGarden = () => {
               alt="Delete"
               className={styles.deletePlantIcon}
               onClick={(e) => {
-                e.stopPropagation();
-                handleDeletePlant(farm.myPlantId);
-              }}
+                e.stopPropagation();  // 클릭 이벤트 전파 방지
+                handleDeletePlantClick(farm);
+              }}  // 삭제 모달 열기
             />
           </div>
         ))}
@@ -222,6 +241,17 @@ const MyGarden = () => {
           <img src={require('../../assets/icons/Plus.png')} alt="Add Plant" className={styles.addPlantIcon} />
         </div>
       </div>
+
+      {/* Farm Delete Modal */}
+      {isModalOpen && selectedPlant && (
+        <FarmDeleteModal
+          placeName={dummyData.placeInfo.myPlaceName}
+          plantName={selectedPlant.myPlantName}
+          onClose={handleModalClose}
+          onDelete={handleDeletePlant}
+          isOpen={isModalOpen}
+        />
+      )}
     </div>
   );
 };

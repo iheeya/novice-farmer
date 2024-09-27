@@ -5,7 +5,11 @@ import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import store from './store/AddFarm/store';
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
+import Modal from 'react-modal';  // react-modal 임포트
+
+// Modal에서 앱 요소를 지정
+Modal.setAppElement('#root');  // 이 부분을 추가하여 접근성 설정
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
