@@ -1,10 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
+import usenavigate, { useNavigate } from 'react-router-dom'
 import  '../../styles/CommunityDetail/CommunityDetailBody.css'
 import { useParams } from 'react-router-dom';
 import { communityDetail } from '../../services/CommunityDetail/CommuniyDetailGet';
 import { IsLikePost } from '../../services/CommunityDetail/CommunityDetailPost';
 import { CommentPost } from '../../services/CommunityDetail/CommunityDetailPost';
 import { communityComment } from '../../services/CommunityDetail/CommuniyDetailGet';
+import { ContentDelete } from '../../services/CommunityDetail/CommunityDetailPost';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -54,6 +56,7 @@ function CommunityDetailBody(){
   const [isHeartCount, setIsHeartCount] = useState<number>(detailData?.communityHeartcount)
   const commentInputRef = useRef<HTMLInputElement>(null); 
   const [shouldSlide, setShouldSlide] = useState(true); // 슬라이드 애니메이션 여부
+  const navigate = useNavigate();
 
   const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -133,6 +136,21 @@ const handleHeartClick = () => {
 
   postLike();
 };
+
+const handleDeleteClick = () => {
+  deleteContent()
+  navigate('/community')
+}
+
+
+const deleteContent = async() => {
+  try{
+    const data = await ContentDelete(Id)
+    console.log('응답 데이터', data)
+  } catch (e) {
+    console.log(e)
+  }
+}
 
 const getComment = async ()=>{
   if(!id){
@@ -291,7 +309,7 @@ const handleCommentPost = async () => {
 
               {/* 삭제 아이콘 */}
               {detailData?.checkMyarticle ? (
-                    <DeleteIcon />
+                    <DeleteIcon  onClick={handleDeleteClick}/>
                   ) : (
                     <div style={{ width: '24px', height: '24px' }} />  // DeleteIcon과 동일한 크기의 빈 공간
                   )}
