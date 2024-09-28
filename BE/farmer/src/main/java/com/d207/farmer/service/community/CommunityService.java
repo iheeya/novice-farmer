@@ -11,12 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,6 +30,7 @@ public class CommunityService {
     private final CommunityImageRepository communityImageRepository;
     private final CommunityHeartRepository communityHeartRepository;
     private final CommunityCommentRepository communityCommentRepository;
+    private final CommunitySelectedTagRespository communitySelectedTagRepository;
     private final DateUtil dateUtil;
 
     public List<CommunityResponseDTO> getCommunity() {
@@ -142,8 +140,18 @@ public class CommunityService {
 
 
     public CommunityOneArticleResponseDTO getOneCommunity(Long userId, Long id) {
-        Community community = communityRepository.findById(id).orElseThrow();
+
         User user = userRepository.findById(userId).orElseThrow();
+
+        // 지연로딩!!!
+//        Community community = communityRepository.findById(id).orElseThrow();
+        Community community = communityRepository.findByIdWithUser(id).orElseThrow();
+
+        if(community.isCheckDelete()){
+            return null;
+        }
+
+
 
 
         String nicknamedto = community.getUser().getNickname();
@@ -232,6 +240,89 @@ public class CommunityService {
     }
 
 
+    public CommunityOneModifyResponseDTO responseCommunityOneInModity(Long userId, Long id) {
+        //User user = userRepository.findById(userId).orElseThrow();
+        // 지연로딩!!!
+//        Community community = communityRepository.findById(id).orElseThrow();
+        Community community = communityRepository.findByIdWithUser(id).orElseThrow();
+
+        boolean checkMyarticle = community.getUser().getId().equals(userId);
+        if(checkMyarticle){
+        List<CommunityImage> communityImagePath =communityImageRepository.findByCommunity(community);
+        List<String> communityImagePathDto = new ArrayList<>();
+        for (CommunityImage communityImage : communityImagePath) {
+            communityImagePathDto.add(communityImage.getImagePath());
+        }
+
+        List<CommunitySelectedTag> communitySelectedTags = communitySelectedTagRespository.findByCommunity(community);
+        List<String> communityTagList = new ArrayList<>();
+
+        for (CommunitySelectedTag communitySelectedTag : communitySelectedTags) {
+            communityTagList.add(communitySelectedTag.getCommunityTag().getTagName());
+        }
 
 
+           return new CommunityOneModifyResponseDTO(community.getTitle(), community.getContent(), communityImagePathDto, communityTagList);
+        }
+
+        return  new CommunityOneModifyResponseDTO();
+    }
+
+    @Transactional
+    public String communityOneModifyRequest(Long userId, Long id, CommunityOneModifyRequestDTO communityOneModifyRequestDTO) {
+
+        Community community = communityRepository.findByIdWithUser(id).orElseThrow();
+
+        boolean checkMyarticle = community.getUser().getId().equals(userId);
+        if(checkMyarticle){
+            // 삭제할 이미지 먼저 삭제처리!
+            List<String> imagePathdtos = communityOneModifyRequestDTO.getCommunityImageSubtractPaths();
+
+            for(String imagePathdto : imagePathdtos){
+                CommunityImage communityImage = communityImageRepository.findByImagePath(imagePathdto);
+
+                // 조회된 객체가 존재하면 삭제합니다.
+                if (communityImage != null) {
+                    communityImageRepository.delete(communityImage);
+                }
+            }
+
+            // 새로 추가한 이미지 추가!
+            imagePathdtos = communityOneModifyRequestDTO.getCommunityImageAddPaths();
+
+            for(String imagePathdto : imagePathdtos){
+                  communityImageRepository.save(new CommunityImage(community, imagePathdto));
+            }
+
+
+            List<String> tagpath = communityOneModifyRequestDTO.getCommunityTagSubtractList();
+            for(String tag : tagpath){
+                // 태그 이름으로 CommunityTag 객체를 조회합니다.
+                CommunityTag communityTag = communityTagRepository.findByTagName(tag);
+                CommunitySelectedTag communitySelectedTag = communitySelectedTagRepository.findByCommunityAndCommunityTag(community, communityTag);
+
+                // 조회된 객체가 존재하면 삭제합니다.
+                if (communitySelectedTag != null) {
+                    communitySelectedTagRespository.delete(communitySelectedTag);
+                }
+            }
+            tagpath = communityOneModifyRequestDTO.getCommunityTagAddList();
+            for(String tag : tagpath){
+                communityTagRepository.save(new CommunityTag(tag));
+
+            }
+
+            // CommunityTagRepository에서 태그 목록을 가져오기
+            List<CommunityTag> communityTags = communityTagRepository.findBytagNameIn(tagpath);
+
+            // community_selected_tag 안에 tag 집어넣기!
+            for(CommunityTag communityTag : communityTags){
+                communitySelectedTagRespository.save(new CommunitySelectedTag(community, communityTag));
+            }
+
+            community.setTitle(communityOneModifyRequestDTO.getCommunityTitle() );
+            community.setContent(communityOneModifyRequestDTO.getCommunityContent());
+        }
+        return "success Modify Article";
+    }
 }

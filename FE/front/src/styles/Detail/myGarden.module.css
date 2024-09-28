@@ -1,0 +1,171 @@
+.gardenContainer {
+  padding: 1.25rem; 
+}
+
+.header {
+  display: flex;
+  align-items: center; 
+  height: 15vw;
+  margin-bottom: 0.5rem; 
+}
+
+.backButton {
+  cursor: pointer;
+  width: 1.875rem; 
+  height: 1.875rem; 
+}
+
+.title {
+  display: flex;
+  margin-left: 15%;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.nickname {
+  font-size: 2rem; 
+  text-align: center;
+}
+
+.nicknameInput {
+  font-size: 2rem; 
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding: 0.3125rem;
+  outline: none;
+  width: 12rem; 
+  text-align: center;
+}
+
+.editIcon {
+  cursor: pointer;
+  margin-left: 0.625rem; 
+  width: 1.5rem; 
+  height: 1.5rem; 
+}
+
+.gardenType {
+  font-size: 1.125rem;
+  margin-top: 0; 
+  margin-bottom: 0.5rem; 
+  text-align: center;
+}
+
+.weatherBox {
+  display: flex;
+  justify-content: space-between; /* 양 끝에 이미지와 아이콘을 배치하고 가운데에 텍스트 */
+  align-items: center;
+  width: 80%; 
+  padding: 0.625rem; 
+  border: 1px solid #5B8E55;
+  border-radius: 0.3125rem; 
+  margin: 0.625rem auto 0;
+  text-align: center;
+}
+
+.weatherImage {
+  width: 2rem; /* 이미지의 크기 조정 */
+  height: 2rem;
+  margin-right: 0.5rem; /* 이미지와 텍스트 사이의 간격 */
+}
+
+.weatherBox p {
+  margin: 0;
+  flex-grow: 1; /* 텍스트가 가운데에 위치할 수 있도록 확장 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+}
+
+.deleteIcon {
+  cursor: pointer;
+  width: 1.25rem; 
+  height: 1.25rem; 
+  margin-left: 0.625rem; 
+}
+
+
+.plantList {
+  margin: 5%;
+}
+
+.plantBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: rgba(235, 236, 210, 0.41);
+  justify-content: space-between;
+  margin-bottom: 0.9375rem;
+  border: 1px dashed #ccc;
+  border-radius: 0.625rem; 
+  border-bottom: 1px solid #ccc;
+  height: 7rem; 
+}
+
+.plantImage {
+  width: 35%; 
+  height: auto; 
+  margin-right: 0.9375rem; 
+}
+
+.plantDetails {
+  text-align: center;
+  flex-grow: 1;
+}
+
+.plantDetails h3 {
+  margin: 0;
+  font-size: 1.6rem; 
+}
+
+.plantDetails p {
+  margin: 0.3125rem 0 0 0; 
+  color: #888;
+}
+
+.seedDate {
+  font-size: 0.75rem; 
+  position: absolute;
+  bottom: 0.3125rem; 
+  right: 0.625rem;
+  text-align: right;
+}
+
+.deletePlantIcon {
+  cursor: pointer;
+  width: 1.25rem; 
+  height: 1.25rem; 
+  position: absolute;
+  top: 0.3125rem; 
+  right: 0.3125rem; 
+}
+
+.addPlantBox {
+  margin: 1.25rem auto; /* 상단 여백 유지, 좌우 중앙 정렬 */
+  width: 80%;
+  padding: 1.25rem; 
+  background-color: rgba(235, 236, 210, 0.41);
+  border: 1px dashed #ccc;
+  border-radius: 0.625rem;
+  text-align: center;
+}
+
+
+.addPlantText {
+  font-size: 1rem; 
+  color: #5B8E55;
+  margin-bottom: 0.625rem; 
+  text-align: center;
+}
+
+.addPlantButtonWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.addPlantIcon {
+  width: 3.5rem; 
+  height: auto; 
+  margin-right: 0.625rem; 
+}

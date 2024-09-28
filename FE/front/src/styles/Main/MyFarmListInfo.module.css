@@ -1,0 +1,103 @@
+.farmListContainer {
+  padding: 1.25rem 1.25rem 0.2rem 1.25rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+
+.farmList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.farmListTitle {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #3d7537;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.farmItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 20vw;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: rgba(235, 236, 210, 0.41);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.farmItem:last-child {
+  margin-bottom: 0; 
+}
+
+
+.farmImage {
+  width: 22vw;  
+  height: 22vw;
+  object-fit: cover; 
+  border-radius: 1vw; 
+}
+
+.farmInfo {
+  text-align: right;
+}
+
+.farmInfo h3 {
+  font-size: 1.3rem;
+  color: #5B8E55;
+}
+
+.farmInfo p {
+  text-align: center;
+  font-size: 1rem;
+  color: #5B8E55;
+}
+
+.noFarmText {
+  text-align: center;
+  color: #5B8E55;
+}
+
+.addFarmContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 1.5rem;
+}
+
+.addFarmText {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #3d7537;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.addFarmSubtitle {
+  font-size: 1rem;
+  font-weight: bold;
+  color: black;
+  margin-bottom: 1rem;
+}
+
+.addButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.addButton img {
+  width: 15vw;  
+  height: 15vw; 
+  margin-bottom: 0;
+}
+

@@ -9,4 +9,7 @@ import java.util.Map;
 
 public interface CommunityTagRepository extends JpaRepository<CommunityTag, Long> {
     List<CommunityTag> findBytagNameIn(List<String> communityTagList);
+
+
+    CommunityTag findByTagName(String tag);
 }

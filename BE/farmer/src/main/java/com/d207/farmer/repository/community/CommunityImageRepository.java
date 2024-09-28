@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CommunityImageRepository extends JpaRepository<CommunityImage, Integer> {
     List<CommunityImage> findByCommunity(Community community);
+
+    CommunityImage findByImagePath(String imagePathdto);
 }

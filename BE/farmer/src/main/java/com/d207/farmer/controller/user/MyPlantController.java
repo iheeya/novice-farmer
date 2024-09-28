@@ -1,6 +1,5 @@
 package com.d207.farmer.controller.user;
 
-import com.d207.farmer.domain.farm.TodoType;
 import com.d207.farmer.dto.common.FastAPIConnectTestResponseDTO;
 import com.d207.farmer.dto.myplant.*;
 import com.d207.farmer.service.user.MyPlantService;
@@ -8,10 +7,8 @@ import com.d207.farmer.utils.FastApiUtil;
 import com.d207.farmer.utils.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.sql.Update;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

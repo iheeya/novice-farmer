@@ -1,0 +1,48 @@
+/* styles/Footer.module.css */
+.footer {
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+  }
+  
+  /* 네비게이션 영역을 5등분 */
+  .nav {
+    display: flex;
+    width: 100%;
+  }
+  
+  .tab {
+    flex: 1; /* 각 탭이 동일한 크기 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    text-decoration: none;
+    color: #333;
+    font-size: 0.9rem;
+  }
+  
+  .tab img {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+  }
+  
+  .footer span {
+    font-size: 0.9rem;
+    color: #333;
+  }
+  
+  /* 푸터 공간 확보 */
+  body {
+    margin: 0;
+    padding-bottom: 60px; /* 푸터 높이만큼 공간 확보 */
+  }
+  

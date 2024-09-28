@@ -1,6 +1,7 @@
 package com.d207.farmer.exception.advice;
 
 import com.d207.farmer.dto.exception.ErrorResponseDTO;
+import com.d207.farmer.exception.FailedAuthorizationUserException;
 import com.d207.farmer.exception.FailedInvalidUserException;
 import com.d207.farmer.exception.plant.FailedRegisterPlantIllustException;
 import jakarta.validation.UnexpectedTypeException;
@@ -51,4 +52,13 @@ public class ExControllerAdvice {
         log.error("[exceptionHandle] ex", e);
         return new ErrorResponseDTO("BAD_REQUEST", e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FailedAuthorizationUserException.class)
+    public ErrorResponseDTO FailedAuthorizationUser(FailedAuthorizationUserException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorResponseDTO("BAD_REQUEST", e.getMessage());
+    }
+
+
 }

@@ -1,0 +1,61 @@
+.beginnerInfoContainer {
+  padding: 1.25rem 1.25rem 0.2rem 1.25rem;
+  background-color: #F8FAF8;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+.beginnerInfoTitle {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #3d7537;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+
+.suggestionText {
+  color: #555;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 0.625rem;
+  text-align: right;
+}
+
+.plantList {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.plantItem {
+  display: flex;
+  align-items: center;
+  height: 10vw;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding: 0.9375rem;
+  background-color: rgba(235, 236, 210, 0.41);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+}
+
+.plantItem:last-child {
+  margin-bottom: 0;
+}
+
+.plantItem p {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #5B8E55;
+  width: 60%;
+}
+
+.plantImage {
+  background-color: rgba(235, 236, 210, 0.41);
+  width: 30%;
+  height: auto;
+  object-fit: cover;
+}
