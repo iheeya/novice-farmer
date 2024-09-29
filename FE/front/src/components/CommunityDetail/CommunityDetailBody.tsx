@@ -30,7 +30,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import TextField  from '@mui/material/TextField';
 import InputAdornment  from '@mui/material/InputAdornment';
 import { Input } from '@mui/material';
-
+import loading from '../../assets/img/loading/loading.png'
 
 // DetailData 타입 정의
 interface DetailData {
@@ -57,6 +57,7 @@ function CommunityDetailBody(){
   const commentInputRef = useRef<HTMLInputElement>(null); 
   const [shouldSlide, setShouldSlide] = useState(true); // 슬라이드 애니메이션 여부
   const navigate = useNavigate();
+  const [hasError, setHasError] = useState(false); // 에러 상태 추가
 
   const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -97,10 +98,15 @@ function CommunityDetailBody(){
     }
         try {
             const data = await communityDetail(Id);
-            console.log(data)
-            setDetailData(data)
+            if (!data){
+              setHasError(true); // 데이터가 없을 경우 에러 상태 설정
+            } else{
+              console.log(data)
+              setDetailData(data)
+            }
         } catch (error) {
             console.log(error)
+            setHasError(true); // 500 에러 처리
         }
     };
 
@@ -188,7 +194,16 @@ const handleCommentPost = async () => {
 };
 
 
+if (hasError) {
+  return <div className="error-instruction">
+  <div> 존재하지 않는 페이지 입니다.</div>
 
+  <img
+      src={loading}
+      className="error-image-size"
+  />
+</div>; // 에러 메시지 출력
+}
 
 
     return(
