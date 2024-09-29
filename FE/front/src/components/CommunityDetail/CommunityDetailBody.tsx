@@ -76,6 +76,7 @@ function CommunityDetailBody(){
 
   const handleClose = () => {
     setOpen(false);
+    setShouldSlide(true)
     window.location.reload(); // 페이지 새로 고침
   };
 
@@ -253,6 +254,7 @@ const handleCommentPost = async () => {
                       bottom: 0,
                       margin: 0,
                       width: '93%',
+                      height: '80%',
                       maxWidth: '100%',
                     },
                   }}
