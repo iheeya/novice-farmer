@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import Main from "./pages/Home/Main";
 import RegisterGarden from "./pages/AddGarden/registerGarden";
