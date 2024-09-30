@@ -327,7 +327,7 @@ public class CommunityService {
         return "success Modify Article";
     }
 
-    public List<?> getCommunityAllTags(Long userId) {
+    public List<communityAllTagsResponseDTO> getCommunityAllTags(Long userId) {
 
         // 사용자 조회
         User user = userRepository.findById(userId).orElseThrow();
@@ -352,5 +352,16 @@ public class CommunityService {
         }
         return communityAllTagsResponseDTOs;
 
+    }
+
+    public List<communityMytagsResponseDTO> getcommunityMyAndPopularTags(Long userId) {
+
+        // 사용자 조회
+        User user = userRepository.findById(userId).orElseThrow();
+
+        // 사용자의 즐겨찾기 태그 조회
+        List<CommunityFavoriteTag> favoriteTags = communityFavoriteTagRepository.findByUser(user);
+
+        return null;
     }
 }
