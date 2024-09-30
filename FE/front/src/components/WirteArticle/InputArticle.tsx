@@ -1,5 +1,5 @@
 import '../../styles/WriteArticle/InputArticle.css'
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -15,33 +15,28 @@ function InputArticle(){
   const [title, setTitle] = useState<string>('')
   const [content, setContent] = useState<string>('')
   const [isTag, setIsTag] = useState<boolean>(false)
+  const [lenError, setLenError] = useState<boolean>(false)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)  // 카메라 input의 참조 생성
 
   // 입력 값 변경 시 호출
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
 
     // 해시태그(#)가 포함되지 않도록 필터링
-    if (!value.includes('#')) {
+    if (!value.includes('#') && value.length <= 7) {
       setInputValue(value);
       setHasError(false)
+      setLenError(false)
       setIsTag(false)
-    } else{
+    } else if(value.length > 7){
+        setLenError(true)
+    } 
+    else{
       setHasError(true)
     }
   };
 
-  // 스페이스바 + 엔터키를 눌렀을 때 태그로 변환
-  // const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (event.key === ' ' || event.key==='Enter') {
-  //     event.preventDefault(); // 스페이스바로 인한 기본 입력 막음
 
-  //     // 입력값이 존재할 때만 태그 추가
-  //     if (inputValue.trim()) {
-  //       setTags([...tags, `#${inputValue.trim()}`]); // 태그에 '#' 추가
-  //       setInputValue(''); // 입력 필드 비우기
-  //     }
-  //   }
-  // };
    // 스페이스바 + 엔터키를 눌렀을 때 태그로 변환
    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === ' ' || event.key === 'Enter') {
@@ -49,7 +44,7 @@ function InputArticle(){
 
       const newTag = `#${inputValue.trim()}`;
       // 입력값이 존재하고 중복되지 않을 때만 태그 추가
-      if (inputValue.trim() && !tags.includes(newTag)) {
+      if (inputValue.trim() && inputValue.length <= 7 && !tags.includes(newTag)) {
         setTags([...tags, newTag]); // 태그에 '#' 추가
         setInputValue(''); // 입력 필드 비우기
       } else if (tags.includes(newTag)) {
@@ -107,6 +102,14 @@ function InputArticle(){
     });
   }
 
+  //카메라 접근
+  const handleCameraClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // 파일 input 클릭
+    }
+  };
+
+
 
 
     return(
@@ -138,12 +141,32 @@ function InputArticle(){
           {/* 카메라, 이미지 접근 */}
           <div className='input-camera'>
             <div className='input-box'>
-              <CameraAltOutlinedIcon sx={{fontSize: '3rem', color: 'gray'}}/>
+              <CameraAltOutlinedIcon sx={{fontSize: '3rem', color: 'gray'}} onClick={handleCameraClick}/>
             </div>
             <div className='input-box'>
               <InsertPhotoOutlinedIcon sx={{fontSize: '3rem', color: 'gray'}}/>
             </div>
           </div>
+        
+
+
+          {/* 숨겨진 input 요소: 카메라 접근을 위한 */}
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            ref={fileInputRef}
+            style={{ display: 'none' }} // 숨김
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              if (file) {
+                // 여기에 파일 처리 로직을 추가하세요.
+                console.log("사진 파일:", file);
+              }
+            }}
+          />
+
+  
 
           {/* tag 출력 */}
           <div style={{ justifyContent:'center', marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: '10px'}}>
@@ -179,6 +202,12 @@ function InputArticle(){
           {isTag && (
                   <Alert className='input-alert' severity="error">
                     이미 존재하는 태그입니다.
+                  </Alert>
+                )}
+
+          {lenError && (
+                  <Alert className='input-alert' severity="error">
+                    태그 길이는 7자를 넘길 수 없습니다.
                   </Alert>
                 )}
                       
