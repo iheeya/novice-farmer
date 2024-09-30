@@ -1,5 +1,8 @@
 package com.d207.farmer.service.user;
 
+import com.d207.farmer.domain.community.CommunityFavoriteTag;
+import com.d207.farmer.domain.community.CommunitySelectedTag;
+import com.d207.farmer.domain.community.CommunityTag;
 import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
@@ -14,6 +17,9 @@ import com.d207.farmer.dto.user.*;
 import com.d207.farmer.dto.user.mypage.UserMypageHistoryResponseDTO;
 import com.d207.farmer.exception.FailedAuthenticateUserException;
 import com.d207.farmer.exception.FailedInvalidUserException;
+import com.d207.farmer.repository.community.CommunityFavoriteTagRepository;
+import com.d207.farmer.repository.community.CommunitySelectedTagRespository;
+import com.d207.farmer.repository.community.CommunityTagRepository;
 import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.plant.PlantIllustRepository;
 import com.d207.farmer.repository.user.*;
@@ -49,6 +55,9 @@ public class UserService {
     private final RecommendPlaceRepository recommendPlaceRepository;
     private final FarmRepository farmRepository;
     private final PlantIllustRepository plantIllustRepository;
+    private final CommunityTagRepository communityTagRepository;
+    private final CommunitySelectedTagRespository communitySelectedTagRespository;
+    private final CommunityFavoriteTagRepository communityFavoriteTagRepository;
 
     @Transactional
     public UserInfoResponseDTO registerUser(UserRegisterRequestDTO request) {
@@ -169,6 +178,15 @@ public class UserService {
                 // 여기는 추천(작물) 요기 추가!!
                 RecommendPlant recommendPlant = new RecommendPlant(user, plantDomain);
                 recommendPlantRepository.save(recommendPlant);
+
+                CommunityTag communityTag = communityTagRepository.findByTagName(plantDomain.getName());
+                communityFavoriteTagRepository.save(new CommunityFavoriteTag(user, communityTag));
+
+
+
+
+
+
             }
 
         }
@@ -189,6 +207,12 @@ public class UserService {
                 // 요기는 추천(장소) 추가!!!!
                 RecommendPlace recommendPlace = new RecommendPlace(user, placeDomain);
                 recommendPlaceRepository.save(recommendPlace);
+
+                CommunityTag communityTag = communityTagRepository.findByTagName(placeDomain.getName());
+                communityFavoriteTagRepository.save(new CommunityFavoriteTag(user, communityTag));
+                log.info("test !!!! = {}",placeDomain.getName());
+
+
             }
 
         }
