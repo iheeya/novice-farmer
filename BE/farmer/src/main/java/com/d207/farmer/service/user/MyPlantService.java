@@ -5,16 +5,19 @@ import com.d207.farmer.domain.farm.FarmTodo;
 import com.d207.farmer.domain.farm.TodoType;
 import com.d207.farmer.domain.plant.PlantGrowthIllust;
 import com.d207.farmer.domain.plant.PlantThreshold;
+import com.d207.farmer.dto.common.FileDirectory;
 import com.d207.farmer.dto.myplant.*;
 import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.farm.FarmTodoRepository;
 import com.d207.farmer.utils.DateUtil;
 import com.d207.farmer.utils.FastApiUtil;
+import com.d207.farmer.utils.FileUtil;
 import com.d207.farmer.utils.UserAuthUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +36,7 @@ public class MyPlantService {
     private final FastApiUtil fastApiUtil;
     private final DateUtil dateUtil;
     private final UserAuthUtil userAuthUtil;
+    private final FileUtil fileUtil;
 
     @Transactional
     public String startGrowPlant(Long userId, StartGrowPlantRequestDTO request) {
@@ -113,25 +117,28 @@ public class MyPlantService {
         return "메모 변경 성공";
     }
 
-    public InspectionPestResponseDTO inspectionPest(Long userId, InspectionPlantRequestDTO request) {
-        InspectionPestResponseByFastApiDTO response = fastApiUtil.getInspectionPest(request.getImagePath());
-        // TODO response에서 병해충 이름 받아서 몽고db 조회 후 반환
+    public InspectionPestResponseDTO inspectionPest(Long userId, MultipartFile request) {
+        // 파일 업로드
+        String fileName = fileUtil.uploadFile(request, FileDirectory.PEST);
+
+        InspectionPestResponseByFastApiDTO response = fastApiUtil.getInspectionPest(fileName);
+
         if(!response.getHasPast()) {
-            InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(false, request.getImagePath());
+            InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(false, fileName);
             InspectionPestResponseDTO.PestInfoDTO pestInfoDTO = new InspectionPestResponseDTO.PestInfoDTO();
             return new InspectionPestResponseDTO(isPestDTO, pestInfoDTO);
         }
-        InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(true, request.getImagePath());
+        InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(true, fileName);
         InspectionPestResponseDTO.PestInfoDTO pestInfoDTO = new InspectionPestResponseDTO.PestInfoDTO(response.getPestInfo().getPestImagePath(),
                 response.getPestInfo().getPestName(), response.getPestInfo().getPestDesc(), response.getPestInfo().getPestCureDesc());
 
         return new InspectionPestResponseDTO(isPestDTO, pestInfoDTO);
     }
 
-    public InspectionGrowthStepResponseDTO inspectionGrowthStep(Long userId, InspectionPlantRequestDTO request) {
-        InspectionGrowthStepResponseByFastApiDTO response = fastApiUtil.getInspectionGrowthStep(request.getImagePath());
-        return null;
-    }
+//    public InspectionGrowthStepResponseDTO inspectionGrowthStep(Long userId, InspectionPlantRequestDTO request) {
+//        InspectionGrowthStepResponseByFastApiDTO response = fastApiUtil.getInspectionGrowthStep(request.getImagePath());
+//        return null;
+//    }
 
 //    @Transactional
 //    public String updateGrowthStepByInspection(Long userId, UpdateDegreeDayRequestDTO request) {
