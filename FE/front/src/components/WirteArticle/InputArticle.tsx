@@ -6,11 +6,14 @@ import Chip from '@mui/material/Chip';
 import Alert from '@mui/material/Alert';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
+import Swal from 'sweetalert2'
 
 function InputArticle(){
   const [inputValue, setInputValue] = useState<string>('');
   const [tags, setTags] = useState<string[]>([]);
   const [hasError, setHasError] = useState<boolean>(false)
+  const [title, setTitle] = useState<string>('')
+  const [content, setContent] = useState<string>('')
 
   // 입력 값 변경 시 호출
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,6 +45,50 @@ function InputArticle(){
     setTags(tags.filter((tag) => tag !== tagToDelete));
   };
 
+
+
+  // 제목 입력 처리
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+  };
+
+  // 내용 입력 처리
+  const handleContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setContent(event.target.value);
+  };
+
+  // 등록 버튼 클릭 시 payload 생성
+  const handleSubmit = () => {
+    const formattedTags = tags.map((tag) => tag.replace('#', ''));  // 태그에서 # 제거
+    const payload = {
+      communityTitle: title,
+      communityContent: content,
+      imagePath: "imagePath",  // 여기에 이미지 경로가 들어가야 함
+      communityTagList: formattedTags
+    };
+
+    setInputValue('');
+    setTags([]);
+    setTitle('');
+    setContent('');
+    setHasError(false); // 에러 상태 초기화
+
+    console.log(payload)
+
+     // SweetAlert 표시
+     Swal.fire({
+      icon: "success",
+      title: "게시글이 등록되었습니다.",
+      showConfirmButton: false,
+      timer: 1500,
+      customClass: {
+        title: 'custom-title' // 사용자 정의 클래스 추가
+      }
+    });
+  }
+
+
+
     return(
          <div className="input-container">
             
@@ -51,6 +98,8 @@ function InputArticle(){
             placeholder="제목을 입력해주세요."
             multiline
             className='article-title'
+            value={title} // 제목 필드에 상태 연결
+            onChange={handleTitleChange}  // 제목 입력값 변화 감지
             sx = {{backgroundColor: "#F8FAF8", marginTop: '10%'}}
             />
 
@@ -60,7 +109,9 @@ function InputArticle(){
             placeholder="나누고 싶은 작물 이야기를 적어보세요."
             multiline
             rows={6}
+            value={content}
             className='article-content'
+            onChange={handleContentChange}
             sx = {{backgroundColor: "#F8FAF8", marginTop: '5%'}}
             />
 
@@ -116,7 +167,9 @@ function InputArticle(){
             padding: "10px 30px",
             borderRadius: "20px",
             marginTop: '5%'
-            }}>
+            }}
+            onClick={handleSubmit}
+            >
             등록
         </Button>
       </div>
