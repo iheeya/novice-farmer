@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -26,13 +27,13 @@ public class MyPlantInfoResponseDTO {
         private String plantName;
         private String myPlantName;
         private String plantImagePath;
-        private String startDate;
+        private LocalDate startDate;
         private int plantGrowthStep;
         private int plantDegreeRatio;
         private ThresholdDTO threshold;
-        private String firstHarvestDate;
-        private String recentWateringDate;
-        private String recentFertilizingDate;
+        private LocalDate firstHarvestDate;
+        private LocalDate recentWateringDate;
+        private LocalDate recentFertilizingDate;
         private String memo;
     }
 
@@ -40,7 +41,7 @@ public class MyPlantInfoResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class TodoInfoDTO {
-        private String todoDate;
+        private LocalDate todoDate;
         private TodoType todoType;
         private int remainDay;
     }
