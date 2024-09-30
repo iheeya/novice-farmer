@@ -16,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,18 +166,15 @@ public class MyPlantService {
             }
         }
 
-        List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalse(myPlantId);
+        List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalse(myPlantId, TodoType.WATERING, TodoType.FERTILIZERING);
         // remain day 0보다 아래면 안넣기
         List<MyPlantInfoResponseDTO.TodoInfoDTO> todoInfoDTOs = new ArrayList<>();
         int todoCnt = 0;
         for (FarmTodo ft : farmTodos) {
             if(++todoCnt > 2) break;
             if(ft.getTodoDate().isBefore(LocalDateTime.now())) continue;
-            int remainDay = ft.getTodoDate().getDayOfYear() - LocalDateTime.now().getDayOfYear();
-            if(remainDay < 0) { // 내년 넘어갈 때
-                remainDay = ft.getTodoDate().getDayOfYear() + 365 - LocalDateTime.now().getDayOfYear();
-            }
-            todoInfoDTOs.add(new MyPlantInfoResponseDTO.TodoInfoDTO(dateUtil.timeStampToYmd(ft.getTodoDate()),
+            int remainDay = Period.between(LocalDate.now(), ft.getTodoDate().toLocalDate()).getDays();
+            todoInfoDTOs.add(new MyPlantInfoResponseDTO.TodoInfoDTO(ft.getTodoDate().toLocalDate(),
                     ft.getTodoType(), remainDay));
         }
 
@@ -190,28 +189,28 @@ public class MyPlantService {
         List<FarmTodo> farmTodosIsCompleted = farmTodoRepository.findByFarmIdAndIsCompletedTrue(myPlantId, TodoType.WATERING, TodoType.FERTILIZERING);
 
         // To Do의 최근 물주기 날짜구하기
-        String recentWateringDate = "";
+        LocalDate recentWateringDate = null;
         for (FarmTodo ft : farmTodosIsCompleted) {
             if(ft.getTodoType().equals(TodoType.WATERING)) {
-                recentWateringDate = dateUtil.timeStampToYmd(ft.getTodoDate());
+                recentWateringDate = ft.getTodoDate().toLocalDate();
                 break;
             }
         }
 
         // To Do의 최근 비료주기 날짜구하기
-        String recentFertilizingDate = "";
+        LocalDate recentFertilizingDate = null;
         for (FarmTodo ft : farmTodosIsCompleted) {
             if(ft.getTodoType().equals(TodoType.FERTILIZERING)) {
-                recentFertilizingDate = dateUtil.timeStampToYmd(ft.getTodoDate());
+                recentFertilizingDate = ft.getTodoDate().toLocalDate();
                 break;
             }
         }
 
         MyPlantInfoResponseDTO.PlantInfoDTO plantInfo = new MyPlantInfoResponseDTO.PlantInfoDTO(
                 farm.getUserPlace().getPlace().getName(), farm.getUserPlace().getId(), farm.getUserPlace().getName(),
-                farm.getPlant().getName(), farm.getMyPlantName(), imagePath, dateUtil.timeStampToYmd(farm.getSeedDate()),
+                farm.getPlant().getName(), farm.getMyPlantName(), imagePath, farm.getSeedDate().toLocalDate(),
                 growthStep, dateUtil.degreeDayToRatio(farm.getDegreeDay(), farm.getPlant().getDegreeDay()), thresholdDTO,
-                farm.getIsFirstHarvest() ? dateUtil.timeStampToYmd(farm.getFirstHarvestDate()) : "",
+                farm.getIsFirstHarvest() ? farm.getFirstHarvestDate().toLocalDate() : null,
                 recentWateringDate, recentFertilizingDate, farm.getMemo());
 
         // TODO MVP용 degreeDay update -> mvp 끝나면 지워야함

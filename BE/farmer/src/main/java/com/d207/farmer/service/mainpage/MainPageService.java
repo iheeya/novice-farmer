@@ -117,7 +117,7 @@ public class MainPageService {
         String temperature = "25도";
 
         return new TodoInfoComponentDTO(true, farmTodo.getTodoType(), title, farmTodo.getFarm().getMyPlantName(),
-                farmTodo.getFarm().getPlant().getName(), imagePath, dateUtil.timeStampToYmd(farmTodo.getTodoDate()), farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
+                farmTodo.getFarm().getPlant().getName(), imagePath, farmTodo.getTodoDate().toLocalDate(), farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
     }
 
     /**
@@ -200,7 +200,7 @@ public class MainPageService {
         }
 
         // 일단 랜덤으로
-        Collections.shuffle(farms, new Random(LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli()));
+        Collections.shuffle(farms, new Random());
         Farm farm = farms.get(0);
         return new MyPlantInfoComponentDTO(true, farm.getPlant().getId(), farm.getPlant().getName());
     }
@@ -231,7 +231,7 @@ public class MainPageService {
         // 내가 선택해놓은 선호태그가 뜨거나
         if(communityFavoriteTags != null && !communityFavoriteTags.isEmpty()) {
             log.info("in communityFavoriteTags");
-            Collections.shuffle(communityFavoriteTags, new Random(LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli()));
+            Collections.shuffle(communityFavoriteTags, new Random());
             return getCommunityInfoComponent(userId, communityFavoriteTags.get(0).getCommunitytag());
         }
 
@@ -328,7 +328,7 @@ public class MainPageService {
                         c.getId(), c.getTitle(),
                         (c.getContent().length() > 20 ? c.getContent().substring(0, 20) : c.getContent()) + "...",
                         imageMap.get(c.getId()), heartCntMap.get(c.getId()), commentCntMap.get(c.getId()),
-                        c.getUser().getNickname(), c.getUser().getImagePath(), dateUtil.timeStampToYmd(c.getWriteDate())
+                        c.getUser().getNickname(), c.getUser().getImagePath(), c.getWriteDate().toLocalDate()
                 ));
                 break;
             }
@@ -376,7 +376,7 @@ public class MainPageService {
                     c.getId(), c.getTitle(),
                     (c.getContent().length() > 20 ? c.getContent().substring(0, 20) : c.getContent()) + "...",
                     imageMap.get(c.getId()), heartCntMap.get(c.getId()), commentCntMap.get(c.getId()),
-                    c.getUser().getNickname(), c.getUser().getImagePath(), dateUtil.timeStampToYmd(c.getWriteDate())
+                    c.getUser().getNickname(), c.getUser().getImagePath(), c.getWriteDate().toLocalDate()
             ));
         }
         return communitySortedByRecents;

@@ -5,8 +5,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
+import com.d207.farmer.dto.common.FileDirectory;
+import com.d207.farmer.utils.FileUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,24 +27,13 @@ import java.util.Arrays;
 public class FileController {
 
     private final AmazonS3Client amazonS3Client;
-
+    private final FileUtil fileUtil;
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucket;
 
     @PostMapping
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        try {
-            String fileName = file.getOriginalFilename();
-            String fileUrl = "https://" + bucket + fileName;
-            ObjectMetadata metaData = new ObjectMetadata();
-            metaData.setContentType(file.getContentType());
-            metaData.setContentLength(file.getSize());
-            amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metaData);
-            return ResponseEntity.ok(fileUrl);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok().body(fileUtil.uploadFile(file, FileDirectory.PLACE));
     }
 
     @GetMapping

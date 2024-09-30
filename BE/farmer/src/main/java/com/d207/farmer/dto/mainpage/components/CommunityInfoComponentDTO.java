@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class CommunityInfoComponentDTO {
         private Long commentCount;
         private String writer;
         private String writerImagePath;
-        private String registerDate;
+        private LocalDate registerDate;
     }
 
     @Getter
@@ -44,7 +45,7 @@ public class CommunityInfoComponentDTO {
         private Long commentCount;
         private String writer;
         private String writerImagePath;
-        private String registerDate;
+        private LocalDate registerDate;
     }
 
     public CommunityInfoComponentDTO() {
