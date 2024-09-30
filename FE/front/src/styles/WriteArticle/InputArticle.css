@@ -6,20 +6,32 @@
 }
 
 .article-title{
-    margin-top: 10%;
     width: 90%;
 }
 
 .article-content{
-    margin-top: 5%;
     width: 90%;
 }
 
 .article-tag{
-    margin-top: 5%;
     width: 90%;
 }
 
-.write-button{
+
+
+.input-alert{
+    margin-top: 3%;
+    width: 83%;
+}
+
+.input-camera{
+    display: flex;
     margin-top: 5%;
+    width: 100%;
+}
+
+.input-box{
+    border: 1rem;
+    border-color: gray;
+    margin-left: 5%;
 }
