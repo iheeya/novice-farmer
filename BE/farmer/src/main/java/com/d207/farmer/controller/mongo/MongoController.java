@@ -26,6 +26,6 @@ public class MongoController {
     @GetMapping("/plant")
     public ResponseEntity<List<MongoPlantInfo>> getPlantInfoByMongo() {
         log.info("[MongoController] Received getPlantInfoByMongo request");
-        return ResponseEntity.ok().body(mongoService.getPlantInfo());
+        return ResponseEntity.ok().body(mongoService.findAllPlantInfo());
     }
 }
