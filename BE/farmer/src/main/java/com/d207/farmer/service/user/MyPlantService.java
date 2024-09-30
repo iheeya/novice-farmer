@@ -16,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,10 +150,12 @@ public class MyPlantService {
 
         // 작물 growthStep 계산
         int growthStep = 1;
+        int maxDegreeDay = farm.getPlant().getDegreeDay();
         for(PlantThreshold pt : farm.getPlant().getPlantThresholds()) {
             if(farm.getDegreeDay() < pt.getDegreeDay()) break;
             growthStep++;
         }
+        if(farm.getDegreeDay() == maxDegreeDay) growthStep++;
 
         // 일러스트 이미지 경로
         String imagePath = "";
@@ -162,37 +166,56 @@ public class MyPlantService {
             }
         }
 
-        MyPlantInfoResponseDTO.ThresholdDTO thresholdDTO = new MyPlantInfoResponseDTO.ThresholdDTO(
-                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(0).getDegreeDay(), farm.getPlant().getDegreeDay()),
-                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(1).getDegreeDay(), farm.getPlant().getDegreeDay()),
-                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(2).getDegreeDay(), farm.getPlant().getDegreeDay())
-                );
-
-        MyPlantInfoResponseDTO.PlantInfoDTO plantInfo = new MyPlantInfoResponseDTO.PlantInfoDTO(
-                farm.getUserPlace().getPlace().getName(), farm.getUserPlace().getId(), farm.getUserPlace().getName(),
-                farm.getPlant().getName(), farm.getMyPlantName(), imagePath, dateUtil.timeStampToYmd(farm.getSeedDate()),
-                growthStep, dateUtil.degreeDayToRatio(farm.getDegreeDay(), farm.getPlant().getDegreeDay()), thresholdDTO
-
-        );
-
-        List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalse(myPlantId);
+        List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalse(myPlantId, TodoType.WATERING, TodoType.FERTILIZERING);
         // remain day 0보다 아래면 안넣기
         List<MyPlantInfoResponseDTO.TodoInfoDTO> todoInfoDTOs = new ArrayList<>();
         int todoCnt = 0;
         for (FarmTodo ft : farmTodos) {
             if(++todoCnt > 2) break;
             if(ft.getTodoDate().isBefore(LocalDateTime.now())) continue;
-            int remainDay = ft.getTodoDate().getDayOfYear() - LocalDateTime.now().getDayOfYear();
-            if(remainDay < 0) { // 내년 넘어갈 때
-                remainDay = ft.getTodoDate().getDayOfYear() + 365 - LocalDateTime.now().getDayOfYear();
-            }
-            todoInfoDTOs.add(new MyPlantInfoResponseDTO.TodoInfoDTO(dateUtil.timeStampToYmd(ft.getTodoDate()),
+            int remainDay = Period.between(LocalDate.now(), ft.getTodoDate().toLocalDate()).getDays();
+            todoInfoDTOs.add(new MyPlantInfoResponseDTO.TodoInfoDTO(ft.getTodoDate().toLocalDate(),
                     ft.getTodoType(), remainDay));
         }
 
+        List<PlantThreshold> plantThresholds = farm.getPlant().getPlantThresholds();
+        MyPlantInfoResponseDTO.ThresholdDTO thresholdDTO = new MyPlantInfoResponseDTO.ThresholdDTO(
+                plantThresholds.size() + 1,
+                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(0).getDegreeDay(), farm.getPlant().getDegreeDay()),
+                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(1).getDegreeDay(), farm.getPlant().getDegreeDay()),
+                plantThresholds.size() == 3 ?
+                        dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(2).getDegreeDay(), farm.getPlant().getDegreeDay()) : null);
+
+        List<FarmTodo> farmTodosIsCompleted = farmTodoRepository.findByFarmIdAndIsCompletedTrue(myPlantId, TodoType.WATERING, TodoType.FERTILIZERING);
+
+        // To Do의 최근 물주기 날짜구하기
+        LocalDate recentWateringDate = null;
+        for (FarmTodo ft : farmTodosIsCompleted) {
+            if(ft.getTodoType().equals(TodoType.WATERING)) {
+                recentWateringDate = ft.getTodoDate().toLocalDate();
+                break;
+            }
+        }
+
+        // To Do의 최근 비료주기 날짜구하기
+        LocalDate recentFertilizingDate = null;
+        for (FarmTodo ft : farmTodosIsCompleted) {
+            if(ft.getTodoType().equals(TodoType.FERTILIZERING)) {
+                recentFertilizingDate = ft.getTodoDate().toLocalDate();
+                break;
+            }
+        }
+
+        MyPlantInfoResponseDTO.PlantInfoDTO plantInfo = new MyPlantInfoResponseDTO.PlantInfoDTO(
+                farm.getUserPlace().getPlace().getName(), farm.getUserPlace().getId(), farm.getUserPlace().getName(),
+                farm.getPlant().getName(), farm.getMyPlantName(), imagePath, farm.getSeedDate().toLocalDate(),
+                growthStep, dateUtil.degreeDayToRatio(farm.getDegreeDay(), farm.getPlant().getDegreeDay()), thresholdDTO,
+                farm.getIsFirstHarvest() ? farm.getFirstHarvestDate().toLocalDate() : null,
+                recentWateringDate, recentFertilizingDate, farm.getMemo());
+
         // TODO MVP용 degreeDay update -> mvp 끝나면 지워야함
         farm.updateDegreeDay(farm.getDegreeDay() + 90);
-        if(farm.getDegreeDay() > 1980) farm.updateDegreeDay(1980);
+        if(farm.getDegreeDay() > 1960) farm.updateDegreeDay(1960);
         /////////////////////////////////////////////////
 
         return new MyPlantInfoResponseDTO(true, farm.getIsFirstHarvest(), plantInfo, todoInfoDTOs);

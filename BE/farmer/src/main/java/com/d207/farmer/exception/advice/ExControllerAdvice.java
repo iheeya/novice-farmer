@@ -3,6 +3,7 @@ package com.d207.farmer.exception.advice;
 import com.d207.farmer.dto.exception.ErrorResponseDTO;
 import com.d207.farmer.exception.FailedAuthorizationUserException;
 import com.d207.farmer.exception.FailedInvalidUserException;
+import com.d207.farmer.exception.MyFileUploadException;
 import com.d207.farmer.exception.plant.FailedRegisterPlantIllustException;
 import jakarta.validation.UnexpectedTypeException;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,13 @@ public class ExControllerAdvice {
     public ErrorResponseDTO FailedAuthorizationUser(FailedAuthorizationUserException e) {
         log.error("[exceptionHandle] ex", e);
         return new ErrorResponseDTO("BAD_REQUEST", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(MyFileUploadException.class)
+    public ErrorResponseDTO FailedAuthorizationUser(MyFileUploadException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorResponseDTO("INTERNAL_SERVER_ERROR", e.getMessage());
     }
 
 

@@ -32,10 +32,8 @@ public class DateUtil {
     }
 
     public int degreeDayToRatio(int degreeDay, int maxDegreeDay) {
+        if(degreeDay >= maxDegreeDay) return 100;
         return (int) ((double) degreeDay / maxDegreeDay * 100);
     }
 
-    public String timeStampToYmd(LocalDateTime date) {
-        return date.toString().substring(0, 10); // 날짜 형식 수정
-    }
 }
