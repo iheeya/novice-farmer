@@ -3,6 +3,7 @@ package com.d207.farmer.dto.myplace;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,5 +16,5 @@ public class MyPlaceFarmDTO {
     private int myPlantGrowthStep;
     private String imagePath;
     private String todoInfo;
-    private String seedDate;
+    private LocalDate seedDate;
 }
