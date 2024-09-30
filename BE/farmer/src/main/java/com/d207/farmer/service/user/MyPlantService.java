@@ -36,7 +36,8 @@ public class MyPlantService {
     private final FastApiUtil fastApiUtil;
     private final DateUtil dateUtil;
     private final UserAuthUtil userAuthUtil;
-    private final FileUtil fileUtil;
+//    private final FileUtil fileUtil;
+    private FileUtil fileUtil;
 
     @Transactional
     public String startGrowPlant(Long userId, StartGrowPlantRequestDTO request) {
