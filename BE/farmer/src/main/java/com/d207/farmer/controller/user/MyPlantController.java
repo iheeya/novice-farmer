@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -131,37 +132,37 @@ public class MyPlantController {
     @Operation(summary = "병해충 검사 요청", description = "병해충 검사 버튼")
     @GetMapping("/pest")
     public ResponseEntity<InspectionPestResponseDTO> inspectionPest(@RequestHeader("Authorization") String authorization,
-                                                                    @RequestBody InspectionPlantRequestDTO request) {
+                                                                    @ModelAttribute("file") MultipartFile request) {
         log.info("[MyPlantController] Received inspectionPest request for {}", request);
         Long userId = jwtUtil.getUserId(authorization);
         return ResponseEntity.ok().body(myPlantService.inspectionPest(userId, request));
     }
 
-    /**
-     * 생장 정보 업데이트 요청
-     */
-    @Operation(summary = "생장 정보 업데이트 요청", description = "생장 정보 업데이트 버튼")
-    @GetMapping("/growth")
-    public ResponseEntity<InspectionGrowthStepResponseDTO> inspectionGrowthStep(@RequestHeader("Authorization") String authorization,
-                                                                                @RequestBody InspectionPlantRequestDTO request) {
-        log.info("[MyPlantController] Received inspectionGrowthStep request for {}", request);
-        Long userId = jwtUtil.getUserId(authorization);
-        return ResponseEntity.ok().body(myPlantService.inspectionGrowthStep(userId, request));
-    }
-
-    /**
-     * 생장 정보 업데이트 반영
-     * 기능 삭제 예정
-     */
-    @Operation(summary = "생장 정보 업데이트 반영", description = "생장 정보 업데이트 반영하기")
-    @PostMapping("/growth")
-    public ResponseEntity<String> updateGrowthStepByInspection(@RequestHeader("Authorization") String authorization,
-                                                               @RequestBody UpdateDegreeDayRequestDTO request) {
-        log.info("[MyPlantController] Received updateGrowthStepByInspection request for {}", request);
-        Long userId = jwtUtil.getUserId(authorization);
-//        return ResponseEntity.ok().body(myPlantService.updateGrowthStepByInspection(userId, request));
-        return ResponseEntity.ok().body("");
-    }
+//    /**
+//     * 생장 정보 업데이트 요청
+//     */
+//    @Operation(summary = "생장 정보 업데이트 요청", description = "생장 정보 업데이트 버튼")
+//    @GetMapping("/growth")
+//    public ResponseEntity<InspectionGrowthStepResponseDTO> inspectionGrowthStep(@RequestHeader("Authorization") String authorization,
+//                                                                                @RequestBody InspectionPlantRequestDTO request) {
+//        log.info("[MyPlantController] Received inspectionGrowthStep request for {}", request);
+//        Long userId = jwtUtil.getUserId(authorization);
+//        return ResponseEntity.ok().body(myPlantService.inspectionGrowthStep(userId, request));
+//    }
+//
+//    /**
+//     * 생장 정보 업데이트 반영
+//     * 기능 삭제 예정
+//     */
+//    @Operation(summary = "생장 정보 업데이트 반영", description = "생장 정보 업데이트 반영하기")
+//    @PostMapping("/growth")
+//    public ResponseEntity<String> updateGrowthStepByInspection(@RequestHeader("Authorization") String authorization,
+//                                                               @RequestBody UpdateDegreeDayRequestDTO request) {
+//        log.info("[MyPlantController] Received updateGrowthStepByInspection request for {}", request);
+//        Long userId = jwtUtil.getUserId(authorization);
+////        return ResponseEntity.ok().body(myPlantService.updateGrowthStepByInspection(userId, request));
+//        return ResponseEntity.ok().body("");
+//    }
 
     /**
      * 내 작물 상세

@@ -1,5 +1,7 @@
 package com.d207.farmer.domain.mongo;
 
+import com.d207.farmer.dto.mongo.MongoFileNameDTO;
+import com.d207.farmer.dto.mongo.MongoNameDTO;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor
@@ -15,18 +18,11 @@ import java.util.List;
 public class MongoPlantInfo {
     @Id
     private String id;
-
     private String name;
-
-    private PlantInfoInMongo info;
-
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PlantInfoInMongo {
-        private String recommendSeedSeason;
-        private List<String> farmMethod;
-        private List<String> acceptFert;
-        private List<String> pestName;
-    }
+    private String cultivateInfo; // FIXME 이름
+    private List<MongoNameDTO> fertilizers;
+    private List<MongoNameDTO> pests;
+    private String harvest;
+    private List<MongoFileNameDTO> images;
+    private Map<String, Double> waterAmountByGrowthStep; // FIXME 이름
 }
