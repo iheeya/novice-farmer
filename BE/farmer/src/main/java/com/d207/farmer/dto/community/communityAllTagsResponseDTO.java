@@ -15,14 +15,25 @@ public class communityAllTagsResponseDTO {
 
     private boolean isSelected;
 
+    private boolean isPopular;
+
 
     public communityAllTagsResponseDTO(Long id, String tagName) {
         this.id = id;
         this.tagName = tagName;
         this.isSelected = false;
+        this.isPopular = false;
     }
+
+
 
     public void setSelected(boolean booleanvalue) {
         this.isSelected = booleanvalue;
     }
+
+    public void setPopular(boolean Popular) {
+        this.isPopular = Popular;
+    }
+
+
 }

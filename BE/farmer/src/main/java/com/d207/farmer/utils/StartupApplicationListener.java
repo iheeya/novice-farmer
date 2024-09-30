@@ -90,16 +90,16 @@ public class StartupApplicationListener {
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent event) {
         log.info("Application ready");
-       createPlantSample();
-       createPlaceSample();
-       createWeekendFarmSample();
-       createPlantIllustSample();
-       createPlantThresholdSample();
-       createUserSample();
-       createFarmSample();
-       createTodoSample();
-       createCommunityTagSample();
-       createCommunitySample();
+//       createPlantSample();
+//       createPlaceSample();
+//       createWeekendFarmSample();
+//       createPlantIllustSample();
+//       createPlantThresholdSample();
+//       createUserSample();
+//       createFarmSample();
+//       createTodoSample();
+//       createCommunityTagSample();
+//       createCommunitySample();
     }
 
     private void createUserSample() {

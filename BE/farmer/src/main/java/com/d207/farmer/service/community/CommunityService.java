@@ -327,13 +327,14 @@ public class CommunityService {
         return "success Modify Article";
     }
 
-    public List<communityAllTagsResponseDTO> getCommunityAllTags(Long userId) {
-
+    //public List<communityAllTagsResponseDTO> getCommunityAllTags(Long userId) {
+    public List<?> getCommunityAllTags(Long userId) {
         // 사용자 조회
         User user = userRepository.findById(userId).orElseThrow();
 
         // 모든 커뮤니티 태그 조회
         List<CommunityTag> communityTags = communityTagRepository.findAll();
+        List<Long> communityFavoriteTags = communityFavoriteTagRepository.findTop5FavoriteTagIds();
         List<communityAllTagsResponseDTO> communityAllTagsResponseDTOs = new ArrayList<>();
 
         // 사용자의 즐겨찾기 태그 조회
@@ -348,20 +349,17 @@ public class CommunityService {
         for (CommunityTag tag : communityTags) {
             communityAllTagsResponseDTO dto = new communityAllTagsResponseDTO(tag.getId(), tag.getTagName());
             dto.setSelected(favoriteTagIds.contains(tag.getId())); // 즐겨찾기 여부 설정
+
+            // communityFavoriteTags에 tag.getId()가 포함되어 있으면 setPopular 실행
+            if (communityFavoriteTags.contains(tag.getId())) {
+                dto.setPopular(true); // setPopular 메서드를 호출하는 대신 필드를 직접 설정
+            }
+
             communityAllTagsResponseDTOs.add(dto);
         }
         return communityAllTagsResponseDTOs;
 
     }
 
-    public List<communityMytagsResponseDTO> getcommunityMyAndPopularTags(Long userId) {
 
-        // 사용자 조회
-        User user = userRepository.findById(userId).orElseThrow();
-
-        // 사용자의 즐겨찾기 태그 조회
-        List<CommunityFavoriteTag> favoriteTags = communityFavoriteTagRepository.findByUser(user);
-
-        return null;
-    }
 }

@@ -137,23 +137,14 @@ public class CommunityController {
     }
 
 
-    /**
-     *  태그 불러오기 (먼저 내가 선택한 태그 & 인기태그)
-     */
-    @GetMapping("/tags")
-    public ResponseEntity<List<communityMytagsResponseDTO>> getcommunityMyAndPopularTags (@RequestHeader("Authorization") String authorization){
 
-        Long userId = jwtUtil.getUserId(authorization);
-        log.info("[CommunityController] Get getcommunityMyAndPopularTags {} ", userId);
-        return ResponseEntity.ok(communityService.getcommunityMyAndPopularTags(userId));
-
-    }
 
     /**
      *  전체 태그 불러오기
      */
     @GetMapping("/tags/all")
-    public ResponseEntity<List<communityAllTagsResponseDTO>> getcommunityAllTags (@RequestHeader("Authorization") String authorization){
+    //public ResponseEntity<List<communityAllTagsResponseDTO>> getcommunityAllTags (@RequestHeader("Authorization") String authorization){
+    public ResponseEntity<List<?>> getcommunityAllTags (@RequestHeader("Authorization") String authorization){
 
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Get getcommunityAllTags {} ", userId);
