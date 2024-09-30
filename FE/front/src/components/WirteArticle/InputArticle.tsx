@@ -37,7 +37,7 @@ function InputArticle(){
   };
 
 
-   // 스페이스바 + 엔터키를 눌렀을 때 태그로 변환
+   // 스페이스바 + 엔터키를 눌렀을 때 태그
    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === ' ' || event.key === 'Enter') {
       event.preventDefault(); // 스페이스바로 인한 기본 입력 막음
