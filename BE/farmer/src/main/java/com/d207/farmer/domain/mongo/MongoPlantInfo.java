@@ -24,5 +24,5 @@ public class MongoPlantInfo {
     private List<MongoNameDTO> pests;
     private String harvest;
     private List<MongoFileNameDTO> images;
-    private Map<Integer, Double> WaterAmountByGrowthStep; // FIXME 이름
+    private Map<String, Double> waterAmountByGrowthStep; // FIXME 이름
 }

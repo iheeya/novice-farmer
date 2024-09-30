@@ -68,7 +68,7 @@ public class MongoService {
         return mongoFertilizerRepository.findAll();
     }
 
-    public MongoFertilizerInfo findByName(String name) {
+    public MongoFertilizerInfo findFertilizerByName(String name) {
         return mongoFertilizerRepository.findFertilizerByName(name);
     }
 
