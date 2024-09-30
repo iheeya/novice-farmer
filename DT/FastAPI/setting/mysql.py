@@ -1,20 +1,18 @@
-from pydantic import baseSettings
+import os
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from dotenv import load_dotenv
 
-class MySQLSettings(baseSettings):
-    db_host: str
-    db_port: str
-    db_user: str
-    db_password: str
+load_dotenv()
 
-    class Config:
-     env_file = '.env'
-    
-mysql_settings = MySQLSettings()
+db_user = os.getenv('DB_USER')
+db_pwd = os.getenv('DB_PASSWORD')
+db_host = os.getenv('DB_HOST')
+db_port = os.getenv('DB_PORT')
 
-MYSQL_URL = f'mysql+pymysql://{mysql_settings.db_user}:{mysql_settings.db_password}@{mysql_settings.db_host}:{mysql_settings.db_port}'
+MYSQL_FASTAPI_URL = f'mysql+pymysql://{db_user}:{db_pwd}@{db_host}:{db_port}/fast_api'
 
-MYSQL_ENGINE = create_engine(MYSQL_URL)
-
-session_local = sessionmaker(autocommit=False, autoflush=False, bind=MYSQL_ENGINE)
+fastapi_engine = create_engine(MYSQL_FASTAPI_URL)
+session_local = sessionmaker(autocommit=False, autoflush=False, bind=fastapi_engine)
+Base = declarative_base()
