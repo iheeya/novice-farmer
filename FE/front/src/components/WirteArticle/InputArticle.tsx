@@ -14,6 +14,7 @@ function InputArticle(){
   const [hasError, setHasError] = useState<boolean>(false)
   const [title, setTitle] = useState<string>('')
   const [content, setContent] = useState<string>('')
+  const [isTag, setIsTag] = useState<boolean>(false)
 
   // 입력 값 변경 시 호출
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,20 +23,38 @@ function InputArticle(){
     // 해시태그(#)가 포함되지 않도록 필터링
     if (!value.includes('#')) {
       setInputValue(value);
-    } else{
       setHasError(false)
+      setIsTag(false)
+    } else{
+      setHasError(true)
     }
   };
 
   // 스페이스바 + 엔터키를 눌렀을 때 태그로 변환
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === ' ' || event.key==='Enter') {
+  // const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (event.key === ' ' || event.key==='Enter') {
+  //     event.preventDefault(); // 스페이스바로 인한 기본 입력 막음
+
+  //     // 입력값이 존재할 때만 태그 추가
+  //     if (inputValue.trim()) {
+  //       setTags([...tags, `#${inputValue.trim()}`]); // 태그에 '#' 추가
+  //       setInputValue(''); // 입력 필드 비우기
+  //     }
+  //   }
+  // };
+   // 스페이스바 + 엔터키를 눌렀을 때 태그로 변환
+   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === ' ' || event.key === 'Enter') {
       event.preventDefault(); // 스페이스바로 인한 기본 입력 막음
 
-      // 입력값이 존재할 때만 태그 추가
-      if (inputValue.trim()) {
-        setTags([...tags, `#${inputValue.trim()}`]); // 태그에 '#' 추가
+      const newTag = `#${inputValue.trim()}`;
+      // 입력값이 존재하고 중복되지 않을 때만 태그 추가
+      if (inputValue.trim() && !tags.includes(newTag)) {
+        setTags([...tags, newTag]); // 태그에 '#' 추가
         setInputValue(''); // 입력 필드 비우기
+      } else if (tags.includes(newTag)) {
+        // 중복 시 SweetAlert 표시
+        setIsTag(true)
       }
     }
   };
@@ -66,6 +85,7 @@ function InputArticle(){
       imagePath: "imagePath",  // 여기에 이미지 경로가 들어가야 함
       communityTagList: formattedTags
     };
+
 
     setInputValue('');
     setTags([]);
@@ -153,6 +173,12 @@ function InputArticle(){
           {hasError && (
                   <Alert className='input-alert' severity="error">
                     '#'은 입력할 수 없습니다.
+                  </Alert>
+                )}
+          
+          {isTag && (
+                  <Alert className='input-alert' severity="error">
+                    이미 존재하는 태그입니다.
                   </Alert>
                 )}
                       
