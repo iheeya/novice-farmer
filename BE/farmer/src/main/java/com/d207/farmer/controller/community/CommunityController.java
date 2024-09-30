@@ -123,23 +123,40 @@ public class CommunityController {
     }
 
     /**
-     *  커뮤니티 내가 글쓴거 수정하기 버튼 눌렀을때 가져오기!
+     *  커뮤니티 내가 글쓴거 수정하기 버튼 눌렀을때 수정하기!
      */
     @PostMapping("{id}/all/modify")
     public ResponseEntity<String> communityOneModifyRequest (@RequestHeader("Authorization") String authorization,
                                                                                    @PathVariable Long id,
                                                                                    @RequestBody CommunityOneModifyRequestDTO communityOneModifyRequestDTO)   {
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("[CommunityController] Get communityOneModify {} ", userId);
+        log.info("[CommunityController] Get communityOneModifyRequest {} ", userId);
         return ResponseEntity.ok(communityService.communityOneModifyRequest(userId, id, communityOneModifyRequestDTO));
 
     }
 
 
-    /**
-     *  태그 불러오기 (먼저 내가 선택한 태그 & 인기태그)
-     */
+//    /**
+//     *  태그 불러오기 (먼저 내가 선택한 태그 & 인기태그)
+//     */
+//    @GetMapping("community/tags")
+//    public ResponseEntity<List<community>> getcommunityTags (@RequestHeader("Authorization") String authorization){
+//
+//        Long userId = jwtUtil.getUserId(authorization);
+//        log.info("[CommunityController] Get communityOneModifyRequest {} ", userId);
+//
+//    }
 
+    /**
+     *  전체 tags 불러오기
+     */
+    @GetMapping("/tags/all")
+    public ResponseEntity<List<?>> getcommunityAllTags (@RequestHeader("Authorization") String authorization){
+
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[CommunityController] Get communityOneModifyRequest {} ", userId);
+        return ResponseEntity.ok(communityService.getCommunityAllTags(userId));
+    }
 
 
 }

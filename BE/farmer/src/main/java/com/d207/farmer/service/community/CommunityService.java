@@ -31,6 +31,7 @@ public class CommunityService {
     private final CommunityHeartRepository communityHeartRepository;
     private final CommunityCommentRepository communityCommentRepository;
     private final CommunitySelectedTagRespository communitySelectedTagRepository;
+    private final CommunityFavoriteTagRepository communityFavoriteTagRepository;
     private final DateUtil dateUtil;
 
     public List<CommunityResponseDTO> getCommunity() {
@@ -324,5 +325,32 @@ public class CommunityService {
             community.setContent(communityOneModifyRequestDTO.getCommunityContent());
         }
         return "success Modify Article";
+    }
+
+    public List<?> getCommunityAllTags(Long userId) {
+
+        // 사용자 조회
+        User user = userRepository.findById(userId).orElseThrow();
+
+        // 모든 커뮤니티 태그 조회
+        List<CommunityTag> communityTags = communityTagRepository.findAll();
+        List<communityAllTagsResponseDTO> communityAllTagsResponseDTOs = new ArrayList<>();
+
+        // 사용자의 즐겨찾기 태그 조회
+        List<CommunityFavoriteTag> favoriteTags = communityFavoriteTagRepository.findByUser(user);
+        // 즐겨찾기 태그의 ID를 Set으로 변환하여 빠르게 조회
+        Set<Long> favoriteTagIds = favoriteTags.stream()
+                .map(favoriteTag -> favoriteTag.getCommunitytag() != null ? favoriteTag.getCommunitytag().getId() : null)
+                .filter(id -> id != null) // null 체크
+                .collect(Collectors.toSet());
+
+        // 모든 커뮤니티 태그를 DTO로 변환 및 선택 여부 설정
+        for (CommunityTag tag : communityTags) {
+            communityAllTagsResponseDTO dto = new communityAllTagsResponseDTO(tag.getId(), tag.getTagName());
+            dto.setSelected(favoriteTagIds.contains(tag.getId())); // 즐겨찾기 여부 설정
+            communityAllTagsResponseDTOs.add(dto);
+        }
+        return communityAllTagsResponseDTOs;
+
     }
 }

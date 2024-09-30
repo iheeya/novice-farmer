@@ -2,7 +2,9 @@ package com.d207.farmer.domain.community;
 
 import com.d207.farmer.domain.user.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import static jakarta.persistence.FetchType.LAZY;
@@ -11,6 +13,8 @@ import static jakarta.persistence.FetchType.LAZY;
 @Getter
 @Setter
 @Table(name = "community_favorite_tag")
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommunityFavoriteTag {
     @Id
     @GeneratedValue
@@ -24,4 +28,10 @@ public class CommunityFavoriteTag {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "community_tag_id")
     private CommunityTag communitytag;
+
+
+    public CommunityFavoriteTag(User user, CommunityTag communitytag) {
+        this.user = user;
+        this.communitytag = communitytag;
+    }
 }

@@ -59,7 +59,7 @@ public class StartupApplicationListener {
 
     private static final int USER_NUM = 10;
     private final Object[][] plantSamples = {{"토마토", 1980, true}, {"고추", 2000, true}, {"상추", 2000, false}, {"깻잎", 2000, false}, {"배추", 2000, false}};
-    private final Object[][] placeSamples = {{"베란다", "베란다 접근성 미쳤고", true}, {"주말농장", "주말농장 재밌음", true}, {"개인 텃밭", "개인 땅이라니 부럽다", false}, {"스쿨팜", "잼민이 주의", false}};
+    private final Object[][] placeSamples = {{"베란다", "베란다 접근성 미쳤고", true}, {"주말농장", "주말농장 재밌음", true}, {"개인텃밭", "개인 땅이라니 부럽다", false}, {"스쿨팜", "잼민이 주의", false}};
     private final String[][] weekendFarmSamples = {
             {"쭌이네, BINIL HAUS", "경북 구미시 산동읍 성수4길 65 쭌이네비닐하우스", "0507-1317-4536", "36.1573359", "128.4209952", "https://image.com/fdf", "성수리 현대정비에서 산길따라~~쭈우쭈욱 올라오세요^^ (현대정비를 왼쪽에두고 굴다리지남^^)"},
             {"베리마토 딸기농장", "경북 구미시 지산양호9길 10", "010-2600-5603", "36.1358311", "128.3632623", "https://blog.naver.com/seog1017", "최원석, 배성연 부부가  땀으로 정직하게 농사짓고 있는  딸기, 토마토 농장 베리마토 입니다.   판매상품 당일 수확한 딸기 딸기 체험 주말 가족체험"},
@@ -203,7 +203,7 @@ public class StartupApplicationListener {
     }
 
     private void createCommunityTagSample() {
-        String[] tagNames = {"토마토", "고추", "상추", "깻잎", "배추", "베란다", "주말농장", "개인 텃밭", "스쿨팜"};
+        String[] tagNames = {"토마토", "고추", "상추", "깻잎", "배추", "베란다", "주말농장", "개인텃밭", "스쿨팜"};
         for (String tagName : tagNames) {
             communityTagRepository.save(new CommunityTag(tagName));
         }

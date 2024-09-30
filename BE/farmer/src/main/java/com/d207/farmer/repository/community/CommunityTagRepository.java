@@ -12,4 +12,6 @@ public interface CommunityTagRepository extends JpaRepository<CommunityTag, Long
 
 
     CommunityTag findByTagName(String tag);
+
+
 }
