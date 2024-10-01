@@ -46,3 +46,29 @@ class TodayWeatherVal(Base):
     ta_max = Column(Float)
     ta_min = Column(Float)
     today_weather_base = relationship('TodayWeatherBase', back_populates='today_weather_val')
+    
+class CropBase(Base):
+    __tablename__ = 'crop_base'
+    crop_id = Column(Integer, primary_key=True, autoincrement=True)
+    crop_name = Column(String(10), nullable=False)
+
+class CropFertilizer(Base):
+    __tablename__ = 'crop_fertilizer'
+    fertilizer_id = Column(Integer, primary_key=True)
+    fertilizer_type = Column(String(20))
+    fertilizer_name = Column(String(255))
+    fertilizer_period = Column(Integer)
+
+class CropInfo(Base):
+    __tablename__ = 'crop_info'
+    crop_id = Column(Integer, ForeignKey('crop_base.crop_id', ondelete="CASCADE"), primary_key=True, nullable=False)
+    crop_plant_season = Column(String(20))  # 1, 2, 3 등으로 입력
+    fertilizer_season = Column(String(20))
+    watering_period = Column(Integer)
+    fertilizer_id = Column(Integer, ForeignKey('crop_fertilizer.fertilizer_id', ondelete="SET NULL", onupdate="CASCADE"))
+
+class GrowthTemp(Base):
+    __tablename__ = 'growth_temp'
+    crop_id = Column(Integer, ForeignKey('crop_base.crop_id', ondelete="CASCADE"), primary_key=True, nullable=False)
+    growth_high_temp = Column(Float)  # 생육 최고 기온
+    growth_low_temp = Column(Float)   # 생육 최저 기온
