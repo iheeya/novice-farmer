@@ -58,6 +58,18 @@ spring:
       port: 6379
     mongodb:
       ***REMOVED***
+
+  # project 종료 후 제거 필요!
+  cloud:
+    aws:
+      s3:
+        bucket: d207-farmer
+      stack.auto: false
+      region.static: ap-southeast-2
+      credentials:
+        ***REMOVED***
+        ***REMOVED***
+
 external:
   api:
     naver:
