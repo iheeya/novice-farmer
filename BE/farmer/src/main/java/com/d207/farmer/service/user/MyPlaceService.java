@@ -70,7 +70,7 @@ public class MyPlaceService {
             String todoInfo = "5일 후에 물을 줘야 해요"; // FIXME TODO 정보 어떻게 받아올지
             LocalDateTime seedDate = farm.getSeedDate();
             myPlaceFarmDTOs.add(new MyPlaceFarmDTO(plantId, plantName, myPlantId, myPlantName,
-                    myPlantGrowthStep, imagePath, todoInfo, seedDate.toLocalDate()));
+                    myPlantGrowthStep, imagePath, todoInfo, seedDate == null ? null : seedDate.toLocalDate()));
         }
 
         return new MyPlaceResponseDTO(placeInfoDTO, myPlaceFarmDTOs);
