@@ -41,12 +41,13 @@ public class FarmTodo {
     /**
      * 비즈니스 메서드
      */
-    public FarmTodo (Farm farm, TodoType todoType, Boolean isCompleted, LocalDateTime todoDate, LocalDateTime completeDate) {
+    public FarmTodo (Farm farm, TodoType todoType, String todoTitle, Boolean isCompleted, LocalDateTime todoDate, LocalDateTime completeDate) {
         this.farm = farm;
         this.todoType = todoType;
         this.isCompleted = isCompleted;
         this.todoDate = todoDate;
         this.completeDate = completeDate;
+        this.todoTitle = todoTitle;
     }
 
     public void updateTodoComplete() {

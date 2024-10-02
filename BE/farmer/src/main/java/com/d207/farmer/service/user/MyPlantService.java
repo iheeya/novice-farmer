@@ -78,13 +78,13 @@ public class MyPlantService {
         userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
         if(farmTodos == null || farmTodos.isEmpty()) { // todo가 없으면 임의 생성인데 그럴 일 있나
 //            Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
-            farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, true, null, LocalDateTime.now()));
+            farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, "", true, null, LocalDateTime.now()));
             return "작물 물주기 성공(todo 생성)";
         }
         farmTodos.get(0).updateTodoComplete();
 
         // TODO MVP 발표용 FAST와 통신 단절 후 임의로 칼럼 추가
-        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, false, LocalDateTime.now(), null));
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING,"", false, LocalDateTime.now(), null));
 
         return "작물 물주기 성공(todo 업데이트)";
     }
@@ -95,7 +95,7 @@ public class MyPlantService {
         if(farmTodos == null || farmTodos.isEmpty()) {
             Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
             userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
-            farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, true, null, LocalDateTime.now()));
+            farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, "", true, null, LocalDateTime.now()));
             return "작물 비료주기 성공(todo 생성)";
         }
         farmTodos.get(0).updateTodoComplete();

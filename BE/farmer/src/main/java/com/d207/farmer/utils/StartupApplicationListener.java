@@ -91,16 +91,16 @@ public class StartupApplicationListener {
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent event) {
         log.info("Application ready");
-       createPlantSample();
-       createPlaceSample();
-       createWeekendFarmSample();
-       createPlantIllustSample();
-       createPlantThresholdSample();
-       createUserSample();
-       createFarmSample();
-       createTodoSample();
-       createCommunityTagSample();
-       createCommunitySample();
+//       createPlantSample();
+//       createPlaceSample();
+//       createWeekendFarmSample();
+//       createPlantIllustSample();
+//       createPlantThresholdSample();
+//       createUserSample();
+//       createFarmSample();
+//       createTodoSample();
+//       createCommunityTagSample();
+//       createCommunitySample();
     }
 
     private void createUserSample() {
@@ -131,7 +131,8 @@ public class StartupApplicationListener {
         UserRegisterRequestDTO u3 = new UserRegisterRequestDTO(
                 "mainpage@email.com", "1234", "mainpage", 30, Gender.MALE, "경상북도 포항시", true
         );
-        sampleService.registerUser(u3);
+        User mainpageUser = sampleService.registerUser(u3);
+        sampleService.registerFavorites(mainpageUser, new SurveyRegisterRequestDTO(surveyPlants, surveyPlaces));
     }
 
     private void createPlantSample() {
@@ -207,14 +208,35 @@ public class StartupApplicationListener {
         farmService.registerFarm(11L, farmRegister3);
         myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(3L));
 
+        // mainpage 계정용
+        farmService.registerFarm(13L, farmRegister1);
+        farmService.registerFarm(13L, farmRegister2);
+
+        myPlantService.startGrowPlant(13L, new StartGrowPlantRequestDTO(4L));
+        myPlantService.startGrowPlant(13L, new StartGrowPlantRequestDTO(5L));
+
+        farmRepository.findById(4L).orElseThrow().updateDegreeDay(1000);
+        farmRepository.findById(5L).orElseThrow().updateDegreeDay(1000);
     }
 
     private void createTodoSample() {
         Farm farm = farmRepository.findById(1L).orElseThrow();
-        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, false, LocalDateTime.now().plusDays(1), null));
-        farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, false, LocalDateTime.now().plusDays(6), null));
-        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, true, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(2)));
-        farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, true, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, "", false, LocalDateTime.now().plusDays(1), null));
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, "", false, LocalDateTime.now().plusDays(6), null));
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, "", true, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(2)));
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING,"", true, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
+
+        // mainpage 용
+        Farm farmMainPage1 = farmRepository.findById(4L).orElseThrow();
+        Farm farmMainPage2 = farmRepository.findById(5L).orElseThrow();
+        farmTodoRepository.save(new FarmTodo(farmMainPage1, TodoType.WATERING, "", false, LocalDateTime.now().plusDays(1), null));
+        farmTodoRepository.save(new FarmTodo(farmMainPage1, TodoType.FERTILIZERING, "", false, LocalDateTime.now().plusDays(6), null));
+        farmTodoRepository.save(new FarmTodo(farmMainPage1, TodoType.NATURE, "폭우주의보", false, LocalDateTime.now(), null));
+
+        farmTodoRepository.save(new FarmTodo(farmMainPage2, TodoType.WATERING, "", false, LocalDateTime.now().plusDays(1), null));
+        farmTodoRepository.save(new FarmTodo(farmMainPage2, TodoType.FERTILIZERING, "", false, LocalDateTime.now().plusDays(6), null));
+        farmTodoRepository.save(new FarmTodo(farmMainPage2, TodoType.NATURE, "호우주의보", false, LocalDateTime.now(), null));
+
     }
 
     private void createCommunityTagSample() {
