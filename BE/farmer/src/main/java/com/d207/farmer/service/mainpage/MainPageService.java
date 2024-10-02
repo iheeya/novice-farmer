@@ -232,7 +232,7 @@ public class MainPageService {
         if(communityFavoriteTags != null && !communityFavoriteTags.isEmpty()) {
             log.info("in communityFavoriteTags");
             Collections.shuffle(communityFavoriteTags, new Random());
-            return getCommunityInfoComponent(userId, communityFavoriteTags.get(0).getCommunitytag());
+            return getCommunityInfoComponent(userId, communityFavoriteTags.get(0).getCommunityTag());
         }
 
         // 선택해놓은 선호태그가 없으면 선호하는 작물/장소 태그가 뜨거나

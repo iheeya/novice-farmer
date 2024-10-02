@@ -8,6 +8,7 @@ import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.UserInfoResponseDTO;
 import com.d207.farmer.dto.user.UserRegisterRequestDTO;
+import com.d207.farmer.dto.utils.OnlyId;
 import com.d207.farmer.repository.place.PlaceRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
 import com.d207.farmer.repository.user.FavoritePlaceRepository;
@@ -41,16 +42,16 @@ public class SampleService {
 
     @Transactional
     public void registerFavorites(User user, SurveyRegisterRequestDTO request) {
-        List<SurveyRegisterRequestDTO.Plant> plantDTOs = request.getPlant();
-        List<SurveyRegisterRequestDTO.Place> placeDTOs = request.getPlace();
+        List<OnlyId> plantDTOs = request.getPlant();
+        List<OnlyId> placeDTOs = request.getPlace();
 
-        List<Long> plantIds = plantDTOs.stream().map(SurveyRegisterRequestDTO.Plant::getId).toList();
+        List<Long> plantIds = plantDTOs.stream().map(OnlyId::getId).toList();
         List<Plant> plants = plantRepository.findByIdIn(plantIds);
         for (Plant plant : plants) {
             favoritePlantRepository.save(new FavoritePlant(user, plant));
         }
 
-        List<Long> placeIds = placeDTOs.stream().map(SurveyRegisterRequestDTO.Place::getId).toList();
+        List<Long> placeIds = placeDTOs.stream().map(OnlyId::getId).toList();
         List<Place> places = placeRepository.findByIdIn(placeIds);
         for (Place place : places) {
             favoritePlaceRepository.save(new FavoritePlace(user, place));

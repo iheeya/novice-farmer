@@ -2,6 +2,8 @@ package com.d207.farmer.controller.community;
 
 import com.d207.farmer.dto.community.*;
 
+import com.d207.farmer.dto.survey.SurveyRegisterReRequestDTO;
+import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.service.community.CommunityService;
 import com.d207.farmer.utils.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -144,13 +146,26 @@ public class CommunityController {
      */
     @GetMapping("/tags/all")
     //public ResponseEntity<List<communityAllTagsResponseDTO>> getcommunityAllTags (@RequestHeader("Authorization") String authorization){
-    public ResponseEntity<List<?>> getcommunityAllTags (@RequestHeader("Authorization") String authorization){
+    public ResponseEntity<List<communityAllTagsResponseDTO>> getcommunityAllTags (@RequestHeader("Authorization") String authorization){
 
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Get getcommunityAllTags {} ", userId);
         return ResponseEntity.ok(communityService.getCommunityAllTags(userId));
     }
 
+
+    /**
+     * 설문조사(선택 후 제출)
+     */
+    @PostMapping("/tags/all")
+    public ResponseEntity<String> registerSurvey(@RequestHeader("Authorization") String authorization,
+                                            @RequestBody SurveyRegisterReRequestDTO SurveyRegisterReRequestDTO) {
+
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[CommunityController] Get registerSurvey {} ", userId);
+
+        return ResponseEntity.created(URI.create("/survey")).body(communityService.reregisterSurvey(userId, SurveyRegisterReRequestDTO));
+    }
 
 
 

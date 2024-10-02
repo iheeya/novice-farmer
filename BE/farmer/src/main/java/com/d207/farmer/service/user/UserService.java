@@ -15,6 +15,7 @@ import com.d207.farmer.dto.plant.PlantResponseWithIdDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.*;
 import com.d207.farmer.dto.user.mypage.UserMypageHistoryResponseDTO;
+import com.d207.farmer.dto.utils.OnlyId;
 import com.d207.farmer.exception.FailedAuthenticateUserException;
 import com.d207.farmer.exception.FailedInvalidUserException;
 import com.d207.farmer.repository.community.CommunityFavoriteTagRepository;
@@ -157,10 +158,9 @@ public class UserService {
         boolean hasPlaceWithIdZero = false;
         User user = userRepository.findById(userId).orElseThrow();
 
-        // Plant ID를 수집하기 위한 List
-        List<Long> plantIds = new ArrayList<>();
+
         // Plant 리스트에서 id가 0인지 확인
-        for (SurveyRegisterRequestDTO.Plant plant : surveyRegisterRequestDTO.getPlant()) {
+        for (OnlyId plant : surveyRegisterRequestDTO.getPlant()) {
             if (plant.getId() == 0) {
                 hasPlantWithIdZero = true; // id가 0인 경우 발견
                 break; // 반복 종료
@@ -192,7 +192,7 @@ public class UserService {
         }
 
         // Place 리스트에서 id가 0인지 확인
-        for (SurveyRegisterRequestDTO.Place place : surveyRegisterRequestDTO.getPlace()) {
+        for (OnlyId place : surveyRegisterRequestDTO.getPlace()) {
             if (place.getId() == 0) {
                 hasPlaceWithIdZero = true; // id가 0인 경우 발견
                 break; // 반복 종료
@@ -292,7 +292,7 @@ public class UserService {
         // Plant ID를 수집하기 위한 List
         List<Long> plantIds = new ArrayList<>();
 
-        for (SurveyRegisterRequestDTO.Plant plant : surveyRegisterRequestDTO.getPlant()) {
+        for (OnlyId plant : surveyRegisterRequestDTO.getPlant()) {
             plantIds.add(plant.getId());
         }
 
@@ -307,7 +307,7 @@ public class UserService {
 
         List<Long> placeIds = new ArrayList<>();
 
-        for (SurveyRegisterRequestDTO.Place place : surveyRegisterRequestDTO.getPlace()) {
+        for (OnlyId place : surveyRegisterRequestDTO.getPlace()) {
             placeIds.add(place.getId());
         }
         List<Place> placeDomain = placeRepository.findByIdIn(placeIds);

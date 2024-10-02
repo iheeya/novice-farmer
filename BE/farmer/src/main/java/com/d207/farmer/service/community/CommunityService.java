@@ -3,9 +3,12 @@ package com.d207.farmer.service.community;
 import com.d207.farmer.domain.community.*;
 import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.community.*;
+import com.d207.farmer.dto.survey.SurveyRegisterReRequestDTO;
+import com.d207.farmer.dto.utils.OnlyId;
 import com.d207.farmer.repository.community.*;
 import com.d207.farmer.repository.user.UserRepository;
 import com.d207.farmer.utils.DateUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -328,7 +331,7 @@ public class CommunityService {
     }
 
     //public List<communityAllTagsResponseDTO> getCommunityAllTags(Long userId) {
-    public List<?> getCommunityAllTags(Long userId) {
+    public List<communityAllTagsResponseDTO> getCommunityAllTags(Long userId) {
         // 사용자 조회
         User user = userRepository.findById(userId).orElseThrow();
 
@@ -341,7 +344,7 @@ public class CommunityService {
         List<CommunityFavoriteTag> favoriteTags = communityFavoriteTagRepository.findByUser(user);
         // 즐겨찾기 태그의 ID를 Set으로 변환하여 빠르게 조회
         Set<Long> favoriteTagIds = favoriteTags.stream()
-                .map(favoriteTag -> favoriteTag.getCommunitytag() != null ? favoriteTag.getCommunitytag().getId() : null)
+                .map(favoriteTag -> favoriteTag.getCommunityTag() != null ? favoriteTag.getCommunityTag().getId() : null)
                 .filter(id -> id != null) // null 체크
                 .collect(Collectors.toSet());
 
@@ -362,4 +365,29 @@ public class CommunityService {
     }
 
 
+    @Transactional
+    public String reregisterSurvey(Long userId, SurveyRegisterReRequestDTO surveyRegisterReRequestDTO) {
+
+        // 사용자 조회
+        User user = userRepository.findById(userId).orElseThrow();
+        ;
+
+
+//        for(OnlyId delTag :surveyRegisterReRequestDTO.getDeltags() ){
+//            // 커뮤니티 태그 ID로 CommunityFavoriteTag 조회
+//            CommunityTag communityTag = communityTagRepository.findById(delTag.getId()) .orElseThrow(() -> new EntityNotFoundException("CommunityTag not found"));;
+//            CommunityFavoriteTag favoriteTag = communityFavoriteTagRepository.findByUserAndCommunityTag(user,communityTag);
+//            communityFavoriteTagRepository.delete(favoriteTag);
+//        }
+//
+//        for(OnlyId plusTag :surveyRegisterReRequestDTO.getPlustags() ){
+//            // 커뮤니티 태그 ID로 CommunityFavoriteTag 조회
+//            CommunityTag communityTag = communityTagRepository.findById(plusTag.getId()) .orElseThrow(() -> new EntityNotFoundException("CommunityTag not found"));;
+//
+//            communityFavoriteTagRepository.save(new CommunityFavoriteTag(user,communityTag));
+//        }
+
+        return "Change success";
+
+    }
 }
