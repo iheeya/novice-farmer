@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import '../../styles/CommunitySearch/CommunityTag.css';
-import Data from '../../assets/dummydata/CommunityTag.json';
 import Button from '@mui/material/Button';
 import { ChangeTags } from '../../services/CommunitySearch/CommunitySearchPost';
-
+import { getTags } from '../../services/CommunitySearch/CommunitySearchGet';
 
 
 function CommunityTag() {
     // 태그 데이터를 상태로 저장
-    const [tags, setTags] = useState(Data);
-    const [initialTags, setInitialTags] = useState(Data);  // 초기 태그 데이터 상태
+    const [tags, setTags] = useState<any[]>([]);  // 태그 데이터를 상태로 저장
+    const [initialTags, setInitialTags] = useState<any[]>([]);  // 초기 태그 데이터 상태
     const [addTags, setAddTags] = useState<number[]>([]);  // 추가된 태그 데이터
     const [removeTags, setRemoveTags] = useState<number[]>([]);  // 삭제된 태그 데이터
+    const [tagsData, setTagsData] = useState<any>(null)
 
     // 버튼 클릭 시 selected 값을 토글하는 함수
     const toggleSelected = (id: number) => {
@@ -23,6 +23,35 @@ function CommunityTag() {
             )
         );
     };
+
+    // 컴포넌트 마운트 시 태그 데이터 가져오기
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const tagData = await getTags();  // API에서 태그 데이터 가져오기
+                setTags(tagData);  // 상태에 태그 데이터 설정
+                setInitialTags(tagData);  // 초기 태그 데이터도 설정
+            } catch (e) {
+                console.log(e);
+            }
+        };
+
+        fetchTags();
+    }, []); // 빈 배열을 사용하여 컴포넌트가 처음 마운트될 때만 호출
+
+    useEffect(()=> {
+        const Tags = async() => {
+            try{
+                const tagData = await getTags();
+                console.log(tagData)
+            } catch(e) {
+                console.log(e)
+            }
+        }
+
+        Tags();
+        // console.log(tagData)
+    }, []);
 
      // 태그 상태가 변경될 때마다 변경된 태그들을 추적하는 함수
      useEffect(() => {
@@ -54,6 +83,7 @@ function CommunityTag() {
         const postTag = async() => {
             try{
                 const data = await ChangeTags(payload);
+                setTagsData(data)
             } catch (e){
                 console.log(e)
             }
