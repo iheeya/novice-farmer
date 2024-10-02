@@ -6,11 +6,11 @@ function CommunityDetailHeader(){
     const navigate = useNavigate();
 
     const handleMyPage = () => {
-        navigate('/mypage')
+        navigate('/community/myArticles')
     }
 
     const handleSearchPage = () => {
-        navigate('/community/myArticles')
+        navigate('/community/search')
     }
 
 
