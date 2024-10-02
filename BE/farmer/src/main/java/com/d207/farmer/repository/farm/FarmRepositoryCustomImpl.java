@@ -44,6 +44,8 @@ public class FarmRepositoryCustomImpl implements FarmRepositoryCustom {
     public Optional<List<Farm>> findByUserIdWithCurrentGrowing(Long userId) {
         return Optional.ofNullable(queryFactory.selectFrom(farm)
                 .join(farm.plant).fetchJoin()
+                .join(farm.userPlace).fetchJoin()
+                .join(farm.userPlace.place).fetchJoin()
                 .where(
                         userIdEq(userId),
                         isCurrentGrowingFarm()

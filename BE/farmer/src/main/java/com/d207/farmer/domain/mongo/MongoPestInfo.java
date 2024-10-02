@@ -20,7 +20,7 @@ public class MongoPestInfo {
     private String name;
     private String symptom;
     private List<MongoNameDTO> plants;
-    private String control; // FIXME 이름
+    private String treatment;
     private String season;
     private List<MongoFileNameDTO> images;
 }
