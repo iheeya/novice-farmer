@@ -112,8 +112,8 @@ public class MainPageService {
         // TODO 기온
         String temperature = "25도";
 
-        return new TodoInfoComponentDTO(true, farmTodo.getTodoType(), title, farmTodo.getFarm().getMyPlantName(),
-                farmTodo.getFarm().getPlant().getName(), imagePath, farmUtil.getGrowthStep(farmTodo.getFarm()), farmTodo.getTodoDate().toLocalDate(),
+        return new TodoInfoComponentDTO(true, farmTodo.getTodoType(), title, farmTodo.getFarm().getUserPlace().getName(),
+                farmTodo.getFarm().getMyPlantName(), imagePath, farmUtil.getGrowthStep(farmTodo.getFarm()), farmTodo.getTodoDate().toLocalDate(),
                 farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
     }
 
