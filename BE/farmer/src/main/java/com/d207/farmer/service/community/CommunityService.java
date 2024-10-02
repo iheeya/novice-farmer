@@ -366,26 +366,30 @@ public class CommunityService {
 
 
     @Transactional
-    public String reregisterSurvey(Long userId, SurveyRegisterReRequestDTO surveyRegisterReRequestDTO) {
+    public String reRegisterSurvey(Long userId, SurveyRegisterReRequestDTO surveyRegisterReRequestDTO) {
 
         // 사용자 조회
         User user = userRepository.findById(userId).orElseThrow();
-        ;
 
+        if(surveyRegisterReRequestDTO.getDeltags().size()>0) {
+        for (OnlyId delTag : surveyRegisterReRequestDTO.getDeltags()) {
+            // 커뮤니티 태그 ID로 CommunityFavoriteTag 조회
+            CommunityTag communityTag = communityTagRepository.findById(delTag.getId()).orElseThrow(() -> new EntityNotFoundException("CommunityTag not found"));
+            ;
+            CommunityFavoriteTag favoriteTag = communityFavoriteTagRepository.findByUserAndCommunityTag(user, communityTag);
+            communityFavoriteTagRepository.delete(favoriteTag);
+        }
+    }
 
-//        for(OnlyId delTag :surveyRegisterReRequestDTO.getDeltags() ){
-//            // 커뮤니티 태그 ID로 CommunityFavoriteTag 조회
-//            CommunityTag communityTag = communityTagRepository.findById(delTag.getId()) .orElseThrow(() -> new EntityNotFoundException("CommunityTag not found"));;
-//            CommunityFavoriteTag favoriteTag = communityFavoriteTagRepository.findByUserAndCommunityTag(user,communityTag);
-//            communityFavoriteTagRepository.delete(favoriteTag);
-//        }
-//
-//        for(OnlyId plusTag :surveyRegisterReRequestDTO.getPlustags() ){
-//            // 커뮤니티 태그 ID로 CommunityFavoriteTag 조회
-//            CommunityTag communityTag = communityTagRepository.findById(plusTag.getId()) .orElseThrow(() -> new EntityNotFoundException("CommunityTag not found"));;
-//
-//            communityFavoriteTagRepository.save(new CommunityFavoriteTag(user,communityTag));
-//        }
+        if(surveyRegisterReRequestDTO.getPlustags().size()>0) {
+            for (OnlyId plusTag : surveyRegisterReRequestDTO.getPlustags()) {
+                // 커뮤니티 태그 ID로 CommunityFavoriteTag 조회
+                CommunityTag communityTag = communityTagRepository.findById(plusTag.getId()).orElseThrow(() -> new EntityNotFoundException("CommunityTag not found"));
+                ;
+
+                communityFavoriteTagRepository.save(new CommunityFavoriteTag(user, communityTag));
+            }
+        }
 
         return "Change success";
 

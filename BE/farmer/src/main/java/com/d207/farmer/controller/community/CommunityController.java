@@ -155,7 +155,7 @@ public class CommunityController {
 
 
     /**
-     * 설문조사(선택 후 제출)
+     * 태그 변경하기 클릭
      */
     @PostMapping("/tags/all")
     public ResponseEntity<String> registerSurvey(@RequestHeader("Authorization") String authorization,
@@ -164,7 +164,7 @@ public class CommunityController {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Get registerSurvey {} ", userId);
 
-        return ResponseEntity.created(URI.create("/survey")).body(communityService.reregisterSurvey(userId, SurveyRegisterReRequestDTO));
+        return ResponseEntity.created(URI.create("/survey")).body(communityService.reRegisterSurvey(userId, SurveyRegisterReRequestDTO));
     }
 
 
