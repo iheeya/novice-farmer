@@ -13,6 +13,7 @@ import MyPlant from "./pages/Detail/myPlant";
 import Footer from "./components/Footer";
 import MyPage from "./pages/user/myPage";
 import ProfileUpdate from "./pages/user/profileUpdate";
+import WriteCommunityArticle from "./pages/Community/WriteCommunityArticle";
 import LandingPage from "./pages/Home/Landing";
 
 function App() {
@@ -50,6 +51,7 @@ function AppContent() {
         <Route path="/user/survey" element={<Survey />} />
         <Route path="/myGarden/:myPlaceId" element={<MyGarden />} />
         <Route path="/myGarden/:myPlaceId/:myPlantId" element={<MyPlant />} />
+        <Route path="/community/article/write" element={<WriteCommunityArticle />} />
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/myPage/profile" element={<ProfileUpdate />} />
         <Route path="/introduce" element={<LandingPage />} />
