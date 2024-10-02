@@ -139,6 +139,7 @@ export default function MyInfo() {
       >
         수정
       </Button>
+
     </Box>
   );
 }

@@ -1,15 +1,16 @@
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs, Button } from "@mui/material";
 import { useState } from "react";
 import MyInfo from "../../components/user/myPage/myInfo";
 import MyHistory from "../../components/user/myPage/myHistory";
 import MyPrefer from "../../components/user/myPage/myPrefer";
+import { useNavigate } from "react-router-dom";
 
 export default function MyPage() {
   const [value, setValue] = useState("one");
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
-
+  const navigate = useNavigate()
   return (
     <Box
       sx={{
@@ -51,6 +52,15 @@ export default function MyPage() {
         {value === "two" && <MyHistory />}
         {value === "three" && <MyPrefer />}
       </Box>
+      {/* 로그아웃 버튼 */}
+      <Button variant="outlined"  sx={{ width: "60%", marginTop:"4vh" }} onClick={()=>{
+        sessionStorage.removeItem("accessToken")
+        sessionStorage.removeItem("refreshToken")
+        navigate("/introduce")
+      }
+      }>
+        로그아웃
+      </Button>
     </Box>
   );
 }
