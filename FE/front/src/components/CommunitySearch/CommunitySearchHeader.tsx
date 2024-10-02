@@ -2,6 +2,7 @@ import '../../styles/CommunitySearch/CommunitySearchHeader.css'
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { useState } from 'react';
 
 interface PropFunc{
     onTextFieldClick: () => void;
@@ -9,12 +10,21 @@ interface PropFunc{
 
 function CommunitySearchHeader({onTextFieldClick}: PropFunc){
 
-        const navigate = useNavigate();
+    const [isSearchActive, setIsSearchActive] = useState<boolean>(false)
+    const navigate = useNavigate();
 
-        const handleMyPage = () => {
-            navigate('/community/myArticles')
-        }
-    
+    const handleMyPage = () => {
+        navigate('/community/myArticles')
+    }
+
+    const handleTextFieldClick = () => {
+        setIsSearchActive(true);
+        onTextFieldClick();
+    };
+
+    const handleCancelClick = () => {
+        setIsSearchActive(false);
+    };
     
         return(
             <>
@@ -26,15 +36,24 @@ function CommunitySearchHeader({onTextFieldClick}: PropFunc){
             sx={{
                 marginLeft: '5%',
                 marginTop: '5%', 
-                width: '90%',
+                width: isSearchActive ? '75%' : '90%', // width 조절
                 '& .MuiOutlinedInput-root': {
                     height: '2.7rem' // 여기서 높이를 설정
                 },
                 backgroundColor:'#F8FAF8'
             }}
-            onClick={onTextFieldClick}
+            onClick={handleTextFieldClick}
             />
-            {/* <Button variant="contained" sx={{color: 'white', backgroundColor: '#5B8E55', marginTop:'5%', marginRight:'5%', marginLeft:'2%', height: '2.5rem'}}>검색</Button> */}
+
+            {isSearchActive && (
+                <Button
+                onClick={handleCancelClick}
+                sx={{color: '#5B8E55', 
+                    marginTop:'5%', marginRight:'5%', 
+                    marginLeft:'2%', height: '2.5rem'}}>
+                취소</Button>
+            )}
+            
             </> 
         )
     
