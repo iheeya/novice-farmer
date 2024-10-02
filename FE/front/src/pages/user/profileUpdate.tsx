@@ -23,6 +23,7 @@ interface UserInfo {
   regDate: string;
   isFirstLogin: boolean;
   gender: string;
+  imagepath:string;
   age: number;
   address: string;
   pushAllow: boolean;
@@ -309,8 +310,8 @@ export default function ProfileUpdate() {
         }}
       >
         <Avatar
-          alt="User Avatar"
-          src={"/static/images/avatar/1.jpg"}
+          alt={userInfo.nickname}
+          src={userInfo?.imagepath || "n"}
           sx={{ width: 100, height: 100, marginBottom: "20px" }}
         />
         <TextField label="이메일" value={userInfo.email} fullWidth margin="normal" disabled />
@@ -345,17 +346,6 @@ export default function ProfileUpdate() {
           inputProps={{ min: 0, max: 150 }} // 유효한 나이 범위 제한
           required
         />
-
-        {/* 성별 선택 */}
-        {/* <FormSelect
-          label="성별"
-          value={userInfo.gender}
-          options={[
-            { value: "MALE", label: "남자" },
-            { value: "FEMALE", label: "여자" },
-          ]}
-          onChange={(value) => setUserInfo({ ...userInfo, gender: value })}
-        /> */}
 
         {/* 도/특별시/광역시 선택 */}
         <FormSelect
