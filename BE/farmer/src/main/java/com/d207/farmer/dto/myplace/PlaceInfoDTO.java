@@ -10,5 +10,5 @@ public class PlaceInfoDTO {
     private String placeName;
     private String myPlaceName;
     private int farmCount;
-    private String whether;
+    private String weather;
 }
