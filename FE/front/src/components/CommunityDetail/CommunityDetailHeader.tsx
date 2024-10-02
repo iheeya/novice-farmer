@@ -6,7 +6,7 @@ function CommunityDetailHeader(){
     const navigate = useNavigate();
 
     const handleMyPage = () => {
-        navigate('/mypage')
+        navigate('/community/myArticles')
     }
 
     const handleSearchPage = () => {
@@ -16,8 +16,8 @@ function CommunityDetailHeader(){
 
     return(
         <div className='community-header-container'>
-            <div className='my-profile' onClick={handleMyPage}>MY</div> {/* 누르면 마이페이지로 이동*/}
             <FaSearch className='search' onClick={handleSearchPage}/>   {/* 누르면 검색 페이지로 이동*/}
+            <div className='my-profile' onClick={handleMyPage}>MY</div> {/* 누르면 마이페이지로 이동*/}
         </div> 
     )
 }

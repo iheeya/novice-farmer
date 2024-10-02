@@ -7,6 +7,7 @@ interface userInfoProps{
   regDate: string;
   isFirstLogin: boolean;
   gender: string;
+  imagepath:string;
   age: number;
   address: string;
   pushAllow: boolean;

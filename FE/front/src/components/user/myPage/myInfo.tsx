@@ -11,6 +11,7 @@ interface UserInfo {
   nickname: string;
   regDate: string;
   isFirstLogin: boolean;
+  imagepath: string;
   gender: string;
   age: number;
   address: string;
@@ -19,7 +20,7 @@ interface UserInfo {
 
 export default function MyInfo() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // API 호출
   useEffect(() => {
@@ -47,6 +48,11 @@ export default function MyInfo() {
         margin: "0 auto",
       }}
     >
+      <Avatar
+        alt={userInfo.nickname}
+        src={userInfo?.imagepath || "n"}
+        sx={{ width: 100, height: 100, marginBottom: "20px" }}
+      />
       {/* 유저 정보 */}
       <Paper
         elevation={3}
@@ -62,49 +68,57 @@ export default function MyInfo() {
             display: "flex",
             justifyContent: "space-between",
             marginY: "3%",
-            paddingX: "3%",          
+            paddingX: "3%",
           }}
         >
           <Typography sx={{ fontWeight: "bold" }}>닉네임</Typography>
           <Typography>{userInfo.nickname}</Typography>
         </Box>
 
-        <Box sx={{
+        <Box
+          sx={{
             display: "flex",
             justifyContent: "space-between",
             marginY: "3%",
-            paddingX: "3%",          
-          }}>
+            paddingX: "3%",
+          }}
+        >
           <Typography sx={{ fontWeight: "bold" }}>나이</Typography>
           <Typography>{userInfo.age}</Typography>
         </Box>
 
-        <Box sx={{
+        <Box
+          sx={{
             display: "flex",
             justifyContent: "space-between",
             marginY: "3%",
-            paddingX: "3%",      
-          }}>
+            paddingX: "3%",
+          }}
+        >
           <Typography sx={{ fontWeight: "bold" }}>Email</Typography>
           <Typography>{userInfo.email}</Typography>
         </Box>
 
-        <Box sx={{
+        <Box
+          sx={{
             display: "flex",
             justifyContent: "space-between",
             marginY: "3%",
-            paddingX: "3%",           
-          }}>
+            paddingX: "3%",
+          }}
+        >
           <Typography sx={{ fontWeight: "bold" }}>성별</Typography>
           <Typography>{userInfo.gender === "MALE" ? "남" : "여"}</Typography>
         </Box>
 
-        <Box sx={{
+        <Box
+          sx={{
             display: "flex",
             justifyContent: "space-between",
             marginY: "3%",
-            paddingX: "3%",         
-          }}>
+            paddingX: "3%",
+          }}
+        >
           <Typography sx={{ fontWeight: "bold" }}>사는 곳</Typography>
           <Typography>{userInfo.address}</Typography>
         </Box>
@@ -119,12 +133,13 @@ export default function MyInfo() {
           padding: "10px 30px",
           borderRadius: "20px",
         }}
-        onClick={()=>{
-          navigate("/mypage/profile")
+        onClick={() => {
+          navigate("/mypage/profile");
         }}
       >
         수정
       </Button>
+
     </Box>
   );
 }

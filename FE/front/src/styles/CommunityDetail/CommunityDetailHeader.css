@@ -14,15 +14,16 @@
     justify-content: center; /* 수평 가운데 정렬 */
     align-items: center; /* 수직 가운데 정렬 */
     margin-right: 5%;
-    margin-left: auto;
     margin-top: 5%;
 }
 
 .search{
-    top: 3.7%; 
+    margin-top: 5%;
+    margin-right: 5%;
+    margin-left: auto;
     right: 22%;
     left: auto;
     color: #5B8E55;
     font-size: 1.8rem; 
-    position:absolute;
+    /* position:absolute; */
 }
