@@ -17,7 +17,7 @@ public class MongoPlaceInfo {
     @Id
     private String id;
     private String name;
-    private String target;
+//    private String target; // 제거
     private List<MongoNameDTO> plants;
     private String description;
 }
