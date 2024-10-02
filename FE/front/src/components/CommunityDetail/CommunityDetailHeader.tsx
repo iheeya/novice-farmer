@@ -10,7 +10,7 @@ function CommunityDetailHeader(){
     }
 
     const handleSearchPage = () => {
-        navigate('/community/search')
+        navigate('/community/myArticles')
     }
 
 

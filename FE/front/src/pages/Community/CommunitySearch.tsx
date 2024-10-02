@@ -1,7 +1,10 @@
+import CommunitySearchHeader from "../../components/CommunitySearch/CommunitySearchHeader"
 
 function CommunitySearch(){
     return(
-        <div>검색 페이지..</div>
+        <>
+            <CommunitySearchHeader/>
+        </>
     )
 }
 

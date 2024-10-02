@@ -15,7 +15,7 @@ import Footer from "./components/Footer";  // 푸터 컴포넌트 임포트
 import MyPage from "./pages/user/myPage";
 import ProfileUpdate from "./pages/user/profileUpdate";
 import WriteCommunityArticle from "./pages/Community/WriteCommunityArticle";
-
+import CommunitySearch from "./pages/Community/CommunitySearch";
 
 function App() {
   return (
@@ -27,6 +27,7 @@ function App() {
         <Route path="/weekendFarm-recommend" element={<WeekendFarmList />} />
         <Route path="/community" element={<Community />} />
         <Route path="/community/:id/detail" element={<CommunityDetail />} />
+        <Route path="/community/search" element={<CommunitySearch />} />
         <Route path="/user/signup" element={<SignUp />} />
         <Route path="/user/login" element={<Login />} />
         <Route path="/user/survey" element={<Survey />} />

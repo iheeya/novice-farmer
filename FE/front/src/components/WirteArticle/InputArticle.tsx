@@ -168,18 +168,18 @@ function InputArticle(){
           
       {/* 이미지 미리보기 및 삭제 버튼 */}
       {imagePreviewUrls.length > 0 && (
-        <div style={{ marginTop: '5%', display: 'flex', flexWrap: 'wrap', justifyContent:'center' }}>
+        <div style={{ marginTop: '5%', display: 'flex', flexWrap: 'wrap', justifyContent:'center', marginLeft:'5%' }}>
           {imagePreviewUrls.map((url, index) => (
-            <div key={index} style={{ position: 'relative', display: 'inline-block', width:'100px', height:'100px' }}>
+            <div key={index} style={{ position: 'relative', display: 'inline-block', width:'100px', height:'100px', gap: '5%'}}>
               <img 
                 src={url} 
                 alt={`미리보기 ${index + 1}`} 
-                style={{ width: '100%', height: '100%', objectFit: 'contain', position: 'relative' }}
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
               {/* 'X' 버튼을 이미지 오른쪽 상단에 추가 */}
               <CloseIcon 
                 onClick={() => handleDeleteImage(index)} 
-                style={{ position: 'absolute', width:'15%', height:'15%', top: '4%', right: '13%', cursor: 'pointer', color: 'red' }}
+                style={{ position: 'absolute', width:'15px', height:'15px', top: '10px', right: '10px', cursor: 'pointer', color: 'red' }}
               />
             </div>
           ))}
@@ -218,7 +218,7 @@ function InputArticle(){
             } else {
               Swal.fire({
                 icon: "error",
-                title: "이미지는 최대 11장까지만 첨부할 수 있습니다.",
+                title: "이미지는 최대 11장까지 첨부할 수 있습니다.",
                 showConfirmButton: false,
                 timer: 1500,
               });
