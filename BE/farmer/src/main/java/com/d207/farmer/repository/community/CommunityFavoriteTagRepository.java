@@ -2,6 +2,7 @@ package com.d207.farmer.repository.community;
 
 import com.d207.farmer.domain.community.CommunityComment;
 import com.d207.farmer.domain.community.CommunityFavoriteTag;
+import com.d207.farmer.domain.community.CommunityTag;
 import com.d207.farmer.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,11 +15,11 @@ public interface CommunityFavoriteTagRepository extends JpaRepository<CommunityF
     List<CommunityFavoriteTag> findByUser(User user);
 
 
-    @Query("SELECT CFT.communitytag.id FROM CommunityFavoriteTag CFT " +
-            "GROUP BY CFT.communitytag.id " +
+    @Query("SELECT CFT.communityTag.id FROM CommunityFavoriteTag CFT " +
+            "GROUP BY CFT.communityTag.id " +
             "ORDER BY COUNT(CFT) DESC limit 5")
     List<Long> findTop5FavoriteTagIds();
 
 
-
+    CommunityFavoriteTag findByUserAndCommunityTag(User user, CommunityTag communityTag);
 }

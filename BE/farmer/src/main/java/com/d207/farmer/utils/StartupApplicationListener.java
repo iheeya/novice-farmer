@@ -19,6 +19,7 @@ import com.d207.farmer.dto.place.PlaceRegisterRequestDTO;
 import com.d207.farmer.dto.plant.PlantRegisterRequestDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.UserRegisterRequestDTO;
+import com.d207.farmer.dto.utils.OnlyId;
 import com.d207.farmer.dto.weekend_farm.WeekendFarmRegisterRequestDTO;
 import com.d207.farmer.repository.community.*;
 import com.d207.farmer.repository.farm.FarmRepository;
@@ -90,16 +91,16 @@ public class StartupApplicationListener {
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent event) {
         log.info("Application ready");
-//       createPlantSample();
-//       createPlaceSample();
-//       createWeekendFarmSample();
-//       createPlantIllustSample();
-//       createPlantThresholdSample();
-//       createUserSample();
-//       createFarmSample();
-//       createTodoSample();
-//       createCommunityTagSample();
-//       createCommunitySample();
+       createPlantSample();
+       createPlaceSample();
+       createWeekendFarmSample();
+       createPlantIllustSample();
+       createPlantThresholdSample();
+       createUserSample();
+       createFarmSample();
+       createTodoSample();
+       createCommunityTagSample();
+       createCommunitySample();
     }
 
     private void createUserSample() {
@@ -115,10 +116,10 @@ public class StartupApplicationListener {
         User user = sampleService.registerUser(u1);
 
         // 설문조사 추가(farm1@email.com)
-        SurveyRegisterRequestDTO.Place surveyPlace = new SurveyRegisterRequestDTO.Place(1L);
-        SurveyRegisterRequestDTO.Plant surveyPlant = new SurveyRegisterRequestDTO.Plant(1L);
-        List<SurveyRegisterRequestDTO.Place> surveyPlaces = new ArrayList<>();
-        List<SurveyRegisterRequestDTO.Plant> surveyPlants = new ArrayList<>();
+        OnlyId surveyPlace = new OnlyId(1L);
+        OnlyId surveyPlant = new OnlyId(1L);
+        List<OnlyId> surveyPlaces = new ArrayList<>();
+        List<OnlyId> surveyPlants = new ArrayList<>();
         surveyPlaces.add(surveyPlace);
         surveyPlants.add(surveyPlant);
         sampleService.registerFavorites(user, new SurveyRegisterRequestDTO(surveyPlants, surveyPlaces));
@@ -230,7 +231,7 @@ public class StartupApplicationListener {
         // 선호 태그
         CommunityFavoriteTag communityFavoriteTag = new CommunityFavoriteTag();
         communityFavoriteTag.setUser(user);
-        communityFavoriteTag.setCommunitytag(communityTag);
+        communityFavoriteTag.setCommunityTag(communityTag);
         communityFavoriteTagRepository.save(communityFavoriteTag);
 
         String content = "토마토는 맛있다 토마토는 맛있다 토마토는 맛있다 토마토는 맛있다 토마토는 맛있다";

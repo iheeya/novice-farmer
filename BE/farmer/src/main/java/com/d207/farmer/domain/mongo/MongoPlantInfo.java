@@ -14,15 +14,15 @@ import java.util.Map;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "plant")
+@Document(collection = "crop")
 public class MongoPlantInfo {
     @Id
     private String id;
     private String name;
-    private String cultivateInfo; // FIXME 이름
+    private String info;
     private List<MongoNameDTO> fertilizers;
     private List<MongoNameDTO> pests;
     private String harvest;
     private List<MongoFileNameDTO> images;
-    private Map<String, Double> waterAmountByGrowthStep; // FIXME 이름
+    private Integer watering; // 물 주는 주기 FIXME 리스트로 수정될수도
 }

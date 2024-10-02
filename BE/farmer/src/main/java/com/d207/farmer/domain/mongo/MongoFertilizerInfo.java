@@ -18,7 +18,7 @@ public class MongoFertilizerInfo {
     private String id;
     private String type;
     private String name;
-    private String method;
+    private String description;
     private String cycle;
     private String effect;
     private List<MongoFileNameDTO> images;
