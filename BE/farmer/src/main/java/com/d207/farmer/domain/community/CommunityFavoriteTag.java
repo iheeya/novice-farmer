@@ -27,11 +27,11 @@ public class CommunityFavoriteTag {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "community_tag_id")
-    private CommunityTag communitytag;
+    private CommunityTag communityTag;
 
 
     public CommunityFavoriteTag(User user, CommunityTag communitytag) {
         this.user = user;
-        this.communitytag = communitytag;
+        this.communityTag = communitytag;
     }
 }
