@@ -4,6 +4,7 @@ import { getImageForPlantGrowthStep } from '../../utils/imageMapping'; // 이미
 import styles from '../../styles/Detail/myPlant.module.css'; // CSS 파일 경로
 import startIcon from '../../assets/icons/start.png'; // 시작하기 버튼 아이콘
 import Icons from '../../components/Detail/Icons'; // Icons 컴포넌트 임포트
+import GrowthProgressBar from '../../components/Detail/GrowthProgressBar';
 import TodoList from '../../components/Detail/TodoList';
 import PlantManagementInfo from '../../components/Detail/PlantManageInfo';
 import PestDetection from '../../components/Detail/PestDetection';
@@ -55,7 +56,7 @@ const MyPlant = () => {
       myPlantName: '토순이',
       plantImagePath: 'test path',
       startDate: '',
-      plantGrowthStep: 2,
+      plantGrowthStep: 3,
       plantDegreeRatio: 88,
       threshold: {
         totalStep: 4,
@@ -84,7 +85,7 @@ const MyPlant = () => {
       myPlantName: '상춘이',
       plantImagePath: 'test path',
       startDate: '2024-09-25',
-      plantGrowthStep: 3,
+      plantGrowthStep: 2,
       plantDegreeRatio: 92,
       threshold: {
         totalStep: 3,
@@ -266,6 +267,13 @@ const handleFertilize = () => {
         firstHarvestDate={plantData.plantInfo.firstHarvestDate}  // 첫 수확일 전달
       />
 
+      {/* GrowthProgressBar 컴포넌트 */}
+      <GrowthProgressBar
+        plantGrowthStep={plantData.plantInfo.plantGrowthStep}
+        plantDegreeRatio={plantData.plantInfo.plantDegreeRatio}
+        threshold={plantData.plantInfo.threshold}
+      />
+
       {/* Todos 컴포넌트 */}
       <TodoList todos={plantData.todos} />
 
@@ -278,7 +286,11 @@ const handleFertilize = () => {
         />
 
         {/* 병해충 검사 박스 */}
-        <PestDetection plantName={plantData.plantInfo.myPlantName} />
+        <PestDetection
+          plantName={plantData.plantInfo.myPlantName}
+          myPlaceId={plantData.plantInfo.myPlaceId}  // placeId 전달
+          myPlantId={myPlantId ?? ''}  // plantId가 없을 경우 빈 문자열로 전달
+        />
       </div>
 
     </div>

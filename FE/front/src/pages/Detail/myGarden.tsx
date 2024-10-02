@@ -2,117 +2,65 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from '../../styles/Detail/myGarden.module.css';
 import FarmDeleteModal from '../../components/Detail/FarmDeleteModal';
-import { getImageForPlantGrowthStep } from '../../utils/imageMapping'
+import { getImageForPlantGrowthStep } from '../../utils/imageMapping';
+import { getFarmDetailPageInfo, FarmDetailPageInfoProps, Farm } from '../../services/FarmDetail/farmDetailPageApi'; 
+import { updatePlaceName } from '../../services/FarmDetail/farmDetailPageApi';
 
-interface Plant {
-  plantId: number;
-  plantName: string;
-  myPlantId: number;
-  myPlantName: string;
-  myPlantGrowthStep: number;
-  todoInfo: string;
-  seedDate: string;
-}
 
-const MyGarden = () => {
-  const { myPlaceId } = useParams();
+const MyGarden: React.FC = () => {
+  const { myPlaceId } = useParams<{ myPlaceId: string }>();
   const navigate = useNavigate();
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [placeName, setPlaceName] = useState('');
   const [nickname, setNickname] = useState('');
-  const [tempNickname, setTempNickname] = useState('');
   const [weatherInfo, setWeatherInfo] = useState('');
+  const [farms, setFarms] = useState<FarmDetailPageInfoProps['farms']>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempNickname, setTempNickname] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
-
-  const dummyData1 = {
-    placeInfo: {
-      placeId: 1,
-      placeName: '베란다',
-      myPlaceName: '우리집베란다',
-      farmCount: 2,
-      weather: '오늘 비가 올 예정입니다',
-    },
-    farms: [
-      {
-        plantId: 1,
-        plantName: '토마토',
-        myPlantId: 1,
-        myPlantName: '토순이',
-        myPlantGrowthStep: 2,
-        todoInfo: '5일 후에 물을 줘야해요',
-        seedDate: '2024-04-01',
-      },
-      {
-        plantId: 2,
-        plantName: '상추',
-        myPlantId: 2,
-        myPlantName: '상춘이',
-        myPlantGrowthStep: 3,
-        todoInfo: '5일 후에 비료를 줘야해요',
-        seedDate: '2024-04-02',
-      },
-    ],
-  };
-
-  const dummyData2 = {
-    placeInfo: {
-      placeId: 2,
-      placeName: '주말농장',
-      myPlaceName: '구미농장',
-      farmCount: 3,
-      weather: '맑고 화창한 날씨입니다',
-    },
-    farms: [
-      {
-        plantId: 3,
-        plantName: '고추',
-        myPlantId: 3,
-        myPlantName: '작고맵',
-        myPlantGrowthStep: 1,
-        todoInfo: '3일 후에 물을 줘야해요',
-        seedDate: '2024-05-01',
-      },
-      {
-        plantId: 4,
-        plantName: '바질',
-        myPlantId: 4,
-        myPlantName: '바질이',
-        myPlantGrowthStep: 2,
-        todoInfo: '2일 후에 비료를 줘야해요',
-        seedDate: '2024-06-02',
-      },
-      {
-        plantId: 5,
-        plantName: '딸기',
-        myPlantId: 5,
-        myPlantName: '딸기이',
-        myPlantGrowthStep: 3,
-        todoInfo: '내일 물을 줘야해요',
-        seedDate: '2024-07-01',
-      },
-    ],
-  };
-
-  const dummyData = myPlaceId === '1' ? dummyData1 : dummyData2;
+  const [selectedPlant, setSelectedPlant] = useState<null | Farm>(null); 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setNickname(dummyData.placeInfo.myPlaceName);
-    setTempNickname(dummyData.placeInfo.myPlaceName);
-    setWeatherInfo(dummyData.placeInfo.weather);
+    if (myPlaceId) {
+      // 실제 API 데이터 가져오기
+      getFarmDetailPageInfo(Number(myPlaceId))
+        .then((data) => {
+          setPlaceName(data.placeInfo.placeName);
+          setNickname(data.placeInfo.myPlaceName);
+          setTempNickname(data.placeInfo.myPlaceName);
+          setWeatherInfo(data.placeInfo.weather);
+          setFarms(data.farms);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch farm detail data', error);
+          setLoading(false);
+        });
+    }
   }, [myPlaceId]);
 
   const handleEditNickname = () => setIsEditing(true);
+
   const handleSaveNickname = () => {
     if (tempNickname.trim() === '') {
       alert('별명을 입력해주세요.');
       return;
     }
-    setNickname(tempNickname);
-    setIsEditing(false);
+
+    // 이름 수정 API 호출
+    updatePlaceName(Number(myPlaceId), tempNickname)
+      .then(() => {
+        setNickname(tempNickname);
+        setIsEditing(false);
+      })
+      .catch((error) => {
+        console.error('Failed to update place name', error);
+        alert('장소 이름을 수정하는 데 실패했습니다.');
+      });
   };
 
-  const handleDeletePlantClick = (plant: Plant) => {
+  const handleDeletePlantClick = (plant: Farm) => {
     setSelectedPlant(plant);
     setIsModalOpen(true);
   };
@@ -134,8 +82,7 @@ const MyGarden = () => {
   };
 
   const handleBackClick = () => navigate(-1);
-  
-  // 작물 클릭 시 작물 상세 페이지로 이동
+
   const handlePlantClick = (myPlantId: number) => {
     navigate(`/myGarden/${myPlaceId}/${myPlantId}`);
   };
@@ -143,6 +90,10 @@ const MyGarden = () => {
   const handleDeleteWeather = () => {
     setWeatherInfo('');
   };
+
+  if (loading) {
+    return <div>로딩 중...</div>;
+  }
 
   return (
     <div className={styles.gardenContainer}>
@@ -154,7 +105,7 @@ const MyGarden = () => {
           className={styles.backButton}
           onClick={handleBackClick}
         />
-        <h1 className={styles.placeName}>{dummyData.placeInfo.placeName}</h1>
+        <h1 className={styles.placeName}>{placeName}</h1>
       </div>
 
       {/* 수정 가능한 MyPlaceName */}
@@ -205,14 +156,14 @@ const MyGarden = () => {
 
       {/* Plant List */}
       <div className={styles.plantList}>
-        {dummyData.farms.map((farm) => (
+        {farms.map((farm) => (
           <div
             key={farm.myPlantId}
             className={styles.plantBox}
-            onClick={() => handlePlantClick(farm.myPlantId)}  // 클릭 시 상세 페이지로 이동
+            onClick={() => handlePlantClick(farm.myPlantId)}
           >
             <img
-              src={getImageForPlantGrowthStep(farm.plantName, farm.myPlantGrowthStep)}  // 이미지 경로 매핑 함수 적용
+              src={getImageForPlantGrowthStep(farm.plantName, farm.myPlantGrowthStep)}
               alt={farm.myPlantName}
               className={styles.plantImage}
             />
@@ -226,9 +177,9 @@ const MyGarden = () => {
               alt="Delete"
               className={styles.deletePlantIcon}
               onClick={(e) => {
-                e.stopPropagation();  // 클릭 이벤트 전파 방지
+                e.stopPropagation();
                 handleDeletePlantClick(farm);
-              }}  // 삭제 모달 열기
+              }}
             />
           </div>
         ))}
@@ -245,7 +196,7 @@ const MyGarden = () => {
       {/* Farm Delete Modal */}
       {isModalOpen && selectedPlant && (
         <FarmDeleteModal
-          placeName={dummyData.placeInfo.myPlaceName}
+          placeName={nickname}
           plantName={selectedPlant.myPlantName}
           onClose={handleModalClose}
           onDelete={handleDeletePlant}

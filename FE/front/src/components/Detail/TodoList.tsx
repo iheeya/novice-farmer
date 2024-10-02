@@ -36,6 +36,7 @@ const TodoList: React.FC<TodoListProps> = ({ todos }) => {
           <p className={styles.todoDate}>{formatDate(todo.todoDate)}</p>
           <p className={styles.todoText}>
             <span className={styles.highlightedText}>{todo.remainDay}일 후에&nbsp;</span>
+            <br />
             {todo.todoType === 'WATERING' && '물을 줘야해요!'}
             {todo.todoType === 'FERTILIZERING' && '비료를 줘야해요!'}
             {todo.todoType === 'HARVESTING' && '수확할 수 있어요!'}
