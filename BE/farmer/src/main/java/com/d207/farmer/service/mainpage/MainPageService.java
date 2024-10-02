@@ -125,7 +125,8 @@ public class MainPageService {
      */
     private BeginnerInfoComponentDTO getBeginnerInfo(Long userId, List<Farm> farms, List<FavoritePlant> favoritePlants) {
         // 키우는 작물이 없고 선호 작물이 없으면
-        if (farms != null || favoritePlants != null) {
+//        if (farms != null || favoritePlants != null) {
+        if (!userId.equals(13L) && (farms != null || favoritePlants != null)) { // FIXME 메인페이지 계정용
             return new BeginnerInfoComponentDTO(false, new ArrayList<>());
         }
 
@@ -159,7 +160,9 @@ public class MainPageService {
     private FarmGuideInfoComponentDTO getFarmGuideInfo(Long userId) {
         // 설문조사 여부와 관계없이 텃밭을 아예 만든 적이 없을 때
         List<Farm> farms = farmRepository.findByUserId(userId).orElse(null);
-        return farms == null ? new FarmGuideInfoComponentDTO(true) : new FarmGuideInfoComponentDTO(false);
+//        return farms == null ? new FarmGuideInfoComponentDTO(true) : new FarmGuideInfoComponentDTO(false);
+        // FIXME 메인페이지 계정용
+        return (farms == null || userId.equals(13L)) ? new FarmGuideInfoComponentDTO(true) : new FarmGuideInfoComponentDTO(false);
     }
 
     /**
@@ -167,7 +170,8 @@ public class MainPageService {
      */
     private FavoritesInfoComponentDTO getFavoritesInfo(Long userId, List<Farm> farms, List<FavoritePlant> favoritePlants, List<FavoritePlace> favoritePlaces) {
         // 현재 키우고 있는 텃밭이 없으면
-        if(farms != null) {
+//        if(farms != null) {
+        if(!(userId.equals(13L) && farms != null)) {  // FIXME 메인페이지 계정용
             return new FavoritesInfoComponentDTO(false, new ArrayList<>(), new ArrayList<>());
         }
         int componentSize = 0;

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Slf4j
-//@Component
+@Component
 @RequiredArgsConstructor
 public class FileUtil {
 

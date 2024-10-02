@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Slf4j
-//@RestController
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/file")
 @Tag(name = "파일관리", description = "file")
