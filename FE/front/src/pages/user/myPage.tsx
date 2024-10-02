@@ -10,7 +10,7 @@ export default function MyPage() {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -53,14 +53,19 @@ export default function MyPage() {
         {value === "three" && <MyPrefer />}
       </Box>
       {/* 로그아웃 버튼 */}
-      <Button variant="outlined"  sx={{ width: "60%", marginTop:"4vh" }} onClick={()=>{
-        sessionStorage.removeItem("accessToken")
-        sessionStorage.removeItem("refreshToken")
-        navigate("/introduce")
-      }
-      }>
-        로그아웃
-      </Button>
+      {value === "one" && (
+        <Button
+          variant="outlined"
+          sx={{ width: "60%", marginTop: "4vh" }}
+          onClick={() => {
+            sessionStorage.removeItem("accessToken");
+            sessionStorage.removeItem("refreshToken");
+            navigate("/introduce");
+          }}
+        >
+          로그아웃
+        </Button>
+      )}
     </Box>
   );
 }
