@@ -18,6 +18,7 @@ public class TodoInfoComponentDTO {
     private String farmName;
     private String plantName;
     private String plantImagePath;
+    private Integer growthStep;
     private LocalDate todoDate;
     private String address;
     private String temperature;
