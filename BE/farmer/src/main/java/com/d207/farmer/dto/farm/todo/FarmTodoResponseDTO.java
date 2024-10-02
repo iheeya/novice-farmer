@@ -4,20 +4,23 @@ import com.d207.farmer.domain.farm.TodoType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Getter
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class FarmTodoResponseDTO {
+    private Long placeId;
+    private String placeName;
     private Long myPlaceId;
     private String myPlaceName;
     private String weather;
     private List<PlantDTO> plants;
 
-    @Getter
+    @Getter @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PlantDTO {
@@ -30,7 +33,7 @@ public class FarmTodoResponseDTO {
         private List<TodoDTO> todos;
     }
 
-    @Getter
+    @Getter @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TodoDTO {

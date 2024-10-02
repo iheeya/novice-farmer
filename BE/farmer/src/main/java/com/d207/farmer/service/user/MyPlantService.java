@@ -9,10 +9,7 @@ import com.d207.farmer.dto.common.FileDirectory;
 import com.d207.farmer.dto.myplant.*;
 import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.farm.FarmTodoRepository;
-import com.d207.farmer.utils.DateUtil;
-import com.d207.farmer.utils.FastApiUtil;
-import com.d207.farmer.utils.FileUtil;
-import com.d207.farmer.utils.UserAuthUtil;
+import com.d207.farmer.utils.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,8 +33,8 @@ public class MyPlantService {
     private final FastApiUtil fastApiUtil;
     private final DateUtil dateUtil;
     private final UserAuthUtil userAuthUtil;
-//    private final FileUtil fileUtil;
-    private FileUtil fileUtil;
+    private final FileUtil fileUtil;
+    private final FarmUtil farmUtil;
 
     @Transactional
     public String startGrowPlant(Long userId, StartGrowPlantRequestDTO request) {
@@ -157,13 +154,7 @@ public class MyPlantService {
         }
 
         // 작물 growthStep 계산
-        int growthStep = 1;
-        int maxDegreeDay = farm.getPlant().getDegreeDay();
-        for(PlantThreshold pt : farm.getPlant().getPlantThresholds()) {
-            if(farm.getDegreeDay() < pt.getDegreeDay()) break;
-            growthStep++;
-        }
-        if(farm.getDegreeDay() == maxDegreeDay) growthStep++;
+        int growthStep = farmUtil.getGrowthStep(farm);
 
         // 일러스트 이미지 경로
         String imagePath = "";

@@ -10,6 +10,7 @@ import com.d207.farmer.repository.farm.UserPlaceRepository;
 import com.d207.farmer.repository.plant.PlantIllustRepository;
 import com.d207.farmer.repository.plant.PlantThresholdRepository;
 import com.d207.farmer.utils.DateUtil;
+import com.d207.farmer.utils.FarmUtil;
 import com.d207.farmer.utils.UserAuthUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class MyPlaceService {
     private final FarmRepository farmRepository;
     private final DateUtil dateUtil;
     private final UserAuthUtil userAuthUtil;
+    private final FarmUtil farmUtil;
 
     public MyPlaceResponseDTO getMyPlace(Long userId, Long myPlaceId) {
         UserPlace userPlace = userPlaceRepository.findByIdWithPlace(myPlaceId).orElseThrow();
@@ -54,11 +56,7 @@ public class MyPlaceService {
             Long myPlantId = farm.getId();
             String myPlantName = farm.getMyPlantName();
 
-            int myPlantGrowthStep = 1;
-            for (PlantThreshold pt : farm.getPlant().getPlantThresholds()) {
-                if(farm.getDegreeDay() < pt.getDegreeDay()) break;
-                myPlantGrowthStep++;
-            }
+            int myPlantGrowthStep = farmUtil.getGrowthStep(farm);
 
             String imagePath = "";
             // 일러스트 이미지 경로 불러오기

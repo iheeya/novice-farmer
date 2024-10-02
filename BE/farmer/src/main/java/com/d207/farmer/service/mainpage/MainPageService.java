@@ -17,6 +17,7 @@ import com.d207.farmer.repository.mainpage.*;
 import com.d207.farmer.repository.plant.PlantRepository;
 import com.d207.farmer.repository.user.UserRepository;
 import com.d207.farmer.utils.DateUtil;
+import com.d207.farmer.utils.FarmUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,7 @@ public class MainPageService {
     private final CommunityCommentForMainPageRepository communityCommentRepository;
     private final CommunityImageForMainPageRepository communityImageRepository;
     private final DateUtil dateUtil;
+    private final FarmUtil farmUtil;
 
     public MainPageResponseDTO getMainPage(Long userId) {
         // db 조회
@@ -78,13 +80,13 @@ public class MainPageService {
      * 1. TO DO 컴포넌트
      */
     private TodoInfoComponentDTO getTodoInfo(Long userId, List<Farm> farms) {
-        if(farms == null) return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null);
+        if(farms == null) return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null, null);
 
         List<Long> farmIds = farms.stream().map(Farm::getId).toList();
         List<FarmTodo> farmTodos = todoRepository.findByFarmIdInAndIsCompletedFalseOrderByTodoDate(farmIds);
 
         if(farmTodos == null || farmTodos.isEmpty()) {
-            return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null);
+            return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null, null);
         }
         FarmTodo farmTodo = farmTodos.get(0);
         String title = switch (farmTodo.getTodoType()) {
@@ -96,13 +98,7 @@ public class MainPageService {
         };
 
         // 현재 생장단계 구하기
-        int growthStep = 1;
-        int maxDegreeDay = farmTodo.getFarm().getPlant().getDegreeDay();
-        for (PlantThreshold pt : farmTodo.getFarm().getPlant().getPlantThresholds()) {
-            if(farmTodo.getFarm().getDegreeDay() < pt.getDegreeDay()) break;
-            growthStep++;
-        }
-        if(farmTodo.getFarm().getDegreeDay() == maxDegreeDay) growthStep++;
+        int growthStep = farmUtil.getGrowthStep(farmTodo.getFarm());
 
         String imagePath = "";
         // 일러스트 이미지 경로
@@ -117,7 +113,8 @@ public class MainPageService {
         String temperature = "25도";
 
         return new TodoInfoComponentDTO(true, farmTodo.getTodoType(), title, farmTodo.getFarm().getMyPlantName(),
-                farmTodo.getFarm().getPlant().getName(), imagePath, farmTodo.getTodoDate().toLocalDate(), farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
+                farmTodo.getFarm().getPlant().getName(), imagePath, farmUtil.getGrowthStep(farmTodo.getFarm()), farmTodo.getTodoDate().toLocalDate(),
+                farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
     }
 
     /**
