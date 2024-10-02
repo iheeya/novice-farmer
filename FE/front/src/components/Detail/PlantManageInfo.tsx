@@ -23,25 +23,25 @@ const PlantManagementInfo: React.FC<PlantManagementInfoProps> = ({
       <h3 className={styles.dateTitle}>작물관리 정보</h3>
 
       {firstHarvestDate && (
-        <p className={styles.dateItem}>
+        <div className={styles.dateItem}>
           <span className={styles.label}>첫 수확일</span>
           <span className={styles.value}>{formatDate(firstHarvestDate)}</span>
-        </p>
+        </div>
       
       )}
 
       {recentWateringDate && (
-        <p className={styles.dateItem}>
+        <div className={styles.dateItem}>
           <div className={styles.label}>마지막 물 준 날</div>
           <div className={styles.value}>{formatDate(recentWateringDate)}</div>
-        </p>
+        </div>
       )}
 
       {recentFertilizingDate && (
-        <p className={styles.dateItem}>
+        <div className={styles.dateItem}>
           <div className={styles.label}>마지막 비료 준 날</div> 
           <div className={styles.value}>{formatDate(recentFertilizingDate)}</div>
-        </p>
+        </div>
       )}
     </div>
 

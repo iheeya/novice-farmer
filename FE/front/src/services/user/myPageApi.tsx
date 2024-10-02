@@ -100,3 +100,5 @@ export function postMyLike({ plant, place }: postMyLikeProps):Promise<any>{
       return Promise.reject(error);
     });
 }
+
+

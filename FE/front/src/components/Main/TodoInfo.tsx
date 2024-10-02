@@ -7,9 +7,10 @@ interface TodoInfoProps {
     isUsable: boolean;
     todoType: string;
     title: string;
-    farmName: string;
-    cropName: string;
+    placeName: string;
+    plantName: string; 
     plantImagePath: string;
+    growthStep: string;
     todoDate: string;
     address: string;
     temperature: string;
@@ -26,9 +27,9 @@ const TodoInfo: React.FC<TodoInfoProps> = ({ data }) => {
         <img src={weatherImage} alt="Weather Icon" className={styles.weatherImage} />
       </div>
       <div className={styles.content}>
-        <img src={data.plantImagePath} alt={data.cropName} className={styles.plantImage} />
+        <img src={data.plantImagePath} alt={data.plantName} className={styles.plantImage} /> 
         <div className={styles.textSection}>
-          <div><strong>{data.cropName}</strong>가 있는 <br /><strong>{data.farmName}</strong>!</div>
+          <div><strong>{data.plantName}</strong>가 있는 <br /><strong>{data.placeName}</strong>!</div> 
           <div className={styles.info}>
             <div>
               <p className={styles.date}>{new Date(data.todoDate).toLocaleDateString()}</p>

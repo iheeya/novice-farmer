@@ -1,0 +1,64 @@
+.growthProgressBarContainer {
+    margin: 1.25rem 0; 
+    text-align: center;
+    position: relative;
+    padding: 0.25rem; 
+  }
+  
+  .progressBar {
+    position: relative;
+    width: 100%;
+    height: 1rem; 
+    background-color: #f0f0f0;
+    border-radius: 0.3125rem; 
+    overflow: hidden;
+    margin-bottom: 1.25rem; 
+  }
+  
+  .progress {
+    height: 100%;
+    background: linear-gradient(to right, rgba(91, 142, 85, 0.2), #5B8E55);
+    transition: width 0.3s ease;
+  }
+  
+  .arrow {
+    position: absolute;
+    top: -1.25rem; 
+    transform: translateX(-50%);
+  }
+  
+  .arrow img {
+    width: 1.25rem; 
+  }
+  
+  /* Threshold markers (선과 텍스트) */
+  .thresholdMarkers {
+    position: relative;
+    top: -2.5rem; 
+    width: 100%;
+    height: 0;
+  }
+  
+  .markerLine {
+    position: absolute;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap; 
+    font-size: 0.875rem; /* 14px -> 0.875rem */
+  }
+  
+  .verticalLine {
+    width: 0.125rem; /* 2px -> 0.125rem */
+    height: 1.875rem; /* 30px -> 1.875rem */
+    background-color: #5B8E55;
+    margin: 0 auto;
+  }
+  
+  .stageInfo {
+    margin-top: 2.5rem; /* 30px -> 1.875rem, 여백 추가 */
+    font-size: 1rem; /* 16px -> 1rem */
+    text-align: center;
+    font-weight: bold;
+    text-align: center;
+  }
+  

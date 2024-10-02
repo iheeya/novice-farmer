@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 
 interface MyFarmListInfoProps {
   data: {
-    isUsable: boolean;
     farms: {
       placeId: number;
       placeName: string;

@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Main from "./pages/Home/Main";
 import RegisterGarden from "./pages/AddGarden/registerGarden";
 import RegisterPlant from "./pages/AddGarden/registerPlant";
@@ -8,38 +9,16 @@ import CommunityDetail from "./pages/Community/CommunityDetail";
 import SignUp from "./pages/user/signUp";
 import Login from "./pages/user/login";
 import Survey from "./pages/user/survey";
-import MyGarden from "./pages/Detail/myGarden";
+import MyGarden from "./pages/Detail/myGarden";  
 import MyPlant from "./pages/Detail/myPlant";
-import Footer from "./components/Footer";
 import MyPage from "./pages/user/myPage";
 import ProfileUpdate from "./pages/user/profileUpdate";
-import WriteCommunityArticle from "./pages/Community/WriteCommunityArticle";
-import CommunitySearch from "./pages/Community/CommunitySearch";
-import LandingPage from "./pages/Home/Landing";
+import CameraPage from "./pages/Detail/cameraPage"; // 새 페이지 컴포넌트
+import FooterWithLocation from "./components/FooterWithLocation"; // Footer 로직 분리
 
 function App() {
   return (
     <Router>
-      <AppContent />
-    </Router>
-  );
-}
-
-function AppContent() {
-  const location = useLocation();
-
-  // Footer를 숨기고 싶은 경로 설정
-  const hideFooterRoutes = [
-    "/user/login",
-    "/user/signup",
-    "/user/survey",
-    "/introduce",
-  ];
-
-  const shouldHideFooter = hideFooterRoutes.includes(location.pathname);
-
-  return (
-    <>
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/register/garden" element={<RegisterGarden />} />
@@ -47,19 +26,17 @@ function AppContent() {
         <Route path="/weekendFarm-recommend" element={<WeekendFarmList />} />
         <Route path="/community" element={<Community />} />
         <Route path="/community/:id/detail" element={<CommunityDetail />} />
-        <Route path="/community/search" element={<CommunitySearch />} />
         <Route path="/user/signup" element={<SignUp />} />
         <Route path="/user/login" element={<Login />} />
         <Route path="/user/survey" element={<Survey />} />
         <Route path="/myGarden/:myPlaceId" element={<MyGarden />} />
         <Route path="/myGarden/:myPlaceId/:myPlantId" element={<MyPlant />} />
-        <Route path="/community/article/write" element={<WriteCommunityArticle />} />
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/myPage/profile" element={<ProfileUpdate />} />
-        <Route path="/introduce" element={<LandingPage />} />
+        <Route path="/myGarden/:myPlaceId/:myPlantId/camera" element={<CameraPage />} />
       </Routes>
-      {!shouldHideFooter && <Footer />}
-    </>
+      <FooterWithLocation />
+    </Router>
   );
 }
 

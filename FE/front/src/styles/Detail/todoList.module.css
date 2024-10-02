@@ -10,6 +10,7 @@
   
   .todoBox {
     display: flex;
+    height: 8vw;
     align-items: center;
     padding: 1rem;
     border: 1px solid #ddd;
@@ -24,12 +25,13 @@
   }
   
   .todoDate {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: bold;
     margin-right: 1rem;
   }
   
   .todoText {
+    text-align: center;
     font-size: 1rem;
     color: #333;
   }

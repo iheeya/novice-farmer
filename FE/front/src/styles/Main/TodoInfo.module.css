@@ -65,12 +65,13 @@
 
 .date, .location {
   font-size: 0.9rem;
+  text-align: center;
   font-weight: bold;
   color: #333;
 }
 
 .temperature {
-  font-size: 2rem;
+  font-size: 1rem;
   font-weight: bold;
   color: #d32f2f;
   margin-left: auto;
