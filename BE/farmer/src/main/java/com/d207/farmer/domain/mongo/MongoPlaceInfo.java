@@ -1,6 +1,6 @@
 package com.d207.farmer.domain.mongo;
 
-import com.d207.farmer.dto.mongo.MongoDescriptionDTO;
+import com.d207.farmer.dto.mongo.MongoPlaceDescriptionDTO;
 import com.d207.farmer.dto.mongo.MongoFileNameDTO;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -20,6 +20,6 @@ public class MongoPlaceInfo {
     private String id;
     private String name;
     private List<Map<String, List<String>>> season;
-    private MongoDescriptionDTO description;
+    private MongoPlaceDescriptionDTO description;
     private MongoFileNameDTO images;
 }
