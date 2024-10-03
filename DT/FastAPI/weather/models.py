@@ -43,8 +43,6 @@ class AwsStn(Base):
     stn_id = Column(SmallInteger, primary_key=True)
     lat = Column(Float)
     lon = Column(Float)
-    stn_sp = Column(String(12))
-    stn_name = Column(String(12))
     reg_id = Column(String(12), ForeignKey('weather_area.reg_id'), nullable=False)
     law_id = Column(String(12), ForeignKey('adm_district.adm_id'), nullable=False)
 
