@@ -1,16 +1,17 @@
 # 기상 정보
-import json
-import requests
-import os
+from sqlalchemy.orm import Session
+from setting.mysql import session_local
+from .models import WeatherArea, WeatherVal, AwsStn, AdmDistrict
+
 from dotenv import load_dotenv
 from io import StringIO
-import csv
-import itertools
+import json, requests, os, csv, itertools
 
 
 load_dotenv()
+db: Session = session_local()
 
-def load_reginfo(): # 예보구역 데이터 가져오기
+def load_areainfo(): # 예보구역 데이터 가져오기
     url = 'https://apihub.kma.go.kr/api/typ01/url/fct_shrt_reg.php'
     params = {'tmfc' : 0, 'disp' : 1, 'authKey' : os.getenv('WEAHTER_AUTH_KEY')}
     response = requests.get(url, params=params)
@@ -40,6 +41,24 @@ def load_reginfo(): # 예보구역 데이터 가져오기
                 filtered_data.append([
                     str(reg_id), reg_name
                 ])
+    for id, name in filtered_data:
+        add_areainfo_to_db(db, id, name)
+    
+    db.commit()
+        
+def add_areainfo_to_db(db: Session, id: str, name: str):
+    # 중복 검사
+    check_exiting = db.query(WeatherArea).filter(WeatherArea.reg_id == id).frist()
+    
+    if not check_exiting:
+        reg_info = WeatherArea(reg_id=id, reg_name=name)
+        db.add(reg_info)
+    
+        
+        
+        
+        
+        
         
 def load_adminfo(): # 행정구역 데이터 가져오기
     return
@@ -47,5 +66,8 @@ def load_adminfo(): # 행정구역 데이터 가져오기
 def load_aswsinfo(): # aws 지점 데이터 가져오기
     return
     
-def load_baseinfo(): # aws 기반 기상 데이터 가져오기
+def load_valinfo(): # aws 기반 기상 데이터 가져오기
     return
+    
+if __name__ == "__main__":
+    load_areainfo()
