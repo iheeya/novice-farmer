@@ -3,6 +3,7 @@ package com.d207.farmer.controller.weekend_farm;
 import com.d207.farmer.dto.weekend_farm.WeekendFarmRegisterRequestDTO;
 import com.d207.farmer.dto.weekend_farm.WeekendFarmResponseDTO;
 import com.d207.farmer.service.weekend_farm.WeekendFarmService;
+import com.d207.farmer.utils.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.List;
 public class WeekendFarmController {
 
     private final WeekendFarmService weekendFarmService;
+    private final JWTUtil jwtUtil;
 
     /**
      * 주말농장 등록
@@ -44,12 +46,23 @@ public class WeekendFarmController {
     }
 
     /**
-     * 작물 개별 조회(by Id)
+     * 주말농장 개별 조회(by Id)
      */
-    @Operation(summary = "작물 개별 조회", description = "작물 개별 조회(by Id)")
+    @Operation(summary = "주말농장 개별 조회", description = "주말농장 개별 조회(by Id)")
     @GetMapping("{id}")
     public ResponseEntity<WeekendFarmResponseDTO> getWeekendFarm(@PathVariable Long id) {
         log.info("[WeekendFarmController] Received get weekend farm request for {}", id);
         return ResponseEntity.ok(weekendFarmService.getWeekendFarmById(id));
+    }
+
+    /**
+     * 주말농장 추천(위치 기반)
+     */
+    @Operation(summary = "주말농장 추천(위치 기반)", description = "주말농장 추천(사용자 위치 기반)")
+    @GetMapping("/recommend")
+    public ResponseEntity<List<WeekendFarmResponseDTO>> getWeekendFarmRecommend(@RequestHeader("Authorization") String authorization) {
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[WeekendFarmController] Received getWeekendFarmRecommend request for {}", userId);
+        return ResponseEntity.ok(weekendFarmService.getWeekendFarmRecommend(userId));
     }
 }

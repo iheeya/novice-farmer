@@ -16,7 +16,8 @@ import java.util.List;
 public class MongoPlantInfo {
     @Id
     private String id;
+    private String name;
     private List<String> fertilizer;
     private List<String> pest;
-    private MongoPlantDescriptionDTO description;
+    private List<MongoPlantDescriptionDTO> description;
 }
