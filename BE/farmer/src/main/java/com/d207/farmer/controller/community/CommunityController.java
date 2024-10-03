@@ -3,14 +3,15 @@ package com.d207.farmer.controller.community;
 import com.d207.farmer.dto.community.*;
 
 import com.d207.farmer.dto.survey.SurveyRegisterReRequestDTO;
-import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.service.community.CommunityService;
 import com.d207.farmer.utils.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.net.URI;
 import java.util.List;
@@ -27,12 +28,26 @@ public class CommunityController {
 
 
     @GetMapping
-    public ResponseEntity<List<CommunityResponseDTO>> getCommunityNew(@RequestHeader("Authorization") String authorization) {
+//    public ResponseEntity<List<?>> getCommunityNew(@RequestHeader("Authorization") String authorization,
+    public ResponseEntity<Page<CommunityResponseDTO>> getCommunityNew(@RequestHeader("Authorization") String authorization,
+                                                                      @RequestParam(value = "filter", required = false) String filter,
+                                                                      @RequestParam(value = "search", required = false) String search,
+                                                                      Pageable pageable) {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Received Community");
+        if(filter.equals("new")){
+            return ResponseEntity.ok(communityService.getCommunityWithLatest(userId, filter, search, pageable));
+        }
+        else{
+            return ResponseEntity.ok(communityService.getCommunityWithHeart(userId, filter, search, pageable));
+        }
 
-        return ResponseEntity.created(URI.create("/")).body(communityService.getCommunity());
+
+
+
     }
+
+
 
     /**
      * 커뮤니티 글 올리기
@@ -166,6 +181,10 @@ public class CommunityController {
 
         return ResponseEntity.created(URI.create("/survey")).body(communityService.reRegisterSurvey(userId, SurveyRegisterReRequestDTO));
     }
+
+
+
+
 
 
 
