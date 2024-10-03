@@ -49,24 +49,40 @@ CREATE TABLE today_weather_val(
 
 CREATE TABLE crop_base(
     `crop_id` TINYINT PRIMARY KEY AUTO_INCREMENT,
-    `crop_name` VARCHAR(10) NOT NULL
+    `crop_name` VARCHAR(10) NOT NULL,
+    `crop_plant_season` VARCHAR(20) # 1, 2, 3으로 입력.
 );
 
 CREATE TABLE crop_fertilizer(
     `fertilizer_id` TINYINT PRIMARY KEY,
     `fertilizer_type` VARCHAR(20),
-    `fertilizer_name` VARCHAR(255),
-    `fertilizer_period` TINYINT
+    `fertilizer_name` VARCHAR(255)
 );
 
-CREATE TABLE crop_info(
+CREATE TABLE crop_fertilizer_period(
     `crop_id` TINYINT PRIMARY KEY,
-    `crop_plant_season` VARCHAR(20), # 1, 2, 3으로 입력.
-    `fertilizer_season` VARCHAR(20),
-    `watering_period` TINYINT,
-    `fertilizer_id` TINYINT,
-    FOREIGN KEY crop_info(crop_id) REFERENCES crop_base(crop_id) ON DELETE CASCADE,
-    FOREIGN KEY crop_info(fertilizer_id) REFERENCES crop_fertilizer(fertilizer_id) ON DELETE SET NULL ON UPDATE CASCADE
+    `fertilizer_step1` VARCHAR(20), # growth 1단계에서 시비 주기.
+    `fertilizer_step2` VARCHAR(20), # growth 2단계에서 시비 주기.
+    `fertilizer_step3` VARCHAR(20), # growth 3단계에서 시비 주기.
+    `fertilizer_step4` VARCHAR(20), # growth 4단계에서 시비 주기.
+    fertilizer_step1_id TINYINT,  # 1단계에서 사용할 비료
+    fertilizer_step2_id TINYINT,  # 2단계에서 사용할 비료
+    fertilizer_step3_id TINYINT,  # 3단계에서 사용할 비료
+    fertilizer_step4_id TINYINT,  # 4단계에서 사용할 비료
+    FOREIGN KEY (crop_id) REFERENCES crop_base(crop_id) ON DELETE CASCADE,
+    FOREIGN KEY (fertilizer_step1_id) REFERENCES crop_fertilizer(fertilizer_id),
+    FOREIGN KEY (fertilizer_step2_id) REFERENCES crop_fertilizer(fertilizer_id),
+    FOREIGN KEY (fertilizer_step3_id) REFERENCES crop_fertilizer(fertilizer_id),
+    FOREIGN KEY (fertilizer_step4_id) REFERENCES crop_fertilizer(fertilizer_id)
+);
+
+CREATE TABLE crop_water_period(
+    `crop_id` TINYINT PRIMARY KEY,
+    `watering_step1` TINYINT, # growth 1단계에서 관수 주기.
+    `watering_step2` TINYINT, # growth 1단계에서 관수 주기.
+    `watering_step3` TINYINT, # growth 1단계에서 관수 주기.
+    `watering_step4` TINYINT, # growth 1단계에서 관수 주기.
+    FOREIGN KEY crop_water_period(crop_id) REFERENCES crop_base(crop_id) ON DELETE CASCADE
 );
 
 CREATE TABLE growth_temp
@@ -76,3 +92,5 @@ CREATE TABLE growth_temp
     `growth_low_temp`  FLOAT4, # 생육 최고 기온
     FOREIGN KEY growth_temp(crop_id) REFERENCES crop_base(crop_id) ON DELETE CASCADE
 );
+
+
