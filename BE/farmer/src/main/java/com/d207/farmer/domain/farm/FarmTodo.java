@@ -26,6 +26,9 @@ public class FarmTodo {
     @Enumerated(EnumType.STRING)
     private TodoType todoType;
 
+    @Column(name = "farm_tddo_type")
+    private String todoTitle;
+
     @Column(name = "farm_todo_is_completed")
     private Boolean isCompleted;
 

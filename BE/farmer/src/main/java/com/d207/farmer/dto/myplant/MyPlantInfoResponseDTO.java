@@ -30,6 +30,10 @@ public class MyPlantInfoResponseDTO {
         private int plantGrowthStep;
         private int plantDegreeRatio;
         private ThresholdDTO threshold;
+        private String firstHarvestDate;
+        private String recentWateringDate;
+        private String recentFertilizingDate;
+        private String memo;
     }
 
     @Getter
@@ -45,8 +49,9 @@ public class MyPlantInfoResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ThresholdDTO {
-        private int step1;
-        private int step2;
-        private int step3;
+        private Integer totalStep;
+        private Integer step1;
+        private Integer step2;
+        private Integer step3;
     }
 }

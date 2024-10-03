@@ -1,0 +1,10 @@
+//use farm_info
+//db.createCollection('place')
+//db.createCollection('crop')
+//db.createCollection('pest')
+//db.createCollection('fertilizer')
+//db.createCollection('cultivation')
+//db.createCollection('info')
+db.createCollection('caution')
+db.createCollection('management')
+db.crop.insertMany()

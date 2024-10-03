@@ -13,4 +13,7 @@ public interface CommunityHeartRepository extends CrudRepository<CommunityHeart,
 
     // Community에 속한 모든 CommunityHeart를 반환하는 메서드
     List<CommunityHeart> findByCommunity(Community community);
+
+
+    CharSequence findByCommunityAndUserId(Community community, Long userId);
 }

@@ -17,4 +17,8 @@ public interface FarmTodoRepository extends JpaRepository<FarmTodo, Long> {
 
     @Query("select ft from FarmTodo ft where ft.farm.id = :farmId and ft.isCompleted = false order by ft.todoDate")
     List<FarmTodo> findByFarmIdAndIsCompletedFalse(@Param("farmId") Long farmId);
+
+    @Query("select ft from FarmTodo ft where ft.farm.id = :farmId and ft.isCompleted = true" +
+            " and (ft.todoType = :watering or ft.todoType = :fertilizing) order by ft.todoDate")
+    List<FarmTodo> findByFarmIdAndIsCompletedTrue(@Param("farmId") Long myPlantId, @Param("watering") TodoType watering,@Param("fertilizing") TodoType fertilizering);
 }
