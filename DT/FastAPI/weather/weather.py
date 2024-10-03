@@ -7,11 +7,10 @@ from io import StringIO
 import csv
 import itertools
 
-from 
 
 load_dotenv()
 
-def load_reginfo():
+def load_reginfo(): # 예보구역 데이터 가져오기
     url = 'https://apihub.kma.go.kr/api/typ01/url/fct_shrt_reg.php'
     params = {'tmfc' : 0, 'disp' : 1, 'authKey' : os.getenv('WEAHTER_AUTH_KEY')}
     response = requests.get(url, params=params)
@@ -42,3 +41,11 @@ def load_reginfo():
                     str(reg_id), reg_name
                 ])
         
+def load_adminfo(): # 행정구역 데이터 가져오기
+    return
+
+def load_aswsinfo(): # aws 지점 데이터 가져오기
+    return
+    
+def load_baseinfo(): # aws 기반 기상 데이터 가져오기
+    return
