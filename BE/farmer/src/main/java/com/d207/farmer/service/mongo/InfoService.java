@@ -1,6 +1,7 @@
 package com.d207.farmer.service.mongo;
 
 import com.d207.farmer.domain.mongo.MongoFertilizerInfo;
+import com.d207.farmer.domain.mongo.MongoPestInfo;
 import com.d207.farmer.domain.mongo.MongoPlaceInfo;
 import com.d207.farmer.domain.mongo.MongoPlantInfo;
 import com.d207.farmer.dto.common.FileDirectory;
@@ -215,5 +216,22 @@ public class InfoService {
 
         return new ImagesAndContentsResponseDTO(images, contents);
 
+    }
+
+    public List<TypeInfoResponseDTO> getPestTypeInfo() {
+        List<TypeInfoResponseDTO> result = new ArrayList<>();
+
+        List<MongoPestInfo> pests = mongoPestRepository.findAll();
+
+        for (MongoPestInfo pest : pests) {
+            result.add(new TypeInfoResponseDTO(pest.getName(), "자세히 보기",
+                    MONGO.toString().toLowerCase() + "/" + pest.getImages().get(0)));
+        }
+
+        // 샘플 2개
+        result.add(new TypeInfoResponseDTO("잎곰팡삼병", "자세히 보기", ""));
+        result.add(new TypeInfoResponseDTO("잎곰팡사병", "자세히 보기", ""));
+
+        return result;
     }
 }
