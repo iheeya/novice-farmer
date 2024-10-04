@@ -1,7 +1,9 @@
 package com.d207.farmer.service.mongo;
 
+import com.d207.farmer.domain.mongo.MongoFertilizerInfo;
 import com.d207.farmer.domain.mongo.MongoPlaceInfo;
 import com.d207.farmer.domain.mongo.MongoPlantInfo;
+import com.d207.farmer.dto.common.FileDirectory;
 import com.d207.farmer.dto.mongo.place.*;
 import com.d207.farmer.dto.mongo.plant.*;
 import com.d207.farmer.repository.mongo.MongoFertilizerRepository;
@@ -177,5 +179,22 @@ public class InfoService {
         contents.add(new ImagesAndContentsResponseDTO.ContentDTO("추가 정보", plant.getAdditionalInfo()));
 
         return new ImagesAndContentsResponseDTO(images, contents);
+    }
+
+    public List<TypeInfoResponseDTO> getFertilizerTypeInfo() {
+        List<TypeInfoResponseDTO> result = new ArrayList<>();
+
+        List<MongoFertilizerInfo> fertilizers = mongoFertilizerRepository.findAll();
+
+        for (MongoFertilizerInfo fertilizer : fertilizers) {
+            result.add(new TypeInfoResponseDTO(fertilizer.getComponent(), "자세히 보기",
+                    MONGO.toString().toLowerCase() + "/" + fertilizer.getImages().get(0)));
+        }
+
+        // 샘플 2개
+        result.add(new TypeInfoResponseDTO("제2인산칼슘", "자세히 보기", ""));
+        result.add(new TypeInfoResponseDTO("제3인산칼슘", "자세히 보기", ""));
+
+        return result;
     }
 }
