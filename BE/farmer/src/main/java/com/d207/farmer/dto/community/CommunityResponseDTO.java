@@ -12,12 +12,14 @@ import java.util.List;
 public class CommunityResponseDTO {
     private Long communityId;
     private Long userId;
+    private String userNickname;
+    private String userImagePath;
     private String communityTitle;
     private List<String> communityImage;
-    private String communitycontent;
+    private String communityContent;
     private LocalDateTime communityDate;
     private List<String> communityTag;
-    private int communityHeart;
-    private int communityContent;
+    private int communityHeartCount;
+    private int communityContentCount;
 
 }

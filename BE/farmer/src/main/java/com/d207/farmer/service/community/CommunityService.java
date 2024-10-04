@@ -90,10 +90,16 @@ public class CommunityService {
             long heartCount = countObject instanceof Number ? ((Number) countObject).longValue() : 0L; // null 체크 및 변환
             int heartCountint = (int) heartCount; // Long을 int로 변환
 
+            //
+
+
+
             // DTO 생성
             return new CommunityResponseDTO(
                     community.getId(),
                     community.getUser().getId(),
+                    community.getUser().getNickname(),
+                    community.getUser().getImagePath(),
                     community.getTitle(),
                     communityImages,
                     community.getContent(),
@@ -171,12 +177,14 @@ public class CommunityService {
         return new CommunityResponseDTO(
                 community.getId(),
                 community.getUser().getId(),
+                community.getUser().getNickname(),
+                community.getUser().getImagePath(),
                 community.getTitle(),
                 communityImages,
                 community.getContent(),
                 community.getWriteDate(),
                 tagNames,
-                heartCountint,
+                (int) heartCount, // int로 변환
                 community.getContent().length() // 또는 필요한 다른 정보를 사용
         );
     });
