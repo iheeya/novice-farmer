@@ -196,12 +196,13 @@ public class CommunityService {
     }
 
     @Transactional
-    public String registerCommunity(Long userId, CommunityRegisterDTO communityRegisterDTO, List<MultipartFile> multipartFileList) {
+    public Long registerCommunity(Long userId, CommunityRegisterDTO communityRegisterDTO) {
 
 
         User user = userRepository.findById(userId).orElseThrow();
         Community community = new Community(user, communityRegisterDTO.getCommunityTitle(), communityRegisterDTO.getCommunityContent());
-        communityRepository.save(community);
+        // 커뮤니티 저장 후 반환된 객체에서 ID를 가져옴
+        Community savedCommunity = communityRepository.save(community);
 
         // CommunityTagRepository에서 태그 목록을 가져오기
         List<CommunityTag> communityTags = communityTagRepository.findBytagNameIn(communityRegisterDTO.getCommunityTagList());
@@ -225,17 +226,12 @@ public class CommunityService {
         }
 
 
-        // Community_image 테이블에 imagePath 집어넣기
-        for(MultipartFile multipartFile : multipartFileList){
-            String userimagepath = fileUtil.uploadFile(multipartFile, FileDirectory.COMMUNITY);
-            communityImageRepository.save(new CommunityImage(community, userimagepath));
-
-
-        }
 
 
 
-        return "register Success";
+
+
+        return savedCommunity.getId();
     }
 
     @Transactional
@@ -417,7 +413,7 @@ public class CommunityService {
     }
 
     @Transactional
-    public String communityOneModifyRequest(Long userId, Long id, CommunityOneModifyRequestDTO communityOneModifyRequestDTO, List<MultipartFile> files) {
+    public String communityOneModifyRequest(Long userId, Long id, CommunityOneModifyRequestDTO communityOneModifyRequestDTO) {
 
         Community community = communityRepository.findByIdWithUser(id).orElseThrow();
 
@@ -437,7 +433,7 @@ public class CommunityService {
 
 
 
-            for(MultipartFile Singlepartfile : files){
+            for(MultipartFile Singlepartfile : communityOneModifyRequestDTO.getFiles()){
                 String imagePathdto = fileUtil.uploadFile(Singlepartfile, FileDirectory.COMMUNITY);
 
                   communityImageRepository.save(new CommunityImage(community, imagePathdto));
@@ -541,4 +537,22 @@ public class CommunityService {
     }
 
 
+    @Transactional
+    public String registerCommunityImage(Long userId, Long communityId, List<MultipartFile> file) {
+
+        Community community = communityRepository.findById(communityId).orElseThrow();
+        if(community.getUser().getId().equals(userId)){
+        for( MultipartFile file2: file) {
+            String userimagepath = fileUtil.uploadFile(file2,FileDirectory.COMMUNITY);
+            communityImageRepository.save(new CommunityImage(community,userimagepath ));
+
+        }
+            return "Success";
+            }
+        else{
+            return "No image";
+        }
+
+
+    }
 }
