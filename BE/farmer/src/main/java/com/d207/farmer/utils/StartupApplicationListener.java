@@ -19,6 +19,7 @@ import com.d207.farmer.dto.place.PlaceRegisterRequestDTO;
 import com.d207.farmer.dto.plant.PlantRegisterRequestDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.UserRegisterRequestDTO;
+import com.d207.farmer.dto.user.sample.UserSampleRegisterRequestDTO;
 import com.d207.farmer.dto.utils.OnlyId;
 import com.d207.farmer.dto.weekend_farm.WeekendFarmRegisterRequestDTO;
 import com.d207.farmer.repository.community.*;
@@ -56,6 +57,7 @@ import static java.lang.Boolean.TRUE;
 public class StartupApplicationListener {
 
     private static final int USER_NUM = 10;
+    private final String[] userNicknames = {"불꽃토마토", "농슐랭3스타", "농사하는돌아이", "농부카세", "농부여신", "농사대가", "주말엔농부", "당근조아", "토마토조아", "청양고추조아"};
     private final Object[][] plantSamples = {{"토마토", 1960, true}, {"고추", 1960, true}, {"옥수수", 1960, false}, {"오이", 1960, false}, {"콩", 1960, false},
                                              {"가지", 1960, true}, {"무", 1960, true}, {"상추", 1960, false}, {"배추", 1960, false}, {"감자", 1960, false},
                                              {"고구마", 1960, true}, {"대파", 1960, true}};
@@ -91,27 +93,29 @@ public class StartupApplicationListener {
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent event) {
         log.info("Application ready");
-      createPlantSample();
-      createPlaceSample();
-      createWeekendFarmSample();
-      createPlantIllustSample();
-      createPlantThresholdSample();
-      createUserSample();
-      createFarmSample();
-      createTodoSample();
-      createCommunityTagSample();
-      createCommunitySample();
+//      createPlantSample();
+//      createPlaceSample();
+//      createWeekendFarmSample();
+//      createPlantIllustSample();
+//      createPlantThresholdSample();
+//      createUserSample();
+//      createFarmSample();
+//      createTodoSample();
+//      createCommunityTagSample();
+//      createCommunitySample();
     }
 
     private void createUserSample() {
         for (int i = 1; i < USER_NUM + 1; i++) {
-            UserRegisterRequestDTO u = new UserRegisterRequestDTO(
-                    "test" + i + "@email.com", "1234", "test" + i, 20 + i, Gender.MALE, "대구광역시 달서구", true
+            UserSampleRegisterRequestDTO u = new UserSampleRegisterRequestDTO(
+                    "test" + i + "@email.com", "1234", userNicknames[i-1], 20 + i, Gender.MALE,
+                    "경상북도 구미시", true, userNicknames[i-1] + ".png"
             );
             sampleService.registerUser(u);
         }
-        UserRegisterRequestDTO u1 = new UserRegisterRequestDTO( // id 11번
-                "farm1@email.com", "1234", "farmer1", 25, Gender.MALE, "경상북도 구미시", true
+        UserSampleRegisterRequestDTO u1 = new UserSampleRegisterRequestDTO( // id 11번
+                "farm1@email.com", "1234", "내손이호미", 25, Gender.MALE,
+                "경상북도 구미시", true, "farmer1.png"
         );
         User user = sampleService.registerUser(u1);
 
@@ -124,12 +128,14 @@ public class StartupApplicationListener {
         surveyPlants.add(surveyPlant);
         sampleService.registerFavorites(user, new SurveyRegisterRequestDTO(surveyPlants, surveyPlaces));
 
-        UserRegisterRequestDTO u2 = new UserRegisterRequestDTO(
-                "farm2@email.com", "1234", "farmer2", 25, Gender.MALE, "경상북도 구미시", true
+        UserSampleRegisterRequestDTO u2 = new UserSampleRegisterRequestDTO(
+                "farm2@email.com", "1234", "귀농각", 25, Gender.MALE,
+                "경상북도 구미시", true, "farmer2.png"
         );
         sampleService.registerUser(u2);
-        UserRegisterRequestDTO u3 = new UserRegisterRequestDTO(
-                "mainpage@email.com", "1234", "mainpage", 30, Gender.MALE, "경상북도 포항시", true
+        UserSampleRegisterRequestDTO u3 = new UserSampleRegisterRequestDTO(
+                "mainpage@email.com", "1234", "농부의정원", 30, Gender.MALE,
+                "경상북도 구미시", true, "mainpage.png"
         );
         User mainpageUser = sampleService.registerUser(u3);
         sampleService.registerFavorites(mainpageUser, new SurveyRegisterRequestDTO(surveyPlants, surveyPlaces));

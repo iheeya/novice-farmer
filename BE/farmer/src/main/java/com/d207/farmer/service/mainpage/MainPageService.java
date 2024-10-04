@@ -80,13 +80,13 @@ public class MainPageService {
      * 1. TO DO 컴포넌트
      */
     private TodoInfoComponentDTO getTodoInfo(Long userId, List<Farm> farms) {
-        if(farms == null) return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null, null);
+        if(farms == null) return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null, null, null);
 
         List<Long> farmIds = farms.stream().map(Farm::getId).toList();
         List<FarmTodo> farmTodos = todoRepository.findByFarmIdInAndIsCompletedFalseOrderByTodoDate(farmIds);
 
         if(farmTodos == null || farmTodos.isEmpty()) {
-            return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null, null);
+            return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null, null, null);
         }
         FarmTodo farmTodo = farmTodos.get(0);
         String title = switch (farmTodo.getTodoType()) {
@@ -113,8 +113,8 @@ public class MainPageService {
         String temperature = "25도";
 
         return new TodoInfoComponentDTO(true, farmTodo.getTodoType(), title, farmTodo.getFarm().getUserPlace().getName(),
-                farmTodo.getFarm().getMyPlantName(), imagePath, farmUtil.getGrowthStep(farmTodo.getFarm()), farmTodo.getTodoDate().toLocalDate(),
-                farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
+                farmTodo.getFarm().getMyPlantName(), farmTodo.getFarm().getPlant().getName(), imagePath, farmUtil.getGrowthStep(farmTodo.getFarm()),
+                farmTodo.getTodoDate().toLocalDate(), farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
     }
 
     /**
