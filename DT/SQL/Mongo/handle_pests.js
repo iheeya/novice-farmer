@@ -1,7 +1,8 @@
 use farm_info
 db.pests.insertMany([
     {
-      "name": "잎말이곰팡이병",  // 병해충 이름
+      "name": "잎곰팡이병",  // 병해충 이름
+      "images": ["잎곰팡이병_1.jpg"],
       "description": "습한 환경에서 퍼지는 병으로 작물에 큰 피해를 줌.",  // 병해충 설명
       "affected_crops": ["토마토", "고추"],  // 영향을 받는 작물
       "symptoms": "잎이 누렇게 변하고 시들어버림.",  // 증상

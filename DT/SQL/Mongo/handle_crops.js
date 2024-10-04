@@ -3,6 +3,7 @@ db.crops.deleteOne({"name":"토마토"})
 db.crops.insertMany([
     {
       "name": "토마토",  // 작물 이름
+      "images": ["토마토_1.jpg"],
       "definition": "과일형 채소로, 다양한 요리에 활용되며 열매가 많이 달리는 특징이 있음.",  // 작물 설명
       "best_season": ["3", "4", "5"],  // 키우기 좋은 계절
       "optimal_temperature": { "min": "18", "max": "30" },  // 잘 자라는 온도 (최소, 최대)
