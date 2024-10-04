@@ -11,6 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class MultiFileUploadTestRequestDTO {
-    private String msg;
     private List<MultipartFile> files; // 파일을 리스트로 변경
 }
