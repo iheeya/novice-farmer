@@ -26,7 +26,7 @@ public class MongoPlantInfo {
     private String definition;
 
     @Field(name = "best_season")
-    private String bestSeason;
+    private List<String> bestSeason;
 
     @Field(name = "optimal_temperature")
     private OptimalTemperature optimalTemperature;
