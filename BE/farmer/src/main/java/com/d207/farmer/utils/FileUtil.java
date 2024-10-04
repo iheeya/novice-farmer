@@ -2,6 +2,7 @@ package com.d207.farmer.utils;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectResult;
 import com.d207.farmer.dto.common.FileDirectory;
 import com.d207.farmer.exception.MyFileUploadException;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class FileUtil {
         metaData.setContentLength(file.getSize());
         try {
             amazonS3Client.putObject(bucket, filePrefix + uploadFileName, file.getInputStream(), metaData);
-            return uploadFileName;
+            return filePrefix + uploadFileName;
         } catch (IOException e) {
             throw new MyFileUploadException("파일 업로드에 실패하였습니다.", e.getCause());
         }

@@ -47,12 +47,6 @@ public class MongoController {
         return ResponseEntity.ok().body(mongoService.findAllPlaceInfo());
     }
 
-    @GetMapping("/place/{placeName}")
-    public ResponseEntity<MongoPlaceInfo> getPlaceInfoByName(@PathVariable("placeName") String name) {
-        log.info("[MongoController] Received getPlaceInfoByName request");
-        return ResponseEntity.ok().body(mongoService.findPlaceByName(name));
-    }
-
     /**
      * PEST
      */
