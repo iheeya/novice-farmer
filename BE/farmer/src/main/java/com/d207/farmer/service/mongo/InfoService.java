@@ -197,4 +197,23 @@ public class InfoService {
 
         return result;
     }
+
+    public ImagesAndContentsResponseDTO getFertilizerInfo(InfoNameRequestDTO request) {
+        MongoFertilizerInfo fertilizer = mongoFertilizerRepository.findByComponent(request.getName());
+
+        List<String> images = fertilizer.getImages();
+        images = addPrefixImages(images);
+
+        List<ImagesAndContentsResponseDTO.ContentDTO> contents = new ArrayList<>();
+
+        contents.add(new ImagesAndContentsResponseDTO.ContentDTO(fertilizer.getType(), fertilizer.getComponent()));
+
+        contents.add(new ImagesAndContentsResponseDTO.ContentDTO("설명", fertilizer.getDescription()));
+
+        String usageCrops = getStringConcatByComma(fertilizer.getUsageCrops(), "");
+        contents.add(new ImagesAndContentsResponseDTO.ContentDTO("사용 작물", usageCrops));
+
+        return new ImagesAndContentsResponseDTO(images, contents);
+
+    }
 }

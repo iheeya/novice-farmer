@@ -93,4 +93,16 @@ public class InfoController {
         log.info("[InfoController] Received getFertilizerTypeInfo request for {}", userId);
         return ResponseEntity.ok().body(infoService.getFertilizerTypeInfo());
     }
+
+    /**
+     * 각 비료 조회
+     */
+    @Operation(summary = "각 비료 조회", description = "각 비료 조회(이름)")
+    @PostMapping("/fertilizer")
+    public ResponseEntity<ImagesAndContentsResponseDTO> getFertilizerInfo(@RequestHeader("Authorization") String authorization,
+                                                                          @RequestBody InfoNameRequestDTO request) {
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[InfoController] Received getFertilizerInfo request for {}", request);
+        return ResponseEntity.ok().body(infoService.getFertilizerInfo(request));
+    }
 }
