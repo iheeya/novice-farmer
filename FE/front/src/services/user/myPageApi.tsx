@@ -1,4 +1,5 @@
 import api from "../../utils/axios";
+import axios from "axios";
 
 // 프로필 이미지 URL 은 어디에?
 interface userInfoProps{
@@ -59,6 +60,21 @@ export function getMyInfo(): Promise<userInfoProps> {
 export function postMyInfo (userInfo: userInfoProps): Promise<any> {
   return api
     .post("/user/mypage", userInfo)
+    .then((response) => {
+      // console.log(response.data);
+      return Promise.resolve(response.data);
+    })
+    .catch((error) => {
+      return Promise.reject(error);
+    });
+}
+
+export function postProfileImage(file: File): Promise<boolean> {
+  const formData = new FormData();
+  formData.append('file', file); // FormData 객체에 파일 추가
+
+  return api
+    .post('/user/mypage/image', formData)
     .then((response) => {
       return Promise.resolve(response.data);
     })

@@ -5,6 +5,7 @@ import MyHistory from "../../components/user/myPage/myHistory";
 import MyPrefer from "../../components/user/myPage/myPrefer";
 import { useNavigate } from "react-router-dom";
 
+
 export default function MyPage() {
   const [value, setValue] = useState("one");
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
