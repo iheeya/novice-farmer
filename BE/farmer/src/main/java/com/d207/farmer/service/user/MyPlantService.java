@@ -190,7 +190,7 @@ public class MyPlantService {
         // To Do의 최근 물주기 날짜구하기
         LocalDate recentWateringDate = null;
         for (FarmTodo ft : farmTodosIsCompleted) {
-            if(ft.getTodoType().equals(TodoType.WATERING)) {
+            if(ft.getTodoType() == TodoType.WATERING) {
                 recentWateringDate = ft.getTodoDate().toLocalDate();
                 break;
             }
@@ -199,7 +199,7 @@ public class MyPlantService {
         // To Do의 최근 비료주기 날짜구하기
         LocalDate recentFertilizingDate = null;
         for (FarmTodo ft : farmTodosIsCompleted) {
-            if(ft.getTodoType().equals(TodoType.FERTILIZERING)) {
+            if(ft.getTodoType() == TodoType.FERTILIZERING) {
                 recentFertilizingDate = ft.getTodoDate().toLocalDate();
                 break;
             }

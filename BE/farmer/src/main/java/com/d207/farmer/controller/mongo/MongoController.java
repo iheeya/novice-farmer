@@ -77,9 +77,4 @@ public class MongoController {
         return ResponseEntity.ok().body(mongoService.findAllFertilizerInfo());
     }
 
-    @GetMapping("/fertilizer/{fertilizerName}")
-    public ResponseEntity<MongoFertilizerInfo> getFertilizerInfoByName(@PathVariable("fertilizerName") String name) {
-        log.info("[MongoController] Received getFertilizerInfoByName request");
-        return ResponseEntity.ok().body(mongoService.findFertilizerByName(name));
-    }
 }

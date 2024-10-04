@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MongoDescriptionDTO {
+public class MongoPlaceDescriptionDTO {
     @Field(name = "place_info")
     private String placeInfo;
 

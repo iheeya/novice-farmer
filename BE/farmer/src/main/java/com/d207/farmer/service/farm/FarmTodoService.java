@@ -65,7 +65,7 @@ public class FarmTodoService {
             for (FarmTodo ft : farmTodos) {
                 if(ft.getFarm().getId().equals(farm.getId())) {
                     // 날씨 체크
-                    if(ft.getTodoType().equals(TodoType.NATURE)) {
+                    if(ft.getTodoType() == TodoType.NATURE) {
                         dto.setWeather(ft.getTodoTitle());
                         continue;
                     }
