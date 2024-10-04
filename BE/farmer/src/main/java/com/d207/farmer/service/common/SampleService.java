@@ -8,6 +8,7 @@ import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.UserInfoResponseDTO;
 import com.d207.farmer.dto.user.UserRegisterRequestDTO;
+import com.d207.farmer.dto.user.sample.UserSampleRegisterRequestDTO;
 import com.d207.farmer.dto.utils.OnlyId;
 import com.d207.farmer.repository.place.PlaceRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
@@ -35,7 +36,7 @@ public class SampleService {
     private final FavoritePlaceRepository favoritePlaceRepository;
 
     @Transactional
-    public User registerUser(UserRegisterRequestDTO request) {
+    public User registerUser(UserSampleRegisterRequestDTO request) {
         User user = new User(request);
         return userRepository.save(user);
     }

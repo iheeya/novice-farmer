@@ -58,6 +58,7 @@ spring:
       host: j11d207.p.ssafy.io
       port: 6379
     mongodb:
+#      ***REMOVED***
       ***REMOVED***
 
   # project 종료 후 제거 필요!
