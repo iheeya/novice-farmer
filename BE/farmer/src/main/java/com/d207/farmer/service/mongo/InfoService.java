@@ -2,9 +2,7 @@ package com.d207.farmer.service.mongo;
 
 import com.d207.farmer.domain.mongo.MongoPlaceInfo;
 import com.d207.farmer.dto.common.FileDirectory;
-import com.d207.farmer.dto.mongo.place.PlaceDetail;
-import com.d207.farmer.dto.mongo.place.PlaceInfoResponseDTO;
-import com.d207.farmer.dto.mongo.place.PlaceTypeInfoResponseDTO;
+import com.d207.farmer.dto.mongo.place.*;
 import com.d207.farmer.repository.mongo.MongoPlaceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,5 +71,29 @@ public class InfoService {
             }
         }
         return new ArrayList<>();
+    }
+
+    public ImagesAndContentsResponseDTO getPlaceInfo(InfoPlaceNameRequestDTO request) {
+        List<MongoPlaceInfo> places = mongoPlaceRepository.findAll(); // FIXME 이름 조회로 최적화 가능
+
+        List<PlaceDetail> PlaceContents = getContents(places);
+        for (PlaceDetail pc : PlaceContents) {
+            if(pc.getName().equals(request.getPlaceName())) {
+                List<ImagesAndContentsResponseDTO.ContentDTO> contents = new ArrayList<>();
+                contents.add(new ImagesAndContentsResponseDTO.ContentDTO(pc.getName(), pc.getDescription()));
+
+                List<String> suitableCrops = pc.getSuitableCrops();
+                StringBuilder suitableCrop = new StringBuilder();
+                for (String crop : suitableCrops) {
+                    suitableCrop.append(crop).append(", ");
+                }
+                contents.add(new ImagesAndContentsResponseDTO.ContentDTO("키울만한 작물", suitableCrop.substring(0, suitableCrop.length() - 2)));
+
+                return new ImagesAndContentsResponseDTO(pc.getImages(), contents);
+            }
+            break;
+        }
+
+        return new ImagesAndContentsResponseDTO();
     }
 }
