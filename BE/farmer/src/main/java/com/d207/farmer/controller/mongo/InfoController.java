@@ -1,7 +1,7 @@
 package com.d207.farmer.controller.mongo;
 
 import com.d207.farmer.dto.mongo.place.ImagesAndContentsResponseDTO;
-import com.d207.farmer.dto.mongo.place.InfoPlaceNameRequestDTO;
+import com.d207.farmer.dto.mongo.place.InfoNameRequestDTO;
 import com.d207.farmer.dto.mongo.place.PlaceInfoResponseDTO;
 import com.d207.farmer.dto.mongo.place.TypeInfoResponseDTO;
 import com.d207.farmer.service.mongo.InfoService;
@@ -54,7 +54,7 @@ public class InfoController {
     @Operation(summary = "각 텃밭 조회", description = "각 텃밭 조회(이름)")
     @PostMapping("/place/type")
     public ResponseEntity<ImagesAndContentsResponseDTO> getPlaceInfo(@RequestHeader("Authorization") String authorization,
-                                                                     @RequestBody InfoPlaceNameRequestDTO request) {
+                                                                     @RequestBody InfoNameRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[InfoController] Received getPlaceInfo request for {}", request);
         return ResponseEntity.ok().body(infoService.getPlaceInfo(request));
@@ -69,5 +69,17 @@ public class InfoController {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[InfoController] Received getPlantTypeInfo request for {}", userId);
         return ResponseEntity.ok().body(infoService.getPlantTypeInfo());
+    }
+
+    /**
+     * 각 작물 조회
+     */
+    @Operation(summary = "각 작물 조회", description = "각 작물 조회(이름)")
+    @PostMapping("/plant")
+    public ResponseEntity<ImagesAndContentsResponseDTO> getPlantInfo(@RequestHeader("Authorization") String authorization,
+                                                                     @RequestBody InfoNameRequestDTO request) {
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[InfoController] Received getPlantInfo request for {}", request);
+        return ResponseEntity.ok().body(infoService.getPlantInfo(request));
     }
 }

@@ -9,6 +9,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class InfoPlaceNameRequestDTO {
-    private String placeName;
+public class InfoNameRequestDTO {
+    private String name;
 }
