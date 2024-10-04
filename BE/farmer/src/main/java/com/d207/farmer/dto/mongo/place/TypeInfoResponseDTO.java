@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PlaceTypeInfoResponseDTO {
+public class TypeInfoResponseDTO {
     private String title;
     private String comment;
     private String imageName;

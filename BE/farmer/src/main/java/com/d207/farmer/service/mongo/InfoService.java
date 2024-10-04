@@ -1,9 +1,13 @@
 package com.d207.farmer.service.mongo;
 
 import com.d207.farmer.domain.mongo.MongoPlaceInfo;
+import com.d207.farmer.domain.mongo.MongoPlantInfo;
 import com.d207.farmer.dto.common.FileDirectory;
 import com.d207.farmer.dto.mongo.place.*;
+import com.d207.farmer.repository.mongo.MongoFertilizerRepository;
+import com.d207.farmer.repository.mongo.MongoPestRepository;
 import com.d207.farmer.repository.mongo.MongoPlaceRepository;
+import com.d207.farmer.repository.mongo.MongoPlantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +27,9 @@ import static com.d207.farmer.dto.common.FileDirectory.MONGO;
 public class InfoService {
 
     private final MongoPlaceRepository mongoPlaceRepository;
+    private final MongoPlantRepository mongoPlantRepository;
+    private final MongoFertilizerRepository mongoFertilizerRepository;
+    private final MongoPestRepository mongoPestRepository;
 
     public PlaceInfoResponseDTO getPlaceMainInfo() {
         List<MongoPlaceInfo> places = mongoPlaceRepository.findAll();
@@ -50,15 +57,15 @@ public class InfoService {
         return new PlaceInfoResponseDTO(justice, purpose, effect, placeType);
     }
 
-    public List<PlaceTypeInfoResponseDTO> getPlaceTypeInfo() {
-        List<PlaceTypeInfoResponseDTO> result = new ArrayList<>();
+    public List<TypeInfoResponseDTO> getPlaceTypeInfo() {
+        List<TypeInfoResponseDTO> result = new ArrayList<>();
 
         List<MongoPlaceInfo> places = mongoPlaceRepository.findAll();
 
         List<PlaceDetail> contents = getContents(places);
 
         for (PlaceDetail c : contents) {
-            result.add(new PlaceTypeInfoResponseDTO(c.getName(), "자세히 보기", MONGO.toString().toLowerCase() + "/" + c.getImages().get(0)));
+            result.add(new TypeInfoResponseDTO(c.getName(), "자세히 보기", MONGO.toString().toLowerCase() + "/" + c.getImages().get(0)));
         }
 
         return result;
@@ -105,6 +112,24 @@ public class InfoService {
         for(int i = 0; i < images.size(); i++) {
             result.add(MONGO.toString().toLowerCase() + "/" + images.get(i));
         }
+        return result;
+    }
+
+    public List<TypeInfoResponseDTO> getPlantTypeInfo() {
+        List<TypeInfoResponseDTO> result = new ArrayList<>();
+        List<MongoPlantInfo> plants = mongoPlantRepository.findAll();
+        for (MongoPlantInfo plant : plants) {
+            result.add(new TypeInfoResponseDTO(plant.getName(), plant.getName() + "에 대해서 알아보세요",
+                    MONGO.toString().toLowerCase() + "/" + plant.getImages().get(0)));
+        }
+        // 고추, 옥수수
+        result.add(new TypeInfoResponseDTO("고추", "고추에 대해서 알아보세요", ""));
+        result.add(new TypeInfoResponseDTO("옥수수", "옥수수에 대해서 알아보세요", ""));
+
+        // 비료, 병해충
+        result.add(new TypeInfoResponseDTO("비료", "비료들을 알아보세요", ""));
+        result.add(new TypeInfoResponseDTO("병해충", "병해충들을 알아보세요", ""));
+
         return result;
     }
 }

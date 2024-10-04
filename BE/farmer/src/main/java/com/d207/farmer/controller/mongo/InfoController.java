@@ -3,7 +3,7 @@ package com.d207.farmer.controller.mongo;
 import com.d207.farmer.dto.mongo.place.ImagesAndContentsResponseDTO;
 import com.d207.farmer.dto.mongo.place.InfoPlaceNameRequestDTO;
 import com.d207.farmer.dto.mongo.place.PlaceInfoResponseDTO;
-import com.d207.farmer.dto.mongo.place.PlaceTypeInfoResponseDTO;
+import com.d207.farmer.dto.mongo.place.TypeInfoResponseDTO;
 import com.d207.farmer.service.mongo.InfoService;
 import com.d207.farmer.utils.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,7 +42,7 @@ public class InfoController {
      */
     @Operation(summary = "텃밭 종류 조회", description = "텃밭 종류 조회")
     @GetMapping("/place/type")
-    public ResponseEntity<List<PlaceTypeInfoResponseDTO>> getPlaceTypeInfo(@RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<List<TypeInfoResponseDTO>> getPlaceTypeInfo(@RequestHeader("Authorization") String authorization) {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[InfoController] Received getPlaceTypeInfo request for {}", userId);
         return ResponseEntity.ok().body(infoService.getPlaceTypeInfo());
@@ -58,5 +58,16 @@ public class InfoController {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[InfoController] Received getPlaceInfo request for {}", request);
         return ResponseEntity.ok().body(infoService.getPlaceInfo(request));
+    }
+
+    /**
+     * 작물 정보 페이지
+     */
+    @Operation(summary = "작물 정보 페이지", description = "작물 정보 페이지")
+    @GetMapping("/plant")
+    public ResponseEntity<List<TypeInfoResponseDTO>> getPlantTypeInfo(@RequestHeader("Authorization") String authorization) {
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[InfoController] Received getPlantTypeInfo request for {}", userId);
+        return ResponseEntity.ok().body(infoService.getPlantTypeInfo());
     }
 }
