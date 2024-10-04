@@ -117,12 +117,12 @@ public class UserService {
     @Transactional
     public UserLoginResponseDTO loginUser(UserLoginRequestDTO request) {
         User user = userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword());
-        boolean check_firstLogin = user.getIsFirstLogin();
-
-
         if (user == null) {
             throw new FailedAuthenticateUserException("아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
+
+        boolean check_firstLogin = user.getIsFirstLogin();
+
         return tokenService.saveRefreshToken(user.getId(), check_firstLogin);
     }
 
