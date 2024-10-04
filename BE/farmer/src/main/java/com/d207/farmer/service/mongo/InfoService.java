@@ -234,4 +234,26 @@ public class InfoService {
 
         return result;
     }
+
+    public ImagesAndContentsResponseDTO getPestInfo(InfoNameRequestDTO request) {
+        MongoPestInfo pest = mongoPestRepository.findByName(request.getName());
+
+        List<String> images = pest.getImages();
+        images = addPrefixImages(images);
+
+        List<ImagesAndContentsResponseDTO.ContentDTO> contents = new ArrayList<>();
+
+        contents.add(new ImagesAndContentsResponseDTO.ContentDTO(pest.getName(), pest.getDescription()));
+
+        String affectedCrops = getStringConcatByComma(pest.getAffectedCrops(), "");
+        contents.add(new ImagesAndContentsResponseDTO.ContentDTO("대상", affectedCrops));
+
+        contents.add(new ImagesAndContentsResponseDTO.ContentDTO("증상", pest.getSymptoms()));
+
+        contents.add(new ImagesAndContentsResponseDTO.ContentDTO("예방법", pest.getPrevention()));
+
+        contents.add(new ImagesAndContentsResponseDTO.ContentDTO("치료", pest.getTreatment()));
+
+        return new ImagesAndContentsResponseDTO(images, contents);
+    }
 }

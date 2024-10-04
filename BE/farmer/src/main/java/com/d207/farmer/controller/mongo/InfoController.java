@@ -116,4 +116,16 @@ public class InfoController {
         log.info("[InfoController] Received getPestTypeInfo request for {}", userId);
         return ResponseEntity.ok().body(infoService.getPestTypeInfo());
     }
+
+    /**
+     * 각 병해충 조회
+     */
+    @Operation(summary = "각 병해충 조회", description = "각 병해충 조회(이름)")
+    @PostMapping("/pest")
+    public ResponseEntity<ImagesAndContentsResponseDTO> getPestInfo(@RequestHeader("Authorization") String authorization,
+                                                                    @RequestBody InfoNameRequestDTO request) {
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[InfoController] Received getPestInfo request for {}", request);
+        return ResponseEntity.ok().body(infoService.getPestInfo(request));
+    }
 }
