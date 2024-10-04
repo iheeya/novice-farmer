@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getMyInfo } from "../../../services/user/myPageApi";
 import { Box, Typography, Button, Avatar, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { GetImage } from "../../../services/getImage";
 
 interface UserInfo {
   email: string;
@@ -20,6 +21,7 @@ interface UserInfo {
 
 export default function MyInfo() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [imageURL, setImageURL] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // API 호출
@@ -27,6 +29,11 @@ export default function MyInfo() {
     getMyInfo()
       .then((res) => {
         setUserInfo(res);
+        GetImage(res.imagepath)
+        .then((url) => {
+          setImageURL(url);
+        })
+
       })
       .catch((err) => {
         console.error("Failed to fetch user info", err);
@@ -50,7 +57,7 @@ export default function MyInfo() {
     >
       <Avatar
         alt={userInfo.nickname}
-        src={userInfo?.imagepath || "n"}
+        src={imageURL || "n"}
         sx={{ width: 100, height: 100, marginBottom: "20px" }}
       />
       {/* 유저 정보 */}
