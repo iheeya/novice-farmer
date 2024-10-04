@@ -15,6 +15,7 @@ import MyPage from "./pages/user/myPage";
 import ProfileUpdate from "./pages/user/profileUpdate";
 import CameraPage from "./pages/Detail/cameraPage"; // 새 페이지 컴포넌트
 import FooterWithLocation from "./components/FooterWithLocation"; // Footer 로직 분리
+import HomePage from "./pages/Home/Landing";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/myPage/profile" element={<ProfileUpdate />} />
         <Route path="/myGarden/:myPlaceId/:myPlantId/camera" element={<CameraPage />} />
+        <Route path="/introduce" element={<HomePage />} />
       </Routes>
       <FooterWithLocation />
     </Router>
