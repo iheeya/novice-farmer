@@ -2,12 +2,14 @@ package com.d207.farmer.service.community;
 
 import com.d207.farmer.domain.community.*;
 import com.d207.farmer.domain.user.User;
+import com.d207.farmer.dto.common.FileDirectory;
 import com.d207.farmer.dto.community.*;
 import com.d207.farmer.dto.survey.SurveyRegisterReRequestDTO;
 import com.d207.farmer.dto.utils.OnlyId;
 import com.d207.farmer.repository.community.*;
 import com.d207.farmer.repository.user.UserRepository;
 import com.d207.farmer.utils.DateUtil;
+import com.d207.farmer.utils.FileUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,6 +43,7 @@ public class CommunityService {
     private final CommunitySelectedTagRespository communitySelectedTagRepository;
     private final CommunityFavoriteTagRepository communityFavoriteTagRepository;
     private final DateUtil dateUtil;
+    private final FileUtil fileUtil;
 
 
     public Page<CommunityResponseDTO> getCommunityWithHeart(Long userId, String filter, String search, Pageable pageable) {
@@ -90,10 +94,17 @@ public class CommunityService {
             long heartCount = countObject instanceof Number ? ((Number) countObject).longValue() : 0L; // null 체크 및 변환
             int heartCountint = (int) heartCount; // Long을 int로 변환
 
+            //
+
+
+
             // DTO 생성
             return new CommunityResponseDTO(
                     community.getId(),
                     community.getUser().getId(),
+                    community.getUser().getNickname(),
+                      community.getUser().getImagePath(),
+
                     community.getTitle(),
                     communityImages,
                     community.getContent(),
@@ -171,19 +182,21 @@ public class CommunityService {
         return new CommunityResponseDTO(
                 community.getId(),
                 community.getUser().getId(),
+                community.getUser().getNickname(),
+                community.getUser().getImagePath(),
                 community.getTitle(),
                 communityImages,
                 community.getContent(),
                 community.getWriteDate(),
                 tagNames,
-                heartCountint,
+                (int) heartCount, // int로 변환
                 community.getContent().length() // 또는 필요한 다른 정보를 사용
         );
     });
     }
 
     @Transactional
-    public String registerCommunity(Long userId, CommunityRegisterDTO communityRegisterDTO) {
+    public String registerCommunity(Long userId, CommunityRegisterDTO communityRegisterDTO, List<MultipartFile> multipartFileList) {
 
 
         User user = userRepository.findById(userId).orElseThrow();
@@ -211,9 +224,13 @@ public class CommunityService {
             communitySelectedTagRespository.save(new CommunitySelectedTag(community, communityTag));
         }
 
+
         // Community_image 테이블에 imagePath 집어넣기
-        for(String imapgepath : communityRegisterDTO.getImagePath()){
-            communityImageRepository.save(new CommunityImage(community, imapgepath));
+        for(MultipartFile multipartFile : multipartFileList){
+            String userimagepath = fileUtil.uploadFile(multipartFile, FileDirectory.COMMUNITY);
+            communityImageRepository.save(new CommunityImage(community, userimagepath));
+
+
         }
 
 
@@ -382,7 +399,7 @@ public class CommunityService {
         List<CommunityImage> communityImagePath =communityImageRepository.findByCommunity(community);
         List<String> communityImagePathDto = new ArrayList<>();
         for (CommunityImage communityImage : communityImagePath) {
-            communityImagePathDto.add(communityImage.getImagePath());
+            communityImagePathDto.add( FileDirectory.COMMUNITY.toString().toLowerCase() + "/" +communityImage.getImagePath());
         }
 
         List<CommunitySelectedTag> communitySelectedTags = communitySelectedTagRespository.findByCommunity(community);
@@ -400,7 +417,7 @@ public class CommunityService {
     }
 
     @Transactional
-    public String communityOneModifyRequest(Long userId, Long id, CommunityOneModifyRequestDTO communityOneModifyRequestDTO) {
+    public String communityOneModifyRequest(Long userId, Long id, CommunityOneModifyRequestDTO communityOneModifyRequestDTO, List<MultipartFile> files) {
 
         Community community = communityRepository.findByIdWithUser(id).orElseThrow();
 
@@ -410,7 +427,7 @@ public class CommunityService {
             List<String> imagePathdtos = communityOneModifyRequestDTO.getCommunityImageSubtractPaths();
 
             for(String imagePathdto : imagePathdtos){
-                CommunityImage communityImage = communityImageRepository.findByImagePath(imagePathdto);
+                CommunityImage communityImage = communityImageRepository.findByImagePath(imagePathdto.replace("community/",""));
 
                 // 조회된 객체가 존재하면 삭제합니다.
                 if (communityImage != null) {
@@ -418,10 +435,11 @@ public class CommunityService {
                 }
             }
 
-            // 새로 추가한 이미지 추가!
-            imagePathdtos = communityOneModifyRequestDTO.getCommunityImageAddPaths();
 
-            for(String imagePathdto : imagePathdtos){
+
+            for(MultipartFile Singlepartfile : files){
+                String imagePathdto = fileUtil.uploadFile(Singlepartfile, FileDirectory.COMMUNITY);
+
                   communityImageRepository.save(new CommunityImage(community, imagePathdto));
             }
 

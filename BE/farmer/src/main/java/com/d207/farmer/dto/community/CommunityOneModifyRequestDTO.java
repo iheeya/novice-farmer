@@ -13,7 +13,6 @@ public class CommunityOneModifyRequestDTO {
     private String communityTitle;
     private String communityContent;
     private List<String> communityImageSubtractPaths;
-    private List<String> communityImageAddPaths;
 
     private List<String> communityTagSubtractList;
     private List<String> communityTagAddList;
