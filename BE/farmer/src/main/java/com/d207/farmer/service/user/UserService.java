@@ -1,13 +1,14 @@
 package com.d207.farmer.service.user;
 
 import com.d207.farmer.domain.community.CommunityFavoriteTag;
-import com.d207.farmer.domain.community.CommunitySelectedTag;
 import com.d207.farmer.domain.community.CommunityTag;
 import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.plant.PlantGrowthIllust;
 import com.d207.farmer.domain.user.*;
+import com.d207.farmer.dto.common.FileDirectory;
+import com.d207.farmer.dto.file.FileUploadTestRequestDTO;
 import com.d207.farmer.dto.place.PlaceResponseDTO;
 import com.d207.farmer.dto.place.PlaceResponseWithIdDTO;
 import com.d207.farmer.dto.plant.PlantResponseDTO;
@@ -28,6 +29,7 @@ import com.d207.farmer.repository.place.PlaceRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
 import com.d207.farmer.service.place.PlaceService;
 import com.d207.farmer.service.plant.PlantService;
+import com.d207.farmer.utils.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -59,6 +61,7 @@ public class UserService {
     private final CommunityTagRepository communityTagRepository;
     private final CommunitySelectedTagRespository communitySelectedTagRespository;
     private final CommunityFavoriteTagRepository communityFavoriteTagRepository;
+    private final FileUtil fileUtil;
 
     @Transactional
     public UserInfoResponseDTO registerUser(UserRegisterRequestDTO request) {
@@ -109,7 +112,7 @@ public class UserService {
                 .gender(user.getGender())
                 .age(user.getAge())
                 .address(user.getAddress())
-                .imagepath(user.getImagePath())
+                .imagepath(FileDirectory.USER.toString().toLowerCase()+"/"+user.getImagePath())
                 .pushAllow(user.getPushAllow())
                 .build();
     }
@@ -324,14 +327,14 @@ public class UserService {
 
 
     @Transactional
-    public String registerUserInfo(Long userId, UserInfoResponseDTO userInfoResponseDTO) {
+    public String registerUserInfo(Long userId, UserInfoRequestDTO userInfoRequestDTO) {
 
         User user = userRepository.findById(userId).orElseThrow();
 
-        user.setNickname(userInfoResponseDTO.getNickname());
-        user.setAge(userInfoResponseDTO.getAge());
-        user.setAddress(userInfoResponseDTO.getAddress());
-        user.setPushAllow(userInfoResponseDTO.getPushAllow());
+        user.setNickname(userInfoRequestDTO.getNickname());
+        user.setAge(userInfoRequestDTO.getAge());
+        user.setAddress(userInfoRequestDTO.getAddress());
+        user.setPushAllow(userInfoRequestDTO.getPushAllow());
 
         return "successful save";
 
@@ -375,5 +378,27 @@ public class UserService {
                 .collect(Collectors.toList());
 
         return userMypageHistoryResponseDTOS;
+    }
+
+    @Transactional
+    public String registerUserImage(Long userId, FileUploadTestRequestDTO request) {
+
+        User user = userRepository.findById(userId).orElseThrow();
+        String userimagepath = fileUtil.uploadFile(request.getFile(),FileDirectory.USER);
+
+        user.setImagePath(userimagepath);
+
+        return "Image regist Success";
+    }
+
+    @Transactional
+    public String registerUserImageClean(Long userId) {
+
+        User user = userRepository.findById(userId).orElseThrow();
+
+
+        user.setImagePath(null);
+
+        return "No Image regist Success";
     }
 }

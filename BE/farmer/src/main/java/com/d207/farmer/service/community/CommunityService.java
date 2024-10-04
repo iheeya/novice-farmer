@@ -2,6 +2,7 @@ package com.d207.farmer.service.community;
 
 import com.d207.farmer.domain.community.*;
 import com.d207.farmer.domain.user.User;
+import com.d207.farmer.dto.common.FileDirectory;
 import com.d207.farmer.dto.community.*;
 import com.d207.farmer.dto.survey.SurveyRegisterReRequestDTO;
 import com.d207.farmer.dto.utils.OnlyId;
@@ -99,7 +100,8 @@ public class CommunityService {
                     community.getId(),
                     community.getUser().getId(),
                     community.getUser().getNickname(),
-                    community.getUser().getImagePath(),
+                      community.getUser().getImagePath(),
+
                     community.getTitle(),
                     communityImages,
                     community.getContent(),

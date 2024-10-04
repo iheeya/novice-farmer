@@ -1,15 +1,13 @@
 package com.d207.farmer.dto.file;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class FileUploadTestRequestDTO {
     private String msg;
     private MultipartFile file;
