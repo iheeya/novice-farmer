@@ -1,5 +1,5 @@
 use farm_info
-//db.gardens.deleteMany({ "heading": {$in: ["정의", "효과", "목적", "종류"]}});
+db.gardens.deleteMany({ "heading": {$in: ["정의", "효과", "목적", "종류"]}});
 db.gardens.insertMany([
     {
       "heading": "정의",
@@ -15,7 +15,7 @@ db.gardens.insertMany([
     },
     {
       "heading": "종류",
-      "content": [ // 각 텃밭별로 분류하고 간단한 개념과 키우기 적합한 작물들에 대해 설명. 잘라 쓰기 편하게 리스트로 제공.
+      "contents": [ // 각 텃밭별로 분류하고 간단한 개념과 키우기 적합한 작물들에 대해 설명. 잘라 쓰기 편하게 리스트로 제공.
         {
           "name": "베란다 텃밭",
           "images": ["베란다텃밭_1.jpg"],
