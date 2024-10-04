@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "pest")
+@Document(collection = "pests")
 public class MongoPestInfo {
     @Id
     private String id;
