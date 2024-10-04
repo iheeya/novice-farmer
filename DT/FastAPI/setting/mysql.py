@@ -15,4 +15,3 @@ MYSQL_FASTAPI_URL = f'mysql+pymysql://{db_user}:{db_pwd}@{db_host}:{db_port}/fas
 
 fastapi_engine = create_engine(MYSQL_FASTAPI_URL)
 session_local = sessionmaker(autocommit=False, autoflush=False, bind=fastapi_engine)
-Base = declarative_base()

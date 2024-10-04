@@ -10,6 +10,13 @@ from recomm.routers import router as recomm_router
 from todo.routers import router as todo_router
 from weather.routers import router as weather_router
 
+# Scheduler 관리
+from setting.scheduler import start_scheduler
+
+if __name__ == '__main__':
+    # Scheduler 시작
+    start_scheduler()
+
 app  = FastAPI()
 
 # 허용할 도메인 목록
