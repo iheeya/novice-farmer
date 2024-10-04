@@ -36,7 +36,7 @@ public class FileUtil {
         metaData.setContentLength(file.getSize());
         try {
             amazonS3Client.putObject(bucket, filePrefix + uploadFileName, file.getInputStream(), metaData);
-            return filePrefix + uploadFileName;
+            return uploadFileName;
         } catch (IOException e) {
             throw new MyFileUploadException("파일 업로드에 실패하였습니다.", e.getCause());
         }
