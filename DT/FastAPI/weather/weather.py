@@ -77,13 +77,13 @@ def load_aswsinfo(): # aws 지점 데이터 가져오기
                 if len(stn) < 2:
                     continue
                 stn_id, stn_lon, stn_lat, reg_id, law_id  = stn[0], stn[1], stn[2], stn[10], stn[11]
-                add_stninfo_to_db(stn_id, stn_lon, stn_lat, reg_id, law_id)
+                add_awsinfo_to_db(stn_id, stn_lon, stn_lat, reg_id, law_id)
             db.commit()
     except Exception as e:
         db.rollback()
         print(f'에러가 발생했습니다: {e}')
     
-def add_stninfo_to_db(db:Session, id: str, lon: float, lat: float, reg_id: str, law_id: str):
+def add_awsinfo_to_db(db:Session, id: str, lon: float, lat: float, reg_id: str, law_id: str):
     check_exiting = db.query(AwsStn).filter(AwsStn.stn_id == id).first()
     if not check_exiting:
         stn_info = AwsStn(stn_id=id, lon=lon, lat=lat, reg_id=reg_id, law_id=law_id)
@@ -94,13 +94,21 @@ def load_adminfo(): # 행정구역 데이터 가져오기
         csv_data = csv.reader(file)
     
     next(csv_data)
-    for row in csv_data:
-        adm = list(row[0].split(','))
-        if len(adm) < 6:
-            continue
-        adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat = adm[0], adm[1], adm[2], adm[3], int(adm[4]), int(adm[5]), float(adm[6]), float(adm[7])
-        add_adminfo_to_db(adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat)
-    db.commit()
+    
+    # 트랜잭션
+    try:
+        with db.begin():
+            db.query(AdmDistrict).delete()
+            for row in csv_data:
+                adm = list(row[0].split(','))
+                if len(adm) < 6:
+                    continue
+                adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat = adm[0], adm[1], adm[2], adm[3], int(adm[4]), int(adm[5]), float(adm[6]), float(adm[7])
+                add_adminfo_to_db(adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat)
+            db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f"에러가 발생했습니다: {e}")
 
 def add_adminfo_to_db(db: Session, id: str, head: str, middle: str, tail: str, xgrid: int, ygrid: int, lon: float, lat: float):
     check_existing = db.query(AdmDistrict).filter(AdmDistrict.adm_id==id).first()
