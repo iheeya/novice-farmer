@@ -15,7 +15,6 @@ import MyPage from "./pages/user/myPage";
 import ProfileUpdate from "./pages/user/profileUpdate";
 import WriteCommunityArticle from "./pages/Community/WriteCommunityArticle";
 import LandingPage from "./pages/Home/Landing";
-import ImageComponent from "./pages/getImageFromAWS";
 
 function App() {
   return (
@@ -56,7 +55,6 @@ function AppContent() {
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/myPage/profile" element={<ProfileUpdate />} />
         <Route path="/introduce" element={<LandingPage />} />
-        <Route path="/test" element={<ImageComponent />} />
       </Routes>
       {!shouldHideFooter && <Footer />}
     </>
