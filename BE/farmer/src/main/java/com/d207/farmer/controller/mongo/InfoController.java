@@ -1,6 +1,7 @@
 package com.d207.farmer.controller.mongo;
 
 import com.d207.farmer.dto.mongo.place.PlaceInfoResponseDTO;
+import com.d207.farmer.dto.mongo.place.PlaceTypeInfoResponseDTO;
 import com.d207.farmer.service.mongo.InfoService;
 import com.d207.farmer.utils.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -30,5 +33,16 @@ public class InfoController {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[InfoController] Received getPlaceMainInfo request for {}", userId);
         return ResponseEntity.ok().body(infoService.getPlaceMainInfo());
+    }
+
+    /**
+     * 텃밭 종류 조회
+     */
+    @Operation(summary = "텃밭 종류 조회", description = "텃밭 종류 조회")
+    @GetMapping("/place/type")
+    public ResponseEntity<List<PlaceTypeInfoResponseDTO>> getPlaceTypeInfo(@RequestHeader("Authorization") String authorization) {
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[InfoController] Received getPlaceTypeInfo request for {}", userId);
+        return ResponseEntity.ok().body(infoService.getPlaceTypeInfo());
     }
 }

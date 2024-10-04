@@ -1,16 +1,22 @@
 package com.d207.farmer.service.mongo;
 
 import com.d207.farmer.domain.mongo.MongoPlaceInfo;
+import com.d207.farmer.dto.common.FileDirectory;
+import com.d207.farmer.dto.mongo.place.PlaceDetail;
 import com.d207.farmer.dto.mongo.place.PlaceInfoResponseDTO;
+import com.d207.farmer.dto.mongo.place.PlaceTypeInfoResponseDTO;
 import com.d207.farmer.repository.mongo.MongoPlaceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.d207.farmer.dto.common.FileDirectory.MONGO;
 
 @Slf4j
 @Service
@@ -44,5 +50,28 @@ public class InfoService {
         );
 
         return new PlaceInfoResponseDTO(justice, purpose, effect, placeType);
+    }
+
+    public List<PlaceTypeInfoResponseDTO> getPlaceTypeInfo() {
+        List<PlaceTypeInfoResponseDTO> result = new ArrayList<>();
+
+        List<MongoPlaceInfo> places = mongoPlaceRepository.findAll();
+
+        List<PlaceDetail> contents = getContents(places);
+
+        for (PlaceDetail c : contents) {
+            result.add(new PlaceTypeInfoResponseDTO(c.getName(), "자세히 보기", MONGO.toString().toLowerCase() + "/" + c.getImages().get(0)));
+        }
+
+        return result;
+    }
+
+    private List<PlaceDetail> getContents(List<MongoPlaceInfo> places) {
+        for (MongoPlaceInfo place : places) {
+            if(place.getHeading().equals("종류")) {
+                return place.getContents();
+            }
+        }
+        return new ArrayList<>();
     }
 }
