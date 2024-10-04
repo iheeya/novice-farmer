@@ -82,6 +82,9 @@ public class InfoService {
                 List<ImagesAndContentsResponseDTO.ContentDTO> contents = new ArrayList<>();
                 contents.add(new ImagesAndContentsResponseDTO.ContentDTO(pc.getName(), pc.getDescription()));
 
+                List<String> images = pc.getImages();
+                images = addPrefixImages(images);
+
                 List<String> suitableCrops = pc.getSuitableCrops();
                 StringBuilder suitableCrop = new StringBuilder();
                 for (String crop : suitableCrops) {
@@ -89,11 +92,19 @@ public class InfoService {
                 }
                 contents.add(new ImagesAndContentsResponseDTO.ContentDTO("키울만한 작물", suitableCrop.substring(0, suitableCrop.length() - 2)));
 
-                return new ImagesAndContentsResponseDTO(pc.getImages(), contents);
+                return new ImagesAndContentsResponseDTO(images, contents);
             }
             break;
         }
 
         return new ImagesAndContentsResponseDTO();
+    }
+
+    private List<String> addPrefixImages(List<String> images) {
+        List<String> result = new ArrayList<>();
+        for(int i = 0; i < images.size(); i++) {
+            result.add(MONGO.toString().toLowerCase() + "/" + images.get(i));
+        }
+        return result;
     }
 }
