@@ -90,3 +90,49 @@ def add_adminfo_to_db(db: Session, id: str, head: str, middle: str, tail: str, x
         admin_info = AdmDistrict(adm_id=id, adm_head=head, adm_middle=middle, adm_tail=tail, x_grid=xgrid, y_grid=ygrid, lon=lon, lat=lat)
         db.add(admin_info)
     
+def load_valinfo(): # aws 기반 기상 데이터 가져오기
+    target_date = datetime.today() - timedelta(days=1)
+    target_date = datetime.strftime('%Y%m%d')
+    url = 'https://apihub.kma.go.kr/api/typ01/url/sfc_aws_day.php?'
+    params_tamax = {'tm1': target_date, 'tm2': target_date, 'obs': 'ta_max', 'authKey': os.getenv('WEATHER_AUTH_KEY')}
+    params_tamin = {'tm1': target_date, 'tm2': target_date, 'obs': 'ta_min', 'authKey': os.getenv('WEATHER_AUTH_KEY')}
+    params_rnday = {'tm1': target_date, 'tm2': target_date, 'obs': 'rn_day', 'authKey': os.getenv('WEATHER_AUTH_KEY')}
+    
+    response_tamax = requests.get(url, params=params_tamax).text
+    response_tamin = requests.get(url, params=params_tamin).text
+    response_rnday = requests.get(url, params=params_rnday).text
+
+    rnday_data = csv.reader(StringIO(response_rnday))
+    rnday_data = itertools.islice(rnday_data, 3, None)
+    tamax_data = csv.reader(StringIO(response_tamax))
+    tamax_data = itertools.islice(tamax_data, 3, None)
+    tamin_data = csv.reader(StringIO(response_tamin))
+    tamin_data = itertools.islice(tamin_data, 3, None)
+    
+    for row1, row2, row3 in zip(rnday_data, tamax_data, tamin_data):
+        val1 = list(row1[0].split(','))
+        if len(val1) < 2:
+            continue
+        stn_id, rn_day = val1[1], float(val1[5])
+    
+        val2 = list(row2[0].split(','))
+        if len(val2) < 2:
+            continue
+        ta_max = float(val2[5])
+        
+        val3 = list(row3[0].split(','))
+        if len(val3) < 2:
+            continue
+        ta_min = float(val3[5])
+    
+        add_valinfo_to_db(db, stn_id, rn_day, ta_max, ta_min)
+    db.commit()
+
+def add_valinfo_to_db(db: Session, stn_id: str, rn_day: float, ta_max: float, ta_min: float):
+    check_existing = db.query(WeatherVal).filter(WeatherVal.stn_id==stn_id).first()
+    if not check_existing:
+        val_info = WeatherVal(stn_id=stn_id, rn_day=rn_day, ta_max=ta_max, ta_min=ta_min)
+        db.add(val_info)
+    
+# if __name__ == "__main__":
+#     load_areainfo()
