@@ -135,24 +135,31 @@ def load_valinfo(): # aws 기반 기상 데이터 가져오기
     tamin_data = csv.reader(StringIO(response_tamin))
     tamin_data = itertools.islice(tamin_data, 3, None)
     
-    for row1, row2, row3 in zip(rnday_data, tamax_data, tamin_data):
-        val1 = list(row1[0].split(','))
-        if len(val1) < 2:
-            continue
-        stn_id, rn_day = val1[1], float(val1[5])
-    
-        val2 = list(row2[0].split(','))
-        if len(val2) < 2:
-            continue
-        ta_max = float(val2[5])
-        
-        val3 = list(row3[0].split(','))
-        if len(val3) < 2:
-            continue
-        ta_min = float(val3[5])
-    
-        add_valinfo_to_db(db, stn_id, rn_day, ta_max, ta_min)
-    db.commit()
+    # 트랜잭션
+    try:
+        with db.begin():
+            db.query(WeatherVal).delete()
+            for row1, row2, row3 in zip(rnday_data, tamax_data, tamin_data):
+                val1 = list(row1[0].split(','))
+                if len(val1) < 2:
+                    continue
+                stn_id, rn_day = val1[1], float(val1[5])
+            
+                val2 = list(row2[0].split(','))
+                if len(val2) < 2:
+                    continue
+                ta_max = float(val2[5])
+                
+                val3 = list(row3[0].split(','))
+                if len(val3) < 2:
+                    continue
+                ta_min = float(val3[5])
+            
+                add_valinfo_to_db(db, stn_id, rn_day, ta_max, ta_min)
+            db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f"에러가 발생했습니다: {e}")
 
 def add_valinfo_to_db(db: Session, stn_id: str, rn_day: float, ta_max: float, ta_min: float):
     check_existing = db.query(WeatherVal).filter(WeatherVal.stn_id==stn_id).first()
