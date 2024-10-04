@@ -2,6 +2,8 @@ package com.d207.farmer.controller.community;
 
 import com.d207.farmer.dto.community.*;
 
+import com.d207.farmer.dto.file.FileUploadTestRequestDTO;
+import com.d207.farmer.dto.file.MultiFileUploadTestRequestDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterReRequestDTO;
 import com.d207.farmer.service.community.CommunityService;
 import com.d207.farmer.utils.JWTUtil;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.net.URI;
@@ -49,16 +52,21 @@ public class CommunityController {
 
 
 
+
     /**
      * 커뮤니티 글 올리기
+     * //@ModelAttribute FileUploadTestRequestDTO request
      */
     @PostMapping
     public ResponseEntity<String> registerCommunity(@RequestHeader("Authorization") String authorization,
-                                                    @RequestBody CommunityRegisterDTO communityRegisterDTO) {
+                                                    @RequestBody CommunityRegisterDTO communityRegisterDTO,
+                                                    @ModelAttribute MultiFileUploadTestRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("CommunityController] Post Community {}", userId);
 
-        return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunity(userId, communityRegisterDTO));
+        // 파일 처리 로직 추가
+        List<MultipartFile> multipartFileList = request.getFiles(); // 파일 리스트 가져오기
+        return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunity(userId, communityRegisterDTO, multipartFileList));
     }
 
 
@@ -146,10 +154,11 @@ public class CommunityController {
     @PostMapping("{id}/all/modify")
     public ResponseEntity<String> communityOneModifyRequest (@RequestHeader("Authorization") String authorization,
                                                                                    @PathVariable Long id,
-                                                                                   @RequestBody CommunityOneModifyRequestDTO communityOneModifyRequestDTO)   {
+                                                                                   @RequestBody CommunityOneModifyRequestDTO communityOneModifyRequestDTO,
+                                                             @ModelAttribute MultiFileUploadTestRequestDTO request)   {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Get communityOneModifyRequest {} ", userId);
-        return ResponseEntity.ok(communityService.communityOneModifyRequest(userId, id, communityOneModifyRequestDTO));
+        return ResponseEntity.ok(communityService.communityOneModifyRequest(userId, id, communityOneModifyRequestDTO, request.getFiles()));
 
     }
 

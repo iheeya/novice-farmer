@@ -11,6 +11,5 @@ public class CommunityRegisterDTO {
 
     private String communityTitle;
     private String communityContent;
-    private List<String> imagePath;
     private List<String> communityTagList;
 }
