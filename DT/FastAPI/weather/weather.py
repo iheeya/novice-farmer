@@ -66,17 +66,23 @@ def load_aswsinfo(): # aws 지점 데이터 가져오기
     # print(csv_data)
 
     csv_reader = csv.reader(StringIO(csv_data))
-
     csv_reader = itertools.islice(csv_reader, 3, None)
-        
-    for row in csv_reader:
-        stn = list(row[0].split())
-        if len(stn) < 2:
-            continue
-        stn_id, stn_lon, stn_lat, reg_id, law_id  = stn[0], stn[1], stn[2], stn[10], stn[11]
-        add_stninfo_to_db(stn_id, stn_lon, stn_lat, reg_id, law_id)
-    db.commit()
-        
+    
+    # 트랜잭션
+    try:
+        with db.begin():
+            db.query(AwsStn).delete()
+            for row in csv_reader:
+                stn = list(row[0].split())
+                if len(stn) < 2:
+                    continue
+                stn_id, stn_lon, stn_lat, reg_id, law_id  = stn[0], stn[1], stn[2], stn[10], stn[11]
+                add_stninfo_to_db(stn_id, stn_lon, stn_lat, reg_id, law_id)
+            db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f'에러가 발생했습니다: {e}')
+    
 def add_stninfo_to_db(db:Session, id: str, lon: float, lat: float, reg_id: str, law_id: str):
     check_exiting = db.query(AwsStn).filter(AwsStn.stn_id == id).first()
     if not check_exiting:
