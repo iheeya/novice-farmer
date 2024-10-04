@@ -23,18 +23,26 @@ def load_areainfo(): # 예보구역 데이터 가져오기
 
     csv_reader = csv.reader(StringIO(csv_data))
     csv_reader = itertools.islice(csv_reader, 11, None)
-
-    for row in csv_reader:
-        reg = []
-        reg = list(row[0].split())
-        if len(reg) < 5:
-            continue
-        reg_id, reg_sp, reg_name = reg[0], reg[3], reg[4]
+    
+    # 트랜잭션 및 CRUD 기능
+    try:
+        with db.begin():
+            db.query(WeatherArea).delete()
+            for row in csv_reader:
+                reg = []
+                reg = list(row[0].split())
+                if len(reg) < 5:
+                    continue
+                reg_id, reg_sp, reg_name = reg[0], reg[3], reg[4]
+                
+                if reg_sp == 'C':
+                    if '(' not in reg_name:
+                        add_areainfo_to_db(db, str(reg_id), reg_name)
+            db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f'에러가 발생했습니다: {e}')
         
-        if reg_sp == 'C':
-            if '(' not in reg_name:
-                add_areainfo_to_db(db, str(reg_id), reg_name)
-    db.commit()
         
 def add_areainfo_to_db(db: Session, id: str, name: str):
     # 중복 검사
@@ -46,7 +54,11 @@ def add_areainfo_to_db(db: Session, id: str, name: str):
 
 def load_aswsinfo(): # aws 지점 데이터 가져오기
     url = 'https://apihub.kma.go.kr/api/typ01/url/stn_inf.php?'
-    params = {'inf' : 'AWS', 'tm' : '202410010000', 'authKey' :  os.getenv('WEATHER_AUTH_KEY'), 'help' : '0'}
+    
+    updated_date = datetime.now() - timedelta(days=1)
+    updated_date = updated_date.strftime('%Y%m%d%H%M%S')
+    
+    params = {'inf' : 'AWS', 'tm' : updated_date, 'authKey' :  os.getenv('WEATHER_AUTH_KEY'), 'help' : '0'}
     response = requests.get(url, params=params)
     
     csv_data = response.text

@@ -10,6 +10,7 @@ from weather.weather import load_valinfo
 
 def scheduled_task():
     # 작업해야 할 함수들
+    # 매일 기상 데이터 가져오기
     load_valinfo()
     
 def start_scheduler():
