@@ -2,6 +2,7 @@ package com.d207.farmer.controller.user;
 
 import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.user.User;
+import com.d207.farmer.dto.file.FileUploadTestRequestDTO;
 import com.d207.farmer.dto.plant.PlantResponseDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.*;
@@ -65,15 +66,7 @@ public class UserController {
         return ResponseEntity.created(URI.create("/")).body(userService.registerUser(request));
     }
 
-    /**
-     * 회원 조회 - email로 조회
-     * MVP를 위한거임
-     */
-//    @GetMapping
-    public ResponseEntity<UserInfoResponseDTO> getUserInfo(@RequestBody @Valid UserInfoRequestByEmailDTO request) {
-        log.info("[UserController] Received get user info by email request for {}", request);
-        return ResponseEntity.ok().body(userService.getUserInfo(request));
-    }
+
 
 
 
@@ -160,11 +153,31 @@ public class UserController {
 
     @PostMapping("/mypage")
     public ResponseEntity<?> registerProfilePage(@RequestHeader("Authorization") String authorization,
-                                                @RequestBody UserInfoResponseDTO userInfoResponseDTO) {
+                                                @RequestBody UserInfoRequestDTO userInfoRequestDTO) {
         Long userId;
         userId = jwtUtil.getUserId(authorization);
         log.info("[UserController] Set mypage - MyProfile");
-        return ResponseEntity.ok().body(userService.registerUserInfo(userId, userInfoResponseDTO));
+        return ResponseEntity.ok().body(userService.registerUserInfo(userId, userInfoRequestDTO));
+    }
+
+    /**
+     * 마이페이지 - 이미지변경
+     */
+    @PostMapping("/mypage/image")
+    public ResponseEntity<?> registerUserImage(@RequestHeader("Authorization") String authorization,
+                                               @ModelAttribute FileUploadTestRequestDTO request
+                                                 ) {
+        Long userId;
+        userId = jwtUtil.getUserId(authorization);
+        log.info("[UserController] Set registerUserImage");
+
+        if(request.getFile().isEmpty()){
+            log.info("null@@ {}" ,request.getFile());
+            return ResponseEntity.ok().body(userService.registerUserImageClean(userId));
+        }
+        else {
+            return ResponseEntity.ok().body(userService.registerUserImage(userId, request));
+        }
     }
 
 
@@ -189,11 +202,10 @@ public class UserController {
 
 
 
-    @PostMapping("/test")
-    public ResponseEntity<UserLoginResponseDTO> loginUser2() {
+    @PostMapping("/imagetest")
+    public ResponseEntity<?> imageTest(ModelAttribute modelAttribute) {
 
-        //log.info("[Us1232323");
-        System.out.println("hi~~~~~~~~~~~~~");
+
         return ResponseEntity.ok().body(null);
 
     }

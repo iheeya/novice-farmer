@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 @Builder
-public class UserInfoResponseDTO {
+public class UserInfoRequestDTO {
     private String email;
     private String nickname;
     private LocalDateTime regDate;
@@ -21,6 +20,5 @@ public class UserInfoResponseDTO {
     private Gender gender;
     private Integer age;
     private String address;
-    private String imagepath;
     private Boolean pushAllow;
 }

@@ -1,6 +1,5 @@
 package com.d207.farmer.domain.mongo;
 
-import com.d207.farmer.dto.mongo.MongoFileNameDTO;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +26,5 @@ public class MongoFertilizerInfo {
     @Field(name = "usage_crops")
     private List<String> usageCrops;
 
-    private List<String> brands;
-
-    private List<MongoFileNameDTO> images;
+    private List<String> images;
 }

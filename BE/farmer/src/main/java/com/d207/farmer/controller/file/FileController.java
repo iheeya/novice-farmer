@@ -53,7 +53,7 @@ public class FileController {
 
     @PostMapping("/test")
     public ResponseEntity<String> testUploadFile(@ModelAttribute FileUploadTestRequestDTO request) {
-        log.info("Received Test Upload file {}", request.getMsg());
+        log.info("Received Test Upload file ");
         return ResponseEntity.ok().body(fileUtil.uploadFile(request.getFile(), FileDirectory.TEST));
     }
 }

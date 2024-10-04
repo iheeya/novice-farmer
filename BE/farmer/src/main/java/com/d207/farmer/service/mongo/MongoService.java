@@ -44,11 +44,6 @@ public class MongoService {
         return mongoPlaceRepository.findAll();
     }
 
-    public MongoPlaceInfo findPlaceByName(String name) {
-        return mongoPlaceRepository.findByName(name);
-    }
-
-
     /**
      * PEST
      */
@@ -59,7 +54,6 @@ public class MongoService {
     public MongoPestInfo findPestByName(String name) {
         return mongoPestRepository.findByName(name);
     }
-
 
     /**
      * FERTILIZER
