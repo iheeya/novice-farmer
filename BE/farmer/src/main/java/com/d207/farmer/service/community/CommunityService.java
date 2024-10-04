@@ -11,12 +11,16 @@ import com.d207.farmer.utils.DateUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,22 +41,145 @@ public class CommunityService {
     private final CommunityFavoriteTagRepository communityFavoriteTagRepository;
     private final DateUtil dateUtil;
 
-    public List<CommunityResponseDTO> getCommunity() {
-        List<Community> communities =communityRepository.findAll();
-        List<CommunityResponseDTO> communityList = new ArrayList<>();
 
-        for (Community community : communities) {
-            CommunityResponseDTO dto = new CommunityResponseDTO(
-                    community.getId(),
-                    community.getUser().getId(),
-                    community.getTitle(), // communityTitle
-                    community.getContent(), // communitycontent
-                    community.getWriteDate()
-            );
-            communityList.add(dto);
+    public Page<CommunityResponseDTO> getCommunityWithHeart(Long userId, String filter, String search, Pageable pageable) {
+
+        User user = userRepository.findById(userId).orElseThrow();
+        // 커뮤니티를 하트 수로 가져오기
+        Page<Community> communities;
+
+        // 검색어가 없는 경우
+        if (StringUtils.isEmpty(search)) {
+            // 1. 사용자 즐겨찾기 태그 가져오기
+            List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
+            List<Long> communityTagIds = communityTagId.stream()
+                    .map(favoriteTag -> {
+                        CommunityTag communityTag = favoriteTag.getCommunityTag();
+                        if (communityTag == null) {
+                            // 예외 처리 또는 로그 작성
+                            // 예를 들어, 로그를 작성하거나 예외를 던질 수 있습니다.
+                            System.out.println("CommunityTag is null for favoriteTag: " + favoriteTag);
+                            return null; // null을 반환
+                        }
+                        return communityTag.getId(); // ID 반환
+                    })
+                    .filter(Objects::nonNull) // null 값 필터링
+                    .collect(Collectors.toList());
+            // 하트 수가 있는 커뮤니티 조회
+            communities = communityHeartRepository.findCommunitiesWithHearts(communityTagIds,pageable);
+        } else {
+            // 검색어가 있는 경우: 타이틀이나 콘텐츠에 검색어가 포함된 커뮤니티 조회
+            communities = communityHeartRepository.findByTitleContainingOrContentContaining(search, pageable);
         }
 
-        return communityList;
+        // DTO 변환
+        return communities.map(community -> {
+            // 커뮤니티에 대한 이미지 리스트 가져오기
+            List<String> communityImages = communityImageRepository.findByCommunity(community)
+                    .stream()
+                    .map(CommunityImage::getImagePath)
+                    .collect(Collectors.toList());
+
+            // 커뮤니티에 대한 태그 리스트 가져오기
+            List<CommunitySelectedTag> communityTags = communitySelectedTagRepository.findByCommunity(community);
+            List<String> tagNames = communityTags.stream()
+                    .map(selectedTag -> selectedTag.getCommunityTag().getTagName()) // CommunitySelectedTag에서 CommunityTag의 태그 이름 추출
+                    .collect(Collectors.toList());
+
+            Object countObject = communityHeartRepository.countByCommunity(community);
+            long heartCount = countObject instanceof Number ? ((Number) countObject).longValue() : 0L; // null 체크 및 변환
+            int heartCountint = (int) heartCount; // Long을 int로 변환
+
+            // DTO 생성
+            return new CommunityResponseDTO(
+                    community.getId(),
+                    community.getUser().getId(),
+                    community.getTitle(),
+                    communityImages,
+                    community.getContent(),
+                    community.getWriteDate(),
+                    tagNames,
+                    (int) heartCount, // int로 변환
+                    community.getContent().length() // 또는 필요한 다른 정보를 사용
+            );
+        });
+
+
+    }
+
+    public Page<CommunityResponseDTO> getCommunityWithLatest(Long userId, String filter, String search, Pageable pageable) {
+
+        User user = userRepository.findById(userId).orElseThrow();
+
+        // 커뮤니티를 최신순으로 가져오기
+        Page<Community> communities;
+        
+        // 일단 검색어 없을때
+        if(StringUtils.isEmpty(search)) {
+            // 1. 사용자 즐겨찾기 태그 가져오기
+            List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
+            List<Long> communityTagIds = communityTagId.stream()
+                    .map(favoriteTag -> {
+                        CommunityTag communityTag = favoriteTag.getCommunityTag();
+                        if (communityTag == null) {
+                            // 예외 처리 또는 로그 작성
+                            // 예를 들어, 로그를 작성하거나 예외를 던질 수 있습니다.
+                            System.out.println("CommunityTag is null for favoriteTag: " + favoriteTag);
+                            return null; // null을 반환
+                        }
+                        return communityTag.getId(); // ID 반환
+                    })
+                    .filter(Objects::nonNull) // null 값 필터링
+                    .collect(Collectors.toList());
+
+            // 3. 검색어가 없는 경우: 태그에 해당하는 커뮤니티 조회
+            communities = communityRepository.findAllByOrderByWriteDateDesc(communityTagIds, pageable);
+
+
+
+        } else {
+            // 검색어가 있는 경우: 타이틀이나 콘텐츠를 포함한 커뮤니티 조회
+            communities = communityRepository.findByTitleContainingOrContentContaining(search, pageable);
+        }
+
+
+
+
+
+       // 4. DTO 변환
+    return communities.map(community -> {
+        // 커뮤니티에 대한 이미지 리스트 가져오기
+        List<String> communityImages = communityImageRepository.findByCommunity(community)
+                .stream()
+                .map(CommunityImage::getImagePath)
+                .collect(Collectors.toList());
+
+        // 커뮤니티에 대한 태그 리스트 가져오기
+        List<CommunitySelectedTag> communityTags = communitySelectedTagRepository.findByCommunity(community);
+        List<String> tagNames = communityTags.stream()
+                .map(selectedTag -> selectedTag.getCommunityTag().getTagName()) // CommunitySelectedTag에서 CommunityTag의 태그 이름 추출
+                .collect(Collectors.toList());
+
+
+        // 커뮤니티 하트 수 가져오기
+        // countByCommunity 메서드가 Object를 반환하는 경우
+        Object countObject = communityHeartRepository.countByCommunity(community);
+        long heartCount = countObject instanceof Number ? ((Number) countObject).longValue() : 0L; // null 체크 및 변환
+        int heartCountint = (int) heartCount; // Long을 int로 변환
+
+        // DTO 생성
+        return new CommunityResponseDTO(
+                community.getId(),
+                community.getUser().getId(),
+                community.getTitle(),
+                communityImages,
+                community.getContent(),
+                community.getWriteDate(),
+                tagNames,
+                heartCountint,
+                community.getContent().length() // 또는 필요한 다른 정보를 사용
+        );
+    });
     }
 
     @Transactional
@@ -394,4 +521,6 @@ public class CommunityService {
         return "Change success";
 
     }
+
+
 }
