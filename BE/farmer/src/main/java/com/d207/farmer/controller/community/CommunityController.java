@@ -58,15 +58,42 @@ public class CommunityController {
      * //@ModelAttribute FileUploadTestRequestDTO request
      */
     @PostMapping
-    public ResponseEntity<String> registerCommunity(@RequestHeader("Authorization") String authorization,
-                                                    @RequestBody CommunityRegisterDTO communityRegisterDTO,
-                                                    @ModelAttribute MultiFileUploadTestRequestDTO request) {
+    public ResponseEntity<Long> registerCommunity(@RequestHeader("Authorization") String authorization,
+                                                    @RequestBody CommunityRegisterDTO communityRegisterDTO
+                                                    ) {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("CommunityController] Post Community {}", userId);
 
-        // 파일 처리 로직 추가
-        List<MultipartFile> multipartFileList = request.getFiles(); // 파일 리스트 가져오기
-        return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunity(userId, communityRegisterDTO, multipartFileList));
+
+        return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunity(userId, communityRegisterDTO));
+    }
+
+    /**
+     * 커뮤니티 글 올리기
+     * //@ModelAttribute FileUploadTestRequestDTO request
+     */
+    @PostMapping("image/{CommunityId}")
+    public ResponseEntity<String> registerCommunityImage(@RequestHeader("Authorization") String authorization,
+                                                    @PathVariable Long CommunityId,
+                                                    @ModelAttribute  List<MultipartFile> files
+                                                         //    @ModelAttribute  FileUploadTestRequestDTO file
+    ) {
+        if(files.isEmpty()){
+            return  ResponseEntity.created(URI.create("/")).body("Image is null") ;
+
+        }
+        else {
+            Long userId = jwtUtil.getUserId(authorization);
+            log.info("CommunityController] Post Community {}", userId);
+            int a = 0;
+
+            return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunityImage(userId, CommunityId, files));
+
+
+
+
+        }
+        //
     }
 
 
@@ -154,11 +181,11 @@ public class CommunityController {
     @PostMapping("{id}/all/modify")
     public ResponseEntity<String> communityOneModifyRequest (@RequestHeader("Authorization") String authorization,
                                                                                    @PathVariable Long id,
-                                                                                   @RequestBody CommunityOneModifyRequestDTO communityOneModifyRequestDTO,
-                                                             @ModelAttribute MultiFileUploadTestRequestDTO request)   {
+                                                             @ModelAttribute CommunityOneModifyRequestDTO communityOneModifyRequestDTO
+                                                             )   {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Get communityOneModifyRequest {} ", userId);
-        return ResponseEntity.ok(communityService.communityOneModifyRequest(userId, id, communityOneModifyRequestDTO, request.getFiles()));
+        return ResponseEntity.ok(communityService.communityOneModifyRequest(userId, id, communityOneModifyRequestDTO));
 
     }
 
