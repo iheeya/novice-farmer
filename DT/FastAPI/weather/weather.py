@@ -70,3 +70,4 @@ def add_stninfo_to_db(db:Session, id: str, lon: float, lat: float, reg_id: str, 
     if not check_exiting:
         stn_info = AwsStn(stn_id=id, lon=lon, lat=lat, reg_id=reg_id, law_id=law_id)
         db.add(stn_info)
+        
