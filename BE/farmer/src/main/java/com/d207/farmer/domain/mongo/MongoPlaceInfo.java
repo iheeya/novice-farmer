@@ -14,7 +14,7 @@ import java.util.Map;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "place")
+@Document(collection = "gardens")
 public class MongoPlaceInfo {
     @Id
     private String id;

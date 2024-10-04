@@ -1,5 +1,6 @@
 package com.d207.farmer.domain.mongo;
 
+import com.d207.farmer.dto.mongo.MongoFileNameDTO;
 import com.d207.farmer.dto.mongo.plant.FertilizerInfo;
 import com.d207.farmer.dto.mongo.plant.OptimalTemperature;
 import com.d207.farmer.dto.mongo.plant.PestOfPlant;
@@ -41,4 +42,5 @@ public class MongoPlantInfo {
     @Field(name = "additional_info")
     private String additionalInfo;
 
+    private List<MongoFileNameDTO> images;
 }
