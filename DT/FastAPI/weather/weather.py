@@ -71,3 +71,22 @@ def add_stninfo_to_db(db:Session, id: str, lon: float, lat: float, reg_id: str, 
         stn_info = AwsStn(stn_id=id, lon=lon, lat=lat, reg_id=reg_id, law_id=law_id)
         db.add(stn_info)
         
+def load_adminfo(): # 행정구역 데이터 가져오기
+    with open("./adm_district.csv", "r", encoding='utf-8') as file:
+        csv_data = csv.reader(file)
+    
+    next(csv_data)
+    for row in csv_data:
+        adm = list(row[0].split(','))
+        if len(adm) < 6:
+            continue
+        adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat = adm[0], adm[1], adm[2], adm[3], int(adm[4]), int(adm[5]), float(adm[6]), float(adm[7])
+        add_adminfo_to_db(adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat)
+    db.commit()
+
+def add_adminfo_to_db(db: Session, id: str, head: str, middle: str, tail: str, xgrid: int, ygrid: int, lon: float, lat: float):
+    check_existing = db.query(AdmDistrict).filter(AdmDistrict.adm_id==id).first()
+    if not check_existing:
+        admin_info = AdmDistrict(adm_id=id, adm_head=head, adm_middle=middle, adm_tail=tail, x_grid=xgrid, y_grid=ygrid, lon=lon, lat=lat)
+        db.add(admin_info)
+    
