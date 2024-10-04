@@ -433,11 +433,11 @@ public class CommunityService {
 
 
 
-            for(MultipartFile Singlepartfile : communityOneModifyRequestDTO.getFiles()){
-                String imagePathdto = fileUtil.uploadFile(Singlepartfile, FileDirectory.COMMUNITY);
-
-                  communityImageRepository.save(new CommunityImage(community, imagePathdto));
-            }
+//            for(MultipartFile Singlepartfile : communityOneModifyRequestDTO.getFiles()){
+//                String imagePathdto = fileUtil.uploadFile(Singlepartfile, FileDirectory.COMMUNITY);
+//
+//                  communityImageRepository.save(new CommunityImage(community, imagePathdto));
+//            }
 
 
             List<String> tagpath = communityOneModifyRequestDTO.getCommunityTagSubtractList();
