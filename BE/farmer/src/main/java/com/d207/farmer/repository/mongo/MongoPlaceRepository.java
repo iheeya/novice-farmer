@@ -4,5 +4,4 @@ import com.d207.farmer.domain.mongo.MongoPlaceInfo;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface MongoPlaceRepository extends MongoRepository<MongoPlaceInfo, String> {
-    MongoPlaceInfo findByName(String name);
 }
