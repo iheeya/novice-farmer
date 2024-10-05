@@ -1,5 +1,16 @@
 # 작물 생장도(DDs) 계산
-import math
+from sqlalchemy.orm import Session
+from setting.mysql import session_local
+from .models import WeatherArea, WeatherVal, AwsStn, AdmDistrict, CropBase, CropThreshold
+
+from dotenv import load_dotenv
+from io import StringIO
+from datetime import datetime, timedelta
+import json, requests, os, csv, itertools, math
+
+
+load_dotenv()
+db: Session = session_local()
 
 def crops_growth(): # 현재는 토마토에 대한 값만 계산 중.
     thi, tlow = 33.33, 7.22
@@ -47,3 +58,12 @@ def crops_growth(): # 현재는 토마토에 대한 값만 계산 중.
 
     DDs = round((DD1-DD2) * (9/5), 2)
     return { 'degreeDay' : DDs}
+    
+# 스케쥴러 통해 매 자정 작물별 생장도 계산
+def calculate_crop_degree_days():
+    return
+
+
+# 작물별 생장도 계산 후 DB에 넣기.
+def add_degree_days(db: Session, dds: int):
+    return

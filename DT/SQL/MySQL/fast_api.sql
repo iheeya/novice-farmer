@@ -1,6 +1,6 @@
 # CREATE DATABASE fast_api DEFAULT CHARACTER SET utf8mb4;
 #
-# USE fast_api
+USE fast_api;
 
 # DROP TABLE weather_area, adm_district, aws_stn, today_weather_base, today_weather_val, crop_base, crop_fertilizer, crop_info, growth_temp
 
@@ -99,3 +99,12 @@ CREATE TABLE current_special_weather(
     `wrn_id` VARCHAR(12) PRIMARY KEY,
     `wrn_type` VARCHAR(12) NOT NULL
 ); # 특보현황
+
+CREATE TABLE crop_threshold(
+    `crop_id` TINYINT PRIMARY KEY,
+    `step1_threshold` INT NOT NULL,
+    `step2_threshold` INT NOT NULL,
+    `step3_threshold` INT NOT NULL,
+    `step4_threshold` INT NOT NULL,
+    FOREIGN KEY crop_threshold(crop_id) REFERENCES crop_base(crop_id) ON DELETE CASCADE
+);
