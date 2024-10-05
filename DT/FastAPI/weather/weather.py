@@ -238,4 +238,3 @@ def add_current_special_weather_to_db(db: Session, wrn_id: str, wrn_type: str):
     if not check_exisisting:
         current_special_info = CurrentSpecialWeather(wrn_id=wrn_id, wrn_type=wrn_type)
         db.add(current_special_info)
-        
