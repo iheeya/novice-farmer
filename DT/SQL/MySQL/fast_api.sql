@@ -89,4 +89,13 @@ CREATE TABLE growth_temp
     FOREIGN KEY growth_temp(crop_id) REFERENCES crop_base(crop_id) ON DELETE CASCADE
 );
 
+CREATE TABLE special_weather(
+    `stn_id`    VARCHAR(12) PRIMARY KEY,
+    `wrn_id`    VARCHAR(12) NOT NULL, # 특보구역 코드 - 어느지역 특보인지
+    `reg_id`    VARCHAR(12) NOT NULL # 예보구역 코드
+);
 
+CREATE TABLE current_special_weather(
+    `wrn_id` VARCHAR(12) PRIMARY KEY,
+    `wrn_type` VARCHAR(12) NOT NULL
+); # 특보현황
