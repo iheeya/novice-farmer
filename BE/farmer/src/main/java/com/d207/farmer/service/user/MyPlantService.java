@@ -92,7 +92,7 @@ public class MyPlantService {
         if(farmTodos == null || farmTodos.isEmpty()) {
             Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
             userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
-            farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, "", true, null, LocalDateTime.now()));
+            farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, "", true, LocalDateTime.now(), LocalDateTime.now()));
             return "작물 비료주기 성공(todo 생성)";
         }
         farmTodos.get(0).updateTodoComplete();
@@ -149,8 +149,22 @@ public class MyPlantService {
     public MyPlantInfoResponseDTO getMyPlantInfo(Long userId, Long myPlantId) {
         Farm farm = farmRepository.findByIdWithJoin(myPlantId).orElseThrow();
         userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
+
+        List<PlantThreshold> plantThresholds = farm.getPlant().getPlantThresholds();
+        MyPlantInfoResponseDTO.ThresholdDTO thresholdDTO = new MyPlantInfoResponseDTO.ThresholdDTO(
+                plantThresholds.size() + 1,
+                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(0).getDegreeDay(), farm.getPlant().getDegreeDay()),
+                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(1).getDegreeDay(), farm.getPlant().getDegreeDay()),
+                plantThresholds.size() == 3 ?
+                        dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(2).getDegreeDay(), farm.getPlant().getDegreeDay()) : null);
+
         if(farm.getSeedDate() == null) {
-            return new MyPlantInfoResponseDTO(false, false, new MyPlantInfoResponseDTO.PlantInfoDTO(), new ArrayList<>());
+            // 수정: 시작하지 않았어도 필요한 정보는 반환
+            MyPlantInfoResponseDTO.PlantInfoDTO plantInfo = new MyPlantInfoResponseDTO.PlantInfoDTO(
+                    farm.getUserPlace().getPlace().getName(), farm.getUserPlace().getId(), farm.getUserPlace().getName(),
+                    farm.getPlant().getName(), farm.getMyPlantName(), 1, 0, thresholdDTO, farm.getMemo()
+            );
+            return new MyPlantInfoResponseDTO(false, false, plantInfo, new ArrayList<>());
         }
 
         // 작물 growthStep 계산
@@ -176,14 +190,6 @@ public class MyPlantService {
             todoInfoDTOs.add(new MyPlantInfoResponseDTO.TodoInfoDTO(ft.getTodoDate().toLocalDate(),
                     ft.getTodoType(), remainDay));
         }
-
-        List<PlantThreshold> plantThresholds = farm.getPlant().getPlantThresholds();
-        MyPlantInfoResponseDTO.ThresholdDTO thresholdDTO = new MyPlantInfoResponseDTO.ThresholdDTO(
-                plantThresholds.size() + 1,
-                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(0).getDegreeDay(), farm.getPlant().getDegreeDay()),
-                dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(1).getDegreeDay(), farm.getPlant().getDegreeDay()),
-                plantThresholds.size() == 3 ?
-                        dateUtil.degreeDayToRatio(farm.getPlant().getPlantThresholds().get(2).getDegreeDay(), farm.getPlant().getDegreeDay()) : null);
 
         List<FarmTodo> farmTodosIsCompleted = farmTodoRepository.findByFarmIdAndIsCompletedTrue(myPlantId, TodoType.WATERING, TodoType.FERTILIZERING);
 

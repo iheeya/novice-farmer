@@ -114,7 +114,7 @@ public class MainPageService {
 
         return new TodoInfoComponentDTO(true, farmTodo.getTodoType(), title, farmTodo.getFarm().getUserPlace().getName(),
                 farmTodo.getFarm().getMyPlantName(), farmTodo.getFarm().getPlant().getName(), imagePath, farmUtil.getGrowthStep(farmTodo.getFarm()),
-                farmTodo.getTodoDate().toLocalDate(), farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
+                farmTodo.getTodoDate() == null ? null : farmTodo.getTodoDate().toLocalDate(), farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
     }
 
     /**
