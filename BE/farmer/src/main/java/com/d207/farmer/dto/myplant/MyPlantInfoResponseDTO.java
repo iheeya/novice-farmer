@@ -35,6 +35,19 @@ public class MyPlantInfoResponseDTO {
         private LocalDate recentWateringDate;
         private LocalDate recentFertilizingDate;
         private String memo;
+
+        // 시작하지 않았을 때 용
+        public PlantInfoDTO(String placeName, Long myPlaceId, String myPlaceName, String plantName, String myPlantName, int plantGrowthStep, int plantDegreeRatio, ThresholdDTO threshold, String memo) {
+            this.placeName = placeName;
+            this.myPlaceId = myPlaceId;
+            this.myPlaceName = myPlaceName;
+            this.plantName = plantName;
+            this.myPlantName = myPlantName;
+            this.plantGrowthStep = plantGrowthStep;
+            this.plantDegreeRatio = plantDegreeRatio;
+            this.threshold = threshold;
+            this.memo = memo;
+        }
     }
 
     @Getter
