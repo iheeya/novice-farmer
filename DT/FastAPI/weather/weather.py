@@ -1,7 +1,7 @@
 # 기상 정보
 from sqlalchemy.orm import Session
 from setting.mysql import session_local
-from .models import WeatherArea, WeatherVal, AwsStn, AdmDistrict
+from .models import WeatherArea, WeatherVal, AwsStn, AdmDistrict, SpecialWeather, CurrentSpecialWeather
 
 from dotenv import load_dotenv
 from io import StringIO
@@ -169,3 +169,73 @@ def add_valinfo_to_db(db: Session, stn_id: str, rn_day: float, ta_max: float, ta
     
 # if __name__ == "__main__":
 #     load_areainfo()
+
+def load_special_areainfo():
+    url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_reg_aws2.php'
+    
+    updated_date = datetime.now() - timedelta(days=1)
+    updated_date = updated_date.strftime('%Y%m%d%H%M%S')
+    
+    params = {'tm': updated_date, 'help': '0', 'authKey': os.getenv('WEATHER_AUTH_KEY')}
+    
+    response = requests.get(url, params=params)
+    
+    csv_data = response.text
+    csv_reader = csv.reader(StringIO(csv_data))
+    
+    try:
+        with db.begin():
+            db.query(SpecialWeather).delete()
+            for row in csv_reader:
+                if len(row) < 3:
+                    continue
+                stn_id, wrn_id, reg_id = row[0], row[7], row[6]
+                add_special_weather_to_db(db, stn_id, wrn_id, reg_id)
+            db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f'에러가 발생했습니다: {e}')
+
+def add_special_weather_to_db(db: Session, stn_id: str, wrn_id: str, reg_id: str):
+    check_existing = db.query(SpecialWeather).filter(stn_id=stn_id).first()
+    if not check_existing:
+        special_info = SpecialWeather(stn_id=stn_id, wrn_id=wrn_id, reg_id=reg_id)
+        db.add(special_info)
+        
+# 자정부터 3시간 간격으로 실행되게 설정 필요
+def load_curruent_special_weatherinfo():
+
+    url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_now_data.php'
+
+    nowtime = datetime.datetime.now()
+    nowtime = nowtime.strftime('%Y%m%d%H%M')
+    
+    params = {'fe': 'f', 'tm': nowtime, 'authKey': os.getenv('WEATHER_AUTH_KEY'), 'help': '1'}
+    
+    response = requests.get(url, params=params)
+    
+    csv_data = response.text
+    
+    csv_reader = csv.reader(StringIO(csv_data))
+    csv_reader = itertools.islice(csv_reader, 18, None)
+    
+    try:
+        with db.begin():
+            db.begin()
+            db.query(CurrentSpecialWeather).delete()
+            for row in csv_reader:
+                if len(row) < 3:
+                    continue
+                wrn_id, wrn_type = row[2], row[6]
+                add_current_special_weather_to_db(db, wrn_id, wrn_type)
+            db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f'에러가 발생했습니다: {e}')
+            
+def add_current_special_weather_to_db(db: Session, wrn_id: str, wrn_type: str):
+    check_exisisting = db.query(CurrentSpecialWeather).filter(wrn_id).first()
+    if not check_exisisting:
+        current_special_info = CurrentSpecialWeather(wrn_id=wrn_id, wrn_type=wrn_type)
+        db.add(current_special_info)
+        

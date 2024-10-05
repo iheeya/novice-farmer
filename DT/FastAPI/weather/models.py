@@ -102,3 +102,22 @@ class GrowthTemp(Base):
     crop_id = Column(SmallInteger, ForeignKey('crop_base.crop_id'), primary_key=True)
     growth_high_temp = Column(Float)
     growth_low_temp = Column(Float)
+
+
+# 기상특보 예보구역
+class SpecialWeather(Base):
+    __tablename__ = 'special_weather'
+
+    stn_id = Column(String(12), primary_key=True)
+    wrn_id = Column(String(12), ForeignKey('current_special_weather.wrn_id'), nullable=False)
+    reg_id = Column(String(12), nullable=False)
+
+# 기상특보 현황 및 타입
+class CurrentSpecialWeather(Base):
+    __tablename__ = 'current_special_weather'
+
+    wrn_id = Column(String(12), primary_key=True)
+    wrn_type = Column(String(12), nullable=False)
+
+    # 관계 설정
+    special_weather = relationship("SpecialWeather", backref="current_special_weather")
