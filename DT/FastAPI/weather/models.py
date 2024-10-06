@@ -62,6 +62,7 @@ class CropBase(Base):
     crop_id = Column(SmallInteger, primary_key=True, autoincrement=True)
     crop_name = Column(String(255), nullable=False)
     crop_plant_season = Column(String(50))
+    is_leaves = Column(TinyInteger)
 
 # 비료 정보 모델
 class CropFertilizer(Base):
@@ -121,3 +122,15 @@ class CurrentSpecialWeather(Base):
 
     # 관계 설정
     special_weather = relationship("SpecialWeather", backref="current_special_weather")
+    
+# 작물별 DD값 Treshold
+class CropThreshold(Base):
+    __tablename__ = 'crop_threshold'
+
+    crop_id = Column(TinyInteger, primary_key=True) 
+    step2_threshold = Column(Integer, nullable=False)
+    step3_threshold = Column(Integer, nullable=False)
+    step4_threshold = Column(Integer, nullable=False)
+
+    # 외래 키 설정, crop_base 테이블의 crop_id 참조
+    crop_id = Column(SmallInteger, ForeignKey('crop_base.crop_id', ondelete='CASCADE'))
