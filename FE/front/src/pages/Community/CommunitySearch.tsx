@@ -10,9 +10,13 @@ function CommunitySearch(){
         setIsInput(true)
     }
 
+    const handleCancelClick = () => {
+        setIsInput(false); // 취소 버튼 누르면 검색창 닫고 태그 페이지로 이동
+      };
+
     return(
         <>
-            <CommunitySearchHeader onTextFieldClick={handleSearchClick}/>
+            <CommunitySearchHeader onCancelClick={handleCancelClick} onTextFieldClick={handleSearchClick}/>
             {isInput ? <CommunitySearchInput/>:<CommunityTag/>}
             
         </>

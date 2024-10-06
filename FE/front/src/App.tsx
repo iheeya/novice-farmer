@@ -16,6 +16,7 @@ import ProfileUpdate from "./pages/user/profileUpdate";
 import WriteCommunityArticle from "./pages/Community/WriteCommunityArticle";
 import CommunitySearch from "./pages/Community/CommunitySearch";
 import LandingPage from "./pages/Home/Landing";
+import CommunitySearchResult from "./pages/Community/CommunitySearchResult";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function AppContent() {
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/myPage/profile" element={<ProfileUpdate />} />
         <Route path="/introduce" element={<LandingPage />} />
+        <Route path="/community/search/:result" element={<CommunitySearchResult/>} />
       </Routes>
       {!shouldHideFooter && <Footer />}
     </>
