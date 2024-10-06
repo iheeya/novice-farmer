@@ -46,7 +46,8 @@ CREATE TABLE weather_val(
 CREATE TABLE crop_base(
     `crop_id` SMALLINT PRIMARY KEY AUTO_INCREMENT,
     `crop_name` VARCHAR(255) NOT NULL,
-    `crop_plant_season` VARCHAR(50) # 1, 2, 3으로 입력.
+    `crop_plant_season` VARCHAR(50), # 1, 2, 3으로 입력.
+    `is_leaves` TINYINT
 );
 
 CREATE TABLE crop_fertilizer(
@@ -102,9 +103,8 @@ CREATE TABLE current_special_weather(
 
 CREATE TABLE crop_threshold(
     `crop_id` TINYINT PRIMARY KEY,
-    `step1_threshold` INT NOT NULL,
-    `step2_threshold` INT NOT NULL,
-    `step3_threshold` INT NOT NULL,
+    `step2_threshold` INT,
+    `step3_threshold` INT,
     `step4_threshold` INT NOT NULL,
     FOREIGN KEY crop_threshold(crop_id) REFERENCES crop_base(crop_id) ON DELETE CASCADE
 );

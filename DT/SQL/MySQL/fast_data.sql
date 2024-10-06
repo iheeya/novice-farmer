@@ -1,16 +1,17 @@
-INSERT INTO crop_base (crop_name, crop_plant_season) VALUES
-('토마토', '3,4,5'),
-('고추', '4,5'),
-('옥수수', '5,6'),
-('오이', '3,4,5'),
-('콩', '5,6'),
-('가지', '4,5'),
-('무', '8,9'),
-('상추', '3,4'),
-('배추', '9,10'),
-('감자', '3,4'),
-('고구마', '5,6'),
-('대파', '3,4,9');
+use fast_api;
+INSERT INTO crop_base (crop_name, crop_plant_season, is_leaves) VALUES
+('토마토', '3,4,5', 0),
+('고추', '4,5', 0),
+('옥수수', '5,6', 0),
+('오이', '3,4,5', 0),
+('콩', '5,6', 0),
+('가지', '4,5', 0),
+('무', '8,9', 1),
+('상추', '3,4', 1),
+('배추', '9,10', 1),
+('감자', '3,4', 1),
+('고구마', '5,6', 1),
+('대파', '3,4,9', 1);
 
 INSERT INTO crop_water_period (crop_id, watering_step1, watering_step2, watering_step3, watering_step4) VALUES
 (1, 3, 7, 10, 14),
@@ -88,3 +89,18 @@ VALUES
 
 -- 대파: 복합, 유박, 칼륨비료 사용
 (12, 1, 1, 1, 1, 3, 4, 5, 3);
+
+
+INSERT INTO crop_threshold (crop_id, step2_threshold, step3_threshold, step4_threshold) VALUES
+(1, 510, 1060, 1940),    -- 토마토
+(2, 255, 848, 1746),     -- 고추
+(3, 204, 742, 2134),     -- 옥수수
+(4, 178, 602, 742),      -- 오이
+(5, 204, 742, 1060),     -- 콩 (완두콩 기준)
+(6, 255, 954, 1378),     -- 가지
+(7, NULL, NULL, 1360),   -- 무
+(8, NULL, NULL, 776),    -- 상추
+(9, NULL, NULL, 1940),   -- 배추 (결구배추 기준)
+(10, NULL, NULL, 1060),  -- 감자
+(11, NULL, NULL, 1500),  -- 고구마
+(12, NULL, NULL, 2910);  -- 대파
