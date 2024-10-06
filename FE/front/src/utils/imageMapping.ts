@@ -26,6 +26,13 @@ export const getImageForCrop = (cropName: string): string => {
         return require('../assets/img/plants/Rosemary.png');
       case '딸기':
         return require('../assets/img/plants/Strawberry.png');
+      case '오이':
+        return require('../assets/img/plants/Cucumber.png');
+      case '옥수수':
+        return require('../assets/img/plants/Corn.png')
+      case '고추':
+        return require('../assets/img/plants/Pepper.png');
+        
       default:
         return require('../assets/img/plants/Default.png');
     }

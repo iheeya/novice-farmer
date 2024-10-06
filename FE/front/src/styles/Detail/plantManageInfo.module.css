@@ -1,7 +1,7 @@
 .dateInfoBox {
     padding: 1rem;
     max-width: 50%;
-    overflow-y: auto; /* 내용이 넘칠 경우 스크롤 */
+    overflow-y: auto; 
     border: 1px solid #ddd;
     border-radius: 0.5rem;
     background-color: #f9f9f9;
@@ -21,7 +21,7 @@
     color: #666666;
     margin: 6px 0;
     display: flex;
-    justify-content: left;
+    text-align: center;
   }
   
   .dateItem {
