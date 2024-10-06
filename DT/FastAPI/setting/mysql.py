@@ -12,6 +12,15 @@ db_host = os.getenv('DB_HOST')
 db_port = os.getenv('DB_PORT')
 
 MYSQL_FASTAPI_URL = f'mysql+pymysql://{db_user}:{db_pwd}@{db_host}:{db_port}/fast_api'
+MYSQL_FARMER_URL = f'mysql+pymysql://{db_user}:{db_pwd}@{db_host}:{db_port}/farmer'
 
-fastapi_engine = create_engine(MYSQL_FASTAPI_URL)
-session_local = sessionmaker(autocommit=False, autoflush=False, bind=fastapi_engine)
+DATABASES = {
+    'fast_api': MYSQL_FASTAPI_URL,
+    'farmer': MYSQL_FARMER_URL,
+}
+
+engines = {schema: create_engine(url) for schema, url in DATABASES.items()}
+
+session_local = {
+    schema: sessionmaker(autocommit=False, autoflush=False, bind=engines) for schema, engine in engines.items()
+}

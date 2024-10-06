@@ -10,7 +10,8 @@ import json, requests, os, csv, itertools
 
 
 load_dotenv()
-db: Session = session_local()
+fast_api: Session = session_local['fast_api']()
+farmers: Session = session_local['farmer']()
 
 def load_areainfo(): # 예보구역 데이터 가져오기
     url = 'https://apihub.kma.go.kr/api/typ01/url/fct_shrt_reg.php'
@@ -26,8 +27,8 @@ def load_areainfo(): # 예보구역 데이터 가져오기
     
     # 트랜잭션 및 CRUD 기능
     try:
-        with db.begin():
-            db.query(WeatherArea).delete()
+        with fast_api.begin():
+            fast_api.query(WeatherArea).delete()
             for row in csv_reader:
                 reg = []
                 reg = list(row[0].split())
@@ -37,10 +38,10 @@ def load_areainfo(): # 예보구역 데이터 가져오기
                 
                 if reg_sp == 'C':
                     if '(' not in reg_name:
-                        add_areainfo_to_db(db, str(reg_id), reg_name)
-            db.commit()
+                        add_areainfo_to_db(fast_api, str(reg_id), reg_name)
+            fast_api.commit()
     except Exception as e:
-        db.rollback()
+        fast_api.rollback()
         print(f'에러가 발생했습니다: {e}')
         
         
@@ -70,17 +71,17 @@ def load_aswsinfo(): # aws 지점 데이터 가져오기
     
     # 트랜잭션
     try:
-        with db.begin():
-            db.query(AwsStn).delete()
+        with fast_api.begin():
+            fast_api.query(AwsStn).delete()
             for row in csv_reader:
                 stn = list(row[0].split())
                 if len(stn) < 2:
                     continue
                 stn_id, stn_lon, stn_lat, reg_id, law_id  = stn[0], stn[1], stn[2], stn[10], stn[11]
                 add_awsinfo_to_db(stn_id, stn_lon, stn_lat, reg_id, law_id)
-            db.commit()
+            fast_api.commit()
     except Exception as e:
-        db.rollback()
+        fast_api.rollback()
         print(f'에러가 발생했습니다: {e}')
     
 def add_awsinfo_to_db(db:Session, id: str, lon: float, lat: float, reg_id: str, law_id: str):
@@ -97,17 +98,17 @@ def load_adminfo(): # 행정구역 데이터 가져오기
     
     # 트랜잭션
     try:
-        with db.begin():
-            db.query(AdmDistrict).delete()
+        with fast_api.begin():
+            fast_api.query(AdmDistrict).delete()
             for row in csv_data:
                 adm = list(row[0].split(','))
                 if len(adm) < 6:
                     continue
                 adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat = adm[0], adm[1], adm[2], adm[3], int(adm[4]), int(adm[5]), float(adm[6]), float(adm[7])
                 add_adminfo_to_db(adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat)
-            db.commit()
+            fast_api.commit()
     except Exception as e:
-        db.rollback()
+        fast_api.rollback()
         print(f"에러가 발생했습니다: {e}")
 
 def add_adminfo_to_db(db: Session, id: str, head: str, middle: str, tail: str, xgrid: int, ygrid: int, lon: float, lat: float):
@@ -137,8 +138,8 @@ def load_valinfo(): # aws 기반 기상 데이터 가져오기
     
     # 트랜잭션
     try:
-        with db.begin():
-            db.query(WeatherVal).delete()
+        with fast_api.begin():
+            fast_api.query(WeatherVal).delete()
             for row1, row2, row3 in zip(rnday_data, tamax_data, tamin_data):
                 val1 = list(row1[0].split(','))
                 if len(val1) < 2:
@@ -156,9 +157,9 @@ def load_valinfo(): # aws 기반 기상 데이터 가져오기
                 ta_min = float(val3[5])
             
                 add_valinfo_to_db(db, stn_id, rn_day, ta_max, ta_min)
-            db.commit()
+            fast_api.commit()
     except Exception as e:
-        db.rollback()
+        fast_api.rollback()
         print(f"에러가 발생했습니다: {e}")
 
 def add_valinfo_to_db(db: Session, stn_id: str, rn_day: float, ta_max: float, ta_min: float):
@@ -184,16 +185,16 @@ def load_special_areainfo():
     csv_reader = csv.reader(StringIO(csv_data))
     
     try:
-        with db.begin():
-            db.query(SpecialWeather).delete()
+        with fast_api.begin():
+            fast_api.query(SpecialWeather).delete()
             for row in csv_reader:
                 if len(row) < 3:
                     continue
                 stn_id, wrn_id, reg_id = row[0], row[7], row[6]
                 add_special_weather_to_db(db, stn_id, wrn_id, reg_id)
-            db.commit()
+            fast_api.commit()
     except Exception as e:
-        db.rollback()
+        fast_api.rollback()
         print(f'에러가 발생했습니다: {e}')
 
 def add_special_weather_to_db(db: Session, stn_id: str, wrn_id: str, reg_id: str):
@@ -220,17 +221,17 @@ def load_curruent_special_weatherinfo():
     csv_reader = itertools.islice(csv_reader, 18, None)
     
     try:
-        with db.begin():
-            db.begin()
-            db.query(CurrentSpecialWeather).delete()
+        with fast_api.begin():
+            fast_api.begin()
+            fast_api.query(CurrentSpecialWeather).delete()
             for row in csv_reader:
                 if len(row) < 3:
                     continue
                 wrn_id, wrn_type = row[2], row[6]
                 add_current_special_weather_to_db(db, wrn_id, wrn_type)
-            db.commit()
+            fast_api.commit()
     except Exception as e:
-        db.rollback()
+        fast_api.rollback()
         print(f'에러가 발생했습니다: {e}')
             
 def add_current_special_weather_to_db(db: Session, wrn_id: str, wrn_type: str):
