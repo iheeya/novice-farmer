@@ -58,7 +58,7 @@ function AppContent() {
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/myPage/profile" element={<ProfileUpdate />} />
         <Route path="/introduce" element={<LandingPage />} />
-        <Route path="/community/search/:result" element={<CommunitySearchResult/>} />
+        <Route path="/community/search/:search" element={<CommunitySearchResult/>} />
       </Routes>
       {!shouldHideFooter && <Footer />}
     </>

@@ -309,6 +309,11 @@ if (hasError) {
                       placeholder="댓글을 입력해주세요."
                       fullWidth
                       variant='outlined'
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          handleCommentPost();
+                        }
+                      }}
                       InputProps={{
                         endAdornment : (
                           <InputAdornment position='end'>
