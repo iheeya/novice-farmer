@@ -11,7 +11,8 @@ import json, requests, os, csv, itertools, math
 
 load_dotenv()
 db: Session = session_local()
-
+shcema1 = 'farmer'
+schema2 = 'fast_api'
 def crops_growth(): # 현재는 토마토에 대한 값만 계산 중.
     thi, tlow = 33.33, 7.22
     def docalcs_S(max_val, min_val):
@@ -49,7 +50,7 @@ def crops_growth(): # 현재는 토마토에 대한 값만 계산 중.
         heat = (diff * math.cos(theta) - d2 * (pihlf - theta)) / twopi
         return heat
     
-    tmax, tmin = 21.56, 14.95
+    # tmax, tmin = 21.56, 14.95
     DD1 = 2*docalcs_S(tmax, tmin)
     tmep_tlow, temp_thi = tlow, tmin
     tlow, thi = thi, 2*thi - tlow
