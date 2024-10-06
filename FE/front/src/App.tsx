@@ -31,6 +31,7 @@ function App() {
         <Route path="/weekendFarm-recommend" element={<WeekendFarmList />} />
         <Route path="/community" element={<Community />} />
         <Route path="/community/:id/detail" element={<CommunityDetail />} />
+        <Route path="/community/article/write" element={<WriteCommunityArticle />} />
         <Route path="/user/signup" element={<SignUp />} />
         <Route path="/user/login" element={<Login />} />
         <Route path="/user/survey" element={<Survey />} />
@@ -40,6 +41,7 @@ function App() {
         <Route path="/myPage/profile" element={<ProfileUpdate />} />
         <Route path="/introduce" element={<LandingPage />} />
         <Route path="/community/search/:search" element={<CommunitySearchResult/>} />
+        <Route path="/community/search" element={<CommunitySearch/>} />
         <Route path="/myGarden/:myPlaceId/:myPlantId/camera" element={<CameraPage />} />
         <Route path="/introduce" element={<HomePage />} />
       </Routes>

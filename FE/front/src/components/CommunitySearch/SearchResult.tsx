@@ -1,6 +1,6 @@
 import { getSearchResult } from "../../services/CommunitySearch/CommunitySearchGet";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import empty from "../../assets/img/community/empty.png";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -8,77 +8,139 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import CardActionArea from "@mui/material/CardActionArea";
 import "../../styles/CommunitySearch/SearchResult.css";
+import { GetImage } from "../../services/getImage";
+import Button from "@mui/material/Button";
+
+interface SearchData {
+  communityTitle: string;
+  communityContent: string;
+  communityImagePath: string[];
+  userImagePath: string; // 추가된 필드
+  communityId: number; // 게시글 ID
+  communityTag: string[];
+  userNickname: string;
+  communityDate: string;
+}
 
 function SearchResult() {
   const { search } = useParams<{ search: string }>();
-  const [searchData, setSearchData] = useState<any[]>([]);
+  const [searchData, setSearchData] = useState<SearchData[]>([]);
   const [page, setPage] = useState<number>(0);
-  const [hasMore, setHasMore] = useState<boolean>(true); // 더 많은 데이터가 있는지 확인하는 상태
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [userImages, setUserImages] = useState<string[]>([]);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const getData = async () => {
-      if (!hasMore) return; // 더 이상 데이터가 없으면 요청하지 않음
+  const getData = async () => {
+    if (!hasMore) return; // 더 이상 데이터가 없으면 요청하지 않음
 
-      try {
-        const data = await getSearchResult({
-          page,
-          size: 2,
-          filter: "new",
-          search: search || "",
+    try {
+      const data = await getSearchResult({
+        page,
+        size: 2,
+        filter: "new",
+        search: search || "",
+      });
+
+      console.log(data.content);
+
+      if (data.content.length > 0) {
+        setSearchData((prev) => {
+          const existingIds = new Set(prev.map(item => item.communityId));
+          const newItems = data.content.filter((item: SearchData) => !existingIds.has(item.communityId));
+          return [...prev, ...newItems];
         });
-        console.log(data.content);
-        if (data.content.length > 0) {
-          setSearchData(data.content);
-        } else {
-          setHasMore(false); // 더 이상 데이터가 없으면 hasMore를 false로 설정
-        }
-      } catch (e) {
-        console.log(e);
+
+        const imagePromises = data.content.map((item: SearchData) => GetImage(item.userImagePath));
+        const images = await Promise.all(imagePromises);
+        setUserImages((prev) => [...prev, ...images]);
+      } else {
+        setHasMore(false);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  // 페이지가 변경될 때 데이터 가져오기
+  useEffect(() => {
+    if (hasMore) {
+      getData();
+    }
+  }, [search, page, hasMore]);
+
+  // 스크롤 이벤트를 감지하여 페이지 증가
+  useEffect(() => {
+    const handleScroll = () => {
+      const bottom = window.innerHeight + window.scrollY >= document.body.offsetHeight;
+      if (bottom && hasMore && page === 0) { // 페이지가 0일 때만 API 호출
+        setPage((prev) => prev + 1);
       }
     };
 
-    getData(); // getData 호출
-  }, [search, page]); // page가 변경될 때도 데이터를 가져오도록 설정
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore]);
+
+  const handleClick = (id: number) => {
+    navigate(`/community/${id}/detail`);
+  };
 
   return (
     <div className="parent-container">
       {searchData.length > 0 ? (
         searchData.map((item, idx) => (
-          <Card key={idx} sx={{ width: "90%", marginTop: "5%" }}>
+          <Card
+            key={idx}
+            sx={{ width: "90%", marginTop: "5%" }}
+            onClick={() => handleClick(item.communityId)}
+          >
             <CardActionArea>
-              {/* 이미지가 있으면 표시, 없으면 기본 이미지 */}
               <CardMedia
                 component="img"
                 height="170"
-                image={
-                  item.communityImagePath?.length > 0
-                    ? item.communityImagePath[0]
-                    : empty
-                }
+                image={item.communityImagePath?.length > 0 ? item.communityImagePath[0] : empty}
                 alt={item.communityTitle}
               />
               <CardContent>
-                <Typography
-                  gutterBottom
-                  component="div"
-                  sx={{ color: "#5B8E55", fontSize: "1.2rem" }}
-                >
+                <Typography gutterBottom component="div" sx={{ color: "#5B8E55", fontSize: "1.2rem" }}>
                   {item.communityTitle}
                 </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ color: "#5B8E55" }}
-                >
-                  {/* 설명을 간략히 노출 (설명이 있다면) */}
+                <Typography variant="body2" color="text.secondary" sx={{ color: "#5B8E55" }}>
                   {item.communityContent ? item.communityContent : ""}
                 </Typography>
+                <div className="explain-tag">
+                  {item.communityTag.slice(0, 3).map((tag: string, index: number) => (
+                    <Button
+                      key={index}
+                      sx={{
+                        backgroundColor: "#B0D085",
+                        color: "white",
+                        marginRight: "2%",
+                      }}
+                    >
+                      #{tag}
+                    </Button>
+                  ))}
+                </div>
+                <div className="article-explain-bottom">
+                  <div className="nickname-and-image">
+                    <img
+                      src={userImages[idx]}
+                      alt="User Image"
+                      style={{ width: "30px", height: "30px", marginRight: "5px" }}
+                    />
+                    <div className="show-nickname">{item.userNickname}</div>
+                  </div>
+                  <div className="date">
+                    {new Date(item.communityDate).toLocaleDateString("ko-KR")}
+                  </div>
+                </div>
               </CardContent>
             </CardActionArea>
           </Card>
         ))
       ) : (
-        <div>검색 결과가 없습니다.</div> // 검색 결과가 없는 경우
+        <div>검색 결과가 없습니다.</div>
       )}
     </div>
   );
