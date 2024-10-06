@@ -39,13 +39,15 @@ public class CommunityController {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Received Community");
         if(filter.equals("new")){
+            log.info("[CommunityController] getCommunityWithLatest {}"+ search);
             return ResponseEntity.ok(communityService.getCommunityWithLatest(userId, filter, search, pageable));
         }
         else{
+            log.info("[CommunityController] getCommunityWithHeart {}"+ search);
             return ResponseEntity.ok(communityService.getCommunityWithHeart(userId, filter, search, pageable));
         }
 
-
+        //return null;
 
 
     }
