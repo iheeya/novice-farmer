@@ -53,7 +53,7 @@ public class CommunityService {
         Page<Community> communities;
 
         // 검색어가 없는 경우
-        if (StringUtils.isEmpty(search)) {
+        if (search.isEmpty()) {
             // 1. 사용자 즐겨찾기 태그 가져오기
             List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
             List<Long> communityTagIds = communityTagId.stream()
@@ -94,9 +94,12 @@ public class CommunityService {
             long heartCount = countObject instanceof Number ? ((Number) countObject).longValue() : 0L; // null 체크 및 변환
             int heartCountint = (int) heartCount; // Long을 int로 변환
 
-            //
 
-
+            // 커뮤니티 내용 제한 및 ... 추가
+            String truncatedContent = community.getContent();
+            if (truncatedContent.length() > 12) {
+                truncatedContent = truncatedContent.substring(0, 12) + "...";
+            }
 
             // DTO 생성
             return new CommunityResponseDTO(
@@ -107,7 +110,7 @@ public class CommunityService {
 
                     community.getTitle(),
                     communityImages,
-                    community.getContent(),
+                    truncatedContent,
                     community.getWriteDate(),
                     tagNames,
                     (int) heartCount, // int로 변환
@@ -126,7 +129,7 @@ public class CommunityService {
         Page<Community> communities;
         
         // 일단 검색어 없을때
-        if(StringUtils.isEmpty(search)) {
+        if(search.isEmpty()) {
             // 1. 사용자 즐겨찾기 태그 가져오기
             List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
             List<Long> communityTagIds = communityTagId.stream()
@@ -178,6 +181,13 @@ public class CommunityService {
         long heartCount = countObject instanceof Number ? ((Number) countObject).longValue() : 0L; // null 체크 및 변환
         int heartCountint = (int) heartCount; // Long을 int로 변환
 
+        // 커뮤니티 내용 제한 및 ... 추가
+        String truncatedContent = community.getContent();
+        if (truncatedContent.length() > 12) {
+            truncatedContent = truncatedContent.substring(0, 12) + "...";
+        }
+
+
         // DTO 생성
         return new CommunityResponseDTO(
                 community.getId(),
@@ -186,7 +196,7 @@ public class CommunityService {
                 community.getUser().getImagePath(),
                 community.getTitle(),
                 communityImages,
-                community.getContent(),
+                truncatedContent,
                 community.getWriteDate(),
                 tagNames,
                 (int) heartCount, // int로 변환
