@@ -60,9 +60,6 @@ function AppWrapper() {
         <Route path="/community" element={<Community />} />
         <Route path="/community/:id/detail" element={<CommunityDetail />} />
         <Route path="/community/article/write" element={<WriteCommunityArticle />} />
-        <Route path="/user/signup" element={<SignUp />} />
-        <Route path="/user/login" element={<Login />} />
-        <Route path="/user/survey" element={<Survey />} />
         <Route path="/myGarden/:myPlaceId" element={<MyGarden />} />
         <Route path="/myGarden/:myPlaceId/:myPlantId" element={<MyPlant />} />
         <Route path="/myPage" element={<MyPage />} />
