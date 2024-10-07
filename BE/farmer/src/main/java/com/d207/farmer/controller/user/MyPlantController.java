@@ -132,9 +132,9 @@ public class MyPlantController {
     @Operation(summary = "병해충 검사 요청", description = "병해충 검사 버튼")
     @GetMapping("/pest")
     public ResponseEntity<InspectionPestResponseDTO> inspectionPest(@RequestHeader("Authorization") String authorization,
-                                                                    @ModelAttribute("file") MultipartFile request) {
-        log.info("[MyPlantController] Received inspectionPest request for {}", request);
+                                                                    @ModelAttribute InspectionPestRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
+        log.info("[MyPlantController] Received inspectionPest request for {}", userId);
         return ResponseEntity.ok().body(myPlantService.inspectionPest(userId, request));
     }
 
