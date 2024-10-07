@@ -3,7 +3,7 @@ import '../../styles/CommunitySearch/CommunityTag.css';
 import Button from '@mui/material/Button';
 import { ChangeTags } from '../../services/CommunitySearch/CommunitySearchPost';
 import { getTags } from '../../services/CommunitySearch/CommunitySearchGet';
-
+import Swal from 'sweetalert2'
 
 function CommunityTag() {
     // 태그 데이터를 상태로 저장
@@ -91,6 +91,16 @@ function CommunityTag() {
 
 
         postTag();
+
+        Swal.fire({
+            icon: "success",
+            title: "태그가 변경되었습니다.",
+            showConfirmButton: false,
+            timer: 1500,
+            customClass: {
+              title: 'custom-title' // 사용자 정의 클래스 추가
+            }
+          })
     };
 
 

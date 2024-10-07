@@ -1,5 +1,6 @@
 import '../../styles/WriteArticle/InputArticle.css'
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -8,6 +9,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import Swal from 'sweetalert2'
+import { ArticlePost, ArticleImgPost } from '../../services/CommunityArticle/ArticlePost';
+
+interface ArticlePost {
+  commentTitle: string,
+  commentContent: string,
+  communityTagList: string[],
+}
 
 function InputArticle(){
   const [inputValue, setInputValue] = useState<string>('');
@@ -22,7 +30,8 @@ function InputArticle(){
   
   const [imageFiles, setImageFiles] = useState<File[]>([]);  // 여러 이미지 파일을 저장하는 상태
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);  // 미리보기 URL 배열
-  
+  const navigate = useNavigate();
+
   // 입력 값 변경 시 호출
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -86,57 +95,60 @@ function InputArticle(){
 
 
   // 등록 버튼 클릭 시 payload 생성
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     const formattedTags = tags.map((tag) => tag.replace('#', ''));  // 태그에서 # 제거
-    // const payload = {
-    //   communityTitle: title,
-    //   communityContent: content,
-    //   imagePath: "imagePath",  // 여기에 이미지 경로가 들어가야 함
-    //   communityTagList: formattedTags
-    // };
+    const payload = {
+      communityTitle: title,
+      communityContent: content,
+      communityTagList: formattedTags
+    };
 
-      // FormData 객체 생성
+    try{
+      const response = await ArticlePost(payload);
+      const Id = response.data
+      console.log(Id)
+
+      // 2. 이미지 파일들을 FormData에 추가
       const formData = new FormData();
-      formData.append('communityTitle', title);
-      formData.append('communityContent', content);
-      formData.append('communityTagList', JSON.stringify(formattedTags));
-      
-    // 이미지 파일들을 FormData에 추가
-      imageFiles.forEach((file, index) => {
-        formData.append(`imageFile${index}`, file);  // 여러 파일을 개별적으로 추가
+      imageFiles.forEach((file) => {
+          formData.append('files', file); // 각 파일을 FormData에 추가
       });
 
+      // 3. 이미지 업로드
+      if (imageFiles.length > 0) {
+        await ArticleImgPost(Id, formData); // 게시글 ID와 FormData를 사용하여 이미지 업로드
+    }
 
-
-    setInputValue('');
-    setTags([]);
-    setTitle('');
-    setContent('');
-    setHasError(false); // 에러 상태 초기화
-
-    // console.log(payload)
-
-     // SweetAlert 표시
-     Swal.fire({
-      icon: "success",
-      title: "게시글이 등록되었습니다.",
-      showConfirmButton: false,
-      timer: 1500,
-      customClass: {
-        title: 'custom-title' // 사용자 정의 클래스 추가
-      }
-    });
+      // setInputValue('');
+      // setTags([]);
+      // setTitle('');
+      // setContent('');
+      // setHasError(false); // 에러 상태 초기화
+  
+      // console.log(payload)
+  
+       // SweetAlert 표시
+       Swal.fire({
+        icon: "success",
+        title: "게시글이 등록되었습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+        customClass: {
+          title: 'custom-title' // 사용자 정의 클래스 추가
+        }
+      }).then(() => {
+        navigate(`/community/${Id}/detail`)
+      });
+    } catch (error) {
+      console.log(error)
+    }   
   }
-
-
 
   const hadleGallertClick = () => {
     if (galleryInputRef.current) {
       galleryInputRef.current.click(); // 파일 input 클릭하여 갤러리 접근
     }
   }
-
-
 
 
     return(
@@ -164,56 +176,45 @@ function InputArticle(){
             onChange={handleContentChange}
             sx = {{backgroundColor: "#F8FAF8", marginTop: '5%'}}
             />
-
+ 
           
-      {/* 이미지 미리보기 및 삭제 버튼 */}
-      {/* {imagePreviewUrls.length > 0 && (
-        <div style={{ marginTop: '5%', display: 'flex', flexWrap: 'wrap', justifyContent:'center', marginLeft:'5%' }}>
+
+      {/* 이미지 미리보기 */}
+      {imagePreviewUrls.length > 0 && (
+        <div style={{ marginTop: '5%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginLeft: '5%' }}>
           {imagePreviewUrls.map((url, index) => (
-            <div key={index} style={{ position: 'relative', display: 'inline-block', width:'100px', height:'100px', gap: '5%'}}>
+            <div key={index} style={{ display: 'inline-block', margin: '5px', position: 'relative' }}>
               <img 
                 src={url} 
                 alt={`미리보기 ${index + 1}`} 
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-              /> */}
-              {/* 'X' 버튼을 이미지 오른쪽 상단에 추가 */}
-              {/* <CloseIcon 
-                onClick={() => handleDeleteImage(index)} 
-                style={{ position: 'absolute', width:'15px', height:'15px', top: '10px', right: '10px', cursor: 'pointer', color: 'red' }}
+                style={{ objectFit: 'contain', width:'100px' }} // img에 position: relative 추가
               />
-            </div>
-          ))}
-        </div>
-      )} */}
-
-            {/* 이미지 미리보기 및 삭제 버튼 */}
-            {imagePreviewUrls.length > 0 && (
-            <div style={{ marginTop: '5%', display: 'flex', flexWrap: 'wrap', justifyContent:'center', marginLeft:'5%' }}>
-              {imagePreviewUrls.map((url, index) => (
-                <div key={index} style={{ position: 'relative', display: 'inline-block', width:'100px', height:'100px', gap: '5%'}}>
-                  <img 
-                    src={url} 
-                    alt={`미리보기 ${index + 1}`} 
-                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                  />
-              {/* 'X' 버튼을 이미지 오른쪽 상단에 추가 */}
               <CloseIcon 
                 onClick={() => handleDeleteImage(index)} 
-                style={{ position: 'absolute', width:'15px', height:'15px', top: '10px', right: '10px', cursor: 'pointer', color: 'red' }}
+                style={{
+                  position: 'absolute',
+                  width: '15px',
+                  height: '15px',
+                  cursor: 'pointer',
+                  color: 'red',
+                  right: '4px',
+                  top: '5px',
+                  zIndex: 10 // 아이콘을 이미지 위로 올리기 위해 z-index 추가
+                }}
               />
             </div>
           ))}
         </div>
       )}
+      
 
 
-
-          {/* 카메라, 이미지 접근 */}
-          <div className='input-camera'>
-            <div className='input-box'>
-              <InsertPhotoOutlinedIcon sx={{fontSize: '3rem', color: 'gray'}} onClick={hadleGallertClick}/>
-            </div>
-          </div>
+      {/* 카메라, 이미지 접근 */}
+      <div className='input-camera'>
+        <div className='input-box'>
+          <InsertPhotoOutlinedIcon sx={{fontSize: '3rem', color: 'gray'}} onClick={hadleGallertClick}/>
+        </div>
+      </div>
         
 
 
