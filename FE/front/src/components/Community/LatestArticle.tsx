@@ -19,7 +19,7 @@ import Avatar from '@mui/material/Avatar';
 interface SearchData {
     communityTitle: string;
     communityContent: string;
-    communityImagePath: string[];
+    communityImage: string[];
     userImagePath: string; // 추가된 필드
     communityId: number; // 게시글 ID
     communityTag: string[];
@@ -33,6 +33,7 @@ function LatestArticle(){
     const [page, setPage] = useState<number>(0);
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [userImages, setUserImages] = useState<string[]>([]);
+    const [communityImages, setCommunityImages] = useState<string[]>([]);
     const navigate = useNavigate();
   
     const getData = async () => {
@@ -54,10 +55,32 @@ function LatestArticle(){
             const newItems = data.content.filter((item: SearchData) => !existingIds.has(item.communityId));
             return [...prev, ...newItems];
           });
-  
+
+          // 유저 프로필 이미지
           const imagePromises = data.content.map((item: SearchData) => GetImage(item.userImagePath));
           const images = await Promise.all(imagePromises);
           setUserImages((prev) => [...prev, ...images]);
+          console.log('유저 이미지', images)
+
+          // 커뮤니티 이미지 처리
+          // const communityImagePromises = data.content.map((item: SearchData) => {
+          //   // 커뮤니티 이미지가 있을 경우 첫 번째 이미지를 가져오고 없으면 빈 문자열 저장
+          //   const firstImagePath = item.communityImage.length > 0 ? item.communityImage[0] : '';
+          //   return GetImage(firstImagePath);
+          // });
+          const communityImagePromises = data.content.map((item: SearchData) => {
+            // 커뮤니티 이미지가 있을 경우 첫 번째 이미지를 가져오고 없으면 빈 문자열 저장
+            const firstImagePath = item.communityImage.length > 0 ? item.communityImage[0] : '';
+            return GetImage(firstImagePath);
+          });
+          // console.log('get 이미지 url', communityImagePromises)
+          const communityImages = await Promise.all(communityImagePromises);
+          console.log('커뮤니티 이미지', communityImages);
+          setCommunityImages((prev) => [...prev, ...communityImages]);
+          
+        
+
+
         } else {
           setHasMore(false);
         }
@@ -65,6 +88,7 @@ function LatestArticle(){
         console.log(e);
       }
     };
+
   
     // 페이지가 변경될 때 데이터 가져오기
     useEffect(() => {
@@ -121,12 +145,12 @@ function LatestArticle(){
             onClick={() => handleClick(item.communityId)}
           >
             <CardActionArea>
-              <CardMedia
+            <CardMedia
                 component="img"
                 height="170"
-                image={item.communityImagePath?.length > 0 ? item.communityImagePath[0] : empty}
+                image={communityImages[idx] ? communityImages[idx] : empty} // communityImages에서 이미지 가져오기
                 alt={item.communityTitle}
-              />
+            />
               <CardContent>
                 <Typography gutterBottom component="div" sx={{ color: "#5B8E55", fontSize: "1.2rem" }}>
                   {item.communityTitle}
