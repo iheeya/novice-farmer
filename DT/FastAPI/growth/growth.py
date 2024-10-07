@@ -1,7 +1,7 @@
 # 작물 생장도(DDs) 계산
 from sqlalchemy.orm import Session
 from setting.mysql import session_local
-from .models import WeatherArea, WeatherVal, AwsStn, AdmDistrict, CropBase, CropThreshold
+from .models import CropBase, CropThreshold
 
 from dotenv import load_dotenv
 from io import StringIO

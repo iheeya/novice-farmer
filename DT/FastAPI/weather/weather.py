@@ -12,12 +12,11 @@ import json, requests, os, csv, itertools
 # 환경 변수 로드
 load_dotenv()
 
-# MySQL 스키마별 세션 생성
-fast_api: Session = session_local['fast_api']()
-farmers: Session = session_local['farmer']()
+# farmers: Session = session_local['farmer']()
 
 # 예보구역 데이터 가져오기
 def load_areainfo():
+    fast_api: Session = session_local['fast_api']()
     url = 'https://apihub.kma.go.kr/api/typ01/url/fct_shrt_reg.php'
     params = {'tmfc' : 0, 'disp' : 1, 'authKey' : os.getenv('WEAHTER_AUTH_KEY')}
     response = requests.get(url, params=params)
@@ -63,6 +62,7 @@ def add_areainfo_to_db(db: Session, reg_id: str, reg_name: str):
 
 # AWS 지점 데이터 가져오기
 def load_aswsinfo():
+    fast_api: Session = session_local['fast_api']()
     url = 'https://apihub.kma.go.kr/api/typ01/url/stn_inf.php'
     
     updated_date = datetime.now() - timedelta(days=1)
@@ -105,7 +105,7 @@ def add_awsinfo_to_db(db:Session, id: str, lon: float, lat: float, reg_id: str, 
 
 # 행정구역 데이터 가져오기
 def load_adminfo():
-    
+    fast_api: Session = session_local['fast_api']()
     base_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(base_dir, 'adm_district.csv')
     
@@ -145,6 +145,7 @@ def add_adminfo_to_db(db: Session, id: str, head: str, middle: str, tail: str, x
 
 # AWS 기반 기상 데이터(강수, 최고온도, 최저온도) 가져오기
 def load_valinfo():
+    fast_api: Session = session_local['fast_api']()
     target_date = datetime.today() - timedelta(days=1)
     target_date = target_date.strftime('%Y%m%d')
     url = 'https://apihub.kma.go.kr/api/typ01/url/sfc_aws_day.php'
@@ -205,6 +206,7 @@ def add_valinfo_to_db(db: Session, stn_id: str, rn_day: float, ta_max: float, ta
 
 # 기상특보 지역 데이터 가져오기
 def load_special_areainfo():
+    fast_api: Session = session_local['fast_api']()
     url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_reg_aws2.php'
     
     updated_date = datetime.now() - timedelta(days=1)
@@ -237,7 +239,7 @@ def add_special_weather_to_db(db: Session, stn_id: str, wrn_id: str, reg_id: str
         print(f'SpecialWeather 데이터 검증에 실패했습니다: {e}')
         return
     
-    check_existing = db.query(SpecialWeather).filter(stn_id=stn_id).first()
+    check_existing = db.query(SpecialWeather).filter(stn_id==stn_id).first()
     if not check_existing:
         special_info = SpecialWeather(stn_id=stn_id, wrn_id=wrn_id, reg_id=reg_id)
         db.add(special_info)
@@ -245,7 +247,7 @@ def add_special_weather_to_db(db: Session, stn_id: str, wrn_id: str, reg_id: str
 # 기상특보 데이터 가져오기
 # 자정부터 3시간 간격으로 실행되게 설정 필요
 def load_curruent_special_weatherinfo():
-
+    fast_api: Session = session_local['fast_api']()
     url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_now_data.php'
 
     nowtime = datetime.now()

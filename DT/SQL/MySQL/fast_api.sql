@@ -1,7 +1,7 @@
 # CREATE DATABASE fast_api DEFAULT CHARACTER SET utf8mb4;
 #
 USE fast_api;
-
+# SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
 # DROP TABLE weather_area, adm_district, aws_stn, today_weather_base, today_weather_val, crop_base, crop_fertilizer, crop_info, growth_temp
 
 
