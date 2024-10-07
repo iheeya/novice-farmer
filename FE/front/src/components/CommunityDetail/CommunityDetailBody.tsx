@@ -31,11 +31,24 @@ import TextField  from '@mui/material/TextField';
 import InputAdornment  from '@mui/material/InputAdornment';
 import { Input } from '@mui/material';
 import loading from '../../assets/img/loading/loading.png'
+import { GetImage } from '../../services/getImage'; 
 
 // DetailData 타입 정의
 interface DetailData {
-  communityTagList: string[]; 
-  // 다른 필드들 추가...
+  communityTagList: string[],
+  userId: number,
+  nickname: string,
+  imagePath: string,
+  communityTitle: string,
+  communityContent: string,
+  communityImagePath: string[],
+  communityHeartcount: number,
+  communityCommentcount: number,
+  checkIPushHeart: boolean,
+  checkMyarticle: boolean,
+  year:string,
+  month: string,
+  day: string  
 }
 
 // 댓글 데이터 타입 정의
@@ -50,14 +63,16 @@ function CommunityDetailBody(){
 
   const { id } = useParams<{ id: string }>(); // id를 string으로 추출 (useParams는 기본적으로 string으로 추출)
   const Id = Number(id);
-  const [detailData, setDetailData] = useState<any>(null);
+  const [detailData, setDetailData] = useState<DetailData|null>(null);
   const [commentData, setCommentData] = useState<Comment[]|null>(null);
-  const [isHeart, setIsHeart] = useState<Boolean>(detailData?.checkIPushHeart)
-  const [isHeartCount, setIsHeartCount] = useState<number>(detailData?.communityHeartcount)
+  const [isHeart, setIsHeart] = useState<boolean>(detailData?.checkIPushHeart ?? false)
+  const [isHeartCount, setIsHeartCount] = useState<number>(detailData?.communityHeartcount??0)
   const commentInputRef = useRef<HTMLInputElement>(null); 
   const [shouldSlide, setShouldSlide] = useState(true); // 슬라이드 애니메이션 여부
   const navigate = useNavigate();
   const [hasError, setHasError] = useState(false); // 에러 상태 추가
+  const [imageUrl, setImageUrl] = useState<string[]>([]);
+
 
   const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -103,6 +118,12 @@ function CommunityDetailBody(){
             } else{
               console.log(data)
               setDetailData(data)
+
+              // Fetch images from S3
+              const urls = data.communityImagePath && data.communityImagePath.length > 0 
+              ? await Promise.all(data.communityImagePath.map((imagePath:string) => GetImage(imagePath)))
+              : []; // 데이터가 없을 경우 빈 배열을 반환
+            
             }
         } catch (error) {
             console.log(error)
@@ -115,7 +136,12 @@ function CommunityDetailBody(){
     getComment();
 
     console.log('isHeart:', isHeart)
+
+
+
 }, [id]); // id가 변경될 때마다 요청 실행
+
+
 
 useEffect(() => {
   if (detailData) {
@@ -219,7 +245,7 @@ if (hasError) {
 
             <div className='community-detail-body-body'>
               {/* 이미지 케로셀 */}
-            {detailData?.communityImagePath && detailData.communityImagePath.length > 0 ? (
+            {/* {detailData?.communityImagePath && detailData.communityImagePath.length > 0 ? (
                  <Slider {...settings} className='carousel'>
                  {detailData?.communityImagePath.map((article:string, index:number) => (
                    <img key={index} src={article} className='article-img' alt={`Article ${index}`} />
@@ -227,7 +253,16 @@ if (hasError) {
                </Slider>
               ) : (
                 <img src={empty} className='article-img' alt="이미지 없음"/>
-              )}
+              )} */}
+                {imageUrl.length > 0 ? (
+                    <Slider {...settings} className='carousel'>
+                      {imageUrl.map((url: string, index: number) => (
+                        <img key={index} src={url} className='article-img' alt={`Article ${index}`} />
+                      ))}
+                    </Slider>
+                  ) : (
+                    <img src={empty} className='article-img' alt="이미지 없음" />
+                  )}
             </div>
 
               {/* 커뮤니티 게시글 내용 */}
