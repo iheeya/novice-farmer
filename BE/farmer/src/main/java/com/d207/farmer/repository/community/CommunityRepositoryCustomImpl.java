@@ -35,6 +35,7 @@ public class CommunityRepositoryCustomImpl implements CommunityRepositoryCustom 
                 .selectFrom(community)
                 .join(communitySelectedTag).on(communitySelectedTag.community.eq(community))
                 .where(communitySelectedTag.communityTag.id.in(communityTagIds))
+                .where(community.checkDelete.eq(false)) // checkDelete가 false인 커뮤니티만 조회 ///
                 .orderBy(community.writeDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -47,6 +48,7 @@ public class CommunityRepositoryCustomImpl implements CommunityRepositoryCustom 
                 .selectFrom(community)
                 .join(communitySelectedTag).on(communitySelectedTag.community.eq(community))
                 .where(communitySelectedTag.communityTag.id.in(communityTagIds))
+                .where(community.checkDelete.eq(false)) // checkDelete가 false인 커뮤니티 수 조회 ///
                 .fetchCount();
 
         return new PageImpl<>(communities, pageable, total);
@@ -59,6 +61,7 @@ public class CommunityRepositoryCustomImpl implements CommunityRepositoryCustom 
                 .selectFrom(community)
                 .where(community.title.contains(search) // 타이틀에 검색어 포함
                         .or(community.content.contains(search))) // 콘텐츠에 검색어 포함
+                .where(community.checkDelete.eq(false)) // checkDelete가 false인 커뮤니티만 조회 ///
                 .orderBy(community.writeDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -69,6 +72,7 @@ public class CommunityRepositoryCustomImpl implements CommunityRepositoryCustom 
                 .selectFrom(community)
                 .where(community.title.contains(search)
                         .or(community.content.contains(search))) // 타이틀 또는 콘텐츠에 검색어 포함
+                .where(community.checkDelete.eq(false)) // checkDelete가 false인 커뮤니티 수 조회 /// 
                 .fetchCount();
 
         return new PageImpl<>(communities, pageable, total);
