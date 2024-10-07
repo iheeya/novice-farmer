@@ -38,7 +38,7 @@ function SearchResult() {
     try {
       const data = await getSearchResult({
         page,
-        size: 2,
+        size: 3,
         filter: "new",
         search: search || "",
       });
@@ -88,7 +88,7 @@ function SearchResult() {
   const handleClick = (id: number) => {
     navigate(`/community/${id}/detail`);
   };
-
+ 
   return (
     <div className="parent-container">
       {searchData.length > 0 ? (
