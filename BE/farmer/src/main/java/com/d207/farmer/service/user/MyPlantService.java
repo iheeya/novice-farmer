@@ -81,7 +81,7 @@ public class MyPlantService {
         farmTodos.get(0).updateTodoComplete();
 
         // TODO MVP 발표용 FAST와 통신 단절 후 임의로 칼럼 추가
-        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING,"", false, LocalDateTime.now(), null));
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING,"", false, LocalDateTime.now().plusDays(5), null));
 
         return "작물 물주기 성공(todo 업데이트)";
     }
