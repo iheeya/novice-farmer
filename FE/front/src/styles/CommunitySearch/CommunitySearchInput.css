@@ -3,6 +3,12 @@
   color: #5b8e55;
 }
 
+.recent-word-container{
+  display: flex;
+  justify-content: space-between;
+  margin-right: 5%;
+}
+
 .recent-search {
   margin-top: 5%;
   margin-bottom: 6%;
@@ -12,4 +18,17 @@
 .recent-word {
   margin-top: 3%;
   font-size: 1.1rem;
+}
+
+
+.recent-search-container{
+  display: flex;
+  justify-content: space-between;
+}
+
+.recent-search-delete{
+  margin-top: 7%;
+  margin-bottom: 6%;
+  font-size: 0.9rem;
+  margin-right: 5%;
 }
