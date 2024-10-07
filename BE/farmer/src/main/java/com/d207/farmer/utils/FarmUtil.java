@@ -12,7 +12,7 @@ public class FarmUtil {
         int growthStep = 1;
         int maxDegreeDay = farm.getPlant().getDegreeDay();
         for(PlantThreshold pt : farm.getPlant().getPlantThresholds()) {
-            if(farm.getDegreeDay() < pt.getDegreeDay()) break;
+            if(farm.getDegreeDay() <= pt.getDegreeDay()) break;
             growthStep++;
         }
         if(farm.getDegreeDay() == maxDegreeDay) growthStep++;
