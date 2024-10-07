@@ -47,7 +47,7 @@
 
 .plantItem p {
   text-align: center;
-  font-size: 1.3rem;
+  /* font-size: 1.3rem; */
   font-weight: bold;
   color: #5B8E55;
   width: 60%;
@@ -55,7 +55,7 @@
 
 .plantImage {
   background-color: rgba(235, 236, 210, 0.41);
-  width: 30%;
+  width: 20%;
   height: auto;
   object-fit: cover;
 }
