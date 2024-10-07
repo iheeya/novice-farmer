@@ -167,7 +167,7 @@ function InputArticle(){
 
           
       {/* 이미지 미리보기 및 삭제 버튼 */}
-      {imagePreviewUrls.length > 0 && (
+      {/* {imagePreviewUrls.length > 0 && (
         <div style={{ marginTop: '5%', display: 'flex', flexWrap: 'wrap', justifyContent:'center', marginLeft:'5%' }}>
           {imagePreviewUrls.map((url, index) => (
             <div key={index} style={{ position: 'relative', display: 'inline-block', width:'100px', height:'100px', gap: '5%'}}>
@@ -175,7 +175,27 @@ function InputArticle(){
                 src={url} 
                 alt={`미리보기 ${index + 1}`} 
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              /> */}
+              {/* 'X' 버튼을 이미지 오른쪽 상단에 추가 */}
+              {/* <CloseIcon 
+                onClick={() => handleDeleteImage(index)} 
+                style={{ position: 'absolute', width:'15px', height:'15px', top: '10px', right: '10px', cursor: 'pointer', color: 'red' }}
               />
+            </div>
+          ))}
+        </div>
+      )} */}
+
+            {/* 이미지 미리보기 및 삭제 버튼 */}
+            {imagePreviewUrls.length > 0 && (
+            <div style={{ marginTop: '5%', display: 'flex', flexWrap: 'wrap', justifyContent:'center', marginLeft:'5%' }}>
+              {imagePreviewUrls.map((url, index) => (
+                <div key={index} style={{ position: 'relative', display: 'inline-block', width:'100px', height:'100px', gap: '5%'}}>
+                  <img 
+                    src={url} 
+                    alt={`미리보기 ${index + 1}`} 
+                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                  />
               {/* 'X' 버튼을 이미지 오른쪽 상단에 추가 */}
               <CloseIcon 
                 onClick={() => handleDeleteImage(index)} 
@@ -185,6 +205,8 @@ function InputArticle(){
           ))}
         </div>
       )}
+
+
 
           {/* 카메라, 이미지 접근 */}
           <div className='input-camera'>

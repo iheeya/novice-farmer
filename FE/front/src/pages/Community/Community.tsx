@@ -13,7 +13,7 @@ function Community(){
     };
 
     const communityList = [{
-        id: 7, 
+        id: 5, 
         title: 'ㅎㅎ'
     }]
 
