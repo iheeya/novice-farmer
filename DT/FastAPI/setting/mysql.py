@@ -22,5 +22,5 @@ DATABASES = {
 engines = {schema: create_engine(url) for schema, url in DATABASES.items()}
 
 session_local = {
-    schema: sessionmaker(autocommit=False, autoflush=False, bind=engines) for schema, engine in engines.items()
+    schema: sessionmaker(autocommit=False, autoflush=False, bind=engine) for schema, engine in engines.items()
 }

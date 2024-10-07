@@ -1,5 +1,5 @@
 # Column: 컬럼 설정, Integer: 정수 타입 지정, TypeDecorator: 커스텀 타입 정의 지원
-from sqlalchemy import Column, Integer, String, Float, SmallInteger, ForeignKey, TypeDecorator, CheckConstraint, Boolean
+from sqlalchemy import Column, Integer, String, Float, SmallInteger, ForeignKey, TypeDecorator, CheckConstraint, Boolean, BigInteger, DateTime, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -55,55 +55,6 @@ class WeatherVal(Base):
     ta_max = Column(Float)
     ta_min = Column(Float)
 
-# 작물 기본 정보 모델
-class CropBase(Base):
-    __tablename__ = 'crop_base'
-
-    crop_id = Column(SmallInteger, primary_key=True, autoincrement=True)
-    crop_name = Column(String(255), nullable=False)
-    crop_plant_season = Column(String(50))
-    is_leaves = Column(TinyInteger)
-
-# 비료 정보 모델
-class CropFertilizer(Base):
-    __tablename__ = 'crop_fertilizer'
-
-    fertilizer_id = Column(SmallInteger, primary_key=True)
-    fertilizer_type = Column(String(255))
-    fertilizer_name = Column(String(255))
-
-# 작물별 비료 주기 모델
-class CropFertilizerPeriod(Base):
-    __tablename__ = 'crop_fertilizer_period'
-
-    crop_id = Column(TinyInteger, ForeignKey('crop_base.crop_id'), primary_key=True)
-    fertilizer_step1 = Column(Boolean)
-    fertilizer_step2 = Column(Boolean)
-    fertilizer_step3 = Column(Boolean)
-    fertilizer_step4 = Column(Boolean)
-    fertilizer_step1_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
-    fertilizer_step2_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
-    fertilizer_step3_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
-    fertilizer_step4_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
-
-# 작물별 관수 주기 모델
-class CropWaterPeriod(Base):
-    __tablename__ = 'crop_water_period'
-
-    crop_id = Column(TinyInteger, ForeignKey('crop_base.crop_id'), primary_key=True)
-    watering_step1 = Column(Boolean)
-    watering_step2 = Column(Boolean)
-    watering_step3 = Column(Boolean)
-    watering_step4 = Column(Boolean)
-
-# 작물 생육 온도 모델
-class GrowthTemp(Base):
-    __tablename__ = 'growth_temp'
-
-    crop_id = Column(SmallInteger, ForeignKey('crop_base.crop_id'), primary_key=True)
-    growth_high_temp = Column(Float)
-    growth_low_temp = Column(Float)
-
 
 # 기상특보 예보구역
 class SpecialWeather(Base):
@@ -122,15 +73,68 @@ class CurrentSpecialWeather(Base):
 
     # 관계 설정
     special_weather = relationship("SpecialWeather", backref="current_special_weather")
+
+
+# 유저 정보 테이블
+class UserPlace(Base):
+    __tablename__ = 'user_place'
     
-# 작물별 DD값 Treshold
-class CropThreshold(Base):
-    __tablename__ = 'crop_threshold'
+    user_place_id = Column(BigInteger, primary_key=True, index=True)
+    place_id = Column(BigInteger, ForeignKey("place.place_id"), nullable=True)
+    user_id = Column(BigInteger, ForeignKey("user.user_id"), nullable=True)
+    user_place_bname1 = Column(String(255), nullable=True)
+    user_place_bname2 = Column(String(255), nullable=True)
+    user_place_bunji = Column(String(255), nullable=True)
+    user_place_jibun = Column(String(255), nullable=True)
+    user_place_latitude = Column(String(255), nullable=True)
+    user_place_longitude = Column(String(255), nullable=True)
+    user_place_name = Column(String(255), nullable=True)
+    user_place_sido = Column(String(255), nullable=True)
+    user_place_sigugun = Column(String(255), nullable=True)
+    zonecode = Column(String(255), nullable=True)
 
-    crop_id = Column(TinyInteger, primary_key=True) 
-    step2_threshold = Column(Integer, nullable=False)
-    step3_threshold = Column(Integer, nullable=False)
-    step4_threshold = Column(Integer, nullable=False)
+    # 관계 설정
+    user = relationship("User", back_populates="user_places")
+    place = relationship("Place", back_populates="user_places")
 
-    # 외래 키 설정, crop_base 테이블의 crop_id 참조
-    crop_id = Column(SmallInteger, ForeignKey('crop_base.crop_id', ondelete='CASCADE'))
+
+# 농장 테이블에 대한 모델 정의
+class Farm(Base):
+    __tablename__ = 'farm'
+    
+    farm_id = Column(BigInteger, primary_key=True, index=True)
+    farm_degree_day = Column(Integer, nullable=True)
+    farm_is_completed = Column(Boolean, nullable=True)
+    farm_is_deleted = Column(Boolean, nullable=True)
+    farm_is_harvest = Column(Boolean, nullable=True)
+    farm_complete_date = Column(DateTime(6), nullable=True)
+    farm_create_date = Column(DateTime(6), nullable=True)
+    farm_delete_date = Column(DateTime(6), nullable=True)
+    farm_harvest_date = Column(DateTime(6), nullable=True)
+    farm_seed_date = Column(DateTime(6), nullable=True)
+    plant_id = Column(BigInteger, ForeignKey("plant.plant_id"), nullable=True)
+    user_id = Column(BigInteger, ForeignKey("user.user_id"), nullable=True)
+    user_place_id = Column(BigInteger, ForeignKey("user_place.user_place_id"), nullable=True)
+    farm_memo = Column(String(255), nullable=True)
+    farm_plant_name = Column(String(255), nullable=True)
+
+    # 관계 설정
+    user_place = relationship("UserPlace", back_populates="farms")
+    plant = relationship("Plant", back_populates="farms")
+    user = relationship("User", back_populates="farms")
+
+
+# 농장별 할 일 테이블
+class FarmTodo(Base):
+    __tablename__ = 'farm_todo'
+    
+    farm_todo_id = Column(BigInteger, primary_key=True, index=True)
+    farm_todo_is_completed = Column(Boolean, nullable=True)
+    farm_id = Column(BigInteger, ForeignKey("farm.farm_id"), nullable=True)
+    farm_todo_complete_date = Column(DateTime(6), nullable=True)
+    farm_todo_date = Column(DateTime(6), nullable=True)
+    farm_tddo_type = Column(String(255), nullable=True)  # 오타 수정 필요시 여기 확인
+    farm_todo_type = Column(Enum('FERTILIZERING', 'HARVESTING', 'NATURE', 'PANDEMIC', 'WATERING'), nullable=True)
+
+    # 관계 설정
+    farm = relationship("Farm", back_populates="farm_todos")

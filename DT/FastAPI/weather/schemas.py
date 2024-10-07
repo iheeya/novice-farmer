@@ -2,111 +2,134 @@
 from pydantic import BaseModel
 # Python 타입 힌팅 도구로 필드가 선택적일 때 사용. Ex) Optional[str]은 이 필드가 str or None임을 의미.
 from typing import Optional
+from datetime import datetime
+from enum import Enum
 
 # class Config의 경우 SQLAlchemy의 모델 객체를 Pydantic 스키마로 쉽게 변환할 수 있게 해서 FastAPI가 자동으로 데이터 직렬화를 해준다.    
-# 예보구역 데이터 스키마
-class WeatherAreaBase(BaseModel):
+
+# WeatherArea 스키마
+class WeatherAreaSchema(BaseModel):
     reg_id: str
-    reg_name: str
+    reg_name: Optional[str]
 
-class WeatherArea(WeatherAreaBase):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# 행정구역 데이터 스키마
-class AdmDistrictBase(BaseModel):
+
+# AdmDistrict 스키마
+class AdmDistrictSchema(BaseModel):
     adm_id: str
-    adm_head: str
-    adm_middle: str
-    adm_tail: str
+    adm_head: Optional[str]
+    adm_middle: Optional[str]
+    adm_tail: Optional[str]
     x_grid: Optional[int]
     y_grid: Optional[int]
     lat: Optional[float]
     lon: Optional[float]
 
-class AdmDistrict(AdmDistrictBase):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# AWS 지점 데이터 스키마
-class AwsStnBase(BaseModel):
+
+# AwsStn 스키마
+class AwsStnSchema(BaseModel):
     stn_id: int
-    lat: float
-    lon: float
-    stn_sp: str
-    stn_name: str
+    lat: Optional[float]
+    lon: Optional[float]
     reg_id: str
     law_id: str
 
-class AwsStn(AwsStnBase):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# 기상 정보 데이터 스키마
-class WeatherValBase(BaseModel):
+
+# WeatherVal 스키마
+class WeatherValSchema(BaseModel):
     stn_id: int
-    rn_day: Optional[float]
+    rn_day: Optional[float] = 0
     ta_max: Optional[float]
     ta_min: Optional[float]
 
-class WeatherVal(WeatherValBase):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# 작물 기본 정보 스키마
-class CropBaseBase(BaseModel):
-    crop_id: int
-    crop_name: str
-    crop_plant_season: Optional[str]
 
-class CropBase(CropBaseBase):
+# CurrentSpecialWeather 스키마
+class CurrentSpecialWeatherSchema(BaseModel):
+    wrn_id: str
+    wrn_type: str
+
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# 비료 정보 스키마
-class CropFertilizerBase(BaseModel):
-    fertilizer_id: int
-    fertilizer_type: Optional[str]
-    fertilizer_name: Optional[str]
 
-class CropFertilizer(CropFertilizerBase):
+# SpecialWeather 스키마
+class SpecialWeatherSchema(BaseModel):
+    stn_id: str
+    wrn_id: str
+    reg_id: str
+
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# 작물별 비료 주기 스키마
-class CropFertilizerPeriodBase(BaseModel):
-    crop_id: int
-    fertilizer_step1: Optional[str]
-    fertilizer_step2: Optional[str]
-    fertilizer_step3: Optional[str]
-    fertilizer_step4: Optional[str]
-    fertilizer_step1_id: Optional[int]
-    fertilizer_step2_id: Optional[int]
-    fertilizer_step3_id: Optional[int]
-    fertilizer_step4_id: Optional[int]
 
-class CropFertilizerPeriod(CropFertilizerPeriodBase):
+# UserPlace 스키마
+class UserPlaceSchema(BaseModel):
+    user_place_id: int
+    place_id: Optional[int]
+    user_id: Optional[int]
+    user_place_bname1: Optional[str]
+    user_place_bname2: Optional[str]
+    user_place_bunji: Optional[str]
+    user_place_jibun: Optional[str]
+    user_place_latitude: Optional[str]
+    user_place_longitude: Optional[str]
+    user_place_name: Optional[str]
+    user_place_sido: Optional[str]
+    user_place_sigugun: Optional[str]
+    zonecode: Optional[str]
+
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# 작물별 관수 주기 스키마
-class CropWaterPeriodBase(BaseModel):
-    crop_id: int
-    watering_step1: Optional[int]
-    watering_step2: Optional[int]
-    watering_step3: Optional[int]
-    watering_step4: Optional[int]
 
-class CropWaterPeriod(CropWaterPeriodBase):
+# Farm 스키마
+class FarmSchema(BaseModel):
+    farm_id: int
+    farm_degree_day: Optional[int]
+    farm_is_completed: Optional[bool]
+    farm_is_deleted: Optional[bool]
+    farm_is_harvest: Optional[bool]
+    farm_complete_date: Optional[datetime]
+    farm_create_date: Optional[datetime]
+    farm_delete_date: Optional[datetime]
+    farm_harvest_date: Optional[datetime]
+    farm_seed_date: Optional[datetime]
+    farm_memo: Optional[str]
+    farm_plant_name: Optional[str]
+    user_id: Optional[int]
+    user_place_id: Optional[int]
+    plant_id: Optional[int]
+
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# 생육 온도 스키마
-class GrowthTempBase(BaseModel):
-    crop_id: int
-    growth_high_temp: Optional[float]
-    growth_low_temp: Optional[float]
 
-class GrowthTemp(GrowthTempBase):
+# FarmTodo 스키마
+class FarmTodoType(str, Enum):
+    FERTILIZERING = 'FERTILIZERING'
+    HARVESTING = 'HARVESTING'
+    NATURE = 'NATURE'
+    PANDEMIC = 'PANDEMIC'
+    WATERING = 'WATERING'
+
+class FarmTodoSchema(BaseModel):
+    farm_todo_id: int
+    farm_todo_is_completed: Optional[bool]
+    farm_todo_complete_date: Optional[datetime]
+    farm_todo_date: Optional[datetime]
+    farm_todo_type: Optional[FarmTodoType]
+    farm_id: Optional[int]
+
     class Config:
-        orm_mode = True        
+        from_attributes = True
