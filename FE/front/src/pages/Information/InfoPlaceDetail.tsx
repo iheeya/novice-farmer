@@ -57,14 +57,6 @@ export default function InfoPlaceDetail() {
         bgcolor: "#fff",
       }}
     >
-      {/* 페이지 제목 */}
-      <Typography
-        variant="h5"
-        sx={{ textAlign: "center", fontWeight: "bold", my: 2, color: "#5B8E55" }}
-      >
-        {title}
-      </Typography>
-
       {/* 이미지 출력 */}
       {imageUrl && (
         <Box
@@ -78,7 +70,7 @@ export default function InfoPlaceDetail() {
       {/* 내용 출력 */}
       {detailData.contents && detailData.contents.map((content, index) => (
         <Box key={index} sx={{ mb: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold", color: "#5B8E55" }}>
+          <Typography variant="h6" sx={{ fontWeight: "bold", color: "#5B8E55", fontSize:"1.5rem" }}>
             {content.title}
           </Typography>
           <Typography variant="body1" sx={{ mt: 1, color: "#333" }}>

@@ -38,3 +38,16 @@ export function getInfoPlaceDetail(id: string): Promise<any> {
       return Promise.reject(err);
     });
 }
+
+export function getInfoPlant():Promise<any>{
+  return api
+  .get("/info/plant")
+  .then((res) => {
+    // console.log(res.data);
+    return Promise.resolve(res.data);
+  })
+  .catch((err) => {
+    // console.error(err);
+    return Promise.reject(err);
+  });
+}

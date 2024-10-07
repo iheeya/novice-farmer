@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -87,12 +87,21 @@ export default function InfoPlace() {
                 onClick={() => handleClickOpen(info)}
               >
                 <ListItemIcon>
-                  <img src={BookIcon} width="40" height="40" alt="책" />
+                  <img src={BookIcon} width="40" height="40" alt="책아이콘" />
                 </ListItemIcon>
                 <ListItemText
                   primary={info.title}
                   secondary={info.comment}
-                  sx={{ mr: 2 }} // 오른쪽 화살표와 간격 조정
+                  primaryTypographyProps={{ 
+                    fontSize: "1.3rem", // 제목 텍스트 크기 설정
+                    fontWeight: "bold", // 제목 텍스트 굵기 설정
+                    color: "#333", // 제목 색상
+                  }}
+                  secondaryTypographyProps={{
+                    fontSize: "0.98rem", // 보조 텍스트 크기 설정
+                    color: "#777", // 보조 텍스트 색상 설정
+                  }}
+                  sx={{ mr: 2  }} // 오른쪽 화살표와 간격 조정
                 />
                 <ArrowForwardIosIcon sx={{ color: "#bbb" }} /> {/* 오른쪽 화살표 아이콘 */}
               </ListItem>
