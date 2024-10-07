@@ -92,7 +92,7 @@ public class MyPlantService {
         if(farmTodos == null || farmTodos.isEmpty()) {
             Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
             userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
-            farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, "", true, LocalDateTime.now(), LocalDateTime.now()));
+            farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, "", true, LocalDateTime.now().plusDays(7), LocalDateTime.now()));
             return "작물 비료주기 성공(todo 생성)";
         }
         farmTodos.get(0).updateTodoComplete();
