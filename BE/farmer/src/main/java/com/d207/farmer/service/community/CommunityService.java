@@ -56,6 +56,12 @@ public class CommunityService {
         if (search.isEmpty()) {
             // 1. 사용자 즐겨찾기 태그 가져오기
             List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
+
+            if (communityTagId == null || communityTagId.isEmpty()) {
+                // 전체 데이터 반환
+                communityTagId = communityFavoriteTagRepository.findAll();
+            }
+
             List<Long> communityTagIds = communityTagId.stream()
                     .map(favoriteTag -> {
                         CommunityTag communityTag = favoriteTag.getCommunityTag();
@@ -131,7 +137,15 @@ public class CommunityService {
         // 일단 검색어 없을때
         if(search.isEmpty()) {
             // 1. 사용자 즐겨찾기 태그 가져오기
+            //List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
+
             List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
+
+            if (communityTagId == null || communityTagId.isEmpty()) {
+                // 전체 데이터 반환
+                communityTagId = communityFavoriteTagRepository.findAll();
+            }
+
             List<Long> communityTagIds = communityTagId.stream()
                     .map(favoriteTag -> {
                         CommunityTag communityTag = favoriteTag.getCommunityTag();
