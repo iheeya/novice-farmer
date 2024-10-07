@@ -89,13 +89,16 @@ public class MyPlantService {
     @Transactional
     public String fertilizerPlant(Long userId, ManagePlantRequestDTO request) {
         List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalseAndTodoType(request.getFarmId(), TodoType.FERTILIZERING);
+        Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
         if(farmTodos == null || farmTodos.isEmpty()) {
-            Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
             userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
             farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, "", true, LocalDateTime.now().plusDays(7), LocalDateTime.now()));
             return "작물 비료주기 성공(todo 생성)";
         }
         farmTodos.get(0).updateTodoComplete();
+        // TODO MVP 발표용 FAST와 통신 단절 후 임의로 칼럼 추가
+        farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, "", false, LocalDateTime.now().plusDays(7), null));
+
         return "작물 비료주기 성공(todo 업데이트)";
     }
 
