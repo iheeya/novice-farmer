@@ -1,24 +1,38 @@
 # 기상 정보
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 from setting.mysql import session_local
 from weather.models import WeatherArea, WeatherVal, AwsStn, AdmDistrict, SpecialWeather, CurrentSpecialWeather
 from weather.schemas import WeatherAreaSchema, WeatherValSchema, AwsStnSchema, AdmDistrictSchema, SpecialWeatherSchema, CurrentSpecialWeatherSchema
+from sqlalchemy.exc import OperationalError
 
 from dotenv import load_dotenv
 from io import StringIO
 from datetime import datetime, timedelta
-import json, requests, os, csv, itertools
+import requests, os, csv, itertools, time
 
 # 환경 변수 로드
 load_dotenv()
 
 # farmers: Session = session_local['farmer']()
 
+def retry_transaction(db: Session, max_retries=5, delay=1):
+    for attempt in range(max_retries):
+        try:
+            db.commit()  # 트랜잭션 커밋 시도
+            break  # 성공 시 루프 탈출
+        except OperationalError as e:
+            print(f"트랜잭션 충돌 발생: {e}, 재시도 {attempt + 1}/{max_retries}")
+            db.rollback()  # 충돌 발생 시 롤백
+            time.sleep(delay)  # 재시도 전 대기
+    else:
+        raise Exception("트랜잭션 충돌로 인해 재시도 한도를 초과했습니다.")
+
 # 예보구역 데이터 가져오기
 def load_areainfo():
     fast_api: Session = session_local['fast_api']()
     url = 'https://apihub.kma.go.kr/api/typ01/url/fct_shrt_reg.php'
-    params = {'tmfc' : 0, 'disp' : 1, 'authKey' : os.getenv('WEAHTER_AUTH_KEY')}
+    params = {'tmfc' : 0, 'authKey' : os.getenv('WEATHER_AUTH_KEY')}
     response = requests.get(url, params=params)
     csv_data = response.text
     csv_reader = csv.reader(StringIO(csv_data))
@@ -29,19 +43,18 @@ def load_areainfo():
         with fast_api.begin():
             fast_api.query(WeatherArea).delete()
             for row in csv_reader:
-                reg = []
-                reg = list(row[0].split())
+                reg = list(row[0].split(' '))
                 if len(reg) < 5:
                     continue
-                reg_id, reg_sp, reg_name = reg[0], reg[3], reg[4]
+                reg_id, reg_sp, reg_name = reg[0], reg[3], reg[9]
                 
                 if reg_sp == 'C':
                     # if '(' not in reg_name:
                         add_areainfo_to_db(fast_api, str(reg_id), reg_name)
-            fast_api.commit()
+            retry_transaction(fast_api)
     except Exception as e:
         fast_api.rollback()
-        print(f'에러가 발생했습니다: {e}')
+        print(f'load_areainfo에서 에러가 발생했습니다: {e}')
         
 # WeatherArea 테이블에 데이터 추가
 def add_areainfo_to_db(db: Session, reg_id: str, reg_name: str):
@@ -84,10 +97,10 @@ def load_aswsinfo():
                     continue
                 stn_id, stn_lon, stn_lat, reg_id, law_id  = stn[0], stn[1], stn[2], stn[10], stn[11]
                 add_awsinfo_to_db(stn_id, stn_lon, stn_lat, reg_id, law_id)
-            fast_api.commit()
+            retry_transaction(fast_api)
     except Exception as e:
         fast_api.rollback()
-        print(f'에러가 발생했습니다: {e}')
+        print(f'load_aswsinfo에서 에러가 발생했습니다: {e}')
 
 # AwsStn 테이블에 데이터 추가
 def add_awsinfo_to_db(db:Session, id: str, lon: float, lat: float, reg_id: str, law_id: str):
@@ -124,10 +137,10 @@ def load_adminfo():
                         continue
                     adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat = adm[0], adm[1], adm[2], adm[3], int(adm[4]), int(adm[5]), float(adm[6]), float(adm[7])
                     add_adminfo_to_db(adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat)
-                fast_api.commit()
+                retry_transaction(fast_api)
         except Exception as e:
             fast_api.rollback()
-            print(f"에러가 발생했습니다: {e}")
+            print(f"load_adminfo에서 에러가 발생했습니다: {e}")
 
 # AdmDistrinct 테이블에 데이터 추가
 def add_adminfo_to_db(db: Session, id: str, head: str, middle: str, tail: str, xgrid: int, ygrid: int, lon: float, lat: float):
@@ -185,10 +198,10 @@ def load_valinfo():
                 ta_min = float(val3[5])
             
                 add_valinfo_to_db(fast_api, stn_id, rn_day, ta_max, ta_min)
-            fast_api.commit()
+            retry_transaction(fast_api)
     except Exception as e:
         fast_api.rollback()
-        print(f"에러가 발생했습니다: {e}")
+        print(f"load_valinfo에서 에러가 발생했습니다: {e}")
 
 # WeatherVal 테이블에 데이터 추가
 def add_valinfo_to_db(db: Session, stn_id: str, rn_day: float, ta_max: float, ta_min: float):
@@ -221,14 +234,12 @@ def load_special_areainfo():
         with fast_api.begin():
             fast_api.query(SpecialWeather).delete()
             for row in csv_reader:
-                if len(row) < 3:
-                    continue
                 stn_id, wrn_id, reg_id = row[0], row[7], row[6]
                 add_special_weather_to_db(fast_api, stn_id, wrn_id, reg_id)
-            fast_api.commit()
+            retry_transaction(fast_api)
     except Exception as e:
         fast_api.rollback()
-        print(f'에러가 발생했습니다: {e}')
+        print(f'load_special_areainfo에서 에러가 발생했습니다: {e}')
 
 # 기상특보 지역 데이터 추가
 def add_special_weather_to_db(db: Session, stn_id: str, wrn_id: str, reg_id: str):
@@ -264,17 +275,14 @@ def load_curruent_special_weatherinfo():
     
     try:
         with fast_api.begin():
-            fast_api.begin()
             fast_api.query(CurrentSpecialWeather).delete()
             for row in csv_reader:
-                if len(row) < 3:
-                    continue
                 wrn_id, wrn_type = row[2], row[6]
                 add_current_special_weather_to_db(fast_api, wrn_id, wrn_type)
-            fast_api.commit()
+            retry_transaction(fast_api)
     except Exception as e:
         fast_api.rollback()
-        print(f'에러가 발생했습니다: {e}')
+        print(f'load_curruent_special_weatherinfo에서 에러가 발생했습니다: {e}')
 
 # 기상특보 데이터 추가
 def add_current_special_weather_to_db(db: Session, wrn_id: str, wrn_type: str):
@@ -285,7 +293,7 @@ def add_current_special_weather_to_db(db: Session, wrn_id: str, wrn_type: str):
         print(f'CurrentSpecialWeather 데이터 검증에 실패했습니다: {e}')
         return
     
-    check_exisisting = db.query(CurrentSpecialWeather).filter(wrn_id).first()
+    check_exisisting = db.query(CurrentSpecialWeather).filter(CurrentSpecialWeather.wrn_id==wrn_id).first()
     if not check_exisisting:
         current_special_info = CurrentSpecialWeather(wrn_id=wrn_id, wrn_type=wrn_type)
         db.add(current_special_info)
