@@ -18,6 +18,7 @@ import CommunitySearch from "./pages/Community/CommunitySearch";
 import LandingPage from "./pages/Home/Landing";
 import CommunitySearchResult from "./pages/Community/CommunitySearchResult";
 import CameraPage from "./pages/Detail/cameraPage"; // 새 페이지 컴포넌트
+import CameraDiagnosis from "./pages/Detail/cameraDiagnosis";
 import FooterWithLocation from "./components/FooterWithLocation"; // Footer 로직 분리
 import HomePage from "./pages/Home/Landing";
 
@@ -44,6 +45,7 @@ function App() {
         <Route path="/community/search" element={<CommunitySearch/>} />
         <Route path="/myGarden/:myPlaceId/:myPlantId/camera" element={<CameraPage />} />
         <Route path="/introduce" element={<HomePage />} />
+        <Route path="/myGarden/:myPlaceId/:myPlantId/diagnosis" element={<CameraDiagnosis />} />
       </Routes>
       <FooterWithLocation />
     </Router>

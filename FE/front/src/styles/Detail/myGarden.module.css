@@ -1,3 +1,44 @@
+.customPopup {
+  padding: 0.5rem;
+  width: 100%; /* 모달 전체 폭 */
+}
+
+.customIcon {
+  font-size: 1rem; /* 아이콘 크기 조정 */
+}
+
+.customHtml {
+  font-size: 2rem; /* 텍스트 크기 */
+  text-align: center; /* 가운데 정렬 */
+}
+
+.customText {
+  font-size: 1.25rem; /* 추가 텍스트 */
+  text-align: center;
+}
+
+/* 버튼을 가로로 배치 */
+.customActions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem; /* 버튼 사이 간격 추가 */
+}
+
+
+.customConfirmButton {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.customCancelButton {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+
+
+
+/* 기존 텃밭 관련 스타일 */
 .gardenContainer {
   padding: 1.5rem;
   display: flex;
