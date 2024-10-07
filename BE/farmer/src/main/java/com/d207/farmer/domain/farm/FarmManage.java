@@ -2,6 +2,7 @@ package com.d207.farmer.domain.farm;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -9,7 +10,8 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
-@Getter @Setter
+@Getter
+@NoArgsConstructor
 public class FarmManage {
 
     @Id @GeneratedValue
