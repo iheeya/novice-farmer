@@ -48,4 +48,13 @@ public class Community {
         this.writeDate = LocalDateTime.now();
         this.checkDelete = false;
     }
+
+    public Community(User user, String communityTitle, String communityContent, LocalDateTime writeDate) {
+
+        this.user = user;
+        this.title = communityTitle;
+        this.content = communityContent;
+        this.writeDate = writeDate;
+        this.checkDelete = false;
+    }
 }
