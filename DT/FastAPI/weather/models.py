@@ -31,8 +31,8 @@ class AdmDistrict(Base):
     adm_head = Column(String(12))
     adm_middle = Column(String(12))
     adm_tail = Column(String(12))
-    x_grid = Column(TinyInteger, CheckConstraint('x_grid BETWEEN 0 AND 255'))  # TINYINT 범위 지정
-    y_grid = Column(TinyInteger, CheckConstraint('y_grid BETWEEN 0 AND 255'))  # TINYINT 범위 지정
+    x_grid = Column(SmallInteger, CheckConstraint('x_grid BETWEEN 0 AND 255'))  # TINYINT 범위 지정
+    y_grid = Column(SmallInteger, CheckConstraint('y_grid BETWEEN 0 AND 255'))  # TINYINT 범위 지정
     lat = Column(Float)
     lon = Column(Float)
 
