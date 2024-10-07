@@ -1,62 +1,64 @@
-import React, { useState } from 'react';
+import React from 'react';
 import deleteIcon from '../../assets/icons/Delete.png';
 import harvestIcon from '../../assets/icons/Harvest.png';
-import endIcon from '../../assets/icons/End.png'; // 재배 종료 아이콘
+import endIcon from '../../assets/icons/End.png';
 import waterIcon from '../../assets/icons/Water.png';
 import fertilizeIcon from '../../assets/icons/Fertilize.png';
-import FarmDeleteModal from './FarmDeleteModal';
-import HarvestModal from './HarvestModal';
-import WaterModal from './WaterModal';
-import FertilizeModal from './FertilizeModal';
-import EndGrowModal from './EndGrowModal';
+import {
+  showDeleteModal,
+  showHarvestModal,
+  showEndGrowModal,
+  showWaterModal,
+  showFertilizeModal,
+} from './IconModals'; // 모달 함수들 가져오기
 import styles from '../../styles/Detail/icons.module.css';
 
 interface IconProps {
-  onDelete: () => void;
-  onHarvest: () => void;
-  onWater: () => void;
-  onFertilize: () => void;
+  onDelete: () => void;           // 삭제 처리 함수
+  onHarvest: () => void;          // 첫 수확 처리 함수
+  onEndCultivation: () => void;   // 재배 종료 처리 함수
+  onWater: () => void;            // 물주기 처리 함수
+  onFertilize: () => void;        // 비료주기 처리 함수
   placeName: string;
   plantName: string;
   myPlaceId: number;
-  isAlreadyFirstHarvest: boolean; // 첫 수확 여부 전달
-  recentWateringDate: string; 
-  recentFertilizingDate: string; 
+  isAlreadyFirstHarvest: boolean;
+  recentWateringDate: string;
+  recentFertilizingDate: string;
   firstHarvestDate: string;
+  isStarted: boolean;
 }
 
 const Icons: React.FC<IconProps> = ({
   onDelete,
   onHarvest,
+  onEndCultivation,
   onWater,
   onFertilize,
   placeName,
   plantName,
   myPlaceId,
   isAlreadyFirstHarvest,
-  recentWateringDate,  
+  recentWateringDate,
   recentFertilizingDate,
-  firstHarvestDate
+  firstHarvestDate,
+  isStarted, // 추가된 부분
 }) => {
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isHarvestModalOpen, setIsHarvestModalOpen] = useState(false);
-  const [isEndGrowModalOpen, setIsEndGrowModalOpen] = useState(false);
-  const [isWaterModalOpen, setIsWaterModalOpen] = useState(false);
-  const [isFertilizeModalOpen, setIsFertilizeModalOpen] = useState(false);
-
   return (
     <div className={styles.iconContainer}>
       {/* 삭제 아이콘 */}
-      <div className={styles.iconWrapper} onClick={() => setIsDeleteModalOpen(true)}>
+      <div className={styles.iconWrapper} onClick={() => showDeleteModal(placeName, plantName, onDelete)}>
         <img src={deleteIcon} alt="삭제" className={styles.icon} />
         <p>삭제</p>
       </div>
 
-       {/* 첫 수확 아이콘 또는 재배 종료 아이콘 */}
-       <div className={styles.iconWrapper} onClick={() => {
-        isAlreadyFirstHarvest
-          ? setIsEndGrowModalOpen(true)  // 재배 종료 모달 열기
-          : setIsHarvestModalOpen(true); // 첫 수확 모달 열기
+      {/* 첫 수확 또는 재배 종료 아이콘 */}
+      <div className={styles.iconWrapper} onClick={() => {
+        if (isAlreadyFirstHarvest) {
+          showEndGrowModal(placeName, plantName, onEndCultivation);
+        } else {
+          showHarvestModal(placeName, plantName, onHarvest);
+        }
       }}>
         <img
           src={isAlreadyFirstHarvest ? endIcon : harvestIcon}
@@ -67,78 +69,16 @@ const Icons: React.FC<IconProps> = ({
       </div>
 
       {/* 물주기 아이콘 */}
-      <div className={styles.iconWrapper} onClick={() => setIsWaterModalOpen(true)}>
+      <div className={styles.iconWrapper} onClick={() => showWaterModal(placeName, plantName, onWater)}>
         <img src={waterIcon} alt="물주기" className={styles.icon} />
         <p>물주기</p>
       </div>
 
       {/* 비료주기 아이콘 */}
-      <div className={styles.iconWrapper} onClick={() => setIsFertilizeModalOpen(true)}>
+      <div className={styles.iconWrapper} onClick={() => showFertilizeModal(placeName, plantName, onFertilize)}>
         <img src={fertilizeIcon} alt="비료주기" className={styles.icon} />
         <p>비료주기</p>
       </div>
-
-      {/* 삭제 모달 */}
-      {isDeleteModalOpen && (
-        <FarmDeleteModal
-          isOpen={isDeleteModalOpen}
-          onClose={() => setIsDeleteModalOpen(false)}
-          onDelete={onDelete}
-          placeName={placeName}
-          plantName={plantName}
-        />
-      )}
-
-      {/* 첫수확 모달 */}
-      {isHarvestModalOpen && !isAlreadyFirstHarvest && (
-        <HarvestModal
-          isOpen={isHarvestModalOpen}
-          onClose={() => setIsHarvestModalOpen(false)}
-          onConfirm={onHarvest}
-          placeName={placeName}
-          plantName={plantName}
-        />
-      )}
-
-      {/* 재배 종료 모달 */}
-      {isEndGrowModalOpen && (
-        <EndGrowModal
-          isOpen={isEndGrowModalOpen}
-          onClose={() => setIsEndGrowModalOpen(false)}
-          onConfirm={() => {
-            setIsEndGrowModalOpen(false);
-            // 재배 종료 처리를 여기에 추가
-          }}
-          placeName={placeName}
-          plantName={plantName}
-          myPlaceId={myPlaceId}
-          firstHarvestDate={firstHarvestDate}
-        />
-      )}
-
-      {/* 물주기 모달 */}
-      {isWaterModalOpen && (
-        <WaterModal
-          isOpen={isWaterModalOpen}
-          onClose={() => setIsWaterModalOpen(false)}
-          onConfirm={onWater}
-          placeName={placeName}
-          plantName={plantName}
-          recentWateringDate={recentWateringDate}
-        />
-      )}
-
-      {/* 비료주기 모달 */}
-      {isFertilizeModalOpen && (
-        <FertilizeModal
-          isOpen={isFertilizeModalOpen}
-          onClose={() => setIsFertilizeModalOpen(false)}
-          onConfirm={onFertilize}
-          placeName={placeName}
-          plantName={plantName}
-          recentFertilizingDate={recentFertilizingDate} // 비료 준 날짜 전달
-        />
-      )}
     </div>
   );
 };

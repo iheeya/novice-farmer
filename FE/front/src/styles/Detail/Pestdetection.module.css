@@ -7,7 +7,7 @@
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 0.5rem;
-  background-color: #f9f9f9;
+  background-color: rgba(235, 236, 210, 0.41);
   flex: 1; /* 동일한 크기 차지 */
   box-sizing: border-box; /* 패딩 포함 크기 */
   width: 100%; /* 너비 조절, 100% */
