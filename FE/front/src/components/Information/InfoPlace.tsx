@@ -1,49 +1,57 @@
-import React, { useState } from "react";
-import { Box, Typography, List, ListItem, ListItemIcon, ListItemText, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
-import BookIcon from "@mui/icons-material/Book";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  CircularProgress,
+} from "@mui/material";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos"; // 오른쪽 화살표 아이콘
+import { useNavigate } from "react-router-dom";
+import { getInfoPlace } from "../../services/Information/InfoApi";
+import BookIcon from "../../assets/icons/Book.png";
 
-type InfoDataType = {
+interface InfoDataProps {
   justice: { title: string; comment: string; content: string };
   purpose: { title: string; comment: string; content: string };
   effect: { title: string; comment: string; content: string };
   placeType: { title: string; comment: string; content: string };
-};
+}
 
 export default function InfoPlace() {
-  const dummy: InfoDataType = {
-    justice: {
-      title: "텃밭이란?",
-      comment: "텃밭은 무엇을 말하는 걸까요?",
-      content: "작은 공간에서 채소와 허브 등 식물을 키울 수 있는 소규모 농장 형태의 재배 공간",
-    },
-    purpose: {
-      title: "텃밭의 목적",
-      comment: "텃밭을 왜 가꿔야 하나요?",
-      content: "자연과 가까워지고, 건강한 먹거리를 스스로 재배하는 것이 주요 목적",
-    },
-    effect: {
-      title: "텃밭의 효과",
-      comment: "텃밭을 가꿨을 때의 효과는?",
-      content: "스트레스 해소, 정서 안정, 건강한 식생활",
-    },
-    placeType: {
-      title: "텃밭의 종류",
-      comment: "텃밭의 종류를 알아보세요",
-      content: "텃밭의 종류는 학교 텃밭, 도시 텃밭, 가정 텃밭 등이 있습니다.",
-    },
-  };
-
-  // 명시적으로 dummy의 키 타입 정의
-  const infoList = (Object.keys(dummy) as Array<keyof InfoDataType>).map((key) => dummy[key]);
-
-  // 모달 상태 관리
+  // 데이터 상태 관리
+  const [infoData, setInfoData] = useState<InfoDataProps | null>(null);
   const [open, setOpen] = useState(false);
-  const [selectedInfo, setSelectedInfo] = useState<InfoDataType[keyof InfoDataType] | null>(null);
+  const [selectedInfo, setSelectedInfo] = useState<InfoDataProps[keyof InfoDataProps] | null>(null);
+
+  const navigate = useNavigate();
+
+  // API 데이터 받아오기
+  useEffect(() => {
+    getInfoPlace()
+      .then((response) => {
+        setInfoData(response); // API 응답 데이터 설정
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
 
   // 모달 열기 핸들러
-  const handleClickOpen = (info: InfoDataType[keyof InfoDataType]) => {
-    setSelectedInfo(info);
-    setOpen(true);
+  const handleClickOpen = (info: InfoDataProps[keyof InfoDataProps]) => {
+    if (info.title === "텃밭의 종류") {
+      navigate("/info/place/type");
+    } else {
+      setSelectedInfo(info);
+      setOpen(true);
+    }
   };
 
   // 모달 닫기 핸들러
@@ -59,26 +67,43 @@ export default function InfoPlace() {
         maxWidth: 360,
         bgcolor: "background.paper",
         margin: "0 auto", // 가운데 정렬
-        padding: 2,
+        paddingTop: 2,
       }}
     >
-      <Typography variant="h5" sx={{ textAlign: "center", mb: 2 }}>
-        정보
-      </Typography>
-      <List>
-        {infoList.map((info, index) => (
-          <ListItem
-            key={index}
-            sx={{ borderBottom: "1px solid #ddd", cursor: "pointer" }}
-            onClick={() => handleClickOpen(info)}
-          >
-            <ListItemIcon>
-              <BookIcon color="primary" />
-            </ListItemIcon>
-            <ListItemText primary={info.title} secondary={info.comment} />
-          </ListItem>
-        ))}
-      </List>
+      {/* 데이터가 있을 때만 리스트 렌더링 */}
+      {infoData ? (
+        <List>
+          {Object.keys(infoData).map((key, index) => {
+            const info = infoData[key as keyof InfoDataProps];
+            return (
+              <ListItem
+                key={index}
+                sx={{
+                  borderBottom: "1px solid #ddd",
+                  cursor: "pointer",
+                  my: 1, // 리스트 아이템 사이의 간격 추가
+                  alignItems: "center", // 아이콘과 텍스트를 수직 중앙 정렬
+                }}
+                onClick={() => handleClickOpen(info)}
+              >
+                <ListItemIcon>
+                  <img src={BookIcon} width="40" height="40" alt="책" />
+                </ListItemIcon>
+                <ListItemText
+                  primary={info.title}
+                  secondary={info.comment}
+                  sx={{ mr: 2 }} // 오른쪽 화살표와 간격 조정
+                />
+                <ArrowForwardIosIcon sx={{ color: "#bbb" }} /> {/* 오른쪽 화살표 아이콘 */}
+              </ListItem>
+            );
+          })}
+        </List>
+      ) : (
+        <Typography variant="body1" sx={{ textAlign: "center", mt: 4 }}>
+          <CircularProgress color="success"/>
+        </Typography>
+      )}
 
       {/* 모달 컴포넌트 */}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">

@@ -1,13 +1,24 @@
-import { Box, Tab, Tabs, Button } from "@mui/material";
-import { useState } from "react";
+import React, { useState } from "react";
+import { Box, Tab, Tabs } from "@mui/material";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import InfoPlace from "../../components/Information/InfoPlace";
 import InfoCrops from "../../components/Information/InfoCrops";
 
 export default function InfoHome() {
-    const [value, setValue] = useState("one");
+  const [value, setValue] = useState("one");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // URL 변경에 따라 탭 상태를 설정
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
+    if (newValue === "one") {
+      navigate("/info/place");
+    } else {
+      navigate("/info/crops");
+    }
   };
+
   return (
     <Box
       sx={{
@@ -20,9 +31,9 @@ export default function InfoHome() {
         alignItems: "center",
       }}
     >
-        {/* Tabs 컴포넌트 */}
+      {/* Tabs 컴포넌트 */}
       <Tabs
-        value={value}
+        value={location.pathname.includes("/crops") ? "two" : "one"}
         onChange={handleChange}
         centered
         TabIndicatorProps={{
@@ -42,10 +53,9 @@ export default function InfoHome() {
         <Tab value="two" label="작물 정보" sx={{ fontSize: "1rem" }} />
       </Tabs>
 
-      {/* 탭 내용 */}
+      {/* 하위 라우트 내용 표시 (Outlet 사용) */}
       <Box sx={{ width: "90%" }}>
-        {value === "one" && <InfoPlace />}
-        {value === "two" && <InfoCrops />}
+        <Outlet />
       </Box>
     </Box>
   );

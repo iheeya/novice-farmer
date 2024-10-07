@@ -17,6 +17,10 @@ import CameraPage from "./pages/Detail/cameraPage";
 import FooterWithLocation from "./components/FooterWithLocation";
 import HomePage from "./pages/Home/Landing";
 import InfoHome from "./pages/Information/InfoHome";
+import InfoPlaceType from "./pages/Information/InfoPlaceType";
+import InfoPlace from "./components/Information/InfoPlace";
+import InfoCrops from "./components/Information/InfoCrops";
+import InfoPlaceDetail from "./pages/Information/InfoPlaceDetail";
 // AppWrapper 컴포넌트
 function AppWrapper() {
   const navigate = useNavigate();
@@ -24,7 +28,6 @@ function AppWrapper() {
 
   useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
-    console.log("accessToken", accessToken);
 
     // 인증이 필요 없는 경로 리스트
     const publicPaths = ["/user/login", "/user/signup", "/introduce"];
@@ -56,7 +59,12 @@ function AppWrapper() {
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/myPage/profile" element={<ProfileUpdate />} />
         <Route path="/myGarden/:myPlaceId/:myPlantId/camera" element={<CameraPage />} />
-        <Route path="/info" element={<InfoHome/>} />
+        <Route path="/info" element={<InfoHome />}>
+          <Route path="place" element={<InfoPlace />} />
+          <Route path="place/type" element={<InfoPlaceType />} />
+          <Route path="place/type/:title" element={<InfoPlaceDetail />} />
+          <Route path="crops" element={<InfoCrops />} />
+        </Route>
       </Routes>
       <FooterWithLocation />
     </>
