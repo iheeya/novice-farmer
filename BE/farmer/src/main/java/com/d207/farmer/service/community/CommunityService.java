@@ -121,6 +121,8 @@ public class CommunityService {
                 truncatedContent = truncatedContent.substring(0, 12) + "...";
             }
 
+            // 작성 날짜를 포맷
+            String formattedWriteDate = dateUtil.getTime(community.getWriteDate()); // 작성 날짜 처리 ///
             // DTO 생성
             return new CommunityResponseDTO(
                     community.getId(),
@@ -131,7 +133,7 @@ public class CommunityService {
                     community.getTitle(),
                     communityImages,
                     truncatedContent,
-                    community.getWriteDate(),
+                    formattedWriteDate,
                     tagNames,
                     (int) heartCount, // int로 변환
                     community.getContent().length() // 또는 필요한 다른 정보를 사용
@@ -221,6 +223,8 @@ public class CommunityService {
             truncatedContent = truncatedContent.substring(0, 12) + "...";
         }
 
+// 작성 날짜를 포맷
+        String formattedWriteDate = dateUtil.getTime(community.getWriteDate()); // 작성 날짜 처리 ///
 
         // DTO 생성
         return new CommunityResponseDTO(
@@ -231,7 +235,7 @@ public class CommunityService {
                 community.getTitle(),
                 communityImages,
                 truncatedContent,
-                community.getWriteDate(),
+                formattedWriteDate,
                 tagNames,
                 (int) heartCount, // int로 변환
                 community.getContent().length() // 또는 필요한 다른 정보를 사용
