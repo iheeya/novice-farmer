@@ -9,8 +9,8 @@ import Typography from "@mui/material/Typography";
 import CardActionArea from "@mui/material/CardActionArea";
 import "../../styles/CommunitySearch/SearchResult.css";
 import { GetImage } from "../../services/getImage";
-import Button from "@mui/material/Button";
 import loading from '../../assets/img/loading/loading.png'
+import Avatar from '@mui/material/Avatar';
 
 
 interface SearchData {
@@ -113,14 +113,8 @@ function SearchResult() {
                   {item.communityContent ? item.communityContent : ""}
                 </Typography>
                 <div className="article-explain-bottom">
-                  <div className="nickname-and-image">
-                    <img
-                      src={userImages[idx]}
-                      alt="User Image"
-                      style={{ width: "30px", height: "30px", marginRight: "5px" }}
-                    />
-                    <div className="show-nickname">{item.userNickname}</div>
-                  </div>
+                  <Avatar src={userImages[idx]} alt="User Image"/>
+                  <div className="show-nickname">{item.userNickname}</div>
                   <div className="date">
                     {new Date(item.communityDate).toLocaleDateString("ko-KR")}
                   </div>

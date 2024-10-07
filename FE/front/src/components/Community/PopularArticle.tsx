@@ -13,6 +13,7 @@ import { GetImage } from "../../services/getImage";
 import { SxProps } from '@mui/system'
 import EditIcon from '@mui/icons-material/Edit';
 import Fab from '@mui/material/Fab';
+import Avatar from '@mui/material/Avatar';
 
 
 interface SearchData {
@@ -134,14 +135,8 @@ function PopularArticle(){
                   {item.communityContent ? item.communityContent : ""}
                 </Typography>
                 <div className="article-explain-bottom">
-                  <div className="nickname-and-image">
-                    <img
-                      src={userImages[idx]}
-                      alt="User Image"
-                      style={{ width: "30px", height: "30px", marginRight: "5px" }}
-                    />
-                    <div className="show-nickname">{item.userNickname}</div>
-                  </div>
+                  <Avatar src={userImages[idx]} alt="User Image"/>
+                  <div className="show-nickname">{item.userNickname}</div>
                   <div className="date">
                     {new Date(item.communityDate).toLocaleDateString("ko-KR")}
                   </div>

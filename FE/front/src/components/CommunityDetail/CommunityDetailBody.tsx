@@ -32,6 +32,7 @@ import InputAdornment  from '@mui/material/InputAdornment';
 import { Input } from '@mui/material';
 import loading from '../../assets/img/loading/loading.png'
 import { GetImage } from '../../services/getImage'; 
+import Swal from 'sweetalert2'
 
 // DetailData 타입 정의
 interface DetailData {
@@ -167,8 +168,21 @@ const handleHeartClick = () => {
 
 const handleDeleteClick = () => {
   deleteContent()
-  navigate('/community')
+
+  Swal.fire({
+    icon: "success",
+    title: "게시글이 삭제되었습니다.",
+    showConfirmButton: false,
+    timer: 1500,
+    customClass: {
+      title: 'custom-title' // 사용자 정의 클래스 추가
+    }
+  }).then(() => {
+    navigate('/community', {replace: true})
+  })
 }
+
+
 
 
 const deleteContent = async() => {
