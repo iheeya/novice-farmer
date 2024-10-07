@@ -85,9 +85,8 @@ public class InfoService {
 
     public ImagesAndContentsResponseDTO getPlaceInfo(InfoNameRequestDTO request) {
         List<MongoPlaceInfo> places = mongoPlaceRepository.findAll(); // FIXME 이름 조회로 최적화 가능
-
-        List<PlaceDetail> PlaceContents = getContents(places);
-        for (PlaceDetail pc : PlaceContents) {
+        List<PlaceDetail> placeContents = getContents(places);
+        for (PlaceDetail pc : placeContents) {
             if(pc.getName().equals(request.getName())) {
                 List<ImagesAndContentsResponseDTO.ContentDTO> contents = new ArrayList<>();
                 contents.add(new ImagesAndContentsResponseDTO.ContentDTO(pc.getName(), pc.getDescription()));
@@ -102,7 +101,6 @@ public class InfoService {
 
                 return new ImagesAndContentsResponseDTO(images, contents);
             }
-            break;
         }
 
         return new ImagesAndContentsResponseDTO();
