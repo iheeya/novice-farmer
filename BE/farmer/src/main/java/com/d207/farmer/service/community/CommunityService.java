@@ -14,7 +14,9 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -51,6 +53,10 @@ public class CommunityService {
         User user = userRepository.findById(userId).orElseThrow();
         // 커뮤니티를 하트 수로 가져오기
         Page<Community> communities;
+        log.info("getCommunityWithHeart {}, {}", search, filter);
+
+
+
 
         // 검색어가 없는 경우
         if (search.isEmpty()) {
@@ -59,7 +65,14 @@ public class CommunityService {
 
             if (communityTagId == null || communityTagId.isEmpty()) {
                 // 전체 데이터 반환
-                communityTagId = communityFavoriteTagRepository.findAll();
+                //communities = communityRepository.findAll(pageable); // 페이지네이션 적용
+
+                List<CommunityTag> allTags = communityTagRepository.findAll();
+                for (CommunityTag communityTag : allTags) {
+                    communityTagId.add(new CommunityFavoriteTag(user,communityTag));
+
+                }
+
             }
 
             List<Long> communityTagIds = communityTagId.stream()
@@ -68,7 +81,7 @@ public class CommunityService {
                         if (communityTag == null) {
                             // 예외 처리 또는 로그 작성
                             // 예를 들어, 로그를 작성하거나 예외를 던질 수 있습니다.
-                            System.out.println("CommunityTag is null for favoriteTag: " + favoriteTag);
+                            //System.out.println("CommunityTag is null for favoriteTag: " + favoriteTag);
                             return null; // null을 반환
                         }
                         return communityTag.getId(); // ID 반환
@@ -76,7 +89,8 @@ public class CommunityService {
                     .filter(Objects::nonNull) // null 값 필터링
                     .collect(Collectors.toList());
             // 하트 수가 있는 커뮤니티 조회
-            communities = communityHeartRepository.findCommunitiesWithHearts(communityTagIds,pageable);
+            communities = communityHeartRepository.findCommunitiesWithHearts(communityTagIds, pageable);
+
         } else {
             // 검색어가 있는 경우: 타이틀이나 콘텐츠에 검색어가 포함된 커뮤니티 조회
             communities = communityHeartRepository.findByTitleContainingOrContentContaining(search, pageable);
@@ -128,47 +142,50 @@ public class CommunityService {
     }
 
     public Page<CommunityResponseDTO> getCommunityWithLatest(Long userId, String filter, String search, Pageable pageable) {
-        log.info("fdfdfdfdfd {}, {}", search, filter);
+        log.info("getCommunityWithLatest {}, {}", search, filter);
         User user = userRepository.findById(userId).orElseThrow();
+
+        // 날짜 기준으로 정렬할 Pageable 객체 생성
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("writeDate").descending());
 
         // 커뮤니티를 최신순으로 가져오기
         Page<Community> communities;
         
-        // 일단 검색어 없을때
-        if(search.isEmpty()) {
-            // 1. 사용자 즐겨찾기 태그 가져오기
-            //List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
 
-            List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
+        // 1. 사용자 즐겨찾기 태그 가져오기
+        //List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
 
-            if (communityTagId == null || communityTagId.isEmpty()) {
-                // 전체 데이터 반환
-                communityTagId = communityFavoriteTagRepository.findAll();
+        List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
+
+        if (communityTagId == null || communityTagId.isEmpty()) {
+            // 전체 커뮤니티 태그를 가져옵니다.
+            List<CommunityTag> allTags = communityTagRepository.findAll();
+            for (CommunityTag communityTag : allTags) {
+                communityTagId.add(new CommunityFavoriteTag(user,communityTag));
+
             }
-
-            List<Long> communityTagIds = communityTagId.stream()
-                    .map(favoriteTag -> {
-                        CommunityTag communityTag = favoriteTag.getCommunityTag();
-                        if (communityTag == null) {
-                            // 예외 처리 또는 로그 작성
-                            // 예를 들어, 로그를 작성하거나 예외를 던질 수 있습니다.
-                            System.out.println("CommunityTag is null for favoriteTag: " + favoriteTag);
-                            return null; // null을 반환
-                        }
-                        return communityTag.getId(); // ID 반환
-                    })
-                    .filter(Objects::nonNull) // null 값 필터링
-                    .collect(Collectors.toList());
-
-            // 3. 검색어가 없는 경우: 태그에 해당하는 커뮤니티 조회
-            communities = communityRepository.findAllByOrderByWriteDateDesc(communityTagIds, pageable);
-
-
-
-        } else {
-            // 검색어가 있는 경우: 타이틀이나 콘텐츠를 포함한 커뮤니티 조회
-            communities = communityRepository.findByTitleContainingOrContentContaining(search, pageable);
         }
+
+
+        List<Long> communityTagIds = communityTagId.stream()
+                .map(favoriteTag -> {
+                    CommunityTag communityTag = favoriteTag.getCommunityTag();
+                    if (communityTag == null) {
+                        // 예외 처리 또는 로그 작성
+                        // 예를 들어, 로그를 작성하거나 예외를 던질 수 있습니다.
+                        System.out.println("CommunityTag is null for favoriteTag: " + favoriteTag);
+                        return null; // null을 반환
+                    }
+                    return communityTag.getId(); // ID 반환
+                })
+                .filter(Objects::nonNull) // null 값 필터링
+                .collect(Collectors.toList());
+
+        // 3. 검색어가 없는 경우: 태그에 해당하는 커뮤니티 조회
+        communities = communityRepository.findAllByOrderByWriteDateDesc(communityTagIds, sortedPageable);
+
+
+
 
 
 

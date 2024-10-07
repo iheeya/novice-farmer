@@ -45,9 +45,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static java.lang.Boolean.TRUE;
 
@@ -104,6 +107,7 @@ public class StartupApplicationListener {
      createCommunityTagSample();
      createCommunitySample();
     }
+
 
     private void createUserSample() {
         for (int i = 1; i < USER_NUM + 1; i++) {
@@ -296,6 +300,8 @@ public class StartupApplicationListener {
 //        }
 //        communityCommentRepository.save(new CommunityComment(community5, user, "토마토마토마토마토5"));
 //    }
+
+
 private void createCommunitySample() {
     User user1 = userRepository.findById(1L).orElseThrow();
     User user2 = userRepository.findById(2L).orElseThrow();
@@ -334,33 +340,33 @@ private void createCommunitySample() {
 
     String content = "토마토는 맛있다 토마토는 맛있다 토마토는 맛있다 토마토는 맛있다 토마토는 맛있다";
 
-    Community community1 = communityRepository.save(new Community(user11, "토마토는 맛있다1", content));
+    Community community1 = communityRepository.save(new Community(user11, "토마토는 맛있다1", content,generateRandomDateTime() ));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community1, communityTag_tomato)); // 변경된 변수 사용
     communityHeartRepository.save(new CommunityHeart(community1, user11));
     communityCommentRepository.save(new CommunityComment(community1, user11, "토마토마토마토마토1"));
 
-    Community community2 = communityRepository.save(new Community(user11, "토마토는 맛있다2", content));
+    Community community2 = communityRepository.save(new Community(user11, "토마토는 맛있다2", content, generateRandomDateTime() ));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community2, communityTag_tomato)); // 변경된 변수 사용
     for (int i = 0; i < 2; i++) {
         communityHeartRepository.save(new CommunityHeart(community2, user11));
     }
     communityCommentRepository.save(new CommunityComment(community2, user11, "토마토마토마토마토2"));
 
-    Community community3 = communityRepository.save(new Community(user11, "토마토는 맛있다3", content));
+    Community community3 = communityRepository.save(new Community(user11, "토마토는 맛있다3", content, generateRandomDateTime() ));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community3, communityTag_tomato)); // 변경된 변수 사용
     for (int i = 0; i < 3; i++) {
         communityHeartRepository.save(new CommunityHeart(community3, user11));
     }
     communityCommentRepository.save(new CommunityComment(community3, user11, "토마토마토마토마토3"));
 
-    Community community4 = communityRepository.save(new Community(user11, "토마토는 맛있다4", content));
+    Community community4 = communityRepository.save(new Community(user11, "토마토는 맛있다4", content,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community4, communityTag_tomato)); // 변경된 변수 사용
     for (int i = 0; i < 4; i++) {
         communityHeartRepository.save(new CommunityHeart(community4, user11));
     }
     communityCommentRepository.save(new CommunityComment(community4, user11, "토마토마토마토마토4"));
 
-    Community community5 = communityRepository.save(new Community(user11, "토마토는 맛있다5", content));
+    Community community5 = communityRepository.save(new Community(user11, "토마토는 맛있다5", content,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community5, communityTag_tomato)); // 변경된 변수 사용
     for (int i = 0; i < 5; i++) {
         communityHeartRepository.save(new CommunityHeart(community5, user11));
@@ -370,115 +376,127 @@ private void createCommunitySample() {
     // 추가 커뮤니티
     String additionalContent = "토마토에 대한 다양한 이야기입니다.";
 
-    Community community6 = communityRepository.save(new Community(user11, "토마토를 활용한 요리", additionalContent));
+    Community community6 = communityRepository.save(new Community(user11, "토마토를 활용한 요리", additionalContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community6, communityTag_tomato));
     communityHeartRepository.save(new CommunityHeart(community6, user12));
     communityCommentRepository.save(new CommunityComment(community6, user11, "요리법을 공유해주세요!"));
 
-    Community community7 = communityRepository.save(new Community(user11, "토마토 재배 팁", additionalContent));
+    Community community7 = communityRepository.save(new Community(user11, "토마토 재배 팁", additionalContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community7, communityTag_tomato));
     communityHeartRepository.save(new CommunityHeart(community7, user13));
     communityCommentRepository.save(new CommunityComment(community7, user11, "재배하기 쉽나요?"));
 
-    Community community8 = communityRepository.save(new Community(user11, "토마토의 효능", additionalContent));
+    Community community8 = communityRepository.save(new Community(user11, "토마토의 효능", additionalContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community8, communityTag_tomato));
     communityHeartRepository.save(new CommunityHeart(community8, user11));
     communityCommentRepository.save(new CommunityComment(community8, user12, "정말 건강에 좋습니다!"));
 
-    Community community9 = communityRepository.save(new Community(user11, "토마토와 다이어트", additionalContent));
+    Community community9 = communityRepository.save(new Community(user11, "토마토와 다이어트", additionalContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community9, communityTag_tomato));
     communityHeartRepository.save(new CommunityHeart(community9, user13));
     communityCommentRepository.save(new CommunityComment(community9, user11, "다이어트에 효과적이에요!"));
 
-    Community community10 = communityRepository.save(new Community(user11, "토마토의 다양한 품종", additionalContent));
+    Community community10 = communityRepository.save(new Community(user11, "토마토의 다양한 품종", additionalContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community10, communityTag_tomato));
     communityHeartRepository.save(new CommunityHeart(community10, user12));
     communityCommentRepository.save(new CommunityComment(community10, user11, "어떤 품종이 좋나요?"));
 
     // 배추 커뮤니티
     String cabbageContent = "배추로 만드는 김치";
-    Community community11 = communityRepository.save(new Community(user12, "김치 만들기", cabbageContent));
+    Community community11 = communityRepository.save(new Community(user12, "김치 만들기", cabbageContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community11, communityTag_cabbage));
     communityHeartRepository.save(new CommunityHeart(community11, user11));
     communityCommentRepository.save(new CommunityComment(community11, user13, "김치가 최고입니다!"));
 
 // 감자 커뮤니티
     String potatoContent = "감자 요리 레시피";
-    Community community12 = communityRepository.save(new Community(user13, "감자 요리법", potatoContent));
+    Community community12 = communityRepository.save(new Community(user13, "감자 요리법", potatoContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community12, communityTag_potato));
     communityHeartRepository.save(new CommunityHeart(community12, user11));
     communityCommentRepository.save(new CommunityComment(community12, user12, "감자는 정말 다재다능해요!"));
 
 // 고구마 커뮤니티
     String sweetPotatoContent = "고구마의 다양한 활용";
-    Community community13 = communityRepository.save(new Community(user11, "고구마 요리법", sweetPotatoContent));
+    Community community13 = communityRepository.save(new Community(user11, "고구마 요리법", sweetPotatoContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community13, communityTag_sweat_potato));
     communityHeartRepository.save(new CommunityHeart(community13, user12));
     communityCommentRepository.save(new CommunityComment(community13, user13, "고구마 맛있어요!"));
 
 // 대파 커뮤니티
     String greenOnionContent = "대파의 다양한 요리법";
-    Community community14 = communityRepository.save(new Community(user12, "대파 요리", greenOnionContent));
+    Community community14 = communityRepository.save(new Community(user12, "대파 요리", greenOnionContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community14, communityTag_large_green_onion));
     communityHeartRepository.save(new CommunityHeart(community14, user11));
     communityCommentRepository.save(new CommunityComment(community14, user13, "대파는 맛을 더해줘요!"));
 
 // 시금치 커뮤니티
     String spinachContent = "시금치의 건강 효능";
-    Community community15 = communityRepository.save(new Community(user11, "시금치 효능", spinachContent));
+    Community community15 = communityRepository.save(new Community(user11, "시금치 효능", spinachContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community15, communityTag_lettuce)); // 상추 태그 사용
     communityHeartRepository.save(new CommunityHeart(community15, user12));
     communityCommentRepository.save(new CommunityComment(community15, user13, "시금치가 정말 좋습니다!"));
 
 // 브로콜리 커뮤니티
     String broccoliContent = "브로콜리의 요리법";
-    Community community16 = communityRepository.save(new Community(user12, "브로콜리 요리 레시피", broccoliContent));
+    Community community16 = communityRepository.save(new Community(user12, "브로콜리 요리 레시피", broccoliContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community16, communityTag_cabbage)); // 배추 태그 사용
     communityHeartRepository.save(new CommunityHeart(community16, user11));
     communityCommentRepository.save(new CommunityComment(community16, user13, "브로콜리는 건강식입니다!"));
 
 // 당근 커뮤니티
     String carrotContent = "당근의 효능과 요리법";
-    Community community17 = communityRepository.save(new Community(user13, "당근 요리", carrotContent));
+    Community community17 = communityRepository.save(new Community(user13, "당근 요리", carrotContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community17, communityTag_cucumber)); // 오이 태그 사용
     communityHeartRepository.save(new CommunityHeart(community17, user11));
     communityCommentRepository.save(new CommunityComment(community17, user12, "당근은 비타민이 풍부해요!"));
 
 // 파프리카 커뮤니티
     String paprikaContent = "파프리카의 다양한 활용";
-    Community community18 = communityRepository.save(new Community(user11, "파프리카 활용 팁", paprikaContent));
+    Community community18 = communityRepository.save(new Community(user11, "파프리카 활용 팁", paprikaContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community18, communityTag_chili)); // 고추 태그 사용
     communityHeartRepository.save(new CommunityHeart(community18, user13));
     communityCommentRepository.save(new CommunityComment(community18, user12, "파프리카는 색감이 예쁩니다!"));
 
 // 가지 커뮤니티
     String eggplantContent2 = "가지의 다양한 요리법";
-    Community community19 = communityRepository.save(new Community(user12, "가지 요리 레시피", eggplantContent2));
+    Community community19 = communityRepository.save(new Community(user12, "가지 요리 레시피", eggplantContent2,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community19, communityTag_eggplant)); // 가지 태그 사용
     communityHeartRepository.save(new CommunityHeart(community19, user11));
     communityCommentRepository.save(new CommunityComment(community19, user13, "가지 요리가 맛있어요!"));
 
 // 고구마 커뮤니티
     String sweetPotatoContent2 = "고구마 요리 아이디어";
-    Community community20 = communityRepository.save(new Community(user13, "고구마 활용법", sweetPotatoContent2));
+    Community community20 = communityRepository.save(new Community(user13, "고구마 활용법", sweetPotatoContent2,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community20, communityTag_sweat_potato)); // 고구마 태그 사용
     communityHeartRepository.save(new CommunityHeart(community20, user12));
     communityCommentRepository.save(new CommunityComment(community20, user11, "고구마는 정말 맛있습니다!"));
 
 // 샐러리 커뮤니티
     String celeryContent = "샐러리의 효능과 사용법";
-    Community community21 = communityRepository.save(new Community(user11, "샐러리 활용법", celeryContent));
+    Community community21 = communityRepository.save(new Community(user11, "샐러리 활용법", celeryContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community21, communityTag_lettuce)); // 상추 태그 사용
     communityHeartRepository.save(new CommunityHeart(community21, user12));
     communityCommentRepository.save(new CommunityComment(community21, user13, "샐러리는 다이어트에 좋습니다!"));
 
 // 파 커뮤니티
     String chiveContent = "파의 다양한 요리법";
-    Community community22 = communityRepository.save(new Community(user12, "파 요리 아이디어", chiveContent));
+    Community community22 = communityRepository.save(new Community(user12, "파 요리 아이디어", chiveContent,  generateRandomDateTime()));
     communitySelectedTagRespository.save(new CommunitySelectedTag(community22, communityTag_large_green_onion)); // 대파 태그 사용
     communityHeartRepository.save(new CommunityHeart(community22, user11));
     communityCommentRepository.save(new CommunityComment(community22, user13, "파는 요리에 필수입니다!"));
 
 
+    }
+    private static LocalDateTime generateRandomDateTime() {
+        LocalDate startDate = LocalDate.of(2020, 1, 1);
+        LocalDate endDate = LocalDate.of(2023, 12, 31);
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+        Random random = new Random();
+        long randomDays = random.nextInt((int) daysBetween + 1);
+        LocalDate randomDate = startDate.plusDays(randomDays);
+        int randomHour = random.nextInt(24);
+        int randomMinute = random.nextInt(60);
+        int randomSecond = random.nextInt(60);
+        return randomDate.atTime(randomHour, randomMinute, randomSecond);
     }
 }
