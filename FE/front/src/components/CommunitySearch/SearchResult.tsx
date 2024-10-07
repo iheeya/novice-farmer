@@ -10,6 +10,8 @@ import CardActionArea from "@mui/material/CardActionArea";
 import "../../styles/CommunitySearch/SearchResult.css";
 import { GetImage } from "../../services/getImage";
 import Button from "@mui/material/Button";
+import loading from '../../assets/img/loading/loading.png'
+
 
 interface SearchData {
   communityTitle: string;
@@ -68,6 +70,7 @@ function SearchResult() {
     }
   }, [search, page, hasMore]);
 
+
   // 스크롤 이벤트를 감지하여 페이지 증가
   useEffect(() => {
     const handleScroll = () => {
@@ -81,6 +84,7 @@ function SearchResult() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore]);
 
+
   const handleClick = (id: number) => {
     navigate(`/community/${id}/detail`);
   };
@@ -91,7 +95,7 @@ function SearchResult() {
         searchData.map((item, idx) => (
           <Card
             key={idx}
-            sx={{ width: "90%", marginTop: "5%" }}
+            sx={{ width: "90%", marginTop: "2%", marginBottom: '3%' }}
             onClick={() => handleClick(item.communityId)}
           >
             <CardActionArea>
@@ -108,20 +112,6 @@ function SearchResult() {
                 <Typography variant="body2" color="text.secondary" sx={{ color: "#5B8E55" }}>
                   {item.communityContent ? item.communityContent : ""}
                 </Typography>
-                <div className="explain-tag">
-                  {item.communityTag.slice(0, 3).map((tag: string, index: number) => (
-                    <Button
-                      key={index}
-                      sx={{
-                        backgroundColor: "#B0D085",
-                        color: "white",
-                        marginRight: "2%",
-                      }}
-                    >
-                      #{tag}
-                    </Button>
-                  ))}
-                </div>
                 <div className="article-explain-bottom">
                   <div className="nickname-and-image">
                     <img
@@ -140,7 +130,14 @@ function SearchResult() {
           </Card>
         ))
       ) : (
-        <div>검색 결과가 없습니다.</div>
+        <div className="error-instruction">
+          <div> 존재하지 않는 페이지 입니다.</div>
+
+          <img
+              src={loading}
+              className="error-image-size"
+          />
+        </div> // 에러 메시지 출력
       )}
     </div>
   );

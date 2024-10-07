@@ -23,10 +23,11 @@ const getCookie = (name: string): string => {
 interface PropFunc {
   onTextFieldClick: () => void;
   onCancelClick: () => void;
+  isSearchActive: boolean;
 }
 
-function CommunitySearchHeader({ onTextFieldClick, onCancelClick }: PropFunc) {
-  const [isSearchActive, setIsSearchActive] = useState<boolean>(false);
+function CommunitySearchHeader({ onTextFieldClick, onCancelClick, isSearchActive }: PropFunc) {
+  // const [isSearchActive, setIsSearchActive] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>(""); // 검색어 입력 상태
   const [searchHistory, setSearchHistory] = useState<string[]>([]); // 검색 기록 상태
   const navigate = useNavigate();
@@ -44,12 +45,12 @@ function CommunitySearchHeader({ onTextFieldClick, onCancelClick }: PropFunc) {
   }, []);
 
   const handleTextFieldClick = () => {
-    setIsSearchActive(true);
+    // setIsSearchActive(true);
     onTextFieldClick();
   };
 
   const handleCancelClick = () => {
-    setIsSearchActive(false);
+    // setIsSearchActive(false);
     onCancelClick();
   };
 
