@@ -17,6 +17,8 @@ public class InspectionPestResponseDTO {
     public static class IsPestDTO {
         private Boolean hasPest;
         private String myImagePath;
+        private String plantName;
+        private int growthStep;
     }
 
     @Getter

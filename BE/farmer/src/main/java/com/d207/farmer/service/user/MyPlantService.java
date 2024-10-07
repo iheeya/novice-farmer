@@ -22,6 +22,8 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.d207.farmer.dto.common.FileDirectory.PEST;
+
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -121,18 +123,24 @@ public class MyPlantService {
         return "메모 변경 성공";
     }
 
-    public InspectionPestResponseDTO inspectionPest(Long userId, MultipartFile request) {
+    public InspectionPestResponseDTO inspectionPest(Long userId, InspectionPestRequestDTO request) {
         // 파일 업로드
-        String fileName = fileUtil.uploadFile(request, FileDirectory.PEST);
+        String fileName = fileUtil.uploadFile(request.getFile(), PEST);
+        Farm farm = farmRepository.findByIdWithJoin(request.getFarmId()).orElseThrow();
+        int growthStep = farmUtil.getGrowthStep(farm);
 
         InspectionPestResponseByFastApiDTO response = fastApiUtil.getInspectionPest(fileName);
 
         if(!response.getHasPast()) {
-            InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(false, fileName);
+            InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(
+                    false, PEST.toString().toLowerCase() + "/" + fileName, farm.getPlant().getName(), growthStep
+            );
             InspectionPestResponseDTO.PestInfoDTO pestInfoDTO = new InspectionPestResponseDTO.PestInfoDTO();
             return new InspectionPestResponseDTO(isPestDTO, pestInfoDTO);
         }
-        InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(true, fileName);
+        InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(
+                true, PEST.toString().toLowerCase() + "/" + fileName, farm.getPlant().getName(), growthStep
+        );
         InspectionPestResponseDTO.PestInfoDTO pestInfoDTO = new InspectionPestResponseDTO.PestInfoDTO(response.getPestInfo().getPestImagePath(),
                 response.getPestInfo().getPestName(), response.getPestInfo().getPestDesc(), response.getPestInfo().getPestCureDesc());
 
