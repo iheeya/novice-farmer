@@ -16,17 +16,17 @@ load_dotenv()
 
 # farmers: Session = session_local['farmer']()
 
+# 트랜잭션 중첩 방지
 def retry_transaction(db: Session, max_retries=5, delay=1):
     for attempt in range(max_retries):
         try:
             db.commit()  # 트랜잭션 커밋 시도
             break  # 성공 시 루프 탈출
         except OperationalError as e:
-            print(f"트랜잭션 충돌 발생: {e}, 재시도 {attempt + 1}/{max_retries}")
             db.rollback()  # 충돌 발생 시 롤백
             time.sleep(delay)  # 재시도 전 대기
     else:
-        raise Exception("트랜잭션 충돌로 인해 재시도 한도를 초과했습니다.")
+        raise Exception("트랜잭션 불가능")
 
 # 예보구역 데이터 가져오기
 def load_areainfo():
@@ -79,7 +79,7 @@ def load_aswsinfo():
     url = 'https://apihub.kma.go.kr/api/typ01/url/stn_inf.php'
     
     updated_date = datetime.now() - timedelta(days=1)
-    updated_date = updated_date.strftime('%Y%m%d%H%M%S')
+    updated_date = updated_date.strftime('%Y%m%d%H%M')
     
     params = {'inf' : 'AWS', 'tm' : updated_date, 'authKey' :  os.getenv('WEATHER_AUTH_KEY'), 'help' : '0'}
     response = requests.get(url, params=params)
@@ -92,11 +92,15 @@ def load_aswsinfo():
         with fast_api.begin():
             fast_api.query(AwsStn).delete()
             for row in csv_reader:
-                stn = list(row[0].split())
-                if len(stn) < 2:
+                row[0] = row[0].replace('*', ' ')
+                row = list(row[0].split())
+                if len(row) < 2:
                     continue
-                stn_id, stn_lon, stn_lat, reg_id, law_id  = stn[0], stn[1], stn[2], stn[10], stn[11]
-                add_awsinfo_to_db(stn_id, stn_lon, stn_lat, reg_id, law_id)
+                stn_id, stn_lon, stn_lat, reg_id, law_id  = row[0], float(row[1]), float(row[2]), row[10], row[11]
+                # 이상 데이터 하나 거르는 용도
+                if len(row) != 13:
+                    law_id = row[12]
+                add_awsinfo_to_db(fast_api, stn_id, stn_lon, stn_lat, reg_id, law_id)
             retry_transaction(fast_api)
     except Exception as e:
         fast_api.rollback()
@@ -132,11 +136,10 @@ def load_adminfo():
             with fast_api.begin():
                 fast_api.query(AdmDistrict).delete()
                 for row in csv_data:
-                    adm = list(row[0].split(','))
-                    if len(adm) < 6:
+                    if len(row) < 6:
                         continue
-                    adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat = adm[0], adm[1], adm[2], adm[3], int(adm[4]), int(adm[5]), float(adm[6]), float(adm[7])
-                    add_adminfo_to_db(adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat)
+                    adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat = row[0], row[1], row[2], row[3], int(row[4]), int(row[5]), float(row[6]), float(row[7])
+                    add_adminfo_to_db(fast_api, adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat)
                 retry_transaction(fast_api)
         except Exception as e:
             fast_api.rollback()
@@ -182,20 +185,17 @@ def load_valinfo():
         with fast_api.begin():
             fast_api.query(WeatherVal).delete()
             for row1, row2, row3 in zip(rnday_data, tamax_data, tamin_data):
-                val1 = list(row1[0].split(','))
-                if len(val1) < 2:
+                if len(row1) < 2:
                     continue
-                stn_id, rn_day = val1[1], float(val1[5])
+                stn_id, rn_day = row1[1], float(row1[5])
             
-                val2 = list(row2[0].split(','))
-                if len(val2) < 2:
+                if len(row2) < 2:
                     continue
-                ta_max = float(val2[5])
+                ta_max = float(row2[5])
                 
-                val3 = list(row3[0].split(','))
-                if len(val3) < 2:
+                if len(row3) < 2:
                     continue
-                ta_min = float(val3[5])
+                ta_min = float(row3[5])
             
                 add_valinfo_to_db(fast_api, stn_id, rn_day, ta_max, ta_min)
             retry_transaction(fast_api)
