@@ -50,7 +50,7 @@ class AwsStn(Base):
 class WeatherVal(Base):
     __tablename__ = 'weather_val'
 
-    stn_id = Column(SmallInteger, ForeignKey('aws_stn.stn_id'), primary_key=True)
+    stn_id = Column(SmallInteger, ForeignKey('aws_stn.stn_id', ondelete='CASCADE'), primary_key=True)
     rn_day = Column(Float, default=0)
     ta_max = Column(Float)
     ta_min = Column(Float)
@@ -73,68 +73,3 @@ class CurrentSpecialWeather(Base):
 
     # 관계 설정
     special_weather = relationship("SpecialWeather", backref="current_special_weather")
-
-
-# 유저 정보 테이블
-class UserPlace(Base):
-    __tablename__ = 'user_place'
-    
-    user_place_id = Column(BigInteger, primary_key=True, index=True)
-    place_id = Column(BigInteger, ForeignKey("place.place_id"), nullable=True)
-    user_id = Column(BigInteger, ForeignKey("user.user_id"), nullable=True)
-    user_place_bname1 = Column(String(255), nullable=True)
-    user_place_bname2 = Column(String(255), nullable=True)
-    user_place_bunji = Column(String(255), nullable=True)
-    user_place_jibun = Column(String(255), nullable=True)
-    user_place_latitude = Column(String(255), nullable=True)
-    user_place_longitude = Column(String(255), nullable=True)
-    user_place_name = Column(String(255), nullable=True)
-    user_place_sido = Column(String(255), nullable=True)
-    user_place_sigugun = Column(String(255), nullable=True)
-    zonecode = Column(String(255), nullable=True)
-
-    # 관계 설정
-    user = relationship("User", back_populates="user_places")
-    place = relationship("Place", back_populates="user_places")
-
-
-# 농장 테이블에 대한 모델 정의
-class Farm(Base):
-    __tablename__ = 'farm'
-    
-    farm_id = Column(BigInteger, primary_key=True, index=True)
-    farm_degree_day = Column(Integer, nullable=True)
-    farm_is_completed = Column(Boolean, nullable=True)
-    farm_is_deleted = Column(Boolean, nullable=True)
-    farm_is_harvest = Column(Boolean, nullable=True)
-    farm_complete_date = Column(DateTime(6), nullable=True)
-    farm_create_date = Column(DateTime(6), nullable=True)
-    farm_delete_date = Column(DateTime(6), nullable=True)
-    farm_harvest_date = Column(DateTime(6), nullable=True)
-    farm_seed_date = Column(DateTime(6), nullable=True)
-    plant_id = Column(BigInteger, ForeignKey("plant.plant_id"), nullable=True)
-    user_id = Column(BigInteger, ForeignKey("user.user_id"), nullable=True)
-    user_place_id = Column(BigInteger, ForeignKey("user_place.user_place_id"), nullable=True)
-    farm_memo = Column(String(255), nullable=True)
-    farm_plant_name = Column(String(255), nullable=True)
-
-    # 관계 설정
-    user_place = relationship("UserPlace", back_populates="farms")
-    plant = relationship("Plant", back_populates="farms")
-    user = relationship("User", back_populates="farms")
-
-
-# 농장별 할 일 테이블
-class FarmTodo(Base):
-    __tablename__ = 'farm_todo'
-    
-    farm_todo_id = Column(BigInteger, primary_key=True, index=True)
-    farm_todo_is_completed = Column(Boolean, nullable=True)
-    farm_id = Column(BigInteger, ForeignKey("farm.farm_id"), nullable=True)
-    farm_todo_complete_date = Column(DateTime(6), nullable=True)
-    farm_todo_date = Column(DateTime(6), nullable=True)
-    farm_tddo_type = Column(String(255), nullable=True)  # 오타 수정 필요시 여기 확인
-    farm_todo_type = Column(Enum('FERTILIZERING', 'HARVESTING', 'NATURE', 'PANDEMIC', 'WATERING'), nullable=True)
-
-    # 관계 설정
-    farm = relationship("Farm", back_populates="farm_todos")

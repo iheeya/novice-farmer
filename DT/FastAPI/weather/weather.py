@@ -1,8 +1,8 @@
 # 기상 정보
 from sqlalchemy.orm import Session
 from setting.mysql import session_local
-from .models import WeatherArea, WeatherVal, AwsStn, AdmDistrict, SpecialWeather, CurrentSpecialWeather, Farm, FarmTodo, UserPlace
-from .schemas import WeatherAreaSchema, WeatherValSchema, AwsStnSchema, AdmDistrictSchema, SpecialWeatherSchema, CurrentSpecialWeatherSchema, FarmSchema, FarmTodoSchema, FarmTodoType, UserPlaceSchema
+from weather.models import WeatherArea, WeatherVal, AwsStn, AdmDistrict, SpecialWeather, CurrentSpecialWeather
+from weather.schemas import WeatherAreaSchema, WeatherValSchema, AwsStnSchema, AdmDistrictSchema, SpecialWeatherSchema, CurrentSpecialWeatherSchema
 
 from dotenv import load_dotenv
 from io import StringIO
@@ -105,25 +105,29 @@ def add_awsinfo_to_db(db:Session, id: str, lon: float, lat: float, reg_id: str, 
 
 # 행정구역 데이터 가져오기
 def load_adminfo():
-    with open("./adm_district.csv", "r", encoding='utf-8') as file:
+    
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(base_dir, 'adm_district.csv')
+    
+    with open(file_path, "r", encoding='utf-8') as file:
         csv_data = csv.reader(file)
 
-    next(csv_data)
-    
-    # 트랜잭션
-    try:
-        with fast_api.begin():
-            fast_api.query(AdmDistrict).delete()
-            for row in csv_data:
-                adm = list(row[0].split(','))
-                if len(adm) < 6:
-                    continue
-                adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat = adm[0], adm[1], adm[2], adm[3], int(adm[4]), int(adm[5]), float(adm[6]), float(adm[7])
-                add_adminfo_to_db(adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat)
-            fast_api.commit()
-    except Exception as e:
-        fast_api.rollback()
-        print(f"에러가 발생했습니다: {e}")
+        next(csv_data)
+        
+        # 트랜잭션
+        try:
+            with fast_api.begin():
+                fast_api.query(AdmDistrict).delete()
+                for row in csv_data:
+                    adm = list(row[0].split(','))
+                    if len(adm) < 6:
+                        continue
+                    adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat = adm[0], adm[1], adm[2], adm[3], int(adm[4]), int(adm[5]), float(adm[6]), float(adm[7])
+                    add_adminfo_to_db(adm_id, adm_head, adm_middle, adm_tail, x_grid, y_grid, lon, lat)
+                fast_api.commit()
+        except Exception as e:
+            fast_api.rollback()
+            print(f"에러가 발생했습니다: {e}")
 
 # AdmDistrinct 테이블에 데이터 추가
 def add_adminfo_to_db(db: Session, id: str, head: str, middle: str, tail: str, xgrid: int, ygrid: int, lon: float, lat: float):
@@ -142,7 +146,7 @@ def add_adminfo_to_db(db: Session, id: str, head: str, middle: str, tail: str, x
 # AWS 기반 기상 데이터(강수, 최고온도, 최저온도) 가져오기
 def load_valinfo():
     target_date = datetime.today() - timedelta(days=1)
-    target_date = datetime.strftime('%Y%m%d')
+    target_date = target_date.strftime('%Y%m%d')
     url = 'https://apihub.kma.go.kr/api/typ01/url/sfc_aws_day.php'
     params_tamax = {'tm1': target_date, 'tm2': target_date, 'obs': 'ta_max', 'authKey': os.getenv('WEATHER_AUTH_KEY')}
     params_tamin = {'tm1': target_date, 'tm2': target_date, 'obs': 'ta_min', 'authKey': os.getenv('WEATHER_AUTH_KEY')}

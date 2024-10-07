@@ -6,10 +6,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-db_user = os.getenv('DB_USER')
-db_pwd = os.getenv('DB_PASSWORD')
-db_host = os.getenv('DB_HOST')
-db_port = os.getenv('DB_PORT')
+db_user = os.getenv('MYSQL_USER')
+db_pwd = os.getenv('MYSQL_PASSWORD')
+db_host = os.getenv('MYSQL_HOST')
+db_port = os.getenv('MYSQL_PORT')
 
 MYSQL_FASTAPI_URL = f'mysql+pymysql://{db_user}:{db_pwd}@{db_host}:{db_port}/fast_api'
 MYSQL_FARMER_URL = f'mysql+pymysql://{db_user}:{db_pwd}@{db_host}:{db_port}/farmer'

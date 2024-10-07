@@ -19,9 +19,11 @@ from setting.scheduler import start_scheduler
 
     
 def start():
-    load_adminfo, load_areainfo, load_aswsinfo, load_curruent_special_weatherinfo, load_special_areainfo, load_valinfo
-    # Scheduler 시작
-    start_scheduler()
+    load_adminfo(), load_areainfo(), load_aswsinfo(), load_curruent_special_weatherinfo(), load_special_areainfo(), load_valinfo()
+
+
+# Scheduler 시작
+# start_scheduler()
     
 # 서버 시작 시 실행할 함수 등록
 @asynccontextmanager

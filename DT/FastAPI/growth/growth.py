@@ -10,9 +10,8 @@ import json, requests, os, csv, itertools, math
 
 
 load_dotenv()
-db: Session = session_local()
-shcema1 = 'farmer'
-schema2 = 'fast_api'
+db: Session = session_local['fast_api']()
+
 def crops_growth(): # 현재는 토마토에 대한 값만 계산 중.
     thi, tlow = 33.33, 7.22
     def docalcs_S(max_val, min_val):
