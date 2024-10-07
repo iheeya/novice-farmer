@@ -1,5 +1,5 @@
 # Column: 컬럼 설정, Integer: 정수 타입 지정, TypeDecorator: 커스텀 타입 정의 지원
-from sqlalchemy import Column, Integer, String, Float, SmallInteger, ForeignKey, TypeDecorator, CheckConstraint, Boolean
+from sqlalchemy import Column, Integer, String, Float, SmallInteger, ForeignKey, TypeDecorator, CheckConstraint, Boolean, BigInteger, DateTime, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -50,58 +50,10 @@ class AwsStn(Base):
 class WeatherVal(Base):
     __tablename__ = 'weather_val'
 
-    stn_id = Column(SmallInteger, ForeignKey('aws_stn.stn_id'), primary_key=True)
+    stn_id = Column(SmallInteger, ForeignKey('aws_stn.stn_id', ondelete='CASCADE'), primary_key=True)
     rn_day = Column(Float, default=0)
     ta_max = Column(Float)
     ta_min = Column(Float)
-
-# 작물 기본 정보 모델
-class CropBase(Base):
-    __tablename__ = 'crop_base'
-
-    crop_id = Column(SmallInteger, primary_key=True, autoincrement=True)
-    crop_name = Column(String(255), nullable=False)
-    crop_plant_season = Column(String(50))
-
-# 비료 정보 모델
-class CropFertilizer(Base):
-    __tablename__ = 'crop_fertilizer'
-
-    fertilizer_id = Column(SmallInteger, primary_key=True)
-    fertilizer_type = Column(String(255))
-    fertilizer_name = Column(String(255))
-
-# 작물별 비료 주기 모델
-class CropFertilizerPeriod(Base):
-    __tablename__ = 'crop_fertilizer_period'
-
-    crop_id = Column(TinyInteger, ForeignKey('crop_base.crop_id'), primary_key=True)
-    fertilizer_step1 = Column(Boolean)
-    fertilizer_step2 = Column(Boolean)
-    fertilizer_step3 = Column(Boolean)
-    fertilizer_step4 = Column(Boolean)
-    fertilizer_step1_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
-    fertilizer_step2_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
-    fertilizer_step3_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
-    fertilizer_step4_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
-
-# 작물별 관수 주기 모델
-class CropWaterPeriod(Base):
-    __tablename__ = 'crop_water_period'
-
-    crop_id = Column(TinyInteger, ForeignKey('crop_base.crop_id'), primary_key=True)
-    watering_step1 = Column(Boolean)
-    watering_step2 = Column(Boolean)
-    watering_step3 = Column(Boolean)
-    watering_step4 = Column(Boolean)
-
-# 작물 생육 온도 모델
-class GrowthTemp(Base):
-    __tablename__ = 'growth_temp'
-
-    crop_id = Column(SmallInteger, ForeignKey('crop_base.crop_id'), primary_key=True)
-    growth_high_temp = Column(Float)
-    growth_low_temp = Column(Float)
 
 
 # 기상특보 예보구역

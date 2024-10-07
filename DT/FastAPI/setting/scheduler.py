@@ -14,7 +14,7 @@ def scheduled_task():
     # 매일 기상 데이터 가져오기
     load_valinfo()
     # 매일 작물별 생장도 계산하기
-    calculate_crop_degree_days()
+    # calculate_crop_degree_days()
     
 def start_scheduler():
     scheduler.add_job(scheduled_task, 'cron', hour=0, minute=0)
