@@ -51,3 +51,68 @@ export function getInfoPlant():Promise<any>{
     return Promise.reject(err);
   });
 }
+
+export function getInfoPlantDetail(id: string): Promise<any> {
+  return api
+    .post("/info/plant",{"name":id})
+    .then((res) => {
+      // console.log(res.data);
+      return Promise.resolve(res.data);
+    })
+    .catch((err) => {
+      // console.error(err);
+      return Promise.reject(err);
+    });
+}
+
+export function getInfoFertilizer(): Promise<any> {
+  return api
+    .get("/info/fertilizer")
+    .then((res) => {
+      console.log(res.data);
+      return Promise.resolve(res.data);
+    })
+    .catch((err) => {
+      // console.error(err);
+      return Promise.reject(err);
+    });
+}
+
+export function getInfoFertilizerDetail(id: string): Promise<any> {
+  return api
+    .post("/info/fertilizer",{"name":id})
+    .then((res) => {
+      // console.log(res.data);
+      return Promise.resolve(res.data);
+    })
+    .catch((err) => {
+      // console.error(err);
+      return Promise.reject(err);
+    });
+}
+
+export function getInfoPest(): Promise<any> {
+  return api
+    .get("/info/pest")
+    .then((res) => {
+      console.log(res.data);
+      return Promise.resolve(res.data);
+    })
+    .catch((err) => {
+      // console.error(err);
+      return Promise.reject(err);
+    });
+}
+
+export function getInfoPestDetail(id: string): Promise<any> {
+  return api
+    .post("/info/pest",{"name":id})
+    .then((res) => {
+      // console.log(res.data);
+      return Promise.resolve(res.data);
+    })
+    .catch((err) => {
+      // console.error(err);
+      return Promise.reject(err);
+    });
+}

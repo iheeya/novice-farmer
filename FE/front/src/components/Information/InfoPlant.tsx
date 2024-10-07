@@ -68,10 +68,10 @@ export default function InfoPlant() {
   const handleClickOpen = (title: string) => {
     switch (title) {
       case "비료":
-        navigate("/info/fertilizer");
+        navigate("/info/plant/fertilizer");
         break;
       case "병해충":
-        navigate("/info/pest");
+        navigate("/info/plant/pest");
         break;
       default:
         navigate(`/info/plant/${encodeURIComponent(title)}`); // 기본 경로 이동
