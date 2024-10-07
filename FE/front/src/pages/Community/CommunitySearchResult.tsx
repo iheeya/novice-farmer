@@ -28,6 +28,7 @@ function CommunitySearch() {
         onCancelClick={handleCancelClick}
         onTextFieldClick={handleSearchClick}
         isSearchActive={isSearchActive} 
+        onSearchComplete={handleSearchComplete}
       />
       {isInput ? <CommunitySearchInput onSearchComplete={handleSearchComplete}/> : <SearchResult />}
     </>

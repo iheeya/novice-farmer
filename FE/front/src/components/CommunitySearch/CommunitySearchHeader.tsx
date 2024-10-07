@@ -24,10 +24,10 @@ interface PropFunc {
   onTextFieldClick: () => void;
   onCancelClick: () => void;
   isSearchActive: boolean;
+  onSearchComplete?: () => void;
 }
 
-function CommunitySearchHeader({ onTextFieldClick, onCancelClick, isSearchActive }: PropFunc) {
-  // const [isSearchActive, setIsSearchActive] = useState<boolean>(false);
+function CommunitySearchHeader({ onTextFieldClick, onCancelClick, isSearchActive, onSearchComplete }: PropFunc) {
   const [searchTerm, setSearchTerm] = useState<string>(""); // 검색어 입력 상태
   const [searchHistory, setSearchHistory] = useState<string[]>([]); // 검색 기록 상태
   const navigate = useNavigate();
@@ -45,12 +45,10 @@ function CommunitySearchHeader({ onTextFieldClick, onCancelClick, isSearchActive
   }, []);
 
   const handleTextFieldClick = () => {
-    // setIsSearchActive(true);
     onTextFieldClick();
   };
 
   const handleCancelClick = () => {
-    // setIsSearchActive(false);
     onCancelClick();
   };
 
@@ -68,6 +66,9 @@ function CommunitySearchHeader({ onTextFieldClick, onCancelClick, isSearchActive
 
         navigate(`/community/search/${encodeURIComponent(searchTerm)}`); // 검색어를 URL에 추가
         setSearchTerm(""); // 입력창 초기화
+        if (onSearchComplete) {
+          onSearchComplete(); // Only call if the function is provided
+        }
       }
     }
   };
