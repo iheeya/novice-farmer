@@ -65,7 +65,7 @@ public class CommunityController {
      */
     @PostMapping
     public ResponseEntity<Long> registerCommunity(@RequestHeader("Authorization") String authorization,
-                                                    @RequestBody CommunityRegisterDTO communityRegisterDTO
+                                                  @RequestBody CommunityRegisterDTO communityRegisterDTO
                                                     ) {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("CommunityController] Post Community {}", userId);
