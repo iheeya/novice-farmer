@@ -33,21 +33,25 @@ public class CommunityController {
     @GetMapping
 //    public ResponseEntity<List<?>> getCommunityNew(@RequestHeader("Authorization") String authorization,
     public ResponseEntity<Page<CommunityResponseDTO>> getCommunityNew(@RequestHeader("Authorization") String authorization,
-                                                                      @RequestParam(value = "filter", required = false) String filter,
-                                                                      @RequestParam(value = "search", required = false) String search,
+    //public ResponseEntity<SearchCondition> getCommunityNew(
+                                                                      SearchCondition condition,
+//                                                                      String filter,
+//                                                                      @RequestParam(value = "search") String search,
                                                                       Pageable pageable) {
+        String filter = condition.getFilter();
+        String search = condition.getSearch();
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Received Community");
         if(filter.equals("new")){
-            log.info("[CommunityController] getCommunityWithLatest {}"+ search);
+            log.info("[CommunityController] getCommunityWithLatest {}", search);
             return ResponseEntity.ok(communityService.getCommunityWithLatest(userId, filter, search, pageable));
         }
         else{
-            log.info("[CommunityController] getCommunityWithHeart {}"+ search);
-            return ResponseEntity.ok(communityService.getCommunityWithHeart(userId, filter, search, pageable));
+            log.info("[CommunityController] getCommunityWithHeart {}", search);
+           return ResponseEntity.ok(communityService.getCommunityWithHeart(userId, filter, search, pageable));
         }
 
-        //return null;
+        //return ResponseEntity.ok().body(condition);
 
 
     }

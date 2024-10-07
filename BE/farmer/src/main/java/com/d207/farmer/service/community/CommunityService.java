@@ -122,7 +122,7 @@ public class CommunityService {
     }
 
     public Page<CommunityResponseDTO> getCommunityWithLatest(Long userId, String filter, String search, Pageable pageable) {
-
+        log.info("fdfdfdfdfd {}, {}", search, filter);
         User user = userRepository.findById(userId).orElseThrow();
 
         // 커뮤니티를 최신순으로 가져오기
