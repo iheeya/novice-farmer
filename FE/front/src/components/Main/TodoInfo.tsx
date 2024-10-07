@@ -1,14 +1,16 @@
 import React from 'react';
 import styles from '../../styles/Main/TodoInfo.module.css';
 import { getImageForWeather } from '../../utils/imageMapping';
+import { getImageForPlantGrowthStep } from '../../utils/imageMapping';
 
 interface TodoInfoProps {
   data: {
     isUsable: boolean;
     todoType: string;
     title: string;
-    placeName: string;
-    plantName: string; 
+    myPlaceName: string;
+    myplantName: string; 
+    plantName: string;
     plantImagePath: string;
     growthStep: string;
     todoDate: string;
@@ -19,6 +21,7 @@ interface TodoInfoProps {
 
 const TodoInfo: React.FC<TodoInfoProps> = ({ data }) => {
   const weatherImage = getImageForWeather(data.title);
+  const plantGrowthImage = getImageForPlantGrowthStep(data.plantName, Number(data.growthStep));
 
   return (
     <div className={styles.todoContainer}>
@@ -27,15 +30,15 @@ const TodoInfo: React.FC<TodoInfoProps> = ({ data }) => {
         <img src={weatherImage} alt="Weather Icon" className={styles.weatherImage} />
       </div>
       <div className={styles.content}>
-        <img src={data.plantImagePath} alt={data.plantName} className={styles.plantImage} /> 
+        <img src={plantGrowthImage} alt={data.plantName} className={styles.plantImage} /> 
         <div className={styles.textSection}>
-          <div><strong>{data.plantName}</strong>가 있는 <br /><strong>{data.placeName}</strong>!</div> 
+          <div><strong>{data.plantName}</strong>가 있는 <br /><strong>{data.myPlaceName}</strong>!</div> 
           <div className={styles.info}>
             <div>
-              <p className={styles.date}>{new Date(data.todoDate).toLocaleDateString()}</p>
+              <p className={styles.date}>{new Date(data.todoDate).toLocaleDateString()} | {data.temperature}</p>
               <p className={styles.location}>{data.address}</p>
             </div>
-            <p className={styles.temperature}>{data.temperature}</p>
+            
           </div>
         </div>
       </div>

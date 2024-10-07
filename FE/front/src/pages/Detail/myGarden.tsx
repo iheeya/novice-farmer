@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from '../../styles/Detail/myGarden.module.css';
-import FarmDeleteModal from '../../components/Detail/FarmDeleteModal';
+import Swal from 'sweetalert2';  
 import { getImageForPlantGrowthStep } from '../../utils/imageMapping';
 import { getFarmDetailPageInfo, FarmDetailPageInfoProps, Farm } from '../../services/FarmDetail/farmDetailPageApi'; 
 import { updatePlaceName } from '../../services/FarmDetail/farmDetailPageApi';
-
 
 const MyGarden: React.FC = () => {
   const { myPlaceId } = useParams<{ myPlaceId: string }>();
@@ -17,13 +16,10 @@ const MyGarden: React.FC = () => {
   const [farms, setFarms] = useState<FarmDetailPageInfoProps['farms']>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [tempNickname, setTempNickname] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPlant, setSelectedPlant] = useState<null | Farm>(null); 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (myPlaceId) {
-      // 실제 API 데이터 가져오기
       getFarmDetailPageInfo(Number(myPlaceId))
         .then((data) => {
           setPlaceName(data.placeInfo.placeName);
@@ -40,11 +36,12 @@ const MyGarden: React.FC = () => {
     }
   }, [myPlaceId]);
 
+  // 닉네임 수정 로직
   const handleEditNickname = () => setIsEditing(true);
 
   const handleSaveNickname = () => {
     if (tempNickname.trim() === '') {
-      alert('별명을 입력해주세요.');
+      Swal.fire('이름 입력 필요', '별명을 입력해주세요.', 'error');
       return;
     }
 
@@ -53,28 +50,44 @@ const MyGarden: React.FC = () => {
       .then(() => {
         setNickname(tempNickname);
         setIsEditing(false);
+        Swal.fire('수정 완료', '별명이 성공적으로 수정되었습니다.', 'success');
       })
       .catch((error) => {
         console.error('Failed to update place name', error);
-        alert('장소 이름을 수정하는 데 실패했습니다.');
+        Swal.fire('수정 실패', '별명을 수정하는 데 실패했습니다.', 'error');
       });
   };
 
+  // SweetAlert2 삭제 모달
   const handleDeletePlantClick = (plant: Farm) => {
-    setSelectedPlant(plant);
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedPlant(null);
-  };
-
-  const handleDeletePlant = () => {
-    if (selectedPlant) {
-      console.log(`Deleting plant with ID: ${selectedPlant.myPlantId}`);
-      setIsModalOpen(false);
-    }
+    Swal.fire({
+      html: '<strong>정말 이 작물을 <br> 삭제하시겠습니까?</strong>',
+      text: `${nickname} - ${plant.myPlantName}`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e74c3c',
+      cancelButtonColor: '#f0f0f0',
+      confirmButtonText: '삭제',
+      cancelButtonText: '취소',
+      customClass: {
+        popup: styles.customPopup,
+        icon: styles.customIcon,
+        htmlContainer: styles.customHtml, 
+        actions: styles.customActions, 
+      },
+      width: '70%', 
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // 삭제 로직 처리
+        Swal.fire({
+          icon: 'success',
+          title: '삭제 완료',
+          text: '작물이 성공적으로 삭제되었습니다.',
+          confirmButtonText: '확인',
+        });
+      }
+    });
+    
   };
 
   const handleAddPlantClick = () => {
@@ -117,7 +130,7 @@ const MyGarden: React.FC = () => {
               if (e.target.value.length <= 10) {
                 setTempNickname(e.target.value);
               } else {
-                alert('이름은 10자 이하로 입력해주세요.');
+                Swal.fire('이름 너무 김', '이름은 10자 이하로 입력해주세요.', 'warning');
               }
             }}
             className={styles.nicknameInput}
@@ -178,7 +191,7 @@ const MyGarden: React.FC = () => {
               className={styles.deletePlantIcon}
               onClick={(e) => {
                 e.stopPropagation();
-                handleDeletePlantClick(farm);
+                handleDeletePlantClick(farm);  // SweetAlert2 모달 띄우기
               }}
             />
           </div>
@@ -192,17 +205,6 @@ const MyGarden: React.FC = () => {
           <img src={require('../../assets/icons/Plus.png')} alt="Add Plant" className={styles.addPlantIcon} />
         </div>
       </div>
-
-      {/* Farm Delete Modal */}
-      {isModalOpen && selectedPlant && (
-        <FarmDeleteModal
-          placeName={nickname}
-          plantName={selectedPlant.myPlantName}
-          onClose={handleModalClose}
-          onDelete={handleDeletePlant}
-          isOpen={isModalOpen}
-        />
-      )}
     </div>
   );
 };

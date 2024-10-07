@@ -13,8 +13,13 @@ import MyGarden from "./pages/Detail/myGarden";
 import MyPlant from "./pages/Detail/myPlant";
 import MyPage from "./pages/user/myPage";
 import ProfileUpdate from "./pages/user/profileUpdate";
-import CameraPage from "./pages/Detail/cameraPage";
-import FooterWithLocation from "./components/FooterWithLocation";
+import WriteCommunityArticle from "./pages/Community/WriteCommunityArticle";
+import CommunitySearch from "./pages/Community/CommunitySearch";
+import LandingPage from "./pages/Home/Landing";
+import CommunitySearchResult from "./pages/Community/CommunitySearchResult";
+import CameraPage from "./pages/Detail/cameraPage"; // 새 페이지 컴포넌트
+import CameraDiagnosis from "./pages/Detail/cameraDiagnosis";
+import FooterWithLocation from "./components/FooterWithLocation"; // Footer 로직 분리
 import HomePage from "./pages/Home/Landing";
 import InfoHome from "./pages/Information/InfoHome";
 import InfoPlaceType from "./pages/Information/InfoPlaceType";
@@ -54,10 +59,17 @@ function AppWrapper() {
         <Route path="/weekendFarm-recommend" element={<WeekendFarmList />} />
         <Route path="/community" element={<Community />} />
         <Route path="/community/:id/detail" element={<CommunityDetail />} />
+        <Route path="/community/article/write" element={<WriteCommunityArticle />} />
+        <Route path="/user/signup" element={<SignUp />} />
+        <Route path="/user/login" element={<Login />} />
+        <Route path="/user/survey" element={<Survey />} />
         <Route path="/myGarden/:myPlaceId" element={<MyGarden />} />
         <Route path="/myGarden/:myPlaceId/:myPlantId" element={<MyPlant />} />
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/myPage/profile" element={<ProfileUpdate />} />
+        <Route path="/introduce" element={<LandingPage />} />
+        <Route path="/community/search/:search" element={<CommunitySearchResult/>} />
+        <Route path="/community/search" element={<CommunitySearch/>} />
         <Route path="/myGarden/:myPlaceId/:myPlantId/camera" element={<CameraPage />} />
         <Route path="/info" element={<InfoHome />}>
           <Route path="place" element={<InfoPlace />} />
@@ -65,6 +77,8 @@ function AppWrapper() {
           <Route path="place/type/:title" element={<InfoPlaceDetail />} />
           <Route path="crops" element={<InfoCrops />} />
         </Route>
+        <Route path="/introduce" element={<HomePage />} />
+        <Route path="/myGarden/:myPlaceId/:myPlantId/diagnosis" element={<CameraDiagnosis />} />
       </Routes>
       <FooterWithLocation />
     </>

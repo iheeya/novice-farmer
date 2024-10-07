@@ -35,7 +35,7 @@
 }
 
 .plantImage {
-  width: 35%;
+  width: 40%;
   height: auto;
   object-fit: cover;
   margin-right: 5%;
@@ -60,19 +60,14 @@
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  padding: 0 2%;
+  padding: 5%;
 }
 
 .date, .location {
-  font-size: 0.9rem;
+  font-size: 1rem;
   text-align: center;
   font-weight: bold;
   color: #333;
 }
 
-.temperature {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #d32f2f;
-  margin-left: auto;
-}
+
