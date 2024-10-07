@@ -29,7 +29,8 @@ public class CommunityHeartRepositoryCustomImpl implements CommunityHeartReposit
                 .where(communitySelectedTag.communityTag.id.in(communityTagIds)) // communityTagIds 조건 추가
                 .groupBy(community.id)
                 .having(communityHeart.count().gt(0)) // 하트 수가 0보다 큰 경우
-                .orderBy(community.id.desc()) // 원하는 정렬 기준으로 변경 가능
+                //.orderBy(community.id.desc()) // 원하는 정렬 기준으로 변경 가능
+                .orderBy(communityHeart.count().desc())  // 원하는 정렬 기준으로 변경 가능
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
