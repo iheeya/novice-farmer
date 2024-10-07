@@ -7,7 +7,8 @@ interface TodoInfoProps {
   isUsable: boolean;
   todoType: string;
   title: string;
-  placeName: string;
+  myPlaceName: string;
+  myplantName: string;
   plantName: string;
   plantImagePath: string;
   growthStep: string;

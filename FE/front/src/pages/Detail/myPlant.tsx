@@ -1,172 +1,165 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getImageForPlantGrowthStep } from '../../utils/imageMapping'; // 이미지 매핑 함수
-import styles from '../../styles/Detail/myPlant.module.css'; // CSS 파일 경로
-import startIcon from '../../assets/icons/start.png'; // 시작하기 버튼 아이콘
-import Icons from '../../components/Detail/Icons'; // Icons 컴포넌트 임포트
+import { getImageForPlantGrowthStep } from '../../utils/imageMapping'; 
+import styles from '../../styles/Detail/myPlant.module.css';
+import startIcon from '../../assets/icons/start.png'; 
+import Icons from '../../components/Detail/Icons'; 
 import GrowthProgressBar from '../../components/Detail/GrowthProgressBar';
 import TodoList from '../../components/Detail/TodoList';
 import PlantManagementInfo from '../../components/Detail/PlantManageInfo';
 import PestDetection from '../../components/Detail/PestDetection';
-
-// PlantData 타입 정의
-interface PlantData {
-  isStarted: boolean;
-  isAlreadyFirstHarvest: boolean;
-  plantInfo: {
-    placeName: string;
-    myPlaceId: number;
-    myPlaceName: string;
-    plantName: string;
-    myPlantName: string;
-    plantImagePath: string;
-    startDate: string;
-    plantGrowthStep: number;
-    plantDegreeRatio: number;
-    threshold: {
-      totalStep: number;
-      step1: number;
-      step2: number;
-      step3: number | null; // step3 could be null
-    };
-    firstHarvestDate: string;
-    recentWateringDate: string;
-    recentFertilizingDate: string;
-  };
-  todos: {
-    todoDate: string;
-    todoType: string;
-    remainDay: number;
-  }[];
-}
+import Memo from '../../components/Detail/Memo';
+import { getPlantDetailInfo, updatePlantName, startPlant, PlantData } from '../../services/PlantDetail/PlantDetailPageApi';
+import { deletePlant, harvestPlant, endCultivation, waterPlant, fertilizePlant } from '../../services/PlantDetail/Icons'; // API 함수 임포트
+import Swal from 'sweetalert2'; // SweetAlert2 임포트
 
 const MyPlant = () => {
-  const { myPlantId } = useParams<{ myPlantId: string }>(); // useParams로 myPlantId 가져오기
+  const { myPlantId } = useParams<{ myPlantId: string }>() ;
   const navigate = useNavigate();
 
-  // 더미 데이터 2개 정의
-  const dummyData1: PlantData = {
-    isStarted: false,
-    isAlreadyFirstHarvest: false,
-    plantInfo: {
-      placeName: '베란다',
-      myPlaceId: 1,
-      myPlaceName: '우리집베란다',
-      plantName: '토마토',
-      myPlantName: '토순이',
-      plantImagePath: 'test path',
-      startDate: '',
-      plantGrowthStep: 3,
-      plantDegreeRatio: 88,
-      threshold: {
-        totalStep: 4,
-        step1: 10,
-        step2: 40,
-        step3: 100,
-      },
-      firstHarvestDate: '',
-      recentWateringDate: '',
-      recentFertilizingDate: '',
-    },
-    todos: [
-      { todoDate: '2024-09-26', todoType: 'WATERING', remainDay: 1 },
-      { todoDate: '2024-09-30', todoType: 'FERTILIZERING', remainDay: 5 },
-    ],
-  };
-
-  const dummyData2: PlantData = {
-    isStarted: true,
-    isAlreadyFirstHarvest: true,
-    plantInfo: {
-      placeName: '주말농장',
-      myPlaceId: 2,
-      myPlaceName: '구미농장',
-      plantName: '상추',
-      myPlantName: '상춘이',
-      plantImagePath: 'test path',
-      startDate: '2024-09-25',
-      plantGrowthStep: 2,
-      plantDegreeRatio: 92,
-      threshold: {
-        totalStep: 3,
-        step1: 40,
-        step2: 100,
-        step3: null // 마지막 스텝은 항상 100%
-      },
-      firstHarvestDate: '2024-09-25',
-      recentWateringDate: '2024-09-25',
-      recentFertilizingDate: '2024-09-25',
-    },
-    todos: [
-      { todoDate: '2024-09-27', todoType: 'WATERING', remainDay: 2 },
-      { todoDate: '2024-10-01', todoType: 'FERTILIZERING', remainDay: 6 },
-    ],
-  };
-
-  // 초기 상태를 null로 시작
   const [plantData, setPlantData] = useState<PlantData | null>(null);
-  const [isEditing, setIsEditing] = useState(false); // 수정 모드 여부
-  const [tempNickname, setTempNickname] = useState(''); // 수정 중인 이름
-  const [errorMessage, setErrorMessage] = useState(''); // 오류 메시지
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempNickname, setTempNickname] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  // myPlantId에 따라 더미 데이터를 설정하는 useEffect
-  useEffect(() => {
-    if (myPlantId === '1') {
-      setPlantData(dummyData1);
-      setTempNickname(dummyData1.plantInfo.myPlantName); // 초기값 설정
-    } else if (myPlantId === '2') {
-      setPlantData(dummyData2);
-      setTempNickname(dummyData2.plantInfo.myPlantName); // 초기값 설정
+  const fetchPlantDetail = () => {
+    if (myPlantId) {
+      getPlantDetailInfo(Number(myPlantId))
+        .then((data) => {
+          setPlantData(data);
+          setTempNickname(data.plantInfo.myPlantName);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('작물 데이터를 가져오는 데 실패했습니다.', error);
+          setLoading(false);
+        });
     }
+  };
+
+  useEffect(() => {
+    fetchPlantDetail();
   }, [myPlantId]);
 
- 
+  // 닉네임 저장 함수
+  const handleSaveNickname = () => {
+    if (tempNickname.length > 12) {
+      setErrorMessage('이름은 12자 이하로 입력해주세요.');
+      return;
+    }
 
-const handleSaveNickname = () => {
-  if (tempNickname.length > 12) {
-    setErrorMessage("이름은 12자 이하로 입력해주세요.");
-    return;
-  }
-  if (plantData) {
-    setPlantData({
-      ...plantData,
-      plantInfo: { ...plantData.plantInfo, myPlantName: tempNickname },
-    });
-    setIsEditing(false);
-    setErrorMessage('');
-  }
-};
+    if (plantData) {
+      updatePlantName(Number(myPlantId), tempNickname)
+        .then(() => {
+          setPlantData({
+            ...plantData,
+            plantInfo: { ...plantData.plantInfo, myPlantName: tempNickname },
+          });
+          setIsEditing(false);
+          setErrorMessage('');
+          Swal.fire('수정 완료', '작물 이름이 성공적으로 수정되었습니다.', 'success');
+        })
+        .catch((error) => {
+          console.error('작물 이름 수정 실패', error);
+          Swal.fire('수정 실패', '작물 이름을 수정하는 데 실패했습니다.', 'error');
+        });
+    }
+  };
+  
+  // 작물 시작 함수
+  const handleStartPlant = async () => {
+    if (plantData) {
+      try {
+        await startPlant(plantData.plantInfo.myPlaceId); // API 요청
+        Swal.fire('시작 완료', '작물이 성공적으로 시작되었습니다.', 'success');
+        setPlantData({
+          ...plantData,
+          isStarted: true,
+          plantInfo: {
+            ...plantData.plantInfo,
+            startDate: new Date().toISOString().split('T')[0],
+          },
+        }); // 상태 업데이트
+      } catch (error) {
+        console.error('작물 시작 실패', error);
+        Swal.fire('시작 실패', '작물을 시작하는 데 실패했습니다.', 'error');
+      }
+    }
+  };
 
+  // 삭제 함수
+  const handleDelete = async () => {
+    if (plantData) {
+      try {
+        await deletePlant(plantData.plantInfo.myPlaceId);
+        Swal.fire('삭제 완료', '작물이 성공적으로 삭제되었습니다.', 'success');
+        navigate(`/myGarden/${plantData.plantInfo.myPlaceId}`);
+      } catch (error) {
+        console.error('삭제 실패', error);
+        Swal.fire('삭제 실패', '작물을 삭제하는 데 실패했습니다.', 'error');
+      }
+    }
+  };
 
+  // 첫 수확 함수
+  const handleHarvest = async () => {
+    if (plantData) {
+      try {
+        await harvestPlant(plantData.plantInfo.myPlaceId);
+        Swal.fire('첫 수확 완료', '첫 수확이 성공적으로 처리되었습니다.', 'success');
+        fetchPlantDetail(); // 상태 업데이트
+      } catch (error) {
+        console.error('첫 수확 실패', error);
+        Swal.fire('첫 수확 실패', '첫 수확에 실패했습니다.', 'error');
+      }
+    }
+  };
 
-const handleDelete = () => {
-  alert(`해당 ${plantData?.plantInfo.myPlantName} 작물을 삭제하였습니다.`);
-  // 삭제 로직 추가
-};
+  // 재배 종료 함수
+  const handleEndCultivation = async () => {
+    if (plantData) {
+      try {
+        await endCultivation(plantData.plantInfo.myPlaceId);
+        Swal.fire('재배 종료 완료', '재배가 성공적으로 종료되었습니다.', 'success');
+        navigate('/myPage'); // 재배 종료 후 /myPage 경로로 이동
+      } catch (error) {
+        console.error('재배 종료 실패', error);
+        Swal.fire('재배 종료 실패', '재배 종료에 실패했습니다.', 'error');
+      }
+    }
+  };
 
- // 첫수확 확인 함수
- const confirmHarvest = () => {
-  if (plantData) {
-    setPlantData({
-      ...plantData,
-      isAlreadyFirstHarvest: true, // 첫 수확 완료 후 상태 변경
-    });
-  }
-};
+  // 물주기 함수
+  const handleWater = async () => {
+    if (plantData) {
+      try {
+        await waterPlant(plantData.plantInfo.myPlaceId);
+        Swal.fire('물주기 완료', '물주기가 성공적으로 처리되었습니다.', 'success');
+        fetchPlantDetail(); // 상태 업데이트
+      } catch (error) {
+        console.error('물주기 실패', error);
+        Swal.fire('물주기 실패', '물주기에 실패했습니다.', 'error');
+      }
+    }
+  };
 
-const handleWater = () => {
-  alert(`해당 ${plantData?.plantInfo.myPlantName}에 물을 주었습니다.`);
-  // 물주기 로직 추가
-};
+  // 비료주기 함수
+  const handleFertilize = async () => {
+    if (plantData) {
+      try {
+        await fertilizePlant(plantData.plantInfo.myPlaceId);
+        Swal.fire('비료주기 완료', '비료주기가 성공적으로 처리되었습니다.', 'success');
+        fetchPlantDetail(); // 상태 업데이트
+      } catch (error) {
+        console.error('비료주기 실패', error);
+        Swal.fire('비료주기 실패', '비료주기에 실패했습니다.', 'error');
+      }
+    }
+  };
 
-const handleFertilize = () => {
-  alert(`해당 ${plantData?.plantInfo.myPlantName}에 비료를 주었습니다.`);
-  // 비료주기 로직 추가
-};
-
-
-  // 로딩 상태 처리
-  if (!plantData) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>;
+  if (!plantData) return <div>작물 데이터를 불러오는 데 실패했습니다.</div>;
 
   return (
     <div className={styles.myPlantContainer}>
@@ -194,15 +187,14 @@ const handleFertilize = () => {
                   if (e.target.value.length <= 10) {
                     setTempNickname(e.target.value);
                   } else {
-                    alert("작물 이름은 10자 이내로 입력해주세요.");
+                    alert('작물 이름은 10자 이내로 입력해주세요.');
                   }
                 }}
                 className={styles.nicknameInput}
                 placeholder="작물이름을 입력하세요"
-                // 엔터키를 누르면 저장하도록 처리
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSaveNickname();
+                  if (e.key === 'Enter') {
+                    handleSaveNickname(); // Enter키로 저장
                   }
                 }}
               />
@@ -227,8 +219,7 @@ const handleFertilize = () => {
 
       {/* 에러 메시지 표시 */}
       {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
-
-      {/* Start Button or Plant Start Date */}
+      
       {plantData.isStarted ? (
         <p className={styles.startDate}>파종일: {plantData.plantInfo.startDate}</p>
       ) : (
@@ -237,16 +228,7 @@ const handleFertilize = () => {
             src={startIcon}
             alt="Start"
             className={styles.startButtonIcon}
-            onClick={() =>
-              setPlantData({
-                ...plantData,
-                isStarted: true,
-                plantInfo: {
-                  ...plantData.plantInfo,
-                  startDate: new Date().toISOString().split('T')[0],
-                },
-              })
-            }
+            onClick={handleStartPlant} // 시작 버튼 클릭 시 호출
           />
           <span>시작하기</span>
         </div>
@@ -255,16 +237,18 @@ const handleFertilize = () => {
       {/* Icons 컴포넌트 */}
       <Icons
         onDelete={handleDelete}
-        onHarvest={confirmHarvest}
+        onHarvest={handleHarvest}
+        onEndCultivation={handleEndCultivation}
         onWater={handleWater}
         onFertilize={handleFertilize}
         placeName={plantData.plantInfo.myPlaceName}
         plantName={plantData.plantInfo.myPlantName}
         myPlaceId={plantData.plantInfo.myPlaceId}
-        isAlreadyFirstHarvest={plantData.isAlreadyFirstHarvest} // 첫 수확 여부 전달
-        recentWateringDate={plantData.plantInfo.recentWateringDate}  // 물 준 날짜 전달
-        recentFertilizingDate={plantData.plantInfo.recentFertilizingDate}  // 비료 준 날짜 전달
-        firstHarvestDate={plantData.plantInfo.firstHarvestDate}  // 첫 수확일 전달
+        isAlreadyFirstHarvest={plantData.isAlreadyFirstHarvest}
+        recentWateringDate={plantData.plantInfo.recentWateringDate || ''}
+        recentFertilizingDate={plantData.plantInfo.recentFertilizingDate || ''}
+        firstHarvestDate={plantData.plantInfo.firstHarvestDate || ''}
+        isStarted={plantData.isStarted}
       />
 
       {/* GrowthProgressBar 컴포넌트 */}
@@ -280,21 +264,33 @@ const handleFertilize = () => {
       <div className={styles.managementAndPestContainer}>
         {/* 작물 관리 정보 컴포넌트 */}
         <PlantManagementInfo
-          firstHarvestDate={plantData.plantInfo.firstHarvestDate}
-          recentWateringDate={plantData.plantInfo.recentWateringDate}
-          recentFertilizingDate={plantData.plantInfo.recentFertilizingDate}
+          firstHarvestDate={plantData.plantInfo.firstHarvestDate || ''}
+          recentWateringDate={plantData.plantInfo.recentWateringDate || ''}
+          recentFertilizingDate={plantData.plantInfo.recentFertilizingDate || ''}
         />
 
         {/* 병해충 검사 박스 */}
         <PestDetection
           plantName={plantData.plantInfo.myPlantName}
-          myPlaceId={plantData.plantInfo.myPlaceId}  // placeId 전달
-          myPlantId={myPlantId ?? ''}  // plantId가 없을 경우 빈 문자열로 전달
+          myPlaceId={plantData.plantInfo.myPlaceId}
+          myPlantId={myPlantId ?? ''}
         />
       </div>
 
+      {/* Memo 컴포넌트 */}
+      <Memo
+      memo={plantData.plantInfo.memo}
+      farmId={plantData.plantInfo.myPlaceId}
+      onMemoUpdate={(newMemo) => setPlantData({
+        ...plantData,
+        plantInfo: {
+          ...plantData.plantInfo,
+          memo: newMemo,
+        },
+      })}
+    />
+      
     </div>
-
   );
 };
 

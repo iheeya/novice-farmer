@@ -4,7 +4,7 @@
     overflow-y: auto; 
     border: 1px solid #ddd;
     border-radius: 0.5rem;
-    background-color: #f9f9f9;
+    background-color: rgba(235, 236, 210, 0.41);
     box-sizing: border-box;
   }
   

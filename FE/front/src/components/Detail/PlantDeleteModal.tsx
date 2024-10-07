@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import { CSSTransition } from 'react-transition-group';
 
-interface FarmDeleteModalProps {
+interface PlantDeleteModalProps {
   placeName: string;
   plantName: string;
   onClose: () => void;
@@ -35,7 +35,7 @@ const modalStyles: ReactModal.Styles = {
   },
 };
 
-const FarmDeleteModal: React.FC<FarmDeleteModalProps> = ({ placeName, plantName, onClose, onDelete, isOpen }) => {
+const FarmDeleteModal: React.FC<PlantDeleteModalProps> = ({ placeName, plantName, onClose, onDelete, isOpen }) => {
   return (
     <CSSTransition
       in={isOpen}
