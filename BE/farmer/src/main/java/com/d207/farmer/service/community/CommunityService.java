@@ -182,7 +182,7 @@ public class CommunityService {
                 .collect(Collectors.toList());
 
         // 3. 검색어가 없는 경우: 태그에 해당하는 커뮤니티 조회
-        communities = communityRepository.findAllByOrderByWriteDateDesc(communityTagIds, sortedPageable);
+        communities = communityRepository.findAllByOrderByWriteDateDesc(communityTagIds, sortedPageable); // 여기서 Page<Community>를 반환해야 함
 
 
 
@@ -191,7 +191,10 @@ public class CommunityService {
 
 
 
-       // 4. DTO 변환
+
+
+
+        // 4. DTO 변환
     return communities.map(community -> {
         // 커뮤니티에 대한 이미지 리스트 가져오기
         List<String> communityImages = communityImageRepository.findByCommunity(community)
