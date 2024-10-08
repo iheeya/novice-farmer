@@ -10,12 +10,14 @@ import { setLocationData, setAddressData } from '../../store/AddFarm/store';
 import { RootState } from '../../store/AddFarm/store';
 import { motion } from "framer-motion";
 import { CSSTransition } from 'react-transition-group';
+import { selectGardenPost } from '../../services/AddGarden/AddGardenPost';
 
 
 interface GardenModalProps {
     placeId: number |null;
     onClose: () => void; // onClose는 함수 타입
     onLoading: () => void;
+    onResponse: (response:any) => void;
 }
 
 const customModalStyles: ReactModal.Styles = {
@@ -43,7 +45,7 @@ const customModalStyles: ReactModal.Styles = {
     },
 };
 
-function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
+function GardenModal({ placeId, onClose, onLoading, onResponse }: GardenModalProps) {
   const dispatch = useDispatch();
   const addressRef = useRef<HTMLInputElement>(null); // 주소 입력 필드 참조
   const [isScriptLoaded, setIsScriptLoaded] = useState(false); // 스크립트 로드 상태
@@ -89,12 +91,12 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
           // console.log(data.zonecode)
 
           const newPostcodeData = {
-            sido: data.sido ||null,
-            sigungu: data.sigungu||null,
-            bname1: data.bname1||null,
-            bname2: data.bname2||null,
-            jibun: data.jibunAddress||null,
-            zonecode: data.zonecode||null,
+            sido: data.sido ,
+            sigungu: data.sigungu,
+            bname1: data.bname1,
+            bname2: data.bname2,
+            jibun: data.jibunAddress,
+            zonecode: data.zonecode,
           }
 
            // 우편번호 데이터 저장
@@ -126,18 +128,19 @@ function GardenModal({ placeId, onClose, onLoading }: GardenModalProps) {
       const payload = {
         placeId,
         address: {
-          sido: postcodeData.sido || null,
-          sigungu: postcodeData.sigungu|| null,
-          bname1: postcodeData.bname1|| null,
-          bname2: postcodeData.bname2|| null,
-          jibun: postcodeData.jibun|| null,
-          zonecode: postcodeData.zonecode|| null,
+          sido: postcodeData.sido,
+          sigungu: postcodeData.sigungu,
+          bname1: postcodeData.bname1,
+          bname2: postcodeData.bname2,
+          jibun: postcodeData.jibun,
+          zonecode: postcodeData.zonecode,
         }
       };
 
       try {
-        const response = await axios.post('/your-endpoint', payload);
-        console.log(response.data); 
+        const response = await selectGardenPost(payload);
+        // console.log('post 응답',response); 
+        onResponse(response)
         onClose(); // 모달 닫기
       } catch (error) {
         console.error("Error posting data:", error);

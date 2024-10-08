@@ -4,7 +4,7 @@ import weekend from '../../assets/img/farms/2.png'
 import individual from '../../assets/img/farms/3.png'
 import school from '../../assets/img/farms/4.png'
 import rooftop from '../../assets/img/farms/5.png'
-import farmPlants from '../../assets/dummydata/farmRecommend.json'
+// import farmPlants from '../../assets/dummydata/farmRecommend.json'
 import '../../styles/RegisterGarden/gardenSelect.css'
 import { FaHeart } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
@@ -13,7 +13,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPlantData } from '../../store/AddFarm/store'
 import { RootState } from '../../store/AddFarm/store'
 
-function RecommendLand() {
+interface Place {
+    placeId: number;
+    placeName: string;
+    isFavorite: boolean;
+    isRecommend: boolean;
+    isService: boolean;
+}
+
+interface PlaceData {
+    response: Place[]
+}
+
+function RecommendLand({response}: PlaceData) {
 
     const [selectedPlace, setSelectedPlace] = useState<string | null>(null); // 선택된 장소를 저장할 상태
     const [isModalOpen, setIsModalOpen] = useState(false)  // 모달 열림 상태
@@ -44,7 +56,7 @@ function RecommendLand() {
          <div className='frame'>
             <div className='farm-instruction'>{plantData}를 키울 텃밭을 선택해주세요!</div>
             <div className='image-group'>
-                {farmPlants.map(place => (
+                {response.map((place:Place) => (
                     <div className={`image-container ${place.isService ? '': 'blur'}`} // 서비스하지 않는 텃밭은 흑백 처리
                      key={place.placeId}
                     onClick={place.isService ? () => handleImageClick(place.placeName, place.placeId) : undefined} // 클릭 이벤트 설정

@@ -1,0 +1,206 @@
+.myPlantContainer {
+    padding: 1.5rem; /* 전체적인 패딩 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9; /* 배경 색상 */
+    min-height: 100vh; /* 화면 전체를 채우는 높이 */
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    width: 100%;
+    max-width: 600px; /* 화면 너비 제한 */
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    background-color: #fff; /* 헤더 배경 */
+    border-bottom: 1px solid #ddd;
+  }
+  
+  
+  .backButton {
+    cursor: pointer;
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .title {
+    text-align: center;
+    flex-grow: 1;
+  }
+  
+  .title h1 {
+    font-size: 2rem;
+    color: #5b8e55;
+    margin: 0;
+  }
+  
+  .plantInfo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  
+  .plantName {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin:0;
+  }
+  
+  .nicknameInput {
+    font-size: 1.75rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    text-align: center;
+    outline: none;
+  }
+  
+  .plantImageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+    width: 100%;
+  }
+  
+  .nameAndIconContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem; /* 이름과 이미지 사이 간격 */
+  }
+  
+  .plantName {
+    font-size: 2rem; /* 이름 크기 */
+    font-weight: bold;
+    margin-right: 0.5rem; /* 이름과 수정 아이콘 간격 */
+  }
+  
+  .editIcon {
+    cursor: pointer;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  .plantImage {
+    width: 80%;
+    max-width: 300px;
+    height: 70vw;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  .startButtonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #5b8e55; /* 버튼 배경 색상 */
+    border-radius: 1.25rem;
+    padding: 1rem 2rem;
+    color: white;
+    font-size: 1.25rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .startButtonContainer:hover {
+    background-color: #4a7644;
+  }
+  
+  .startButtonIcon {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 0.75rem;
+  }
+  
+  .startDate {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #5b8e55;
+  }
+  
+  .actionIcons {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 1.5rem;
+  }
+  
+  .iconContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .actionIcon {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 0.5rem;
+  }
+
+
+
+
+/* MyPlant.module.css */
+.managementAndPestContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: stretch; /* 두 박스의 높이를 동일하게 설정 */
+  flex-wrap: nowrap;
+}
+
+.dateInfoBox, .pestDetectionBox {
+  flex: 1;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  height: auto; 
+  display: flex;
+  flex-direction: column; 
+  justify-content: space-between; 
+}
+
+
+
+
+
+
+
+
+
+.pestDetectionBox {
+  flex: 1; /* 필요에 따라 박스 크기 조절 */
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  background-color: #f9f9f9;
+}
+  
+  .dateTitle {
+    font-size: 1rem;
+    font-weight: bold; 
+    color: #4a4a4a; 
+    margin-bottom: 0.5rem; 
+  }
+  
+  .dateItem {
+    font-size: 0.8rem; 
+    color: #666666; /* 날짜 항목 텍스트 색상 */
+    margin: 6px 0; /* 각 항목 간 여백 */
+    display: flex;
+    justify-content: left; /* 텍스트를 양쪽으로 배치 */
+  }
+  
+  .dateItem span {
+    font-weight: bold; /* 항목 이름을 굵게 */
+    color: #333333; /* 항목 이름 색상 */
+  }
+  

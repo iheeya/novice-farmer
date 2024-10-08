@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import tomato from '../../assets/img/plants/1.png'
 import pepper from '../../assets/img/plants/2.png'
 import lettuce from '../../assets/img/plants/3.png'
 import perilla from '../../assets/img/plants/4.png'
 import cabbage from '../../assets/img/plants/5.png'
-import farmPlants from '../../assets/dummydata/plantRecommend.json'
 import '../../styles/RegisterGarden/gardenSelect.css'
 import { FaHeart } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
@@ -13,11 +12,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPlantData } from '../../store/AddFarm/store'
 import { RootState } from '../../store/AddFarm/store'
 
-function RecommendPlant() {
+
+interface Plant {
+    plantId: number;
+    plantName: string;
+    isFavorite: boolean;
+    isRecommend: boolean;
+    isService: boolean;
+}
+
+interface PlantData {
+    response: Plant[]
+}
+
+function RecommendPlant({response}:PlantData) {
 
     const [selectedPlant, setSelectedPlant] = useState<string | null>(null); // 선택된 장소를 저장할 상태
     const [isModalOpen, setIsModalOpen] = useState(false)  // 모달 열림 상태
     const [selectPlantId, setSelectPlanteId] = useState<number|null>(null) // 장소 id 저장
+    const [farmPlants, setPlantData] = useState<Plant[]>([]);
     const farmData = useSelector((state:RootState) => state.farmSelect.farm)
 
     const imageMapping: {[key:string]: string} = {
@@ -40,11 +53,17 @@ function RecommendPlant() {
     };
 
 
+    // useEffect(()=> {
+    //     console.log('prop결과', response)
+    // })
+
+
+
     return(
          <div className='frame'>
             <div className='farm-instruction'>{farmData}에서 키우기 좋은 작물이에요!</div>
             <div className='image-group'>
-                {farmPlants.map(plant => (
+                {response.map((plant:Plant) => (
                     <div className={`image-container ${plant.isService ? '': 'blur'}`} // 서비스하지 않는 텃밭은 흑백 처리
                      key={plant.plantId}
                     onClick={plant.isService ? () => handleImageClick(plant.plantName, plant.plantId) : undefined} // 클릭 이벤트 설정

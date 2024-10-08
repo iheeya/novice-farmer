@@ -1,0 +1,30 @@
+/* .tag-container{
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    text-align: center; 
+} */
+
+
+.tag-name{
+    margin-left: 5%;
+    margin-top: 7%;
+    margin-bottom: 3%;
+    font-size: 1.4rem;
+    color: #5B8E55;
+}
+
+.tag{
+    
+    margin-left: 5%;
+    margin-right: 5%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tag-button{
+    display: flex;
+    justify-content: center;
+    margin-top: 20%;
+}

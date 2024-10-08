@@ -1,0 +1,35 @@
+.parent-container {
+  display: flex;
+  flex-direction: column; /* 요소를 수직으로 배치 */
+  justify-content: center; /* 수직 가운데 정렬 */
+  align-items: center; /* 수평 가운데 정렬 */
+  margin-top: 3%;
+}
+
+.explain-tag {
+  margin-top: 2%;
+}
+
+.article-explain-bottom {
+    display: flex;
+    align-items: center; /* 수직 중앙 정렬 */
+    color: #5b8e55;
+    margin-top: 2%;
+  }
+  
+  .nickname-and-image {
+    display: flex; /* 이미지와 닉네임을 가로로 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+  }
+  
+  .show-nickname {
+    font-size: 0.7rem;
+    margin-left: 2%;
+  }
+  
+  .date {
+    font-size: 0.7rem;
+    margin-left: auto; /* 날짜를 오른쪽으로 이동 */
+    margin-top: 4%;
+  }
+  
