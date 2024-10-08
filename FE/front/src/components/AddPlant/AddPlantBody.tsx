@@ -14,7 +14,7 @@ import leek from '../../assets/img/plants/12.png'
 import '../../styles/RegisterGarden/gardenSelect.css'
 import { FaHeart } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
-import GardenFinalModal from '../RegisterGarden/GardenFInalModal';
+import AddPlantModal from './AddPlantModal'
 import { useDispatch, useSelector } from 'react-redux';
 import { setPlantData } from '../../store/AddFarm/store'
 import { RootState } from '../../store/AddFarm/store'
@@ -87,7 +87,7 @@ function AddPlantBody({plantData}: PlantData){
                 </div>
                 ))}
             </div>
-            {isModalOpen && <GardenFinalModal plantName={selectedPlant} plantId={selectPlantId} onClose={closeModal}/>} 
+            {isModalOpen && <AddPlantModal plantName={selectedPlant} plantId={selectPlantId} onClose={closeModal}/>} 
         </div>
     )
 }
