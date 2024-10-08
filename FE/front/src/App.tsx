@@ -26,6 +26,7 @@ import InfoPlaceType from "./pages/Information/InfoPlaceType";
 import InfoPlace from "./components/Information/InfoPlace";
 import InfoPlant from "./components/Information/InfoPlant";
 import InfoPlaceDetail from "./pages/Information/InfoPlaceDetail";
+import ArticleModify from "./pages/Community/ArticleModify";
 import InfoPlantDetail from "./pages/Information/InfoPlantDetail";
 import InfoFertilizer from "./pages/Information/InfoFertiilizer";
 import InfoFertilizerDetail from "./pages/Information/InfoFertilizerDetail";
@@ -74,6 +75,7 @@ function AppWrapper() {
         <Route path="/introduce" element={<LandingPage />} />
         <Route path="/community/search/:search" element={<CommunitySearchResult/>} />
         <Route path="/community/search" element={<CommunitySearch/>} />
+        <Route path="/community/:id/modify" element={<ArticleModify/>} />
         <Route path="/myGarden/:myPlaceId/:myPlantId/camera" element={<CameraPage />} />
         <Route path="/info" element={<InfoHome />}>
           {/* 텃밭 */}

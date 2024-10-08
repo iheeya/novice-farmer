@@ -1,9 +1,11 @@
 import '../../styles/CommunityDetail/CommunityDetailHeader.css'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
+
 
 function CommunityDetailHeader(){
     const navigate = useNavigate();
+
 
     const handleMyPage = () => {
         navigate('/community/myArticles')
@@ -12,6 +14,7 @@ function CommunityDetailHeader(){
     const handleSearchPage = () => {
         navigate('/community/search')
     }
+
 
 
     return(
