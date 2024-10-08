@@ -33,6 +33,7 @@ import InfoFertilizerDetail from "./pages/Information/InfoFertilizerDetail";
 import InfoPest from "./pages/Information/InfoPest";
 import InfoPestDetail from "./pages/Information/InfoPestDetail";
 import AddPlant from "./pages/AddGarden/AddPlant";
+import CommunityMyPage from "./pages/Community/CommunityMyPage";
 
 // AppWrapper 컴포넌트
 function AppWrapper() {
@@ -77,6 +78,7 @@ function AppWrapper() {
         <Route path="/community/search/:search" element={<CommunitySearchResult/>} />
         <Route path="/community/search" element={<CommunitySearch/>} />
         <Route path="/community/:id/modify" element={<ArticleModify/>} />
+        <Route path="/community/myArticles" element={<CommunityMyPage/>} />
         <Route path="/myGarden/:myPlaceId/:myPlantId/camera" element={<CameraPage />} />
         <Route path="/info" element={<InfoHome />}>
           {/* 텃밭 */}

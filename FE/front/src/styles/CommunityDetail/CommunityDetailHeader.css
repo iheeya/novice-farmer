@@ -5,12 +5,13 @@
 
 .my-profile{
     border-radius: 50%;
-    width: 12%;
-    height: 12%;
-    background-color: #D2EABD;
+    width: 14%;
+    height: 14%;
+    /* background-color: #D2EABD; */
     color: #5B8E55;
     aspect-ratio: 1 / 1; /* 1:1 비율로 유지 */
     display: flex;
+    font-size: 1.5rem;
     justify-content: center; /* 수평 가운데 정렬 */
     align-items: center; /* 수직 가운데 정렬 */
     margin-right: 5%;
