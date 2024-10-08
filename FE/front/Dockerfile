@@ -13,4 +13,6 @@ RUN npm install
 COPY . .
 
 EXPOSE 3000
+# 환경 변수 설정
+ENV HOST=0.0.0.0
 ENTRYPOINT ["npm", "start"]
