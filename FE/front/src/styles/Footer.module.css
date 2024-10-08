@@ -4,7 +4,7 @@
     border-top: 1px solid #ccc;
     position: fixed;
     bottom: 0;
-    width: 98%;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
@@ -19,7 +19,7 @@
   }
   
   .tab {
-    flex: 1; /* 각 탭이 동일한 크기 */
+    flex: 1; 
     display: flex;
     flex-direction: column;
     align-items: center;

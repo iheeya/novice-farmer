@@ -80,7 +80,7 @@ const sendImageToBackend = async () => {
         state: {
           plantName: '토마토',  // 임시 데이터
           capturedImage,
-          pestDetected: true, // 임시로 병해충 감지된 것으로 가정
+          pestDetected: false, // 임시로 병해충 감지된 것으로 가정
         },
       });
       setIsLoading(false);  // 페이지 이동 후 로딩 해제
