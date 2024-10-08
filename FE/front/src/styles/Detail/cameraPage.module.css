@@ -5,7 +5,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: black; /* 기본 배경 */
+  background-color: black; 
 }
 
 .cameraContainer {
@@ -29,7 +29,7 @@
   bottom: 15%;
   left: 50%;
   transform: translateX(-50%);
-  padding: 1rem 2rem; /* 버튼 크기를 키움 */
+  padding: 1rem 2rem;
   background-color: #5b8e55;
   color: white;
   font-size: 1.2rem;
@@ -48,7 +48,7 @@
   color: white;
   font-size: 2rem;
   text-align: center;
-  background: rgba(91, 142, 85, 0.41); /* 배경색 적용 */
+  background: rgba(91, 142, 85, 0.41);
   padding: 0.5rem 1rem;
   border-radius: 1rem;
   width: 98%;
@@ -90,29 +90,29 @@
   display: flex;
   justify-content: center;
   margin-top: 1rem;
-  gap: 2rem; /* 버튼 간격 추가 */
+  gap: 2rem; 
 }
 
-/* 분석하기 버튼 - 사진 아래 검은색 영역 가운데 */
+/* 분석하기 버튼  */
 .analyzeButton {
-  width: 8rem; /* 버튼 크기 크게 */
+  width: 8rem; 
   height: 8rem;
   background-color: #4caf50;
   border-radius: 50%;
   color: white;
-  font-size: 1.5rem; /* 글자 크기 키움 */
+  font-size: 1.5rem; 
   border: none;
   cursor: pointer;
   display: block;
-  position: absolute; /* absolute로 사진 아래 배치 */
-  bottom: 10%; /* 화면 하단에서 5% 정도 떨어진 위치 */
+  position: absolute; 
+  bottom: 10%; 
   left: 50%;
-  transform: translateX(-50%); /* 가운데 정렬 */
+  transform: translateX(-50%); 
 }
 
 /* 다시 찍기 버튼 - 상단 왼쪽으로 이동 */
 .retakeButton {
-  width: 4rem; /* 버튼 크기 */
+  width: 4rem; 
   height: 4rem;
   background-color: white;
   border-radius: 50%;
@@ -122,12 +122,12 @@
   border: none;
   cursor: pointer;
   position: absolute;
-  top: 5%; /* 상단에서 5% 정도 떨어진 위치 */
-  left: 10%; /* 왼쪽에서 5% 정도 떨어진 위치 */
+  top: 5%; 
+  left: 10%; 
 }
 
 /* Restart.png 아이콘 크기 조정 */
 .retakeButton img {
-  width: 2rem; /* 아이콘 크기 */
+  width: 2rem; 
   height: 2rem;
 }

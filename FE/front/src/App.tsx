@@ -17,7 +17,7 @@ import WriteCommunityArticle from "./pages/Community/WriteCommunityArticle";
 import CommunitySearch from "./pages/Community/CommunitySearch";
 import LandingPage from "./pages/Home/Landing";
 import CommunitySearchResult from "./pages/Community/CommunitySearchResult";
-import CameraPage from "./pages/Detail/cameraPage"; // 새 페이지 컴포넌트
+import CameraPage from "./pages/Detail/cameraPage"; 
 import CameraDiagnosis from "./pages/Detail/cameraDiagnosis";
 import FooterWithLocation from "./components/FooterWithLocation"; // Footer 로직 분리
 import HomePage from "./pages/Home/Landing";
@@ -26,6 +26,8 @@ import InfoPlaceType from "./pages/Information/InfoPlaceType";
 import InfoPlace from "./components/Information/InfoPlace";
 import InfoCrops from "./components/Information/InfoCrops";
 import InfoPlaceDetail from "./pages/Information/InfoPlaceDetail";
+import TodoList from "./pages/Todo/TodoList";
+
 // AppWrapper 컴포넌트
 function AppWrapper() {
   const navigate = useNavigate();
@@ -76,6 +78,7 @@ function AppWrapper() {
         </Route>
         <Route path="/introduce" element={<HomePage />} />
         <Route path="/myGarden/:myPlaceId/:myPlantId/diagnosis" element={<CameraDiagnosis />} />
+        <Route path="/todo" element={<TodoList />} />
       </Routes>
       <FooterWithLocation />
     </>
