@@ -4,7 +4,7 @@ FROM node:20 AS builder
 WORKDIR /app
 # package.json 워킹 디렉토리에 복사 (.은 설정한 워킹 디렉토리를 뜻함)
 #RUN ls -al
-COPY package.json ./
+COPY package.json package-lock.json ./
 # 명령어 실행 (의존성 설치)
 RUN ls -al
 RUN npm install
