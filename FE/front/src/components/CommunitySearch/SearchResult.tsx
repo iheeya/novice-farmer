@@ -21,7 +21,7 @@ interface SearchData {
   communityId: number; // 게시글 ID
   communityTag: string[];
   userNickname: string;
-  communityDate: string;
+  communityDateString: string;
 }
 function SearchResult() {
   const { search } = useParams<{ search: string }>();
@@ -144,7 +144,7 @@ function SearchResult() {
                   <Avatar src={userImages[idx]} alt="User Image"/>
                   <div className="show-nickname">{item.userNickname}</div>
                   <div className="date">
-                    {item.communityDate}
+                  {item.communityDateString}
                   </div>
                 </div>
               </CardContent>

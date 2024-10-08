@@ -6,11 +6,24 @@ import { getImageForPlantGrowthStep } from '../../utils/imageMapping';
 import { getFarmDetailPageInfo, FarmDetailPageInfoProps, Farm } from '../../services/FarmDetail/farmDetailPageApi'; 
 import { updatePlaceName } from '../../services/FarmDetail/farmDetailPageApi';
 import { selectGardenPost } from '../../services/AddGarden/AddGardenPost';
+import { useDispatch } from 'react-redux';
+import { setLocationData } from '../../store/AddFarm/store';
+
+
+interface Address {
+  sido: string;    // 시/도
+  sigugun: string; // 시/군/구
+  bname1: string;  // 법정동/리 이름1
+  bname2: string;  // 법정동/리 이름2
+  bunji: string;   // 번지
+  jibun: string;   // 지번 주소
+  zonecode: string; // 우편번호
+}
 
 const MyGarden: React.FC = () => {
   const { myPlaceId } = useParams<{ myPlaceId: string }>();
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const [placeName, setPlaceName] = useState('');
   const [nickname, setNickname] = useState('');
   const [weatherInfo, setWeatherInfo] = useState('');
@@ -18,6 +31,8 @@ const MyGarden: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempNickname, setTempNickname] = useState('');
   const [loading, setLoading] = useState(true);
+  const [placeIdInfo, setPlaceIdInfo]  = useState<number>();
+  const [addressInfo, setAddressInfo] = useState<Address>();
 
   useEffect(() => {
     if (myPlaceId) {
@@ -28,6 +43,8 @@ const MyGarden: React.FC = () => {
           setTempNickname(data.placeInfo.myPlaceName);
           setWeatherInfo(data.placeInfo.weather);
           setFarms(data.farms);
+          setAddressInfo(data.placeInfo.address)
+          setPlaceIdInfo(data.placeInfo.placeId)
           setLoading(false);
         })
         .catch((error) => {
@@ -92,10 +109,29 @@ const MyGarden: React.FC = () => {
   };
 
   const handleAddPlantClick = () => {
-    const payload = {}
+    if (placeIdInfo && addressInfo) {
+      console.log(placeIdInfo);
+      console.log(addressInfo);
+  
+      const payload = {
+        placeId: placeIdInfo,
+        address: addressInfo
+      };
 
+      // selectGardenPost 호출
+    selectGardenPost(payload)
+    .then((data) => {
+      console.log('성공적으로 데이터가 전송되었습니다:', data);
+      // 데이터 전송 후 다른 로직 처리 (예: navigate)
+      dispatch(setLocationData(addressInfo.jibun))
+      navigate(`/myGarden/${myPlaceId}/register/plant`, { state: { plantData: data } });
+    })
+    .catch((error) => {
+      console.error('데이터 전송 중 오류 발생:', error);
+      // 오류 처리 로직 추가 (예: 사용자에게 오류 메시지 표시)
+    });
+    }
 
-    navigate(`/myGarden/${myPlaceId}/register/plant`);
   };
 
   const handleBackClick = () => navigate(-1);
