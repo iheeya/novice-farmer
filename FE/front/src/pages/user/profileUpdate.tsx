@@ -15,9 +15,10 @@ import {
   MenuItem,
   IconButton,
 } from "@mui/material";
-import AddCircleIcon from "@mui/icons-material/AddCircle"; // + 아이콘
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { getMyInfo, postMyInfo, postProfileImage } from "../../services/user/myPageApi";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // SweetAlert2 임포트
 import { GetImage } from "../../services/getImage";
 
 interface UserInfo {
@@ -34,11 +35,11 @@ interface UserInfo {
 
 export default function ProfileUpdate() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [selectedProvince, setSelectedProvince] = useState(""); // 도/특별시/광역시
-  const [selectedCity, setSelectedCity] = useState(""); // 시/군/구
-  const [imagePreview, setImagePreview] = useState<string | null>(null); // 이미지 미리보기 URL
-  const fileInputRef = useRef<HTMLInputElement | null>(null); // 파일 입력 필드의 참조 생성
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // 변경된 파일 상태
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const navigate = useNavigate();
 
   const Divisions: { [key: string]: string[] } = {
@@ -261,22 +262,19 @@ export default function ProfileUpdate() {
     ],
     제주특별자치도: ["제주시", "서귀포시"],
   };
-
   // API 호출하여 사용자 정보 가져오기
   useEffect(() => {
     getMyInfo()
       .then((res) => {
         setUserInfo(res);
-        GetImage(res.imagepath)
-        .then((url) => {
+        GetImage(res.imagepath).then((url) => {
           setImagePreview(url);
-        })
+        });
         const addressParts = res.address.split(" ");
         if (addressParts.length > 1) {
           setSelectedProvince(addressParts[0]);
           setSelectedCity(addressParts[1]);
         }
-        // setImagePreview(res.imagepath); // 프로필 이미지 미리보기 초기화
       })
       .catch((err) => {
         console.error("Failed to fetch user info", err);
@@ -302,10 +300,9 @@ export default function ProfileUpdate() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // 이미지 미리보기 URL 생성
       const imageUrl = URL.createObjectURL(file);
-      setImagePreview(imageUrl); // 미리보기 상태 업데이트
-      setSelectedFile(file); // 변경된 파일 상태 업데이트
+      setImagePreview(imageUrl);
+      setSelectedFile(file);
     }
   };
 
@@ -322,22 +319,29 @@ export default function ProfileUpdate() {
         await postMyInfo(userInfo);
       }
 
-      // 3. 완료 후 myPage로 이동
-      navigate("/myPage");
+      // 3. 성공 알림 표시
+      Swal.fire({
+        title: "수정 완료!",
+        text: "정보가 성공적으로 수정되었습니다.",
+        icon: "success",
+        confirmButtonText: "확인",
+      }).then(() => {
+        // SweetAlert2 확인 버튼을 클릭했을 때 프로필 페이지로 이동
+        navigate("/myPage");
+      });
     } catch (error) {
       console.error("업데이트 중 오류 발생:", error);
+      Swal.fire({
+        title: "수정 실패!",
+        text: "정보 수정 중 오류가 발생했습니다.",
+        icon: "error",
+        confirmButtonText: "확인",
+      });
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "20px",
-      }}
-    >
+    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "20px" }}>
       <Typography variant="h4" gutterBottom>
         내 정보
       </Typography>
@@ -352,14 +356,11 @@ export default function ProfileUpdate() {
         }}
       >
         <Box sx={{ position: "relative", display: "inline-block" }}>
-          {/* Avatar와 이미지 미리보기 */}
           <Avatar
             alt={userInfo.nickname}
             src={imagePreview || ""}
             sx={{ width: 100, height: 100, marginBottom: "20px" }}
           />
-
-          {/* + 버튼을 Avatar 오른쪽 하단에 배치 */}
           <IconButton
             sx={{
               position: "absolute",
@@ -375,7 +376,6 @@ export default function ProfileUpdate() {
           </IconButton>
         </Box>
 
-        {/* 숨겨진 파일 입력 필드 */}
         <input
           type="file"
           accept="image/*"
@@ -392,24 +392,16 @@ export default function ProfileUpdate() {
           margin="normal"
           onChange={(e) => setUserInfo({ ...userInfo, nickname: e.target.value })}
         />
-
         <TextField
           label="나이"
           type="number"
           value={userInfo.age}
           fullWidth
           margin="normal"
-          onChange={(e) => {
-            const numericValue = parseInt(e.target.value, 10);
-            if (numericValue >= 0 && numericValue <= 150) {
-              setUserInfo({ ...userInfo, age: numericValue });
-            }
-          }}
-          inputProps={{ min: 0, max: 150 }}
+          onChange={(e) => setUserInfo({ ...userInfo, age: parseInt(e.target.value) })}
           required
         />
 
-        {/* 도/특별시/광역시 선택 */}
         <FormSelect
           label="도/특별시/광역시"
           value={selectedProvince}
@@ -420,7 +412,6 @@ export default function ProfileUpdate() {
           }}
         />
 
-        {/* 시/군/구 선택 */}
         <FormSelect
           label="시/군/구"
           value={selectedCity}
@@ -437,11 +428,7 @@ export default function ProfileUpdate() {
             <Checkbox
               checked={userInfo.pushAllow}
               onChange={(e) => setUserInfo({ ...userInfo, pushAllow: e.target.checked })}
-              sx={{
-                "&.Mui-checked": {
-                  color: "#5b8e55", // 체크된 상태의 색상
-                },
-              }}
+              sx={{ "&.Mui-checked": { color: "#5b8e55" } }}
             />
           }
           label="푸시 알림 동의"
@@ -453,6 +440,8 @@ export default function ProfileUpdate() {
     </Box>
   );
 }
+
+// FormSelect 컴포넌트 정의 (기존 코드 유지)
 
 // FormSelect 컴포넌트 정의
 interface FormSelectProps {
