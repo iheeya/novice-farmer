@@ -26,6 +26,8 @@ import InfoPlaceType from "./pages/Information/InfoPlaceType";
 import InfoPlace from "./components/Information/InfoPlace";
 import InfoCrops from "./components/Information/InfoCrops";
 import InfoPlaceDetail from "./pages/Information/InfoPlaceDetail";
+import ArticleModify from "./pages/Community/ArticleModify";
+
 // AppWrapper 컴포넌트
 function AppWrapper() {
   const navigate = useNavigate();
@@ -67,6 +69,7 @@ function AppWrapper() {
         <Route path="/introduce" element={<LandingPage />} />
         <Route path="/community/search/:search" element={<CommunitySearchResult/>} />
         <Route path="/community/search" element={<CommunitySearch/>} />
+        <Route path="/community/:id/modify" element={<ArticleModify/>} />
         <Route path="/myGarden/:myPlaceId/:myPlantId/camera" element={<CameraPage />} />
         <Route path="/info" element={<InfoHome />}>
           <Route path="place" element={<InfoPlace />} />

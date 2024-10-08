@@ -277,6 +277,10 @@ if (hasError) {
 </div>; // 에러 메시지 출력
 }
 
+const handleRewrite = () => {
+  navigate(`/community/${Id}/modify`)
+}
+
 
     return(
         <>
@@ -286,7 +290,7 @@ if (hasError) {
                     <div style={{fontSize: '1.2rem'}}>{detailData?.nickname}</div>
                     <div style={{color: 'gray', fontSize: '0.8rem'}}>{detailData?.year}.{detailData?.month}.{detailData?.day}</div>
                 </div>
-                {detailData?.checkMyarticle &&<CreateOutlinedIcon className='article-pencil'/>}
+                {detailData?.checkMyarticle &&<CreateOutlinedIcon className='article-pencil' onClick={handleRewrite}/>}
             </div>
 
             <div className='community-detail-body-body'>
