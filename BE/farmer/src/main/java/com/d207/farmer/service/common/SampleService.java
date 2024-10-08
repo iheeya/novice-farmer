@@ -40,22 +40,4 @@ public class SampleService {
         User user = new User(request);
         return userRepository.save(user);
     }
-
-    @Transactional
-    public void registerFavorites(User user, SurveyRegisterRequestDTO request) {
-        List<OnlyId> plantDTOs = request.getPlant();
-        List<OnlyId> placeDTOs = request.getPlace();
-
-        List<Long> plantIds = plantDTOs.stream().map(OnlyId::getId).toList();
-        List<Plant> plants = plantRepository.findByIdIn(plantIds);
-        for (Plant plant : plants) {
-            favoritePlantRepository.save(new FavoritePlant(user, plant));
-        }
-
-        List<Long> placeIds = placeDTOs.stream().map(OnlyId::getId).toList();
-        List<Place> places = placeRepository.findByIdIn(placeIds);
-        for (Place place : places) {
-            favoritePlaceRepository.save(new FavoritePlace(user, place));
-        }
-    }
 }

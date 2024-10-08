@@ -1,5 +1,6 @@
 package com.d207.farmer.controller.farm;
 
+import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.dto.farm.get.*;
 import com.d207.farmer.dto.farm.register.FarmRegisterInMyPlaceRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
@@ -37,6 +38,7 @@ public class FarmController {
                                                @RequestBody @Valid FarmRegisterRequestDTO request) {
         log.info("[FarmController] Received register farm request for {}", request);
         Long userId = jwtUtil.getUserId(authorization);
+        Farm farm = farmService.registerFarm(userId, request);
         return ResponseEntity.created(URI.create("/")).body("농장 생성 완료");
     }
 
