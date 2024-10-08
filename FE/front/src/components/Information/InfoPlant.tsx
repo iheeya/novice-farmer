@@ -89,10 +89,6 @@ export default function InfoPlant() {
         paddingTop: 2,
       }}
     >
-      <Typography variant="h4" sx={{ textAlign: "center", mb: 2 }}>
-        작물 정보
-      </Typography>
-
       {/* 데이터가 있을 때만 리스트 렌더링 */}
       {loading ? (
         <Typography variant="body1" sx={{ textAlign: "center", mt: 4 }}>

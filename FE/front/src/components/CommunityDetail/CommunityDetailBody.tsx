@@ -6,7 +6,7 @@ import { communityDetail } from '../../services/CommunityDetail/CommuniyDetailGe
 import { IsLikePost } from '../../services/CommunityDetail/CommunityDetailPost';
 import { CommentPost } from '../../services/CommunityDetail/CommunityDetailPost';
 import { communityComment } from '../../services/CommunityDetail/CommuniyDetailGet';
-import { ContentDelete } from '../../services/CommunityDetail/CommunityDetailPost';
+import { ContentDelete, CommnetDelete } from '../../services/CommunityDetail/CommunityDetailPost';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -34,6 +34,7 @@ import loading from '../../assets/img/loading/loading.png'
 import { GetImage } from '../../services/getImage'; 
 import Swal from 'sweetalert2'
 
+
 // DetailData 타입 정의
 interface DetailData {
   communityTagList: string[],
@@ -58,6 +59,8 @@ interface Comment {
   imagePath: string;
   commentContent: string;
   writeDatestring: string;
+  myComment: boolean;
+  commentId: number;
 }
 
 function CommunityDetailBody(){
@@ -193,6 +196,34 @@ const deleteContent = async() => {
     console.log(e)
   }
 }
+
+// 댓글 삭제 api
+const handleCommentDelete = async (commentId: number) => {
+  const confirmation = await Swal.fire({
+      // title: "댓글 삭제",
+      text: "댓글을 삭제하시겠습니까?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#5B8E55",
+      cancelButtonColor: "#B0D085",
+      confirmButtonText: "삭제",
+      cancelButtonText: "취소",
+  });
+
+  if (confirmation.isConfirmed) {
+      try {
+          const data = await CommnetDelete(Id, commentId);
+          console.log('댓글 삭제', data);
+          setShouldSlide(false);
+          await getComment(); // 댓글 목록을 새로 고침
+
+         
+      } catch (e) {
+          console.log(e);
+      }
+  }
+};
+
 
 const getComment = async ()=>{
   if(!id){
@@ -344,7 +375,7 @@ const handleRewrite = () => {
                       position: 'fixed',
                       bottom: 0,
                       margin: 0,
-                      width: '93%',
+                      width: '100%',
                       height: '80%',
                       maxWidth: '100%',
                     },
@@ -359,8 +390,15 @@ const handleRewrite = () => {
                           <div key={index} className="comment-item">
                             {/* 유저 프로필 이미지 */}
                             {comment.imagePath ? <Avatar src={comment.imagePath} alt={comment.nickname} sx={{ marginRight: '0.5rem' }} />: <Avatar sx={{ bgcolor: '#5B8E55', marginRight: '0.5rem'}}>{ comment.nickname.charAt(0)}</Avatar>}
-                            <div>
-                              <div style={{ fontWeight: 'bold' }}>{comment.nickname}</div>
+                          <div>
+                              <div style={{ fontWeight: 'bold', display:'flex', alignItems:'center'}}>
+                                {comment.nickname}
+                                {comment.myComment ? (
+                                <DeleteIcon onClick={()=>handleCommentDelete(comment.commentId)}/>
+                              ) : (
+                                <div style={{ width: '24px', height: '24px' }} />  // DeleteIcon과 동일한 크기의 빈 공간
+                              )}
+                              </div>
                               <div style={{ color: 'gray', fontSize: '0.8rem' }}>{comment.writeDatestring}</div>
                             </div>
                           </div>

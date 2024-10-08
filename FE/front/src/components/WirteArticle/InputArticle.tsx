@@ -119,13 +119,7 @@ function InputArticle(){
         await ArticleImgPost(Id, formData); // 게시글 ID와 FormData를 사용하여 이미지 업로드
     }
 
-      // setInputValue('');
-      // setTags([]);
-      // setTitle('');
-      // setContent('');
-      // setHasError(false); // 에러 상태 초기화
-  
-      // console.log(payload)
+    
   
        // SweetAlert 표시
        Swal.fire({

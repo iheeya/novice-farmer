@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+/* SweetAlert2의 z-index를 높여서 모달보다 위에 표시 */
+.swal2-container {
+  z-index: 2000 !important; 
+}

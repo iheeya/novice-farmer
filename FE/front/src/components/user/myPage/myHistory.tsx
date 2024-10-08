@@ -1,21 +1,38 @@
 import { useEffect, useState } from "react";
 import { getMyHistory } from "../../../services/user/myPageApi";
-import { Box, Typography, Card, CardContent, CardMedia, Button, CircularProgress } from "@mui/material";
-import { PlantProps } from "../../../services/user/myPageApi"; // 타입 가져오기
+import { Box, Typography, Card, CardContent, CardMedia, Button } from "@mui/material";
+import { PlantProps } from "../../../services/user/myPageApi";
 import { useNavigate } from "react-router-dom";
+import { GetImage } from "../../../services/getImage";
 
 export default function MyHistory() {
   const [history, setHistory] = useState<PlantProps[]>([]); // 빈 배열로 초기화
   const [loading, setLoading] = useState<boolean>(true); // 로딩 상태 관리
   const [error, setError] = useState<string | null>(null); // 에러 상태 관리
+  const [imageUrls, setImageUrls] = useState<{ [key: number]: string }>({}); // 이미지 URL 상태 관리
   const navigate = useNavigate();
 
   // 데이터 불러오기
   useEffect(() => {
     getMyHistory()
-      .then((res) => {
+      .then(async (res) => {
         console.log("API 응답 데이터:", res); // 응답 데이터 확인
         setHistory(res); // 응답이 배열 형태라면 그대로 설정
+
+        // 각 plant 객체에 대해 이미지 URL 가져오기
+        const urls = await Promise.all(
+          res.map(async (plant) => {
+            const imageUrl = await GetImage(plant.imageurl); // 각 이미지 URL 가져오기
+            return { id: plant.id, url: imageUrl };
+          })
+        );
+
+        // 이미지 URL 상태 업데이트
+        const imageMap: { [key: number]: string } = {};
+        urls.forEach((item) => {
+          imageMap[item.id] = item.url;
+        });
+        setImageUrls(imageMap); // 이미지 URL 상태 설정
         setLoading(false); // 로딩 상태 종료
       })
       .catch((err) => {
@@ -28,7 +45,15 @@ export default function MyHistory() {
   // 데이터가 없는 경우
   if (history.length === 0) {
     return (
-      <Box sx={{ display: "flex", flexDirection:"column",justifyContent: "center", alignItems: "center", height: "50vh" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "50vh",
+        }}
+      >
         <Typography variant="h6">수확하신 작물이 없어요</Typography>
         <Button
           variant="contained"
@@ -52,9 +77,10 @@ export default function MyHistory() {
           <CardMedia
             component="img"
             height="140"
-            // image={plant.imageurl || "/path/to/default_image.jpg"} // 기본 이미지 경로
-            alt={"식물 이미지"}
+            image={imageUrls[plant.id]} // 이미지가 없으면 대체 이미지 사용
+            alt={plant.plantname || "식물 이미지"}
           />
+
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
               {plant.plantmyname}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../../styles/Main/RecommendInfo.module.css';
 import { getImageForCrop } from '../../utils/imageMapping'; // 이미지 매핑 함수 가져오기
 
@@ -24,10 +25,16 @@ interface RecommendInfoProps {
 }
 
 const RecommendInfo: React.FC<RecommendInfoProps> = ({ data }) => {
+  const navigate = useNavigate();
+
+  const handlePalntClick = (plantName: string) => {
+    navigate(`info/plant/${plantName}`)
+  }
+
   return (
     <div className={styles.recommendContainer}>
       <div className={styles.sectionHeader}>
-        <h2>이런 작물 어떠세요?</h2>
+        <h2 className={styles.recommendTitle}>이런 작물 어떠세요?</h2>
         <img src={getImageForCrop('Default')} alt="기본 작물 이미지" className={styles.headerImage} />
       </div>
 
@@ -36,7 +43,9 @@ const RecommendInfo: React.FC<RecommendInfoProps> = ({ data }) => {
         <p className={styles.comment}>{data.recommendByPlace.comment}</p>
         <ul className={styles.recommendList}>
           {data.recommendByPlace.recommendPlants.map((plant) => (
-            <li key={plant.plantId} className={styles.recommendItem}>
+            <li key={plant.plantId} 
+              className={styles.recommendItem}
+              onClick={() => handlePalntClick(plant.plantName)}>
               <div className={styles.itemContent}>
                 <h4>{plant.plantName} - {plant.plantDescription}</h4>
                 <img src={getImageForCrop(plant.plantName)} alt={plant.plantName} className={styles.plantImage} />
@@ -51,7 +60,9 @@ const RecommendInfo: React.FC<RecommendInfoProps> = ({ data }) => {
         <p className={styles.comment}>{data.recommendByUser.comment}</p>
         <ul className={styles.recommendList}>
           {data.recommendByUser.recommendPlants.map((plant) => (
-            <li key={plant.plantId} className={styles.recommendItem}>
+            <li key={plant.plantId}
+              className={styles.recommendItem}
+              onClick={() => handlePalntClick(plant.plantName)}>
               <div className={styles.itemContent}>
                 <h4>{plant.plantName} - {plant.plantDescription}</h4>
                 <img src={getImageForCrop(plant.plantName)} alt={plant.plantName} className={styles.plantImage} />

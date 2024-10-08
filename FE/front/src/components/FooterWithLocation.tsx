@@ -9,7 +9,7 @@ const FooterWithLocation: React.FC = () => {
   const hideFooterPaths = [
     /^\/myGarden\/\d+\/\d+\/camera$/,  // /myGarden/:myPlaceId/:myPlantId/camera 경로 숨김
     /^\/user\/login$/,                  // /user/login 경로 숨김
-    /^\/user\/signup$/,                  // /user/signup 경로 숨김
+    /^\/user\/signUp$/,                  // /user/signup 경로 숨김
     /^\/introduce$/
   ];
 

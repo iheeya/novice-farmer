@@ -24,7 +24,7 @@ interface SearchData {
   communityId: number; // 게시글 ID
   communityTag: string[];
   userNickname: string;
-  communityDate: string;
+  communityDateString: string;
 }
 
 function PopularArticle(){
@@ -168,7 +168,7 @@ function PopularArticle(){
                   <Avatar src={userImages[idx]} alt="User Image"/>
                   <div className="show-nickname">{item.userNickname}</div>
                   <div className="date">
-                    {new Date(item.communityDate).toLocaleDateString("ko-KR")}
+                    {item.communityDateString}
                   </div>
                 </div>
               </CardContent>
