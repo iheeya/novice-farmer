@@ -3,6 +3,7 @@ package com.d207.farmer.repository.community;
 
 import com.d207.farmer.domain.community.Community;
 
+import com.d207.farmer.domain.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +18,5 @@ public interface CommunityRepository extends JpaRepository<Community, Long>, Com
     Optional<Community> findByIdWithUser(@Param("id") Long id);
 
 
-
-
+    Page<Community> findByUser(User user, Pageable pageable);
 }

@@ -14,12 +14,16 @@ public class CommunityCommentResponseDTO {
     private String imagePath;
     private String commentContent;
     private String writeDatestring;
+    private Long CommentId;
+    private boolean isMyComment;
 
 
-    public CommunityCommentResponseDTO(String nickname, String imagePath, String commentContent, String writeDatestring) {
+    public CommunityCommentResponseDTO(String nickname, String imagePath, String commentContent, String writeDatestring,Long commentId,boolean isMyComment) {
         this.nickname = nickname;
         this.imagePath = (FileDirectory.USER.toString().toLowerCase()+"/" +imagePath);
         this.commentContent = commentContent;
+        this.CommentId = commentId;
+        this.isMyComment = isMyComment;
         this.writeDatestring = writeDatestring;
     }
 }
