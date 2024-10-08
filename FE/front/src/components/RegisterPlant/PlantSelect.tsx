@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react'
 import tomato from '../../assets/img/plants/1.png'
 import pepper from '../../assets/img/plants/2.png'
-import lettuce from '../../assets/img/plants/3.png'
-import perilla from '../../assets/img/plants/4.png'
-import cabbage from '../../assets/img/plants/5.png'
+import Corn from '../../assets/img/plants/3.png'
+import Cucumber from '../../assets/img/plants/4.png'
+import Bin from '../../assets/img/plants/5.png'
+import Branch from '../../assets/img/plants/6.png'
+import Radish from '../../assets/img/plants/7.png'
+import Lettuce from '../../assets/img/plants/8.png'
+import Cabbage from '../../assets/img/plants/9.png'
+import Potato from '../../assets/img/plants/10.png'
+import sweetPotato from '../../assets/img/plants/11.png'
+import leek from '../../assets/img/plants/12.png'
 import '../../styles/RegisterGarden/gardenSelect.css'
 import { FaHeart } from "react-icons/fa";
 import PlantModal from './PlantModal'
@@ -34,9 +41,16 @@ function PlantSelect({onLoading, onResponse}: GardenLoadingProps) {
     const imageMapping: {[key:string]: string} = {
         1:tomato,
         2:pepper,
-        3:lettuce,
-        4: perilla,
-        5: cabbage
+        3:Corn,
+        4: Cucumber,
+        5: Bin,
+        6: Branch,
+        7: Radish,
+        8: Lettuce,
+        9: Cabbage,
+        10: Potato,
+        11: sweetPotato,
+        12: leek
     }
 
     const handleImageClick = (plantName :string, plantId:number) => {

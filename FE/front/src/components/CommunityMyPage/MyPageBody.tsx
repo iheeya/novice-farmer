@@ -1,4 +1,4 @@
-import { getArticle } from "../../services/Community/CommunityGet";
+import { CommuniyMy } from "../../services/CommunityMyPage/CommunityMyPageGet";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import empty from "../../assets/img/community/empty.png";
@@ -8,11 +8,8 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import CardActionArea from "@mui/material/CardActionArea";
 import "../../styles/CommunitySearch/SearchResult.css";
-import loading from '../../assets/img/loading/loading.png'
 import { GetImage } from "../../services/getImage";
-import { SxProps } from '@mui/system'
-import EditIcon from '@mui/icons-material/Edit';
-import Fab from '@mui/material/Fab';
+import loading from '../../assets/img/loading/loading.png'
 import Avatar from '@mui/material/Avatar';
 
 
@@ -26,50 +23,42 @@ interface SearchData {
   userNickname: string;
   communityDateString: string;
 }
+function MyPageBody() {
+  const { search } = useParams<{ search: string }>();
+  const [searchData, setSearchData] = useState<SearchData[]>([]);
+  const [page, setPage] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [userImages, setUserImages] = useState<string[]>([]);
+  const [communityImages, setCommunityImages] = useState<string[]>([]);
+  const navigate = useNavigate();
 
-function PopularArticle(){
-    const { search } = useParams<{ search: string }>();
-    const [searchData, setSearchData] = useState<SearchData[]>([]);
-    const [page, setPage] = useState<number>(0);
-    const [hasMore, setHasMore] = useState<boolean>(true);
-    const [userImages, setUserImages] = useState<string[]>([]);
-    const [communityImages, setCommunityImages] = useState<string[]>([]);
-    const navigate = useNavigate();
-  
-    const getData = async () => {
-      if (!hasMore) return; // 더 이상 데이터가 없으면 요청하지 않음
-  
-      try {
-        const data = await getArticle({
-          page,
-          size: 3,
-          filter: "heart",
-          search: "",
+  const getData = async () => {
+    if (!hasMore) return; // 더 이상 데이터가 없으면 요청하지 않음
+
+    try {
+      const data = await CommuniyMy();
+      console.log(data.content);
+
+      if (data.content.length > 0) {
+        setSearchData((prev) => {
+          const existingIds = new Set(prev.map(item => item.communityId));
+          const newItems = data.content.filter((item: SearchData) => !existingIds.has(item.communityId));
+          return [...prev, ...newItems];
         });
-  
-        console.log(data.content);
-  
-        if (data.content.length > 0) {
-          setSearchData((prev) => {
-            const existingIds = new Set(prev.map(item => item.communityId));
-            const newItems = data.content.filter((item: SearchData) => !existingIds.has(item.communityId));
-            return [...prev, ...newItems];
-          });
-  
-          const imagePromises = data.content.map((item: SearchData) => GetImage(item.userImagePath));
-          const images = await Promise.all(imagePromises);
-          setUserImages((prev) => [...prev, ...images]);
-        } else {
-          setHasMore(false);
-        }
-      } catch (e) {
-        console.log(e);
+
+        const imagePromises = data.content.map((item: SearchData) => GetImage(item.userImagePath));
+        const images = await Promise.all(imagePromises);
+        setUserImages((prev) => [...prev, ...images]);
+      } else {
+        setHasMore(false);
       }
-    };
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-
-    // 커뮤니티이미지 저장
-    useEffect(() => {
+  // 커뮤니티이미지 저장
+  useEffect(() => {
     if (searchData.length > 0) {
       console.log('업데이트된 서치 데이터', searchData);
       const fetchImages = async () => {
@@ -94,60 +83,41 @@ function PopularArticle(){
   
       fetchImages();
     }
-  }, [searchData]);
-  
-    // 페이지가 변경될 때 데이터 가져오기
-    useEffect(() => {
-      if (hasMore) {
-        getData();
+  }, [searchData])
+
+  // 페이지가 변경될 때 데이터 가져오기
+  useEffect(() => {
+    if (hasMore) {
+      getData();
+    }
+  }, [search, page, hasMore]);
+
+
+  // 스크롤 이벤트를 감지하여 페이지 증가
+  useEffect(() => {
+    const handleScroll = () => {
+      const bottom = window.innerHeight + window.scrollY >= document.body.offsetHeight;
+      if (bottom && hasMore && page === 0) { // 페이지가 0일 때만 API 호출
+        setPage((prev) => prev + 1);
       }
-    }, [search, page, hasMore]);
-  
-  
-    // 스크롤 이벤트를 감지하여 페이지 증가
-    useEffect(() => {
-      const handleScroll = () => {
-        const bottom = window.innerHeight + window.scrollY >= document.body.offsetHeight;
-        if (bottom && hasMore && page === 0) { // 페이지가 0일 때만 API 호출
-          setPage((prev) => prev + 1);
-        }
-      };
-  
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
-    }, [hasMore]);
-  
-  
-    const handleClick = (id: number) => {
-      navigate(`/community/${id}/detail`);
     };
 
-    const handlewrite = () => {
-        navigate('/community/article/write')
-    }
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore]);
 
-    const fabStyle = {
-        position: 'fixed',
-        bottom: '10%',
-        right: '5%',
-        backgroundColor:'#5B8E55'
-      };
 
-    const fab =
-        {
-          color: 'secondary' as 'secondary',
-          sx: fabStyle as SxProps,
-          icon: <EditIcon />,
-          label: 'Edit',
-        };
-
-    return(
-         <div className="parent-container">
+  const handleClick = (id: number) => {
+    navigate(`/community/${id}/detail`);
+  };
+ 
+  return (
+    <div className="parent-container">
       {searchData.length > 0 ? (
         searchData.map((item, idx) => (
           <Card
             key={idx}
-            sx={{ width: "100%", marginTop: "2%", marginBottom: '3%' }}
+            sx={{ width: "90%", marginTop: "2%", marginBottom: '3%' }}
             onClick={() => handleClick(item.communityId)}
           >
             <CardActionArea>
@@ -168,7 +138,7 @@ function PopularArticle(){
                   <Avatar src={userImages[idx]} alt="User Image"/>
                   <div className="show-nickname">{item.userNickname}</div>
                   <div className="date">
-                    {item.communityDateString}
+                  {item.communityDateString}
                   </div>
                 </div>
               </CardContent>
@@ -185,11 +155,8 @@ function PopularArticle(){
           />
         </div> // 에러 메시지 출력
       )}
-    <Fab sx={fab.sx} aria-label={fab.label} color={fab.color} onClick={handlewrite}>
-        {fab.icon}
-    </Fab>
     </div>
-    )
+  );
 }
 
-export default PopularArticle;
+export default MyPageBody;

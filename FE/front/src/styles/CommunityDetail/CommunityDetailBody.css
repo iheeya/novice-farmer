@@ -79,7 +79,7 @@
     bottom: 0; /* 화면의 하단에 고정 */
     margin: 0;
     border-radius: 20px 20px 0 0; /* 위쪽 모서리 둥글게 */
-    padding: 1rem;
+    /* padding: 1rem; */
   }
   
 
@@ -137,3 +137,5 @@ margin-top: 2%;
     object-fit: cover; /* 이미지 크기에 맞게 자르기 */
     margin-top: 5%;
 }
+
+

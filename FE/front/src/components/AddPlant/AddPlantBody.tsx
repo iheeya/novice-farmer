@@ -14,7 +14,7 @@ import leek from '../../assets/img/plants/12.png'
 import '../../styles/RegisterGarden/gardenSelect.css'
 import { FaHeart } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
-import GardenFinalModal from '../RegisterGarden/GardenFInalModal';
+import AddPlantModal from './AddPlantModal'
 import { useDispatch, useSelector } from 'react-redux';
 import { setPlantData } from '../../store/AddFarm/store'
 import { RootState } from '../../store/AddFarm/store'
@@ -28,12 +28,11 @@ interface Plant {
     isService: boolean;
 }
 
-interface PlantData {
-    response: Plant[]
+interface PlantData{
+    plantData: Plant[]
 }
 
-function RecommendPlant({response}:PlantData) {
-
+function AddPlantBody({plantData}: PlantData){
     const [selectedPlant, setSelectedPlant] = useState<string | null>(null); // 선택된 장소를 저장할 상태
     const [isModalOpen, setIsModalOpen] = useState(false)  // 모달 열림 상태
     const [selectPlantId, setSelectPlanteId] = useState<number|null>(null) // 장소 id 저장
@@ -67,17 +66,11 @@ function RecommendPlant({response}:PlantData) {
     };
 
 
-    // useEffect(()=> {
-    //     console.log('prop결과', response)
-    // })
-
-
-
     return(
          <div className='frame'>
             <div className='farm-instruction'>{farmData}에서 키우기 좋은 작물이에요!</div>
             <div className='image-group'>
-                {response.map((plant:Plant) => (
+                {plantData.map((plant:Plant) => (
                     <div className={`image-container ${plant.isService ? '': 'blur'}`} // 서비스하지 않는 텃밭은 흑백 처리
                      key={plant.plantId}
                     onClick={plant.isService ? () => handleImageClick(plant.plantName, plant.plantId) : undefined} // 클릭 이벤트 설정
@@ -94,9 +87,10 @@ function RecommendPlant({response}:PlantData) {
                 </div>
                 ))}
             </div>
-            {isModalOpen && <GardenFinalModal plantName={selectedPlant} plantId={selectPlantId} onClose={closeModal}/>} 
+            {isModalOpen && <AddPlantModal plantName={selectedPlant} plantId={selectPlantId} onClose={closeModal}/>} 
         </div>
     )
 }
 
-export default RecommendPlant
+
+export default AddPlantBody;
