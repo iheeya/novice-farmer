@@ -144,7 +144,7 @@ function SearchResult() {
                   <Avatar src={userImages[idx]} alt="User Image"/>
                   <div className="show-nickname">{item.userNickname}</div>
                   <div className="date">
-                    {new Date(item.communityDate).toLocaleDateString("ko-KR")}
+                    {item.communityDate}
                   </div>
                 </div>
               </CardContent>

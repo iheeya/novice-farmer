@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { getImageForPlantGrowthStep } from '../../utils/imageMapping';
 import { getFarmDetailPageInfo, FarmDetailPageInfoProps, Farm } from '../../services/FarmDetail/farmDetailPageApi'; 
 import { updatePlaceName } from '../../services/FarmDetail/farmDetailPageApi';
+import { selectGardenPost } from '../../services/AddGarden/AddGardenPost';
 
 const MyGarden: React.FC = () => {
   const { myPlaceId } = useParams<{ myPlaceId: string }>();
@@ -91,6 +92,9 @@ const MyGarden: React.FC = () => {
   };
 
   const handleAddPlantClick = () => {
+    const payload = {}
+
+
     navigate(`/myGarden/${myPlaceId}/register/plant`);
   };
 

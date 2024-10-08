@@ -32,7 +32,7 @@ import InfoFertilizer from "./pages/Information/InfoFertiilizer";
 import InfoFertilizerDetail from "./pages/Information/InfoFertilizerDetail";
 import InfoPest from "./pages/Information/InfoPest";
 import InfoPestDetail from "./pages/Information/InfoPestDetail";
-
+import AddPlant from "./pages/AddGarden/AddPlant";
 
 // AppWrapper 컴포넌트
 function AppWrapper() {
@@ -70,6 +70,7 @@ function AppWrapper() {
         <Route path="/community/article/write" element={<WriteCommunityArticle />} />
         <Route path="/myGarden/:myPlaceId" element={<MyGarden />} />
         <Route path="/myGarden/:myPlaceId/:myPlantId" element={<MyPlant />} />
+        <Route path="/myGarden/:myPlaceId/register/plant" element={<AddPlant />} />
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/myPage/profile" element={<ProfileUpdate />} />
         <Route path="/introduce" element={<LandingPage />} />
