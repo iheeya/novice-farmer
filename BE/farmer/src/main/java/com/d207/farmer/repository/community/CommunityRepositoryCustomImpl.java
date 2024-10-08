@@ -72,7 +72,7 @@ public class CommunityRepositoryCustomImpl implements CommunityRepositoryCustom 
                 .selectFrom(community)
                 .where(community.title.contains(search)
                         .or(community.content.contains(search))) // 타이틀 또는 콘텐츠에 검색어 포함
-                .where(community.checkDelete.eq(false)) // checkDelete가 false인 커뮤니티 수 조회 /// 
+                .where(community.checkDelete.eq(false)) // checkDelete가 false인 커뮤니티 수 조회 ///
                 .fetchCount();
 
         return new PageImpl<>(communities, pageable, total);

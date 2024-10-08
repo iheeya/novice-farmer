@@ -198,8 +198,8 @@ public class StartupApplicationListener {
         FarmPlaceRegisterDTO farmPlace1 = new FarmPlaceRegisterDTO(1L, address);
         FarmPlantRegisterDTO farmPlant1 = new FarmPlantRegisterDTO(1L, "토순이", "토마토 냠냠");
         FarmRegisterRequestDTO farmRegister1 = new FarmRegisterRequestDTO(farmPlace1, farmPlant1);
-        farmService.registerFarm(11L, farmRegister1);
-        myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(1L));
+        Farm farm1 = farmService.registerFarm(11L, farmRegister1);
+        farm1.startGrow();
 
         Farm farm = farmRepository.findById(1L).orElseThrow();
         farm.updateDegreeDay(1000);
@@ -207,23 +207,23 @@ public class StartupApplicationListener {
         FarmPlaceRegisterDTO farmPlace2 = new FarmPlaceRegisterDTO(2L, address);
         FarmPlantRegisterDTO farmPlant2 = new FarmPlantRegisterDTO(2L, "작매고", "작은 고추가 매움");
         FarmRegisterRequestDTO farmRegister2 = new FarmRegisterRequestDTO(farmPlace2, farmPlant2);
-        farmService.registerFarm(11L, farmRegister2);
-        myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(2L));
+        Farm farm2 = farmService.registerFarm(11L, farmRegister2);
+        farm2.startGrow();
         myPlantService.harvestPlant(11L, new ManagePlantRequestDTO(2L));
         myPlantService.endPlant(11L, new ManagePlantRequestDTO(2L));
 
         FarmPlaceRegisterDTO farmPlace3 = new FarmPlaceRegisterDTO(3L, address);
         FarmPlantRegisterDTO farmPlant3 = new FarmPlantRegisterDTO(1L, "상충", "쌈쌈");
         FarmRegisterRequestDTO farmRegister3 = new FarmRegisterRequestDTO(farmPlace3, farmPlant3);
-        farmService.registerFarm(11L, farmRegister3);
-        myPlantService.startGrowPlant(11L, new StartGrowPlantRequestDTO(3L));
+        Farm farm3 = farmService.registerFarm(11L, farmRegister3);
+        farm3.startGrow();
 
         // mainpage 계정용
-        farmService.registerFarm(13L, farmRegister1);
-        farmService.registerFarm(13L, farmRegister2);
+        Farm farm4 = farmService.registerFarm(13L, farmRegister1);
+        Farm farm5 = farmService.registerFarm(13L, farmRegister2);
 
-        myPlantService.startGrowPlant(13L, new StartGrowPlantRequestDTO(4L));
-        myPlantService.startGrowPlant(13L, new StartGrowPlantRequestDTO(5L));
+        farm4.startGrow();
+        farm5.startGrow();
 
         farmRepository.findById(4L).orElseThrow().updateDegreeDay(1000);
         farmRepository.findById(5L).orElseThrow().updateDegreeDay(1000);

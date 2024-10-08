@@ -47,7 +47,7 @@ public class FarmService {
     private final FastApiUtil fastApiUtil;
 
     @Transactional
-    public String registerFarm(Long userId, FarmRegisterRequestDTO request) {
+    public Farm registerFarm(Long userId, FarmRegisterRequestDTO request) {
         // user, place, plant 조회
         User user = userRepository.findById(userId).orElseThrow();
         Place place = placeRepository.findById(request.getPlace().getPlaceId()).orElseThrow();
@@ -59,9 +59,9 @@ public class FarmService {
 
         // farm 생성
         Farm farm = new Farm(user, saveUserPlace, plant, request.getPlant());
-        farmRepository.save(farm);
+        Farm saveFarm = farmRepository.save(farm);
 
-        return "농장 생성 완료";
+        return saveFarm;
     }
 
     private UserPlace createUserPlace(User user, Place place, FarmRegisterRequestDTO request) {
