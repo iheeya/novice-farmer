@@ -1,7 +1,7 @@
 # CREATE DATABASE fast_api DEFAULT CHARACTER SET utf8mb4;
 #
 USE fast_api;
-
+# SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
 # DROP TABLE weather_area, adm_district, aws_stn, today_weather_base, today_weather_val, crop_base, crop_fertilizer, crop_info, growth_temp
 
 
@@ -10,7 +10,7 @@ USE fast_api;
 -- 예보구역 데이터 가져오기
 CREATE TABLE weather_area (
     `reg_id` VARCHAR(12) PRIMARY KEY COLLATE utf8mb4_unicode_ci, # 예보가 발효되는 예보구역 코드(region_id)
-    `reg_name` VARCHAR(12) UNIQUE # 예보가 발효되는 예보구역 이름(region_name)
+    `reg_name` VARCHAR(12) # 예보가 발효되는 예보구역 이름(region_name)
 );
 
 -- 행정구역 데이터 가져오기
