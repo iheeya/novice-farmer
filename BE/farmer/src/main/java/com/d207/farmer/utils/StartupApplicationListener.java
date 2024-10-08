@@ -437,7 +437,7 @@ public class StartupApplicationListener {
             // 이미지 개수 (1~3개)
             int imgCount = rand.nextInt(3) + 1;
             for (int j = 0; j < imgCount; j++) {
-                communityImageRepository.save(new CommunityImage(saveCommunity, "community" + (rand.nextInt(50) + 1)));
+                communityImageRepository.save(new CommunityImage(saveCommunity, "community" + (rand.nextInt(50) + 1) + ".png"));
             }
 
             // 선택된 태그(5개)
