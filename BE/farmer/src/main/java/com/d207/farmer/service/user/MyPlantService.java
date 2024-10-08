@@ -234,7 +234,7 @@ public class MyPlantService {
 
         // TODO MVP용 degreeDay update -> mvp 끝나면 지워야함
         farm.updateDegreeDay(farm.getDegreeDay() + 90);
-        if(farm.getDegreeDay() > 1960) farm.updateDegreeDay(1960);
+        if(farm.getDegreeDay() > 1940) farm.updateDegreeDay(1940);
         /////////////////////////////////////////////////
 
         return new MyPlantInfoResponseDTO(true, farm.getIsFirstHarvest(), plantInfo, todoInfoDTOs);

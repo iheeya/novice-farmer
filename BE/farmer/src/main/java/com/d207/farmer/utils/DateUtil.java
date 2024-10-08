@@ -3,8 +3,10 @@ package com.d207.farmer.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Random;
 
 @Slf4j
 @Component
@@ -34,6 +36,22 @@ public class DateUtil {
     public int degreeDayToRatio(int degreeDay, int maxDegreeDay) {
         if(degreeDay >= maxDegreeDay) return 100;
         return (int) ((double) degreeDay / maxDegreeDay * 100);
+    }
+
+    public LocalDateTime generateRandomDateTime(int startYear, int startMonth, int startDay) {
+        LocalDate startDate = LocalDate.of(startYear, startMonth, startDay);
+        LocalDate endDate = LocalDate.now();
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+
+        Random random = new Random();
+        long randomDays = random.nextInt((int) daysBetween + 1);
+        LocalDate randomDate = startDate.plusDays(randomDays);
+
+        int randomHour = random.nextInt(24);
+        int randomMinute = random.nextInt(60);
+        int randomSecond = random.nextInt(60);
+
+        return randomDate.atTime(randomHour, randomMinute, randomSecond);
     }
 
 }
