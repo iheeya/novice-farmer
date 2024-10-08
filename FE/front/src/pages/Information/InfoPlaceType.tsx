@@ -105,7 +105,7 @@ export default function InfoPlaceType() {
                   <img
                     src={item.imageUrl} // S3에서 가져온 이미지 URL 사용
                     alt={item.title}
-                    style={{ width: "40px", height: "40px", borderRadius: "8px" }}
+                    style={{ width: "15vw", height: "6vh", borderRadius: "8px",marginRight:"2vw" }}
                   />
                 ) : (
                   <Typography variant="body2">이미지 로딩 중...</Typography> // 이미지 로딩 중 표시
@@ -114,6 +114,15 @@ export default function InfoPlaceType() {
               <ListItemText
                 primary={item.title}
                 secondary={item.comment}
+                primaryTypographyProps={{ 
+                    fontSize: "1.3rem", // 제목 텍스트 크기 설정
+                    fontWeight: "bold", // 제목 텍스트 굵기 설정
+                    color: "#333", // 제목 색상
+                  }}
+                  secondaryTypographyProps={{
+                    fontSize: "0.98rem", // 보조 텍스트 크기 설정
+                    color: "#777", // 보조 텍스트 색상 설정
+                  }}
                 sx={{ mr: 2 }} // 오른쪽 화살표와 간격 조정
               />
               <ArrowForwardIosIcon sx={{ color: "#bbb" }} /> {/* 오른쪽 화살표 아이콘 */}

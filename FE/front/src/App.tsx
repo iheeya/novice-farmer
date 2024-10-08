@@ -24,9 +24,15 @@ import HomePage from "./pages/Home/Landing";
 import InfoHome from "./pages/Information/InfoHome";
 import InfoPlaceType from "./pages/Information/InfoPlaceType";
 import InfoPlace from "./components/Information/InfoPlace";
-import InfoCrops from "./components/Information/InfoCrops";
+import InfoPlant from "./components/Information/InfoPlant";
 import InfoPlaceDetail from "./pages/Information/InfoPlaceDetail";
 import ArticleModify from "./pages/Community/ArticleModify";
+import InfoPlantDetail from "./pages/Information/InfoPlantDetail";
+import InfoFertilizer from "./pages/Information/InfoFertiilizer";
+import InfoFertilizerDetail from "./pages/Information/InfoFertilizerDetail";
+import InfoPest from "./pages/Information/InfoPest";
+import InfoPestDetail from "./pages/Information/InfoPestDetail";
+
 
 // AppWrapper 컴포넌트
 function AppWrapper() {
@@ -72,10 +78,17 @@ function AppWrapper() {
         <Route path="/community/:id/modify" element={<ArticleModify/>} />
         <Route path="/myGarden/:myPlaceId/:myPlantId/camera" element={<CameraPage />} />
         <Route path="/info" element={<InfoHome />}>
+          {/* 텃밭 */}
           <Route path="place" element={<InfoPlace />} />
           <Route path="place/type" element={<InfoPlaceType />} />
           <Route path="place/type/:title" element={<InfoPlaceDetail />} />
-          <Route path="crops" element={<InfoCrops />} />
+          {/* 작물 */}
+          <Route path="plant" element={<InfoPlant />} />
+          <Route path="plant/:title" element={<InfoPlantDetail />} />
+          <Route path="plant/fertilizer" element={<InfoFertilizer />} />
+          <Route path="plant/fertilizer/:title" element={<InfoFertilizerDetail />} />
+          <Route path="plant/pest" element={<InfoPest />} />
+          <Route path="plant/pest/:title" element={<InfoPestDetail />} />
         </Route>
         <Route path="/introduce" element={<HomePage />} />
         <Route path="/myGarden/:myPlaceId/:myPlantId/diagnosis" element={<CameraDiagnosis />} />
