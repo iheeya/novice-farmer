@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
-import { getInfoPlaceDetail } from "../../services/Information/InfoApi";
+import { getInfoPlantDetail } from "../../services/Information/InfoApi";
 import { GetImage } from "../../services/getImage";
 
-interface ContentType {
+interface ContentProps {
   title: string;
   content: string;
 }
 
 interface DetailDataType {
   images: string[];
-  contents: ContentType[];
+  contents: ContentProps[];
 }
 
-export default function InfoPlaceDetail() {
+export default function InfoPlantDetail() {
   const { title } = useParams<{ title: string }>();
   const [detailData, setDetailData] = useState<DetailDataType | null>(null); // 데이터 상태 관리
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -22,7 +22,7 @@ export default function InfoPlaceDetail() {
   // 데이터 가져오기
   useEffect(() => {
     if (title) {
-      getInfoPlaceDetail(title)
+      getInfoPlantDetail(title)
         .then((res) => {
           setDetailData(res); // API 응답 데이터 설정
           if (res.images && res.images.length > 0) {
@@ -33,7 +33,7 @@ export default function InfoPlaceDetail() {
           }
         })
         .catch((err) => {
-          console.error("Error fetching place detail:", err);
+          console.error("Error fetching plant detail:", err);
         });
     }
   }, [title]);
@@ -70,7 +70,10 @@ export default function InfoPlaceDetail() {
       {/* 내용 출력 */}
       {detailData.contents && detailData.contents.map((content, index) => (
         <Box key={index} sx={{ mb: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold", color: "#5B8E55", fontSize:"1.5rem" }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: "bold", color: "#5B8E55", fontSize: "1.5rem" }}
+          >
             {content.title}
           </Typography>
           <Typography variant="body1" sx={{ mt: 1, color: "#333" }}>
