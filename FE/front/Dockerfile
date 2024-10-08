@@ -16,6 +16,8 @@ RUN npm run build
 
 
 FROM nginx:alpine
+# Nginx 설정 파일을 복사합니다.
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Nginx가 수신 대기할 포트 노출
 #EXPOSE 80
 # 필요에 따라 Node.js 애플리케이션의 포트를 노출
