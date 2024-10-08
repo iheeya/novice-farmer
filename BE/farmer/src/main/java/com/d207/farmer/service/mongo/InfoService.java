@@ -129,9 +129,6 @@ public class InfoService {
             result.add(new TypeInfoResponseDTO(plant.getName(), plant.getName() + "에 대해서 알아보세요",
                     MONGO.toString().toLowerCase() + "/" + plant.getImages().get(0)));
         }
-        // 고추, 옥수수
-        result.add(new TypeInfoResponseDTO("고추", "고추에 대해서 알아보세요", ""));
-        result.add(new TypeInfoResponseDTO("옥수수", "옥수수에 대해서 알아보세요", ""));
 
         // 비료, 병해충
         result.add(new TypeInfoResponseDTO("비료", "비료들을 알아보세요", ""));
