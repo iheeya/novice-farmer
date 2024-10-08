@@ -128,6 +128,7 @@ public class CommunityService {
                     community.getTitle(),
                     communityImages,
                     truncatedContent,
+                    community.getWriteDate(),
                     formattedWriteDate,
                     tagNames,
                     (int) heartCount, // int로 변환
@@ -216,6 +217,7 @@ public class CommunityService {
                 community.getTitle(),
                 communityImages,
                 truncatedContent,
+                community.getWriteDate(),
                 formattedWriteDate,
                 tagNames,
                 (int) heartCount, // int로 변환
@@ -310,13 +312,11 @@ public class CommunityService {
         String nicknamedto = community.getUser().getNickname();
         String imagePathdto = community.getUser().getImagePath();
         String communityTitledto = community.getTitle();
-        //.substring(0,20)
+
+
         String communityContentdto = community.getContent();
 
-        if (communityContentdto.length() > 15) {
-            communityContentdto = communityContentdto.substring(0, 15); // 20글자만 잘라냄
-            communityContentdto += "..."; // 예시로 '...' 추가
-        }
+
 
 
         // 커뮤니티에 관련된 이미지를 조회
@@ -328,10 +328,10 @@ public class CommunityService {
         }
 
         List<CommunitySelectedTag> communitySelectedTags = communitySelectedTagRespository.findByCommunity(community);
-        List<String> communityTagListdto = new ArrayList<>();
+        List<String> munityTagListDto = new ArrayList<>();
         // 커뮤니티 Tags의 tag를 추가!
         for (CommunitySelectedTag CommunitySelectedtagtem : communitySelectedTags) {
-            communityTagListdto.add(CommunitySelectedtagtem.getCommunityTag().getTagName());
+            munityTagListDto.add(CommunitySelectedtagtem.getCommunityTag().getTagName());
         }
 
 
@@ -358,7 +358,7 @@ public class CommunityService {
         String day = String.format("%02d", writeDate.getDayOfMonth()); // 2자리로 포맷팅
 
         CommunityOneArticleResponseDTO communityOneArticleResponseDTO = new CommunityOneArticleResponseDTO( nicknamedto, imagePathdto, communityTitledto, communityContentdto
-                                                                                ,communityImagePath,  communityTagListdto, communtyHeartcountdto, communityCommentcountdto, checkIPushHeart, checkMyarticle, year, month, day);
+                                                                                ,communityImagePath,  munityTagListDto, communtyHeartcountdto, communityCommentcountdto, checkIPushHeart, checkMyarticle, year, month, day);
 
         return communityOneArticleResponseDTO;
     }
@@ -388,7 +388,7 @@ public class CommunityService {
     }
 
 
-    public CommunityOneModifyResponseDTO responseCommunityOneInModity(Long userId, Long id) {
+    public CommunityOneModifyResponseDTO responseCommunityOneInModify(Long userId, Long id) {
         // 지연로딩!!!
         Community community = communityRepository.findByIdWithUser(id).orElseThrow();
 

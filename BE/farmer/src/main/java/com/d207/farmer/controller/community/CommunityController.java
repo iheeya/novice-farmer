@@ -141,7 +141,7 @@ public class CommunityController {
                                                                              @PathVariable Long id)   {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Get communityOneModify {} ", userId);
-        return ResponseEntity.ok(communityService.responseCommunityOneInModity(userId, id));
+        return ResponseEntity.ok(communityService.responseCommunityOneInModify(userId, id));
 
     }
 
