@@ -29,35 +29,21 @@ public class CommunityController {
     private final CommunityService communityService;
     private final JWTUtil jwtUtil;
 
-
     @GetMapping
-//    public ResponseEntity<List<?>> getCommunityNew(@RequestHeader("Authorization") String authorization,
     public ResponseEntity<Page<CommunityResponseDTO>> getCommunityNew(@RequestHeader("Authorization") String authorization,
-    //public ResponseEntity<SearchCondition> getCommunityNew(
                                                                       SearchCondition condition,
-//                                                                      String filter,
-//                                                                      @RequestParam(value = "search") String search,
                                                                       Pageable pageable) {
         String filter = condition.getFilter();
         String search = condition.getSearch();
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("[CommunityController] Received Community");
+        log.info("[CommunityController] getCommunityNew");
         if(filter.equals("new")){
-            log.info("[CommunityController] getCommunityWithLatest {}", search);
             return ResponseEntity.ok(communityService.getCommunityWithLatest(userId, filter, search, pageable));
         }
         else{
-            log.info("[CommunityController] getCommunityWithHeart {}", search);
            return ResponseEntity.ok(communityService.getCommunityWithHeart(userId, filter, search, pageable));
         }
-
-        //return ResponseEntity.ok().body(condition);
-
-
     }
-
-
-
 
     /**
      * 커뮤니티 글 올리기
@@ -68,9 +54,7 @@ public class CommunityController {
                                                   @RequestBody CommunityRegisterDTO communityRegisterDTO
                                                     ) {
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("CommunityController] Post Community {}", userId);
-
-
+        log.info("CommunityController] registerCommunity {}", userId);
         return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunity(userId, communityRegisterDTO));
     }
 
@@ -81,27 +65,17 @@ public class CommunityController {
     @PostMapping("image/{CommunityId}")
     public ResponseEntity<String> registerCommunityImage(@RequestHeader("Authorization") String authorization,
                                                     @PathVariable Long CommunityId,
-                                                    @ModelAttribute  List<MultipartFile> files
-                                                         //    @ModelAttribute  FileUploadTestRequestDTO file
-    ) {
+                                                    @ModelAttribute  List<MultipartFile> files) {
+
         if(files.isEmpty()){
             return  ResponseEntity.created(URI.create("/")).body("Image is null") ;
-
         }
         else {
             Long userId = jwtUtil.getUserId(authorization);
-            log.info("CommunityController] Post Community {}", userId);
-            int a = 0;
-
             return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunityImage(userId, CommunityId, files));
-
-
-
-
         }
-        //
-    }
 
+    }
 
     /**
      * 특정 게시물 불러오기!
@@ -110,13 +84,9 @@ public class CommunityController {
     public ResponseEntity<CommunityOneArticleResponseDTO> getOneCommunity(@RequestHeader("Authorization") String authorization,
                                                                           @PathVariable Long id){
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("CommunityController] Post One Community {}", userId);
-
-
+        log.info("CommunityController] getOneCommunity {}", userId);
         return ResponseEntity.created(URI.create("/")).body(communityService.getOneCommunity(userId, id));
     }
-
-
 
     /**
      * 커뮤니티 좋아요 누르기! (처음누르면 좋아요 on! / 이미 눌렀는걸 눌렀으면 좋아요 off!)
@@ -125,12 +95,9 @@ public class CommunityController {
     public ResponseEntity<String> registerHeart(@RequestHeader("Authorization") String authorization,
                                                 @PathVariable Long id){
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("CommunityController] Post Community {}", userId);
-
-
+        log.info("CommunityController] registerHeart {}", userId);
         return ResponseEntity.created(URI.create("/")).body(communityService.registerHeart(userId, id));
     }
-
 
     /**
      * 커뮤니티 게시물 삭제하기
@@ -139,8 +106,7 @@ public class CommunityController {
     public ResponseEntity<String> deleteCommunityArticle(@RequestHeader("Authorization") String authorization,
                                                 @PathVariable Long id){
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("CommunityController] delete Community {}", userId);
-
+        log.info("CommunityController] deleteCommunityArticle {}", userId);
         return ResponseEntity.ok(communityService.deleteCommunityArticle(userId, id));
     }
 
@@ -152,9 +118,7 @@ public class CommunityController {
                                                            @PathVariable Long id,
                                                            @RequestBody CommunityCommentRegisterDTO communityCommentRegisterDTO){
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("[CommunityController] Post Community Comment {} // {}", userId, communityCommentRegisterDTO.getCommentContent());
-
-
+        log.info("[CommunityController] registerCommunityComment {} // {}", userId, communityCommentRegisterDTO.getCommentContent());
         return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunityComment(userId, id, communityCommentRegisterDTO));
     }
 
@@ -166,7 +130,7 @@ public class CommunityController {
                                                                                         @PathVariable Long id)   {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Get Community Comment {} ", userId);
-        return ResponseEntity.ok(communityService.responseCommunitycomment(userId, id));
+        return ResponseEntity.ok(communityService.responseCommunityComment(userId, id));
     }
 
     /**
@@ -192,24 +156,18 @@ public class CommunityController {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Get communityOneModifyRequest {} ", userId);
         return ResponseEntity.ok(communityService.communityOneModifyRequest(userId, id, communityOneModifyRequestDTO));
-
     }
-
-
-
 
     /**
      *  전체 태그 불러오기
      */
     @GetMapping("/tags/all")
-    //public ResponseEntity<List<communityAllTagsResponseDTO>> getcommunityAllTags (@RequestHeader("Authorization") String authorization){
-    public ResponseEntity<List<communityAllTagsResponseDTO>> getcommunityAllTags (@RequestHeader("Authorization") String authorization){
+    public ResponseEntity<List<communityAllTagsResponseDTO>> getCommunityAllTags (@RequestHeader("Authorization") String authorization){
 
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("[CommunityController] Get getcommunityAllTags {} ", userId);
+        log.info("[CommunityController] Get getCommunityAllTags {} ", userId);
         return ResponseEntity.ok(communityService.getCommunityAllTags(userId));
     }
-
 
     /**
      * 태그 변경하기 클릭
@@ -220,15 +178,8 @@ public class CommunityController {
 
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Get registerSurvey {} ", userId);
-
         return ResponseEntity.created(URI.create("/survey")).body(communityService.reRegisterSurvey(userId, SurveyRegisterReRequestDTO));
     }
-
-
-
-
-
-
 
 
 }

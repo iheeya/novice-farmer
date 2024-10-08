@@ -20,7 +20,6 @@ import com.d207.farmer.dto.utils.OnlyId;
 import com.d207.farmer.exception.FailedAuthenticateUserException;
 import com.d207.farmer.exception.FailedInvalidUserException;
 import com.d207.farmer.repository.community.CommunityFavoriteTagRepository;
-import com.d207.farmer.repository.community.CommunitySelectedTagRespository;
 import com.d207.farmer.repository.community.CommunityTagRepository;
 import com.d207.farmer.repository.farm.FarmRepository;
 import com.d207.farmer.repository.plant.PlantIllustRepository;
@@ -59,7 +58,6 @@ public class UserService {
     private final FarmRepository farmRepository;
     private final PlantIllustRepository plantIllustRepository;
     private final CommunityTagRepository communityTagRepository;
-    private final CommunitySelectedTagRespository communitySelectedTagRespository;
     private final CommunityFavoriteTagRepository communityFavoriteTagRepository;
     private final FileUtil fileUtil;
 
@@ -67,7 +65,6 @@ public class UserService {
     public UserInfoResponseDTO registerUser(UserRegisterRequestDTO request) {
         User user = new User(request);
 
-        ////////////////////////////////////
         if (userRepository.findByNickname(request.getNickname()) != null) throw new FailedInvalidUserException("닉네임 중복입니다!");
         if (userRepository.findByEmail(request.getEmail()) != null) throw new FailedInvalidUserException("이메일 중복입니다!");
 
@@ -82,9 +79,6 @@ public class UserService {
                 .address(user.getAddress())
                 .pushAllow(user.getPushAllow())
                 .build();
-
-
-
     }
 
     public UserInfoResponseDTO getUserInfo(UserInfoRequestByEmailDTO request) {
@@ -123,9 +117,7 @@ public class UserService {
         if (user == null) {
             throw new FailedAuthenticateUserException("아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
-
         boolean check_firstLogin = user.getIsFirstLogin();
-
         return tokenService.saveRefreshToken(user.getId(), check_firstLogin);
     }
 
@@ -156,19 +148,14 @@ public class UserService {
     @Transactional
     public String registerSurvey(Long userId, SurveyRegisterRequestDTO surveyRegisterRequestDTO) {
         // FIXME 최적화! in 으로 바꿔보기!()
+
         // id가 0인 Plant와 Place 여부를 확인하기 위한 boolean 변수
-        boolean hasPlantWithIdZero = false;
-        boolean hasPlaceWithIdZero = false;
         User user = userRepository.findById(userId).orElseThrow();
-
-
         // Plant 리스트에서 id가 0인지 확인
         for (OnlyId plant : surveyRegisterRequestDTO.getPlant()) {
             if (plant.getId() == 0) {
-                hasPlantWithIdZero = true; // id가 0인 경우 발견
                 break; // 반복 종료
             }
-
 
             Plant plantDomain = plantRepository.findById(plant.getId()).orElseThrow();
 
@@ -185,11 +172,6 @@ public class UserService {
                 CommunityTag communityTag = communityTagRepository.findByTagName(plantDomain.getName());
                 communityFavoriteTagRepository.save(new CommunityFavoriteTag(user, communityTag));
 
-
-
-
-
-
             }
 
         }
@@ -197,7 +179,6 @@ public class UserService {
         // Place 리스트에서 id가 0인지 확인
         for (OnlyId place : surveyRegisterRequestDTO.getPlace()) {
             if (place.getId() == 0) {
-                hasPlaceWithIdZero = true; // id가 0인 경우 발견
                 break; // 반복 종료
             }
             Place placeDomain = placeRepository.findById(place.getId()).orElseThrow();
@@ -213,9 +194,6 @@ public class UserService {
 
                 CommunityTag communityTag = communityTagRepository.findByTagName(placeDomain.getName());
                 communityFavoriteTagRepository.save(new CommunityFavoriteTag(user, communityTag));
-                log.info("test !!!! = {}",placeDomain.getName());
-
-
             }
 
         }
@@ -223,12 +201,7 @@ public class UserService {
         if (check_firstLogin) {
             user.setIsFirstLogin(false);
         }
-
-
-
-
         return "registered successfully.";
-
     }
 
     @Transactional
@@ -254,15 +227,12 @@ public class UserService {
         // isFavorite이 true인 항목이 먼저 오도록 정렬
         plantResponseWithIdDTOS.sort(Comparator.comparing(PlantResponseWithIdDTO::getIsFavorite).reversed()
                 .thenComparing(PlantResponseWithIdDTO::getId));
-        ///////////////////////
-
 
         List<FavoritePlace> favoritePlaces = favorPlaceService.getPlaceById(userId);
         // 즐겨찾기 장소의 ID를 Set으로 수집
         Set<Long> favoritePlaceIds = favoritePlaces.stream()
                 .map(favoritePlace -> favoritePlace.getPlace().getId())
                 .collect(Collectors.toSet());
-
 
         // placeResponseWithIdDTOS의 isOn 값을 업데이트
         for (PlaceResponseWithIdDTO dto : placeResponseWithIdDTOS) {
@@ -294,7 +264,6 @@ public class UserService {
 
         // Plant ID를 수집하기 위한 List
         List<Long> plantIds = new ArrayList<>();
-
         for (OnlyId plant : surveyRegisterRequestDTO.getPlant()) {
             plantIds.add(plant.getId());
         }
@@ -328,9 +297,7 @@ public class UserService {
 
     @Transactional
     public String registerUserInfo(Long userId, UserInfoRequestDTO userInfoRequestDTO) {
-
         User user = userRepository.findById(userId).orElseThrow();
-
         user.setNickname(userInfoRequestDTO.getNickname());
         user.setAge(userInfoRequestDTO.getAge());
         user.setAddress(userInfoRequestDTO.getAddress());
@@ -338,20 +305,13 @@ public class UserService {
 
         return "successful save";
 
-
-
     }
 
     public boolean getEmailUse(String email) {
-        User user = userRepository.findByEmail(email);
-        log.info("user = {}, {}", user, email);
         return userRepository.findByEmail(email) == null;
-
     }
 
     public boolean getNicknameUse(String nickname) {
-        User user = userRepository.findByEmail(nickname);
-        log.info("user = {}, {}", user, nickname);
         return userRepository.findByNickname(nickname) == null;
     }
 
@@ -376,29 +336,21 @@ public class UserService {
                             .build();
                 })
                 .collect(Collectors.toList());
-
         return userMypageHistoryResponseDTOS;
     }
 
     @Transactional
     public String registerUserImage(Long userId, FileUploadTestRequestDTO request) {
-
         User user = userRepository.findById(userId).orElseThrow();
-        String userimagepath = fileUtil.uploadFile(request.getFile(),FileDirectory.USER);
-
-        user.setImagePath(userimagepath);
-
+        String userImagePath = fileUtil.uploadFile(request.getFile(),FileDirectory.USER);
+        user.setImagePath(userImagePath);
         return "Image regist Success";
     }
 
     @Transactional
     public String registerUserImageClean(Long userId) {
-
         User user = userRepository.findById(userId).orElseThrow();
-
-
         user.setImagePath(null);
-
         return "No Image regist Success";
     }
 }
