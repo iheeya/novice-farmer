@@ -19,8 +19,8 @@ CREATE TABLE adm_district(
     `adm_head` VARCHAR(12) COLLATE utf8mb4_unicode_ci,
     `adm_middle` VARCHAR(12) COLLATE utf8mb4_unicode_ci,
     `adm_tail` VARCHAR(12) COLLATE utf8mb4_unicode_ci,
-    `x_grid` TINYINT,
-    `y_grid` TINYINT,
+    `x_grid` SMALLINT,
+    `y_grid` SMALLINT,
     `lat` FLOAT8,
     `lon` FLOAT8
 );
