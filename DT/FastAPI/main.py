@@ -23,7 +23,7 @@ from setting.scheduler import start_scheduler
 
     
 def start():
-    # load_adminfo(), load_areainfo(), load_aswsinfo(), load_special_areainfo(), load_valinfo(), load_curruent_special_weatherinfo()
+    load_adminfo(), load_areainfo(), load_aswsinfo(), load_special_areainfo(), load_valinfo(), load_curruent_special_weatherinfo()
     update_farm_growth()
 
 # Scheduler 시작

@@ -102,8 +102,8 @@ def update_farm_growth():
             # 유저 농장의 위치
             
         
-            sido, sigungu = farmer.query(UserPlace).with_entities(UserPlace.user_place_sido, UserPlace.user_place_sigugun).filter(UserPlace.user_place_id == user_place).first()
             # 위치 정보 처리
+            sido, sigungu = farmer.query(UserPlace).with_entities(UserPlace.user_place_sido, UserPlace.user_place_sigugun).filter(UserPlace.user_place_id == user_place).first()
             sido = sido[:2]
             sigungu = sigungu[:-1]
             print(f'sido, sigungu: {sido}, {sigungu}')
@@ -122,11 +122,11 @@ def update_farm_growth():
                     tmax, tmin = fast_api.query(WeatherVal).with_entities(WeatherVal.ta_max, WeatherVal.ta_min).filter(WeatherVal.stn_id == stn_id[0]).first()
                     print(f'ta_max, ta_min: {tmax}, {tmin}')
                     
-                    if tmax and tmin:
-                        # 데이터들을 가지고 CropTime 알고리즘 실행
-                        DDs += crops_growth(tmax, tmin, thi, tlow)
-                        
-                        update_degree_days(farmer, FarmUpdateSchema(farm_degree_day=DDs), id)
+                    
+                    # 데이터들을 가지고 CropTime 알고리즘 실행
+                    DDs += crops_growth(tmax, tmin, thi, tlow)
+                    
+                    update_degree_days(farmer, FarmUpdateSchema(farm_degree_day=DDs), id)
         farmer.commit()
     except Exception as e:
         farmer.rollback()
