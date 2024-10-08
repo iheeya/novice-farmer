@@ -87,7 +87,7 @@ export function getMyHistory(): Promise<PlantProps[]> {
   return api
     .get("/user/mypage/history")
     .then((response) => {
-      console.log(response.data);
+      // console.log(response.data);
       return Promise.resolve(response.data);
     })
     .catch((error) => {

@@ -18,6 +18,7 @@ import {
   Box,
 } from "@mui/material";
 import { validateEmail, validateNickname, validatePassword, passwordConfirm } from "../../utils/signUpValidate";
+import backIcon from "../../assets/icons/Back.png";
 
 function SignUp() {
   // 행정구역 정보
@@ -279,6 +280,19 @@ function SignUp() {
         alignItems: "center", // 수평 중앙 정렬
       }}
     >
+      <img
+        src={backIcon}
+        alt="뒤로가기"
+        onClick={() => navigate(-1)}
+        style={{
+          position: "absolute", // 좌측 상단에 고정
+          top: "2vh", // 화면 높이의 2%만큼 여백
+          left: "2vw", // 화면 너비의 2%만큼 여백
+          width: "3rem", // 3rem = 약 48px (기본 폰트 크기 기준 16px)
+          height: "3rem", // 3rem = 약 48px
+          cursor: "pointer", // 마우스 커서 포인터 모양으로 변경
+        }}
+      />
       <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%" }} />
       <form
         onSubmit={async (event) => {
@@ -382,7 +396,7 @@ function SignUp() {
             if (numericValue >= 0 && numericValue <= 150) {
               setAge(value);
             }
-          }}          
+          }}
           required
         />
 
