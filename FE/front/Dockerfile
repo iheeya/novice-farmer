@@ -12,8 +12,20 @@ RUN npm install
 # 애플리케이션 소스 코드 복사
 COPY . .
 
-EXPOSE 3000
-# 환경 변수 설정
-ENV HOST=0.0.0.0
-ENTRYPOINT ["npm", "build"]
-ENTRYPOINT ["npm", "run build"]
+RUN npm run build
+
+
+FROM nginx:alpine
+# Nginx가 수신 대기할 포트 노출
+#EXPOSE 80
+# 필요에 따라 Node.js 애플리케이션의 포트를 노출
+#EXPOSE 3000
+RUN ls -al
+
+
+COPY --from=builder /app/build /usr/share/nginx/html
+#RUN ls -al /usr/share/nginx/html/kiosk
+
+#RUN ls -al /usr/share/nginx/html
+CMD ["nginx", "-g","daemon off;"]
+
