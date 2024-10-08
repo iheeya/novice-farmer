@@ -26,7 +26,7 @@ const TodoInfo: React.FC<TodoInfoProps> = ({ data }) => {
   return (
     <div className={styles.todoContainer}>
       <div className={styles.titleContainer}>
-        <h2 className={styles.title}>{data.title}!</h2>
+        <h2 className={styles.title}>{data.title}</h2>
         <img src={weatherImage} alt="Weather Icon" className={styles.weatherImage} />
       </div>
       <div className={styles.content}>

@@ -17,7 +17,7 @@ import WriteCommunityArticle from "./pages/Community/WriteCommunityArticle";
 import CommunitySearch from "./pages/Community/CommunitySearch";
 import LandingPage from "./pages/Home/Landing";
 import CommunitySearchResult from "./pages/Community/CommunitySearchResult";
-import CameraPage from "./pages/Detail/cameraPage"; // 새 페이지 컴포넌트
+import CameraPage from "./pages/Detail/cameraPage"; 
 import CameraDiagnosis from "./pages/Detail/cameraDiagnosis";
 import FooterWithLocation from "./components/FooterWithLocation"; // Footer 로직 분리
 import HomePage from "./pages/Home/Landing";
@@ -26,6 +26,7 @@ import InfoPlaceType from "./pages/Information/InfoPlaceType";
 import InfoPlace from "./components/Information/InfoPlace";
 import InfoPlant from "./components/Information/InfoPlant";
 import InfoPlaceDetail from "./pages/Information/InfoPlaceDetail";
+import TodoList from "./pages/Todo/TodoList";
 import ArticleModify from "./pages/Community/ArticleModify";
 import InfoPlantDetail from "./pages/Information/InfoPlantDetail";
 import InfoFertilizer from "./pages/Information/InfoFertiilizer";
@@ -44,7 +45,7 @@ function AppWrapper() {
     const accessToken = sessionStorage.getItem("accessToken");
 
     // 인증이 필요 없는 경로 리스트
-    const publicPaths = ["/user/login", "/user/signup", "/introduce"];
+    const publicPaths = ["/user/login", "/user/signUp", "/introduce"];
 
     // 현재 경로가 인증이 필요 없는 경로가 아닌데, 토큰이 없으면 로그인 페이지로 이동
     if (!accessToken && !publicPaths.includes(location.pathname)) {
@@ -57,7 +58,7 @@ function AppWrapper() {
       <Routes>
         {/* 공개 페이지들 */}
         <Route path="/" element={<Main />} />
-        <Route path="/user/signup" element={<SignUp />} />
+        <Route path="/user/signUp" element={<SignUp />} />
         <Route path="/user/login" element={<Login />} />
         <Route path="/user/survey" element={<Survey />} />
         <Route path="/introduce" element={<HomePage />} />
@@ -95,6 +96,7 @@ function AppWrapper() {
         </Route>
         <Route path="/introduce" element={<HomePage />} />
         <Route path="/myGarden/:myPlaceId/:myPlantId/diagnosis" element={<CameraDiagnosis />} />
+        <Route path="/todo" element={<TodoList />} />
       </Routes>
       <FooterWithLocation />
     </>

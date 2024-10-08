@@ -10,7 +10,7 @@
   
   .todoBox {
     display: flex;
-    height: 8vw;
+    height: 14vw;
     align-items: center;
     padding: 1rem;
     border: 1px solid #ddd;

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box, Tab, Tabs } from "@mui/material";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import backIcon from "../../assets/icons/Back.png";
 
 export default function InfoHome() {
   const [value, setValue] = useState("1");
@@ -30,6 +31,20 @@ export default function InfoHome() {
         alignItems: "center",
       }}
     >
+      <img
+  src={backIcon}
+  alt="뒤로가기"
+  onClick={() => navigate(-1)}
+  style={{
+    position: "absolute",  // 좌측 상단에 고정
+    top: "2vh",            // 화면 높이의 2%만큼 여백
+    left: "2vw",           // 화면 너비의 2%만큼 여백
+    width: "3rem",         // 3rem = 약 48px (기본 폰트 크기 기준 16px)
+    height: "3rem",        // 3rem = 약 48px
+    cursor: "pointer",     // 마우스 커서 포인터 모양으로 변경
+  }}
+/>
+
       {/* Tabs 컴포넌트 */}
       <Tabs
         value={location.pathname.includes("/plant") ? "2" : "1"}

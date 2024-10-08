@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // useNavigate 임포트
 import { useSwipeable } from 'react-swipeable';
 import styles from '../../styles/Main/CommunityInfo.module.css';
+import { GetImage } from '../../services/getImage'; // GetImage 함수 가져오기
 
 interface CommunityInfoProps {
   data: {
@@ -9,7 +11,7 @@ interface CommunityInfoProps {
       communityId: number;
       title: string;
       content: string;
-      imagePath: string | null; 
+      imagePath: string | null;
       heartCount: number;
       commentCount: number;
       writer: string;
@@ -20,7 +22,7 @@ interface CommunityInfoProps {
       communityId: number;
       title: string;
       content: string;
-      imagePath: string | null; 
+      imagePath: string | null;
       heartCount: number;
       commentCount: number;
       writer: string;
@@ -31,10 +33,41 @@ interface CommunityInfoProps {
 }
 
 const CommunityInfo: React.FC<CommunityInfoProps> = ({ data }) => {
+  const navigate = useNavigate(); // useNavigate 사용
   const [activeTab, setActiveTab] = useState<'popular' | 'recent'>('popular');
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
+  const [postImages, setPostImages] = useState<string[]>([]);
+  const [writerImages, setWriterImages] = useState<string[]>([]);
+
   const posts = activeTab === 'popular' ? data.communitySortedByPopularities : data.communitySortedByRecents;
   const currentPost = posts[currentPostIndex];
+
+  // 이미지 가져오기
+  useEffect(() => {
+    const fetchImages = async () => {
+      const postImagePromises = posts.map(async (post) => {
+        if (post.imagePath) {
+          return await GetImage(post.imagePath);
+        }
+        return 'https://via.placeholder.com/150'; // 기본 이미지
+      });
+
+      const writerImagePromises = posts.map(async (post) => {
+        if (post.writerImagePath) {
+          return await GetImage(post.writerImagePath);
+        }
+        return 'https://via.placeholder.com/50'; // 기본 작성자 이미지
+      });
+
+      const postImages = await Promise.all(postImagePromises);
+      const writerImages = await Promise.all(writerImagePromises);
+
+      setPostImages(postImages);
+      setWriterImages(writerImages);
+    };
+
+    fetchImages();
+  }, [posts]);
 
   const handleNextPost = () => {
     setCurrentPostIndex((prevIndex) => (prevIndex + 1) % posts.length);
@@ -44,22 +77,26 @@ const CommunityInfo: React.FC<CommunityInfoProps> = ({ data }) => {
     setCurrentPostIndex((prevIndex) => (prevIndex - 1 + posts.length) % posts.length);
   };
 
-  // 스와이프 핸들러 설정 (좌우 스와이프만 감지)
+  const handlePostClick = (communityId: number) => {
+    navigate(`/community/${communityId}/detail`); // 게시글 클릭 시 해당 상세 페이지로 이동
+  };
+
+  // 스와이프 핸들러 설정
   const swipeHandlers = useSwipeable({
     onSwipedLeft: handleNextPost,
     onSwipedRight: handlePrevPost,
-    preventScrollOnSwipe: true, // 터치 시 스크롤 방지
-    delta: { left: 10, right: 10, up: 100, down: 100 }, // 상하 방향 스와이프 민감도는 크게 설정
-    trackMouse: true, // 마우스 스와이프 감지
+    preventScrollOnSwipe: true,
+    delta: { left: 10, right: 10, up: 100, down: 100 },
+    trackMouse: true,
   });
 
   // 5초마다 자동으로 다음 게시글로 이동
   useEffect(() => {
     const interval = setInterval(() => {
       handleNextPost();
-    }, 5000); // 5초마다 자동으로 다음 게시글로 이동
+    }, 5000);
 
-    return () => clearInterval(interval); // 컴포넌트 언마운트 시 타이머 제거
+    return () => clearInterval(interval);
   }, [currentPostIndex]);
 
   return (
@@ -85,9 +122,9 @@ const CommunityInfo: React.FC<CommunityInfoProps> = ({ data }) => {
       </div>
 
       {/* 게시글 */}
-      <div {...swipeHandlers} className={styles.postWrapper}>
+      <div {...swipeHandlers} className={styles.postWrapper} onClick={() => handlePostClick(currentPost.communityId)}>
         <img 
-          src={currentPost.imagePath || 'https://via.placeholder.com/150'} // 이미지 경로가 null이면 기본 이미지 사용
+          src={postImages[currentPostIndex] || 'https://via.placeholder.com/150'} 
           alt={currentPost.title} 
           className={styles.postImage} 
         />
@@ -96,7 +133,11 @@ const CommunityInfo: React.FC<CommunityInfoProps> = ({ data }) => {
           <p>{currentPost.content}</p>
           <div className={styles.authorPaginationWrapper}>
             <div className={styles.authorInfo}>
-              <img src={currentPost.writerImagePath} alt={currentPost.writer} className={styles.authorImage} />
+              <img 
+                src={writerImages[currentPostIndex] || 'https://via.placeholder.com/50'} 
+                alt={currentPost.writer} 
+                className={styles.authorImage} 
+              />
               <span>{currentPost.writer} - {new Date(currentPost.registerDate).toLocaleDateString()}</span>
             </div>
             <div className={styles.pagination}>
