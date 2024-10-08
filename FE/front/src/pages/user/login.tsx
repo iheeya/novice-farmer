@@ -78,7 +78,7 @@ export default function Login() {
           variant="contained"
           color="success"
           fullWidth
-          sx={{ marginTop: "1rem", marginBottom: "1rem", padding: "0.75rem", backgroundColor: "#5B8E55" }}
+          sx={{ marginTop: "1rem", marginBottom: "1rem", padding: "0.75rem", backgroundColor: "#84b366" }}
         >
           로그인
         </Button>
@@ -88,7 +88,7 @@ export default function Login() {
           color="success"
           fullWidth
           onClick={() => navigate("/user/signUp")}
-          sx={{ marginBottom: "1.5rem", padding: "0.75rem", backgroundColor: "#5B8E55" }}
+          sx={{ marginBottom: "1.5rem", padding: "0.75rem", backgroundColor: "#84b366" }}
         >
           회원가입하기
         </Button>

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface MyFarmListInfoProps {
   data: {
+    isUsable: boolean;
     farms: {
       placeId: number;
       placeName: string;
@@ -18,12 +19,12 @@ const MyFarmListInfo: React.FC<MyFarmListInfoProps> = ({ data }) => {
   const navigate = useNavigate();
 
   const AddPlantClick = () => {
-    navigate("/register/garden"); 
+    navigate("/register/garden"); // 클릭 시 /register/garden로 이동
   };
 
   // 텃밭 상세 페이지로 이동하는 함수
   const handleFarmClick = (myPlaceId: number) => {
-    navigate(`/myGarden/${myPlaceId}`); 
+    navigate(`/myGarden/${myPlaceId}`); // myPlaceId에 해당하는 텃밭의 상세 페이지로 이동
   };
 
   return (
@@ -35,7 +36,7 @@ const MyFarmListInfo: React.FC<MyFarmListInfoProps> = ({ data }) => {
             <li 
               key={farm.myPlaceId} 
               className={styles.farmItem} 
-              onClick={() => handleFarmClick(farm.myPlaceId)}  
+              onClick={() => handleFarmClick(farm.myPlaceId)}  // 클릭 이벤트 추가
             >
               {/* getImageForLocation 함수로 placeId에 맞는 이미지 경로를 동적으로 불러옴 */}
               <img src={getImageForLocation(farm.placeId)} alt={farm.myPlaceName} className={styles.farmImage} />

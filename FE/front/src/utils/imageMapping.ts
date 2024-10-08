@@ -10,6 +10,7 @@ export const getImageForLocation = (placeId: number): string => {
 };
 
 
+
 // 작물 이름에 따른 이미지 경로 매핑 함수
 export const getImageForCrop = (cropName: string): string => {
   try {
@@ -26,13 +27,6 @@ export const getImageForCrop = (cropName: string): string => {
         return require('../assets/img/plants/Rosemary.png');
       case '딸기':
         return require('../assets/img/plants/Strawberry.png');
-      case '오이':
-        return require('../assets/img/plants/Cucumber.png');
-      case '옥수수':
-        return require('../assets/img/plants/Corn.png')
-      case '고추':
-        return require('../assets/img/plants/Pepper.png');
-        
       default:
         return require('../assets/img/plants/Default.png');
     }
@@ -40,16 +34,6 @@ export const getImageForCrop = (cropName: string): string => {
     return require('../assets/img/plants/Default.png');
   }
 };
-
-// 작물 이름과 성장 단계에 따른 일러스트 이미지 경로 매핑 함수
-export const getImageForPlantGrowthStep = (plantName: string, growthStep: number): string => {
-  try {
-    return require(`../assets/img/illustration/${plantName}${growthStep}.png`);
-  } catch (error) {
-    return require('../assets/img/illustration/Default.png');
-  }
-};
-
 
 // 날씨 제목에 따른 이미지 경로 매핑 함수
 export const getImageForWeather = (title: string): string => {
@@ -66,24 +50,5 @@ export const getImageForWeather = (title: string): string => {
     }
   } catch (error) {
     return require('../assets/img/weathers/Cloudy.png');
-  }
-};
-
-
-// 할 일 타입에 따른 이미지 경로 매핑 함수
-export const getImageForTodoType = (todoType: string): string => {
-  try {
-    switch (todoType) {
-      case 'WATERING':
-        return require('../assets/icons/Water.png');
-      case 'FERTILIZERING':
-        return require('../assets/icons/Fertilize.png');
-      case 'HARVESTING':
-        return require('../assets/icons/Harvest.png');
-      default:
-        return require('../assets/icons/Cloudy.png');
-    }
-  } catch (error) {
-    return require('../assets/icons/Cloudy.png');
   }
 };

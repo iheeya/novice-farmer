@@ -9,7 +9,7 @@ interface CommunityInfoProps {
       communityId: number;
       title: string;
       content: string;
-      imagePath: string | null; 
+      imagePath: string;
       heartCount: number;
       commentCount: number;
       writer: string;
@@ -20,7 +20,7 @@ interface CommunityInfoProps {
       communityId: number;
       title: string;
       content: string;
-      imagePath: string | null; 
+      imagePath: string;
       heartCount: number;
       commentCount: number;
       writer: string;
@@ -86,11 +86,7 @@ const CommunityInfo: React.FC<CommunityInfoProps> = ({ data }) => {
 
       {/* 게시글 */}
       <div {...swipeHandlers} className={styles.postWrapper}>
-        <img 
-          src={currentPost.imagePath || 'https://via.placeholder.com/150'} // 이미지 경로가 null이면 기본 이미지 사용
-          alt={currentPost.title} 
-          className={styles.postImage} 
-        />
+        <img src={currentPost.imagePath} alt={currentPost.title} className={styles.postImage} />
         <div className={styles.postContent}>
           <h3>{currentPost.title}</h3>
           <p>{currentPost.content}</p>
