@@ -41,7 +41,7 @@ public class MyPlaceService {
 
         // FIXME 날씨 정보 어떻게 받아올지
         PlaceInfoDTO placeInfoDTO = new PlaceInfoDTO(userPlace.getPlace().getId(), userPlace.getPlace().getName(), userPlace.getName(),
-                farmCount, "오늘 비가 올 예정입니다");
+                farmCount, "오늘 비가 올 예정입니다", userPlace.getAddress());
 
         if(farms == null) {
             // 장소는 있는데 현재 키우고 있는 작물이 없을 때(없었거나, 종료했거나, 삭제했거나)
