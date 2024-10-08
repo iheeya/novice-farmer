@@ -14,23 +14,23 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class CommunityResponseDTO {
     private Long communityId;
-    private Long userId;
+    //private Long userId;
     private String userNickname;
     private String userImagePath;
     private String communityTitle;
     private List<String> communityImage;
     private String communityContent;
-    private LocalDateTime communityDate;
+    private String communityDate;
     private List<String> communityTag;
     private int communityHeartCount;
     private int communityContentCount;
 
 //    FileDirectory.USER.toString().toLowerCase()+"/" +
 
-
-    public CommunityResponseDTO(Long communityId, Long userId, String userNickname, String userImagePath, String communityTitle, List<String> communityImage, String communityContent, LocalDateTime communityDate, List<String> communityTag, int communityHeartCount, int communityContentCount) {
+    //
+    public CommunityResponseDTO(Long communityId, Long userId, String userNickname, String userImagePath, String communityTitle, List<String> communityImage, String communityContent, String communityDate, List<String> communityTag, int communityHeartCount, int communityContentCount) {
         this.communityId = communityId;
-        this.userId = userId;
+        //this.userId = userId;
         this.userNickname = userNickname;
         this.userImagePath = (FileDirectory.USER.toString().toLowerCase()+"/" +userImagePath);
         this.communityTitle = communityTitle;
