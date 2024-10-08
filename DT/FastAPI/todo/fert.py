@@ -1,1 +1,59 @@
-# 비료 주기 계산
+from sqlalchemy.orm import Session
+from setting.mysql import session_local
+from growth.models import CropFertilizerPeriod, CropThreshold
+from setting.models import Farm
+from .models import FarmTodo, FarmTodoType
+from sqlalchemy.exc import OperationalError
+from datetime import datetime, timedelta
+
+fast_api : Session = session_local['fast_api']
+farmer : Session = session_local['farmer']
+
+today = datetime.now()
+
+def create_todoinfo():
+    # 만약 마지막으로 있는 farm_id의 fertilizer todo가 완료되지 않았고, 해야될 날이 어제였으면 그냥 하루만 추가할 것.
+    # 만약 마지막으로 있는 farm_id의 fertilizer todo가 완료되었다면 자동으로 router가 올 것이니 그 때 계산.
+    # 현재 farm_id의 todo가 아예 존재하지 않는다면 1단계로 만들어서 추가해주기
+    
+    
+    # farm 별 degreedays -> crop threshold로 단게 파악
+    farm_data = farmer.query(Farm).all()
+    farm_todo_data = farmer.query(FarmTodo).all()
+    crop_threshold = fast_api.query(CropThreshold).all()
+    crop_threshold_dict = {threshold.crop_id: threshold for threshold in crop_threshold}
+    crop_fertilizer = fast_api.query(CropFertilizerPeriod).all()
+    crop_fertilizer_dict = {fertilizer_period.crop_id: fertilizer_period for fertilizer_period in crop_fertilizer}
+    todo_type = FarmTodoType
+
+    for farm in farm_data:
+        fert_cycle = 0, 0
+        threshold = crop_threshold_dict.get(farm.plant_id)
+        fertilizer = crop_fertilizer_dict.get(farm.plant_id)
+        
+        if threshold:
+            if farm.farm_degree_day >= threshold.step4_threshold:
+                fert_cycle = fertilizer.fertilizer_step4
+            elif farm.farm_degree_day >= threshold.step3_threshold:
+                fert_cycle = fertilizer.fertilizer_step3
+            elif farm.farm_degree_day >= threshold.step2_threshold:
+                fert_cycle = fertilizer.fertilizer_step2
+            else:
+                fert_cycle = fertilizer.fertilizer_step1
+        
+        todo_date = today + timedelta(days=fert_cycle)
+        todo_date = todo_date.strftime("%Y-%m-%d %H:%M:%S.%f")
+        
+        
+        add_new_todo(db=farmer, farm_id=farm.farm_id, title='', typoe=FarmTodoType.FERTILIZERING, farm_todo_data=todo_date)
+# 단계별로 비료 더해서 todo 생성
+
+def add_new_todo(db: Session, farm_id: int, title: str, type: FarmTodoType, date: datetime=None, is_completed: bool=False):
+    new_todo = FarmTodo(farm_id=farm_id, title=title, farm_todo_type=type, farm_todo_date=date, farm_todo_is_completed=is_completed)
+    
+    try:
+        db.add(new_todo)
+        db.commit()
+    except OperationalError as e:
+        db.rollback()
+        print(f'fert todo 입력 에러: {e}')

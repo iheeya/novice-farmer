@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from setting.mysql import session_local
 from setting.models import UserPlace, Farm
-from setting.shcemas import FarmUpdateSchema
+from setting.schemas import FarmUpdateSchema
 from weather.models import AwsStn, WeatherArea, WeatherVal
 from .models import GrowthTemp
 from dotenv import load_dotenv
