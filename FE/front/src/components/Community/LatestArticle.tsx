@@ -53,6 +53,7 @@ function LatestArticle(){
           setSearchData((prev) => {
             const existingIds = new Set(prev.map(item => item.communityId));
             const newItems = data.content.filter((item: SearchData) => !existingIds.has(item.communityId));
+            console.log('서치 데이터', searchData)
             return [...prev, ...newItems];
           });
 
@@ -60,25 +61,9 @@ function LatestArticle(){
           const imagePromises = data.content.map((item: SearchData) => GetImage(item.userImagePath));
           const images = await Promise.all(imagePromises);
           setUserImages((prev) => [...prev, ...images]);
-          console.log('유저 이미지', images)
+          console.log('유저 이미지', images)   
 
-          // 커뮤니티 이미지 처리
-          // const communityImagePromises = data.content.map((item: SearchData) => {
-          //   // 커뮤니티 이미지가 있을 경우 첫 번째 이미지를 가져오고 없으면 빈 문자열 저장
-          //   const firstImagePath = item.communityImage.length > 0 ? item.communityImage[0] : '';
-          //   return GetImage(firstImagePath);
-          // });
-          const communityImagePromises = data.content.map((item: SearchData) => {
-            // 커뮤니티 이미지가 있을 경우 첫 번째 이미지를 가져오고 없으면 빈 문자열 저장
-            const firstImagePath = item.communityImage.length > 0 ? item.communityImage[0] : '';
-            return GetImage(firstImagePath);
-          });
-          // console.log('get 이미지 url', communityImagePromises)
-          const communityImages = await Promise.all(communityImagePromises);
-          console.log('커뮤니티 이미지', communityImages);
-          setCommunityImages((prev) => [...prev, ...communityImages]);
-          
-        
+      
 
 
         } else {
@@ -88,6 +73,38 @@ function LatestArticle(){
         console.log(e);
       }
     };
+
+
+    // 커뮤니티이미지 저장
+    useEffect(() => {
+      if (searchData.length > 0) {
+        console.log('업데이트된 서치 데이터', searchData);
+        const fetchImages = async () => {
+          // 배열의 각 요소에 접근해야 함
+          const communityImagePromises = searchData.map(async (item) => {
+            if (item.communityImage && item.communityImage.length > 0) {
+              try {
+                const firstImagePath = item.communityImage[0]; // 각 항목의 첫 번째 이미지만 가져옴
+                const url = await GetImage(firstImagePath);
+                return url;
+              } catch (err) {
+                console.error("Failed to fetch image URL:", err);
+                return empty; // 오류 발생 시 기본 이미지를 반환
+              }
+            }
+            return empty; // 이미지가 없을 경우 기본 이미지 반환
+          });
+    
+          const communityImageUrls = await Promise.all(communityImagePromises);
+          setCommunityImages(communityImageUrls);
+        };
+    
+        fetchImages();
+      }
+    }, [searchData]);
+    
+
+
 
   
     // 페이지가 변경될 때 데이터 가져오기

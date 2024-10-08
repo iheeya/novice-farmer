@@ -16,20 +16,20 @@ import Avatar from '@mui/material/Avatar';
 interface SearchData {
   communityTitle: string;
   communityContent: string;
-  communityImagePath: string[];
+  communityImage: string[];
   userImagePath: string; // 추가된 필드
   communityId: number; // 게시글 ID
   communityTag: string[];
   userNickname: string;
   communityDate: string;
 }
-
 function SearchResult() {
   const { search } = useParams<{ search: string }>();
   const [searchData, setSearchData] = useState<SearchData[]>([]);
   const [page, setPage] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [userImages, setUserImages] = useState<string[]>([]);
+  const [communityImages, setCommunityImages] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const getData = async () => {
@@ -62,6 +62,34 @@ function SearchResult() {
       console.log(e);
     }
   };
+
+  // 커뮤니티이미지 저장
+  useEffect(() => {
+    if (searchData.length > 0) {
+      console.log('업데이트된 서치 데이터', searchData);
+      const fetchImages = async () => {
+        // 배열의 각 요소에 접근해야 함
+        const communityImagePromises = searchData.map(async (item) => {
+          if (item.communityImage && item.communityImage.length > 0) {
+            try {
+              const firstImagePath = item.communityImage[0]; // 각 항목의 첫 번째 이미지만 가져옴
+              const url = await GetImage(firstImagePath);
+              return url;
+            } catch (err) {
+              console.error("Failed to fetch image URL:", err);
+              return empty; // 오류 발생 시 기본 이미지를 반환
+            }
+          }
+          return empty; // 이미지가 없을 경우 기본 이미지 반환
+        });
+  
+        const communityImageUrls = await Promise.all(communityImagePromises);
+        setCommunityImages(communityImageUrls);
+      };
+  
+      fetchImages();
+    }
+  }, [searchData])
 
   // 페이지가 변경될 때 데이터 가져오기
   useEffect(() => {
@@ -99,12 +127,12 @@ function SearchResult() {
             onClick={() => handleClick(item.communityId)}
           >
             <CardActionArea>
-              <CardMedia
+            <CardMedia
                 component="img"
                 height="170"
-                image={item.communityImagePath?.length > 0 ? item.communityImagePath[0] : empty}
+                image={communityImages[idx] ? communityImages[idx] : empty} // communityImages에서 이미지 가져오기
                 alt={item.communityTitle}
-              />
+            />
               <CardContent>
                 <Typography gutterBottom component="div" sx={{ color: "#5B8E55", fontSize: "1.2rem" }}>
                   {item.communityTitle}
