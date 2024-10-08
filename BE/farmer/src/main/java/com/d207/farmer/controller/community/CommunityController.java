@@ -2,8 +2,7 @@ package com.d207.farmer.controller.community;
 
 import com.d207.farmer.dto.community.*;
 
-import com.d207.farmer.dto.file.FileUploadTestRequestDTO;
-import com.d207.farmer.dto.file.MultiFileUploadTestRequestDTO;
+
 import com.d207.farmer.dto.survey.SurveyRegisterReRequestDTO;
 import com.d207.farmer.service.community.CommunityService;
 import com.d207.farmer.utils.JWTUtil;
@@ -43,6 +42,24 @@ public class CommunityController {
         else{
            return ResponseEntity.ok(communityService.getCommunityWithHeart(userId, filter, search, pageable));
         }
+    }
+
+
+
+
+    /**
+     * 커뮤니티 Mypage 불러오기!
+     */
+    @GetMapping("/mypage")
+    public ResponseEntity<Page<CommunityResponseDTO>> getMyPage(@RequestHeader("Authorization") String authorization,
+                                                                      Pageable pageable) {
+
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[CommunityController] getMyPage");
+
+        return ResponseEntity.ok(communityService.getMyPage(userId, pageable));
+
+
     }
 
     /**
@@ -121,6 +138,20 @@ public class CommunityController {
         log.info("[CommunityController] registerCommunityComment {} // {}", userId, communityCommentRegisterDTO.getCommentContent());
         return ResponseEntity.created(URI.create("/")).body(communityService.registerCommunityComment(userId, id, communityCommentRegisterDTO));
     }
+
+    /**
+     *  커뮤니티 댓글중 특정 게시물 삭제하기!
+     */
+    @DeleteMapping("{id}/all/comment/{commentId}")
+
+    public ResponseEntity<String> deleteCommunityComment(@RequestHeader("Authorization") String authorization,
+                                                           @PathVariable Long id,
+                                                           @PathVariable Long commentId){
+        Long userId = jwtUtil.getUserId(authorization);
+
+        return ResponseEntity.created(URI.create("/")).body(communityService.deleteCommunityComment(userId, id, commentId));
+    }
+
 
     /**
      *  커뮤니티 특정 게시물의 댓글 커뮤니티 특정 게시물의 전체 댓글보기

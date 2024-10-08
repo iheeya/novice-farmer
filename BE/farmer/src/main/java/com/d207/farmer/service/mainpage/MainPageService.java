@@ -10,6 +10,7 @@ import com.d207.farmer.domain.plant.PlantThreshold;
 import com.d207.farmer.domain.user.FavoritePlace;
 import com.d207.farmer.domain.user.FavoritePlant;
 import com.d207.farmer.domain.user.User;
+import com.d207.farmer.dto.common.FileDirectory;
 import com.d207.farmer.dto.mainpage.MainPageResponseDTO;
 import com.d207.farmer.dto.mainpage.components.*;
 import com.d207.farmer.repository.farm.*;
@@ -310,7 +311,7 @@ public class MainPageService {
         Map<Long, String> imageMap = new HashMap<>();
         for (CommunityImage ci : communityImages) {
             if(!imageMap.containsKey(ci.getCommunity().getId())) {
-                imageMap.put(ci.getCommunity().getId(), ci.getImagePath());
+                imageMap.put(ci.getCommunity().getId(), FileDirectory.COMMUNITY.toString().toLowerCase() + "/" + ci.getImagePath());
             }
         }
 
@@ -329,7 +330,9 @@ public class MainPageService {
                         c.getId(), c.getTitle(),
                         (c.getContent().length() > 20 ? c.getContent().substring(0, 20) : c.getContent()) + "...",
                         imageMap.get(c.getId()), heartCntMap.get(c.getId()), commentCntMap.get(c.getId()),
-                        c.getUser().getNickname(), c.getUser().getImagePath(), c.getWriteDate().toLocalDate()
+                        c.getUser().getNickname(),
+                        FileDirectory.USER.toString().toLowerCase() + "/" +c.getUser().getImagePath(),
+                        c.getWriteDate().toLocalDate()
                 ));
                 break;
             }
@@ -353,7 +356,7 @@ public class MainPageService {
         Map<Long, String> imageMap = new HashMap<>();
         for (CommunityImage ci : communityImages) {
             if(!imageMap.containsKey(ci.getCommunity().getId())) {
-                imageMap.put(ci.getCommunity().getId(), ci.getImagePath());
+                imageMap.put(ci.getCommunity().getId(), FileDirectory.COMMUNITY.toString().toLowerCase() + "/" + ci.getImagePath());
             }
         }
 
@@ -377,7 +380,9 @@ public class MainPageService {
                     c.getId(), c.getTitle(),
                     (c.getContent().length() > 20 ? c.getContent().substring(0, 20) : c.getContent()) + "...",
                     imageMap.get(c.getId()), heartCntMap.get(c.getId()), commentCntMap.get(c.getId()),
-                    c.getUser().getNickname(), c.getUser().getImagePath(), c.getWriteDate().toLocalDate()
+                    c.getUser().getNickname(),
+                    FileDirectory.USER.toString().toLowerCase() + "/" +c.getUser().getImagePath(),
+                    c.getWriteDate().toLocalDate()
             ));
         }
         return communitySortedByRecents;
