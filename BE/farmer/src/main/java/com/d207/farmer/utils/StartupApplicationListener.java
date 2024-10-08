@@ -73,6 +73,22 @@ public class StartupApplicationListener {
                                              {"가지", 1960, true}, {"무", 1960, true}, {"상추", 1960, false}, {"배추", 1960, false}, {"감자", 1960, false},
                                              {"고구마", 1960, true}, {"대파", 1960, true}};
 
+    // 작물 threshold
+    private final int[][] plantThresholds = {
+            {510, 1060, 1940},
+            {255, 848, 1746},
+            {204, 742, 2134},
+            {178, 602, 742},
+            {204, 742, 1060},
+            {255, 954, 1378},
+            {680, 0, 1360},
+            {388, 0, 776},
+            {970, 0, 1940},
+            {530, 0, 1060},
+            {750, 0, 1500},
+            {1455, 0, 2910}
+    };
+
     // 장소
     private final Object[][] placeSamples = {{"베란다", "베란다는 베란다입니다", true}, {"주말농장", "주말농장은 주말농장입니다.", true}, {"개인텃밭", "개인텃밭은 개인텃밭입니다.", false}, {"스쿨팜", "스쿨팜은 스쿨팜입니다.", false}};
 
@@ -197,9 +213,6 @@ public class StartupApplicationListener {
             {"무 농사는 처음이라면 조금씩 배워가며 하세요! 재미있게 해보세요!"}
     };
 
-
-
-
     private final UserService userService;
     private final SampleService sampleService;
     private final PlantService plantService;
@@ -277,13 +290,14 @@ public class StartupApplicationListener {
         List<Plant> plants = plantRepository.findAll();
         boolean isThirdStep = false;
         for (Plant plant : plants) {
+            int id = plant.getId().intValue();
             if(isThirdStep) {
-                plantThresholdRepository.save(new PlantThreshold(plant, 1, 1000));
-                plantThresholdRepository.save(new PlantThreshold(plant, 2, 1960));
+                plantThresholdRepository.save(new PlantThreshold(plant, 1, plantThresholds[id-1][0]));
+                plantThresholdRepository.save(new PlantThreshold(plant, 2, plantThresholds[id-1][2]));
             } else {
-                plantThresholdRepository.save(new PlantThreshold(plant, 1, 510));
-                plantThresholdRepository.save(new PlantThreshold(plant, 2, 1060));
-                plantThresholdRepository.save(new PlantThreshold(plant, 3, 1960));
+                plantThresholdRepository.save(new PlantThreshold(plant, 1, plantThresholds[id-1][0]));
+                plantThresholdRepository.save(new PlantThreshold(plant, 2, plantThresholds[id-1][1]));
+                plantThresholdRepository.save(new PlantThreshold(plant, 3, plantThresholds[id-1][2]));
             }
             if(plant.getName().equals("가지")) isThirdStep = true;
         }
