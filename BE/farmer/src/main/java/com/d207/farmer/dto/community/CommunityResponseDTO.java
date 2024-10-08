@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,9 @@ public class CommunityResponseDTO {
     private String communityTitle;
     private List<String> communityImage;
     private String communityContent;
-    private String communityDate;
+
+    private LocalDateTime communityDate;
+    private String communityDateString;
     private List<String> communityTag;
     private int communityHeartCount;
     private int communityContentCount;
@@ -28,7 +31,7 @@ public class CommunityResponseDTO {
 //    FileDirectory.USER.toString().toLowerCase()+"/" +
 
     //
-    public CommunityResponseDTO(Long communityId, Long userId, String userNickname, String userImagePath, String communityTitle, List<String> communityImage, String communityContent, String communityDate, List<String> communityTag, int communityHeartCount, int communityContentCount) {
+    public CommunityResponseDTO(Long communityId, Long userId, String userNickname, String userImagePath, String communityTitle, List<String> communityImage, String communityContent,LocalDateTime communityDate, String communityDateString, List<String> communityTag, int communityHeartCount, int communityContentCount) {
         this.communityId = communityId;
         //this.userId = userId;
         this.userNickname = userNickname;
@@ -39,6 +42,7 @@ public class CommunityResponseDTO {
                 .map(image -> FileDirectory.COMMUNITY.toString().toLowerCase() + "/" + image)
                 .collect(Collectors.toList());
         this.communityContent = communityContent;
+        this.communityDateString = communityDateString;
         this.communityDate = communityDate;
         this.communityTag = communityTag;
         this.communityHeartCount = communityHeartCount;
