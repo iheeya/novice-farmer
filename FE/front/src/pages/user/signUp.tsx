@@ -3,7 +3,7 @@
 // 2. 닉네임 중복 검사 추가
 
 // import api from "../../utils/axios";
-import { handleSignup } from "../../services/user/userApi";
+import { handleSignup, isEmailDuplicate, isNickNameDuplicate } from "../../services/user/userApi";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -281,26 +281,34 @@ function SignUp() {
     >
       <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%" }} />
       <form
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault();
-          handleSignup({
-            email,
-            password,
-            nickname: nickName,
-            age: parseInt(age, 10),
-            gender,
-            address: `${selectedProvince} ${selectedCity}`,
-            pushAllow,
-          })
-            .then((response) => {
-              console.log("signup success");
-              // 회원가입 성공 -> 로그인 페이지로 연결
-              navigate("/user/login");
+          const isDuplicate = await isEmailDuplicate(email);
+          const isDuplicateNickName = await isNickNameDuplicate(nickName);
+          if (!isDuplicate) {
+            alert("이미 존재하는 이메일입니다");
+            return;
+          } else if (!isDuplicateNickName) {
+            alert("이미 존재하는 닉네임입니다");
+            return;
+          } else {
+            handleSignup({
+              email,
+              password,
+              nickname: nickName,
+              age: parseInt(age, 10),
+              gender,
+              address: `${selectedProvince} ${selectedCity}`,
+              pushAllow,
             })
-            .catch((err) => {
-              console.log("signupfailed", err);
-              // 로그인 실패 -> 에러 출력
-            });
+              .then((response) => {
+                console.log("signup success");
+                navigate("/user/login");
+              })
+              .catch((err) => {
+                console.log("signup failed", err);
+              });
+          }
         }}
       >
         <TextField
@@ -374,11 +382,7 @@ function SignUp() {
             if (numericValue >= 0 && numericValue <= 150) {
               setAge(value);
             }
-          }}
-          inputProps={{
-            min: 0,
-            max: 150,
-          }}
+          }}          
           required
         />
 
@@ -453,7 +457,7 @@ function SignUp() {
           variant="contained"
           color="success"
           fullWidth
-          sx={{ marginTop: "1.5rem", marginBottom: "1.5rem", padding: "0.75rem", backgroundColor: "#84b366" }}
+          sx={{ marginTop: "1.5rem", marginBottom: "1.5rem", padding: "0.75rem", backgroundColor: "#5B8E55" }}
         >
           회원가입 하기
         </Button>

@@ -16,7 +16,7 @@ const Footer = () => {
           <img src={HomeIcon} alt="Home" className={styles.icon} />
           <span>홈</span>
         </Link>
-        <Link to="/info" className={styles.tab}>
+        <Link to="/info/place" className={styles.tab}>
           <img src={InfoIcon} alt="정보" className={styles.icon} />
           <span>정보</span>
         </Link>

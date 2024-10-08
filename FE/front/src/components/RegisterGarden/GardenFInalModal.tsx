@@ -12,6 +12,7 @@ import { setLocationData, setPlantData } from '../../store/AddFarm/store';
 import { RootState } from '../../store/AddFarm/store';
 import { motion } from "framer-motion";
 import { CSSTransition } from 'react-transition-group';
+import { gardenFinishPost } from '../../services/AddGarden/AddGardenPost';
 
 interface GardenModalProps {
   plantId: number| null;
@@ -61,26 +62,26 @@ function GardenFinalModal({  onClose, plantId, plantName }: GardenModalProps) {
   const handleSubmit = async () => {
     if (addressData) {
       const payload = {
-        palce : {
-        placeId: {placeId},
+        place : {
+        placeId: placeId,
         address: {
-          sido: addressData.sido || null,
-          sigungu: addressData.sigungu|| null,
-          bname1: addressData.bname1|| null,
-          bname2: addressData.bname2|| null,
-          jibun: addressData.jibun|| null,
-          zonecode: addressData.zonecode|| null,
+          sido: addressData.sido,
+          sigungu: addressData.sigungu,
+          bname1: addressData.bname1,
+          bname2: addressData.bname2,
+          jibun: addressData.jibun,
+          zonecode: addressData.zonecode,
         }
       }, 
       plant: {
-        plantId: {plantId},
-        myPlantName: {plantName},
-        memo: {memo}
+        plantId: plantId,
+        myPlantName: plantName || "",
+        memo: memo || ""
       }
       };
 
       try {
-        const response = await axios.post('/your-endpoint', payload);
+        const response = await gardenFinishPost(payload);
         console.log(response.data); // 응답 처리
         onClose(); // 모달 닫기
       } catch (error) {
