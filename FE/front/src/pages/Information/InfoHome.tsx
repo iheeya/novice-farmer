@@ -10,7 +10,7 @@ export default function InfoHome() {
   // URL 변경에 따라 탭 상태를 설정
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
-    console.log(newValue);
+    // console.log(newValue);
     if (newValue === "1") {
       navigate("/info/place");
     } else {
