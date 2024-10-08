@@ -32,6 +32,7 @@ import InputAdornment  from '@mui/material/InputAdornment';
 import { Input } from '@mui/material';
 import loading from '../../assets/img/loading/loading.png'
 import { GetImage } from '../../services/getImage'; 
+import Swal from 'sweetalert2'
 
 // DetailData 타입 정의
 interface DetailData {
@@ -72,7 +73,7 @@ function CommunityDetailBody(){
   const navigate = useNavigate();
   const [hasError, setHasError] = useState(false); // 에러 상태 추가
   const [imageUrl, setImageUrl] = useState<string[]>([]);
-
+  const [profileUrl, setProfileUrl] = useState<string[]>([]);
 
   const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -118,11 +119,6 @@ function CommunityDetailBody(){
             } else{
               console.log(data)
               setDetailData(data)
-
-              // Fetch images from S3
-              const urls = data.communityImagePath && data.communityImagePath.length > 0 
-              ? await Promise.all(data.communityImagePath.map((imagePath:string) => GetImage(imagePath)))
-              : []; // 데이터가 없을 경우 빈 배열을 반환
             
             }
         } catch (error) {
@@ -172,8 +168,21 @@ const handleHeartClick = () => {
 
 const handleDeleteClick = () => {
   deleteContent()
-  navigate('/community')
+
+  Swal.fire({
+    icon: "success",
+    title: "게시글이 삭제되었습니다.",
+    showConfirmButton: false,
+    timer: 1500,
+    customClass: {
+      title: 'custom-title' // 사용자 정의 클래스 추가
+    }
+  }).then(() => {
+    navigate('/community', {replace: true})
+  })
 }
+
+
 
 
 const deleteContent = async() => {
@@ -219,6 +228,43 @@ const handleCommentPost = async () => {
   }
 };
 
+// 이미지 저장
+useEffect(() => {
+  const fetchImages = async () => {
+    if (detailData?.communityImagePath && detailData.communityImagePath.length > 0) {
+      try {
+        const urls = await Promise.all(
+          detailData.communityImagePath.map((imagePath) => GetImage(imagePath))
+        );
+        setImageUrl(urls);
+      } catch (err) {
+        console.error("Failed to fetch image URLs:", err);
+      }
+    }
+  };
+
+  fetchImages();
+}, [detailData]);
+
+
+
+// 프로필 이미지 저장
+useEffect(() => {
+const fetchImages = async () => {
+    if (detailData?.imagePath) { // imagePath가 문자열일 경우
+        try {
+            const url = await GetImage(detailData.imagePath);
+            setProfileUrl([url]); // 단일 URL을 배열로 설정
+        } catch (err) {
+            console.error("Failed to fetch image URL:", err);
+        }
+}
+  };
+
+fetchImages();
+}, [detailData]);
+
+
 
 if (hasError) {
   return <div className="error-instruction">
@@ -231,29 +277,24 @@ if (hasError) {
 </div>; // 에러 메시지 출력
 }
 
+const handleRewrite = () => {
+  navigate(`/community/${Id}/modify`)
+}
+
 
     return(
         <>
             <div className='community-detail-body-header'>
-                {detailData?.imagePath ? <Avatar src={detailData?.imagePath} alt={detailData?.nickname}/>: <Avatar sx={{ bgcolor: '#5B8E55'}}>{ detailData?.nickname.charAt(0)}</Avatar>}
+                {detailData?.imagePath ? <Avatar src={profileUrl[0]} alt={detailData?.nickname}/>: <Avatar sx={{ bgcolor: '#5B8E55'}}>{ detailData?.nickname.charAt(0)}</Avatar>}
                 <div className='detail-body-header-profile'>
                     <div style={{fontSize: '1.2rem'}}>{detailData?.nickname}</div>
                     <div style={{color: 'gray', fontSize: '0.8rem'}}>{detailData?.year}.{detailData?.month}.{detailData?.day}</div>
                 </div>
-                {detailData?.checkMyarticle &&<CreateOutlinedIcon className='article-pencil'/>}
+                {detailData?.checkMyarticle &&<CreateOutlinedIcon className='article-pencil' onClick={handleRewrite}/>}
             </div>
 
             <div className='community-detail-body-body'>
               {/* 이미지 케로셀 */}
-            {/* {detailData?.communityImagePath && detailData.communityImagePath.length > 0 ? (
-                 <Slider {...settings} className='carousel'>
-                 {detailData?.communityImagePath.map((article:string, index:number) => (
-                   <img key={index} src={article} className='article-img' alt={`Article ${index}`} />
-                 ))}
-               </Slider>
-              ) : (
-                <img src={empty} className='article-img' alt="이미지 없음"/>
-              )} */}
                 {imageUrl.length > 0 ? (
                     <Slider {...settings} className='carousel'>
                       {imageUrl.map((url: string, index: number) => (
