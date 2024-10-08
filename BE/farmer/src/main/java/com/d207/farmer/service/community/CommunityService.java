@@ -19,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -54,9 +53,6 @@ public class CommunityService {
         // 커뮤니티를 하트 수로 가져오기
         Page<Community> communities;
         log.info("getCommunityWithHeart {}, {}", search, filter);
-
-
-
 
         // 검색어가 없는 경우
         if (search.isEmpty()) {
@@ -112,7 +108,6 @@ public class CommunityService {
 
             Object countObject = communityHeartRepository.countByCommunity(community);
             long heartCount = countObject instanceof Number ? ((Number) countObject).longValue() : 0L; // null 체크 및 변환
-            int heartCountint = (int) heartCount; // Long을 int로 변환
 
 
             // 커뮤니티 내용 제한 및 ... 추가
@@ -152,10 +147,6 @@ public class CommunityService {
 
         // 커뮤니티를 최신순으로 가져오기
         Page<Community> communities;
-        
-
-        // 1. 사용자 즐겨찾기 태그 가져오기
-        //List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
 
         List<CommunityFavoriteTag> communityTagId = communityFavoriteTagRepository.findByUser(user);
 
@@ -187,15 +178,6 @@ public class CommunityService {
         communities = communityRepository.findAllByOrderByWriteDateDesc(communityTagIds, sortedPageable); // 여기서 Page<Community>를 반환해야 함
 
 
-
-
-
-
-
-
-
-
-
         // 4. DTO 변환
     return communities.map(community -> {
         // 커뮤니티에 대한 이미지 리스트 가져오기
@@ -215,7 +197,6 @@ public class CommunityService {
         // countByCommunity 메서드가 Object를 반환하는 경우
         Object countObject = communityHeartRepository.countByCommunity(community);
         long heartCount = countObject instanceof Number ? ((Number) countObject).longValue() : 0L; // null 체크 및 변환
-        int heartCountint = (int) heartCount; // Long을 int로 변환
 
         // 커뮤니티 내용 제한 및 ... 추가
         String truncatedContent = community.getContent();
@@ -246,7 +227,6 @@ public class CommunityService {
     @Transactional
     public Long registerCommunity(Long userId, CommunityRegisterDTO communityRegisterDTO) {
 
-
         User user = userRepository.findById(userId).orElseThrow();
         Community community = new Community(user, communityRegisterDTO.getCommunityTitle(), communityRegisterDTO.getCommunityContent());
         // 커뮤니티 저장 후 반환된 객체에서 ID를 가져옴
@@ -267,24 +247,16 @@ public class CommunityService {
         }
         communityTags = communityTagRepository.findBytagNameIn(communityRegisterDTO.getCommunityTagList());
 
-
         // community_selected_tag 안에 tag 집어넣기!
         for(CommunityTag communityTag : communityTags){
             communitySelectedTagRespository.save(new CommunitySelectedTag(community, communityTag));
         }
-
-
-
-
-
-
 
         return savedCommunity.getId();
     }
 
     @Transactional
     public String registerHeart(Long userId, Long communityid) {
-
         User user = userRepository.findById(userId).orElseThrow();
         Community community = communityRepository.findById(communityid).orElseThrow();;
         CommunityHeart communityHeart = communityHeartRepository.findByCommunityAndUser(community, user).orElse(null);
@@ -296,11 +268,6 @@ public class CommunityService {
             communityHeartRepository.save(new CommunityHeart(community, user));
             return "register Heart success";
         }
-
-
-
-
-
     }
 
 
@@ -318,12 +285,10 @@ public class CommunityService {
         }
     }
 
-
     @Transactional
     public String registerCommunityComment(Long userId, Long id, CommunityCommentRegisterDTO communityCommentRegisterDTO) {
         Community community = communityRepository.findById(id).orElseThrow();
         User user = userRepository.findById(userId).orElseThrow();
-
         CommunityComment communityComment = new CommunityComment(community, user, communityCommentRegisterDTO.getCommentContent());
         communityCommentRepository.save(communityComment);
 
@@ -336,15 +301,11 @@ public class CommunityService {
         User user = userRepository.findById(userId).orElseThrow();
 
         // 지연로딩!!!
-//        Community community = communityRepository.findById(id).orElseThrow();
         Community community = communityRepository.findByIdWithUser(id).orElseThrow();
 
         if(community.isCheckDelete()){
             return null;
         }
-
-
-
 
         String nicknamedto = community.getUser().getNickname();
         String imagePathdto = community.getUser().getImagePath();
@@ -356,8 +317,6 @@ public class CommunityService {
             communityContentdto = communityContentdto.substring(0, 15); // 20글자만 잘라냄
             communityContentdto += "..."; // 예시로 '...' 추가
         }
-
-
 
 
         // 커뮤니티에 관련된 이미지를 조회
@@ -388,10 +347,7 @@ public class CommunityService {
             checkIPushHeart=false;
         }
 
-
-
-
-        boolean checkMyarticle = community.getUser().getId().equals(userId);
+       boolean checkMyarticle = community.getUser().getId().equals(userId);
 
         // Community 객체에서 writeDate를 가져옵니다.
         LocalDateTime writeDate = community.getWriteDate();
@@ -408,7 +364,7 @@ public class CommunityService {
     }
 
 
-    public List<CommunityCommentResponseDTO> responseCommunitycomment(Long userId, Long id) {
+    public List<CommunityCommentResponseDTO> responseCommunityComment(Long userId, Long id) {
 
         User user = userRepository.findById(userId).orElseThrow();
         Community community = communityRepository.findById(id).orElseThrow();;
@@ -433,13 +389,11 @@ public class CommunityService {
 
 
     public CommunityOneModifyResponseDTO responseCommunityOneInModity(Long userId, Long id) {
-        //User user = userRepository.findById(userId).orElseThrow();
         // 지연로딩!!!
-//        Community community = communityRepository.findById(id).orElseThrow();
         Community community = communityRepository.findByIdWithUser(id).orElseThrow();
 
-        boolean checkMyarticle = community.getUser().getId().equals(userId);
-        if(checkMyarticle){
+        boolean checkMyArticle = community.getUser().getId().equals(userId);
+        if(checkMyArticle){
         List<CommunityImage> communityImagePath =communityImageRepository.findByCommunity(community);
         List<String> communityImagePathDto = new ArrayList<>();
         for (CommunityImage communityImage : communityImagePath) {
@@ -453,7 +407,6 @@ public class CommunityService {
             communityTagList.add(communitySelectedTag.getCommunityTag().getTagName());
         }
 
-
            return new CommunityOneModifyResponseDTO(community.getTitle(), community.getContent(), communityImagePathDto, communityTagList);
         }
 
@@ -465,13 +418,13 @@ public class CommunityService {
 
         Community community = communityRepository.findByIdWithUser(id).orElseThrow();
 
-        boolean checkMyarticle = community.getUser().getId().equals(userId);
-        if(checkMyarticle){
+        boolean checkMyArticle = community.getUser().getId().equals(userId);
+        if(checkMyArticle){
             // 삭제할 이미지 먼저 삭제처리!
-            List<String> imagePathdtos = communityOneModifyRequestDTO.getCommunityImageSubtractPaths();
+            List<String> imagePathDtos = communityOneModifyRequestDTO.getCommunityImageSubtractPaths();
 
-            for(String imagePathdto : imagePathdtos){
-                CommunityImage communityImage = communityImageRepository.findByImagePath(imagePathdto.replace("community/",""));
+            for(String imagePathDto : imagePathDtos){
+                CommunityImage communityImage = communityImageRepository.findByImagePath(imagePathDto.replace("community/",""));
 
                 // 조회된 객체가 존재하면 삭제합니다.
                 if (communityImage != null) {
@@ -480,16 +433,8 @@ public class CommunityService {
             }
 
 
-
-//            for(MultipartFile Singlepartfile : communityOneModifyRequestDTO.getFiles()){
-//                String imagePathdto = fileUtil.uploadFile(Singlepartfile, FileDirectory.COMMUNITY);
-//
-//                  communityImageRepository.save(new CommunityImage(community, imagePathdto));
-//            }
-
-
-            List<String> tagpath = communityOneModifyRequestDTO.getCommunityTagSubtractList();
-            for(String tag : tagpath){
+            List<String> tagPath = communityOneModifyRequestDTO.getCommunityTagSubtractList();
+            for(String tag : tagPath){
                 // 태그 이름으로 CommunityTag 객체를 조회합니다.
                 CommunityTag communityTag = communityTagRepository.findByTagName(tag);
                 CommunitySelectedTag communitySelectedTag = communitySelectedTagRepository.findByCommunityAndCommunityTag(community, communityTag);
@@ -499,14 +444,14 @@ public class CommunityService {
                     communitySelectedTagRespository.delete(communitySelectedTag);
                 }
             }
-            tagpath = communityOneModifyRequestDTO.getCommunityTagAddList();
-            for(String tag : tagpath){
+            tagPath = communityOneModifyRequestDTO.getCommunityTagAddList();
+            for(String tag : tagPath){
                 communityTagRepository.save(new CommunityTag(tag));
 
             }
 
             // CommunityTagRepository에서 태그 목록을 가져오기
-            List<CommunityTag> communityTags = communityTagRepository.findBytagNameIn(tagpath);
+            List<CommunityTag> communityTags = communityTagRepository.findBytagNameIn(tagPath);
 
             // community_selected_tag 안에 tag 집어넣기!
             for(CommunityTag communityTag : communityTags){
@@ -519,7 +464,6 @@ public class CommunityService {
         return "success Modify Article";
     }
 
-    //public List<communityAllTagsResponseDTO> getCommunityAllTags(Long userId) {
     public List<communityAllTagsResponseDTO> getCommunityAllTags(Long userId) {
         // 사용자 조회
         User user = userRepository.findById(userId).orElseThrow();
@@ -581,7 +525,6 @@ public class CommunityService {
         }
 
         return "Change success";
-
     }
 
 
@@ -591,16 +534,13 @@ public class CommunityService {
         Community community = communityRepository.findById(communityId).orElseThrow();
         if(community.getUser().getId().equals(userId)){
         for( MultipartFile file2: file) {
-            String userimagepath = fileUtil.uploadFile(file2,FileDirectory.COMMUNITY);
-            communityImageRepository.save(new CommunityImage(community,userimagepath ));
-
+            String userImagePath = fileUtil.uploadFile(file2,FileDirectory.COMMUNITY);
+            communityImageRepository.save(new CommunityImage(community,userImagePath));
         }
             return "Success";
             }
         else{
             return "No image";
         }
-
-
     }
 }
