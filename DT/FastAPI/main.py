@@ -7,6 +7,10 @@ from fastapi.middleware.cors import CORSMiddleware
 # 함수 관리
 from weather.weather import load_adminfo, load_areainfo, load_aswsinfo, load_curruent_special_weatherinfo, load_special_areainfo, load_valinfo
 
+# 테스트
+from growth.growth import update_farm_growth
+
+
 # Router 관리
 from growth.routers import router as growth_router
 from pest.routers import router as pest_router
@@ -20,7 +24,7 @@ from setting.scheduler import start_scheduler
     
 def start():
     load_adminfo(), load_areainfo(), load_aswsinfo(), load_special_areainfo(), load_valinfo(), load_curruent_special_weatherinfo()
-
+    update_farm_growth()
 
 # Scheduler 시작
 # start_scheduler()
