@@ -562,4 +562,65 @@ public class CommunityService {
         }
 
     }
+
+    @Transactional
+    public Page<CommunityResponseDTO> getMyPage(Long userId, Pageable pageable) {
+
+        // 사용자 조회
+        User user = userRepository.findById(userId).orElseThrow();
+
+        // 사용자 ID를 기준으로 커뮤니티 게시물 조회
+        Page<Community> communities = communityRepository.findByUser(user, pageable);  // User에 대한 메서드 추가 필요
+
+        // DTO 변환
+        return communities.map(community -> {
+
+            // 커뮤니티가 삭제된 경우 건너뜁니다.
+            if (community.isCheckDelete()) { // checkDelete가 true인 경우
+                return null; // null을 반환하여 필터링
+            }
+            // 커뮤니티에 대한 이미지 리스트 가져오기
+            List<String> communityImages = communityImageRepository.findByCommunity(community)
+                    .stream()
+                    .map(CommunityImage::getImagePath)
+                    .collect(Collectors.toList());
+
+            // 커뮤니티에 대한 태그 리스트 가져오기
+            List<CommunitySelectedTag> communityTags = communitySelectedTagRepository.findByCommunity(community);
+            List<String> tagNames = communityTags.stream()
+                    .map(selectedTag -> selectedTag.getCommunityTag().getTagName()) // CommunitySelectedTag에서 CommunityTag의 태그 이름 추출
+                    .collect(Collectors.toList());
+
+            // 커뮤니티 하트 수 가져오기
+            Object countObject = communityHeartRepository.countByCommunity(community);
+            long heartCount = countObject instanceof Number ? ((Number) countObject).longValue() : 0L; // null 체크 및 변환
+
+            // 커뮤니티 내용 제한
+            String truncatedContent = community.getContent();
+            if (truncatedContent.length() > 12) {
+                truncatedContent = truncatedContent.substring(0, 12) + "...";
+            }
+
+            // 작성 날짜를 포맷
+            String formattedWriteDate = dateUtil.getTime(community.getWriteDate());
+
+            // DTO 생성
+            return new CommunityResponseDTO(
+                    community.getId(),
+                    community.getUser().getId(),
+                    community.getUser().getNickname(),
+                    community.getUser().getImagePath(),
+                    community.getTitle(),
+                    communityImages,
+                    truncatedContent,
+                    community.getWriteDate(),
+                    formattedWriteDate,
+                    tagNames,
+                    (int) heartCount, // int로 변환
+                    community.getContent().length() // 또는 필요한 다른 정보를 사용
+            );
+        });
+
+
+    }
 }

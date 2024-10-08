@@ -2,8 +2,7 @@ package com.d207.farmer.controller.community;
 
 import com.d207.farmer.dto.community.*;
 
-import com.d207.farmer.dto.file.FileUploadTestRequestDTO;
-import com.d207.farmer.dto.file.MultiFileUploadTestRequestDTO;
+
 import com.d207.farmer.dto.survey.SurveyRegisterReRequestDTO;
 import com.d207.farmer.service.community.CommunityService;
 import com.d207.farmer.utils.JWTUtil;
@@ -43,6 +42,24 @@ public class CommunityController {
         else{
            return ResponseEntity.ok(communityService.getCommunityWithHeart(userId, filter, search, pageable));
         }
+    }
+
+
+
+
+    /**
+     * 커뮤니티 Mypage 불러오기!
+     */
+    @GetMapping("/mypage")
+    public ResponseEntity<Page<CommunityResponseDTO>> getMyPage(@RequestHeader("Authorization") String authorization,
+                                                                      Pageable pageable) {
+
+        Long userId = jwtUtil.getUserId(authorization);
+        log.info("[CommunityController] getMyPage");
+
+        return ResponseEntity.ok(communityService.getMyPage(userId, pageable));
+
+
     }
 
     /**
