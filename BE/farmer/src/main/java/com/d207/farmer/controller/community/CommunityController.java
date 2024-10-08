@@ -123,6 +123,20 @@ public class CommunityController {
     }
 
     /**
+     *  커뮤니티 댓글중 특정 게시물 삭제하기!
+     */
+    @DeleteMapping("{id}/all/comment/{commentId}")
+
+    public ResponseEntity<String> deleteCommunityComment(@RequestHeader("Authorization") String authorization,
+                                                           @PathVariable Long id,
+                                                           @PathVariable Long commentId){
+        Long userId = jwtUtil.getUserId(authorization);
+
+        return ResponseEntity.created(URI.create("/")).body(communityService.deleteCommunityComment(userId, id, commentId));
+    }
+
+
+    /**
      *  커뮤니티 특정 게시물의 댓글 커뮤니티 특정 게시물의 전체 댓글보기
      */
     @GetMapping("{id}/all/comment")

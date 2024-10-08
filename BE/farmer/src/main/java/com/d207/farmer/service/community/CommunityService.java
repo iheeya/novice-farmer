@@ -546,4 +546,20 @@ public class CommunityService {
             return "No image";
         }
     }
+
+    @Transactional
+    public String deleteCommunityComment(Long userId, Long id, Long commentId) {
+        // 사용자 조회
+        User user = userRepository.findById(userId).orElseThrow();
+        CommunityComment communityComment = communityCommentRepository.findById(commentId).orElseThrow();
+
+        // 댓글 작성자와 요청한 사용자 비교
+        if (communityComment.getUser().getId().equals(user.getId())) {
+            communityCommentRepository.delete(communityComment);
+            return "댓글이 삭제되었습니다.";
+        } else {
+            return "댓글 삭제 권한이 없습니다.";
+        }
+
+    }
 }
