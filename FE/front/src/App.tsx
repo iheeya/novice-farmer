@@ -44,7 +44,7 @@ function AppWrapper() {
     const accessToken = sessionStorage.getItem("accessToken");
 
     // 인증이 필요 없는 경로 리스트
-    const publicPaths = ["/user/login", "/user/signup", "/introduce"];
+    const publicPaths = ["/user/login", "/user/signUp", "/introduce"];
 
     // 현재 경로가 인증이 필요 없는 경로가 아닌데, 토큰이 없으면 로그인 페이지로 이동
     if (!accessToken && !publicPaths.includes(location.pathname)) {
@@ -57,7 +57,7 @@ function AppWrapper() {
       <Routes>
         {/* 공개 페이지들 */}
         <Route path="/" element={<Main />} />
-        <Route path="/user/signup" element={<SignUp />} />
+        <Route path="/user/signUp" element={<SignUp />} />
         <Route path="/user/login" element={<Login />} />
         <Route path="/user/survey" element={<Survey />} />
         <Route path="/introduce" element={<HomePage />} />
