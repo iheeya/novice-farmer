@@ -73,20 +73,15 @@ const MyPlant = () => {
       try {
         await startPlant(plantData.plantInfo.myPlaceId); // API 요청
         Swal.fire('시작 완료', '작물이 성공적으로 시작되었습니다.', 'success');
-        setPlantData({
-          ...plantData,
-          isStarted: true,
-          plantInfo: {
-            ...plantData.plantInfo,
-            startDate: new Date().toISOString().split('T')[0],
-          },
-        }); // 상태 업데이트
+        
+        fetchPlantDetail(); // 최신화된 데이터 다시 불러오기
       } catch (error) {
         console.error('작물 시작 실패', error);
         Swal.fire('시작 실패', '작물을 시작하는 데 실패했습니다.', 'error');
       }
     }
   };
+  
 
   // 삭제 함수
   const handleDelete = async () => {

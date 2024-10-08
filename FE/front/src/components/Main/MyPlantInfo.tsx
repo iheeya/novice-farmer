@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../../styles/Main/MyPlantInfo.module.css';
 import { getImageForCrop } from '../../utils/imageMapping';  // 이미지 매핑 함수 가져오기
 
@@ -11,6 +12,14 @@ interface MyPlantInfoProps {
 }
 
 const MyPlantInfo: React.FC<MyPlantInfoProps> = ({ data }) => {
+  const navigate = useNavigate();
+
+  const handlePalntClick = (plantName: string) => {
+    navigate(`info/plant/${plantName}`);
+  }
+
+
+
   return (
     <div className={styles.plantInfoContainer}>
       {/* 작물 정보 섹션 */}
@@ -29,11 +38,9 @@ const MyPlantInfo: React.FC<MyPlantInfoProps> = ({ data }) => {
 
       {/* 작물 재배방법과 비료/농약 추천 컴포넌트 */}
       <ul className={styles.plantList}>
-        <li className={styles.plantItem}>
-          <p>{data.plantName} 재배방법?</p>
-        </li>
-        <li className={styles.plantItem}>
-          <p>{data.plantName} 비료/농약 추천</p>
+        <li className={styles.plantItem}
+          onClick={() => handlePalntClick(data.plantName)}>
+          <p>{data.plantName} 재배방법과 추천비료</p>
         </li>
       </ul>
     </div>
