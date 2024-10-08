@@ -10,7 +10,7 @@ USE fast_api;
 -- 예보구역 데이터 가져오기
 CREATE TABLE weather_area (
     `reg_id` VARCHAR(12) PRIMARY KEY COLLATE utf8mb4_unicode_ci, # 예보가 발효되는 예보구역 코드(region_id)
-    `reg_name` VARCHAR(12) UNIQUE # 예보가 발효되는 예보구역 이름(region_name)
+    `reg_name` VARCHAR(12) # 예보가 발효되는 예보구역 이름(region_name)
 );
 
 -- 행정구역 데이터 가져오기
