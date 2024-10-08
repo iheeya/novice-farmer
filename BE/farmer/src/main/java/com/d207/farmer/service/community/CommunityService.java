@@ -373,12 +373,15 @@ public class CommunityService {
 
         // for 문을 사용하여 댓글을 순회하며 DTO에 추가
         for (CommunityComment comment : communityComments) {
-
+            boolean isMyComment = comment.getUser().getId().equals(userId); // 사용자 ID 비교
             CommunityCommentResponseDTO dto = new CommunityCommentResponseDTO(
                 comment.getUser().getNickname(),
                 comment.getUser().getImagePath(),
                 comment.getContent(),
-                dateUtil.getTime(comment.getWriteDate())
+                    dateUtil.getTime(comment.getWriteDate()),
+                    comment.getId(),
+                    isMyComment
+
             );
 
             communityCommentResponseDTOs.add(dto); // DTO 리스트에 추가
