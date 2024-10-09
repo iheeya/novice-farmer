@@ -299,7 +299,8 @@ function InputArticle(){
             color: "white",
             padding: "10px 30px",
             borderRadius: "20px",
-            marginTop: '5%'
+            marginTop: '10%',
+            marginBottom: '20%'
             }}
             onClick={handleSubmit}
             >

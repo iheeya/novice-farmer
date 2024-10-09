@@ -7,6 +7,14 @@ interface ArticlePost {
     communityTagList: string[],
 }
 
+interface ArticleModifyPost{
+    communityTitle: string,
+    communityContent: string,
+    communityImageSubtractPaths: string[],
+    communityTagSubtractList: string[],
+    communityTagAddList: string[]
+}
+
 
 export function ArticlePost(payload: ArticlePost){ 
     return api
@@ -35,3 +43,14 @@ export function ArticleImgPost(Id: number, imageFile: FormData) {
         });
 }
 
+
+export function ArticleModifyPost(Id: number, payload: ArticleModifyPost){
+    return api 
+        .post(`community/${Id}/all/modify`, payload)
+        .then((response) => {
+            return Promise.resolve(response)
+        })
+        .catch((e) => {
+            return Promise.reject(e)
+        })
+}
