@@ -192,5 +192,6 @@ pyrightconfig.json
 .history
 .ionide
 
+yolo_env/
 yolov5/
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
