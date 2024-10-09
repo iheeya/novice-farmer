@@ -13,19 +13,20 @@ EC2_DB_ID = os.getenv('EC2_DB_ID')
 EC2_DB_PW = os.getenv('EC2_DB_PW')
 EC2_DB_HOST = os.getenv('EC2_DB_HOST')
 EC2_DB_PORT = os.getenv('EC2_DB_PORT')
-EC2_DB_NAME = os.getenv('EC2_DB_NAME')
+EC2_DB_NAME = os.getenv('MYSQL_FASTAPI_URL')
+EC2_DB_NAME2 = os.getenv('MYSQL_FARMER_URL')
 
 # 데이터베이스 URL 생성
-DATABASE_URL = f"mysql+pymysql://{EC2_DB_ID}:{EC2_DB_PW}@{EC2_DB_HOST}:{EC2_DB_PORT}/{EC2_DB_NAME}"
+MYSQL_FASTAPI_URL = f"mysql+pymysql://{EC2_DB_ID}:{EC2_DB_PW}@{EC2_DB_HOST}:{EC2_DB_PORT}/{EC2_DB_NAME}"
+MYSQL_FARMER_URL = f"mysql+pymysql://{EC2_DB_ID}:{EC2_DB_PW}@{EC2_DB_HOST}:{EC2_DB_PORT}/{EC2_DB_NAME2}"
 
 # SQLAlchemy 엔진 및 세션 설정
-engine = create_engine(DATABASE_URL)
+engine = create_engine(MYSQL_FASTAPI_URL)
+engine2 = create_engine(MYSQL_FARMER_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
-
-Base.metadata.create_all(bind=engine)  # 테이블 다시 생성
 
 # 의존성 주입을 위한 DB 세션 함수
 def get_db():
@@ -34,4 +35,3 @@ def get_db():
         yield db
     finally:
         db.close()
-

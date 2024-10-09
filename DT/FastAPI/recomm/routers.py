@@ -1,34 +1,34 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from .database import get_db  # DB 세션을 가져오는 함수
-from .services import GardenCropRecommender  # 추천 알고리즘 클래스
-from .schemas import CropRecommendationRequest, CropRecommendationResponse  # Pydantic 모델 import
+from typing import List, Dict
+from .database import get_db
+from .schemas import CropRecommendationRequest
+from .service import CropRecommendationService
 
-# FastAPI의 APIRouter 인스턴스 생성
 router = APIRouter()
 
-@router.post("/recommendation/", response_model=CropRecommendationResponse)
-async def recommend_crops(request: CropRecommendationRequest, db: Session = Depends(get_db)):
-    """
-    텃밭 주소와 희망 작물을 받아 추천 작물을 반환하는 API
-    :param request: 텃밭 주소와 희망 작물 정보
-    :param db: SQLAlchemy DB 세션
-    :return: 추천 작물 목록
-    """
+# 서비스 객체 생성
+def get_crop_recommendation_service(db: Session = Depends(get_db)):
+    return CropRecommendationService(db)
+
+# 작물 추천 API
+@router.post("/plant/recommend", response_model=List[Dict[str, int]])
+async def recommend_crops(request: CropRecommendationRequest, service: CropRecommendationService = Depends(get_crop_recommendation_service)):
     try:
-        # 추천 알고리즘 클래스 인스턴스 생성 (주소 기반 BJD 코드 찾기 포함)
-        recommender = GardenCropRecommender(address=request.address, desired_crop=request.desired_crop, db=db)
-
-        # 내부 로직에서 기본 top_n=6, score_threshold=20 사용
-        top_n = 6
-        score_threshold = 20
-
-        # 추천 작물 계산
-        recommended_crops = recommender.recommend_crops(top_n=top_n, score_threshold=score_threshold)
-
-        # 응답으로 추천 작물 리스트 반환
-        return CropRecommendationResponse(crops=recommended_crops)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        # 객체의 속성으로 접근하도록 수정
+        address = {
+            "sido": request.address.sido,
+            "sigungu": request.address.sigungu,
+            "bname1": request.address.bname1,
+            "bname2": request.address.bname2,
+            "bunji": request.address.bunji,
+        }
+        # 작물 추천 결과 반환
+        recommendations = service.get_crop_recommendations(address)
+        return recommendations
+    except HTTPException as e:
+        # HTTPException 발생 시 그대로 반환
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"추천 생성 중 오류 발생: {str(e)}")
+        # 그 외의 예외 발생 시 내부 서버 오류 반환
+        raise HTTPException(status_code=500, detail=f"내부 서버 오류: {str(e)}")
