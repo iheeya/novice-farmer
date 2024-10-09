@@ -77,6 +77,7 @@ function CommunityDetailBody(){
   const [hasError, setHasError] = useState(false); // 에러 상태 추가
   const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [profileUrl, setProfileUrl] = useState<string[]>([]);
+  const [commentProfileUrl, setCommentProfileUrl] = useState<string[]>([]);
 
   const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -296,6 +297,30 @@ fetchImages();
 }, [detailData]);
 
 
+// 댓글 프로필 이미지 저장
+useEffect(() => {
+  const fetchProfileImages = async () => {
+    if (commentData && Array.isArray(commentData)) {
+      const urls = await Promise.all(
+        commentData.map(async (comment) => {
+          try {
+            return await GetImage(comment.imagePath);
+          } catch (e) {
+            console.log(e);
+            return null; // 이미지 로드 실패 시 null 반환
+          }
+        })
+      );
+       // null 값을 제외하고 string[]만 남기기
+       setCommentProfileUrl(urls.filter((url): url is string => url !== null));
+    }
+  };
+
+  fetchProfileImages();
+}, [commentData]);
+
+
+
 
 if (hasError) {
   return <div className="error-instruction">
@@ -341,7 +366,7 @@ const handleRewrite = () => {
             <div className='community-detail-content'>
               <div className='community-detail-title'>{detailData?.communityTitle}</div>
               <div>{detailData?.communityContent}</div>
-              <div>
+              <div className='community-tag-list'>
                 {detailData?.communityTagList.map((tag: string, index: number) => (
                   <div key={index}>#{tag}</div> // key 속성 추가
                 ))}
@@ -389,7 +414,7 @@ const handleRewrite = () => {
                         <div className='comment'>
                           <div key={index} className="comment-item">
                             {/* 유저 프로필 이미지 */}
-                            {comment.imagePath ? <Avatar src={comment.imagePath} alt={comment.nickname} sx={{ marginRight: '0.5rem' }} />: <Avatar sx={{ bgcolor: '#5B8E55', marginRight: '0.5rem'}}>{ comment.nickname.charAt(0)}</Avatar>}
+                            {comment.imagePath ? <Avatar src={commentProfileUrl[index]} alt={comment.nickname} sx={{ marginRight: '0.5rem' }} />: <Avatar sx={{ bgcolor: '#5B8E55', marginRight: '0.5rem'}}>{ comment.nickname.charAt(0)}</Avatar>}
                           <div>
                               <div style={{ fontWeight: 'bold', display:'flex', alignItems:'center'}}>
                                 {comment.nickname}
