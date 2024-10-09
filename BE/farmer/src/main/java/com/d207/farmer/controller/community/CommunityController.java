@@ -182,7 +182,7 @@ public class CommunityController {
     @PostMapping("{id}/all/modify")
     public ResponseEntity<String> communityOneModifyRequest (@RequestHeader("Authorization") String authorization,
                                                                                    @PathVariable Long id,
-                                                             @ModelAttribute CommunityOneModifyRequestDTO communityOneModifyRequestDTO
+                                                             @RequestBody CommunityOneModifyRequestDTO communityOneModifyRequestDTO
                                                              )   {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[CommunityController] Get communityOneModifyRequest {} ", userId);

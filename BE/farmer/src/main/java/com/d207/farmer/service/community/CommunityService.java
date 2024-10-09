@@ -400,7 +400,7 @@ public class CommunityService {
         List<CommunityImage> communityImagePath =communityImageRepository.findByCommunity(community);
         List<String> communityImagePathDto = new ArrayList<>();
         for (CommunityImage communityImage : communityImagePath) {
-            communityImagePathDto.add( FileDirectory.COMMUNITY.toString().toLowerCase() + "/" +communityImage.getImagePath());
+            communityImagePathDto.add( communityImage.getImagePath());
         }
 
         List<CommunitySelectedTag> communitySelectedTags = communitySelectedTagRespository.findByCommunity(community);
