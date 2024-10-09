@@ -170,15 +170,20 @@ function ReWriteArticle(){
 
     // 수정 post
     const handleSubmit = async() => {
-      console.log(title)
-      console.log(content)
+
+      // 제목과 내용이 수정되지 않았을 경우 modifyData에서 기존 값 사용
+      const finalTitle = title || modifyData?.communityTitle || "";
+      const finalContent = content || modifyData?.communityContent ||"";
+
+      console.log(finalTitle)
+      console.log(finalContent)
       console.log(communityImageSubtractPaths)
       console.log(communityTagSubtractList)
       console.log(communityTagAddList)
 
       const payload = {
-        communityTitle: title,
-        communityContent: content,
+        communityTitle: finalTitle,
+        communityContent: finalContent,
         communityImageSubtractPaths: communityImageSubtractPaths,
         communityTagSubtractList: communityTagSubtractList,
         communityTagAddList: communityTagAddList,
