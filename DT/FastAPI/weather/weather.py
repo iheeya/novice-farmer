@@ -1,5 +1,4 @@
 # 기상 정보
-from sqlalchemy import text
 from sqlalchemy.orm import Session
 from setting.mysql import session_local
 from weather.models import WeatherArea, WeatherVal, AwsStn, AdmDistrict, SpecialWeather, CurrentSpecialWeather
