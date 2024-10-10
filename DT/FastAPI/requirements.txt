@@ -11,5 +11,3 @@ motor
 alembic
 apscheduler
 pymysql
-torch
-boto3

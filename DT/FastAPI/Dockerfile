@@ -5,6 +5,7 @@ FROM python:3.8
 WORKDIR /app
 
 # 필요한 파일 복사
+COPY .env .env
 COPY requirements.txt .
 
 # 종속성 설치
