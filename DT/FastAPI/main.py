@@ -9,6 +9,7 @@ from pest.routers import router as pest_router
 from recomm.routers import router as recomm_router
 from todo.routers import router as todo_router
 from weather.routers import router as weather_router
+from yolo.routers import router as yolo_router
 
 app  = FastAPI()
 
@@ -33,6 +34,7 @@ app.include_router(pest_router, prefix='/data-api', tags=['pest'])
 app.include_router(recomm_router, prefix='/data-api', tags=['recomm'])
 app.include_router(todo_router, prefix='/data-api', tags=['todo'])
 app.include_router(weather_router, prefix='/data-api', tags=['weather'])
+app.include_router(yolo_router, prefix='/data-api', tags=['pest'])
 
 
 @app.get("/data-api/test")
