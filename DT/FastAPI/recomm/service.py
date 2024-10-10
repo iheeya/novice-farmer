@@ -405,7 +405,6 @@ class IndoorCropRecommendationService:
         """
         콜드 스타트 문제를 해결하기 위해 사전 정의된 작물 추천을 반환합니다.
         """
-        # 베란다 텃밭에 추천할 기본 작물 리스트 (plantId는 예시로 설정)
         cold_start_plants = [
             {"plantId": 1},  # 예: 토마토
             {"plantId": 2},  # 예: 상추
@@ -414,15 +413,102 @@ class IndoorCropRecommendationService:
         ]
         return cold_start_plants
 
+    def recommend_indoor_plants(self, user_id: int) -> List[Dict[str, int]]:
+        """
+        사용자의 데이터를 기반으로 실내 재배에 적합한 작물을 추천합니다.
+        """
+        # 실내 사용자 수가 적으면 콜드 스타트 사용
+        user_count = self.db.query(User).count()
+        if user_count < 100:
+            return self.get_cold_start_recommendations()
+
+        # 사용자-작물 행렬 생성
+        user_plant_matrix = self.create_user_plant_matrix()
+        user_similarities = self.calculate_user_similarity(user_plant_matrix, user_id)
+        recommended_plant_ids = self.get_recommendations(user_plant_matrix, user_similarities, user_id)
+
+        return [{"plantId": plant_id} for plant_id in recommended_plant_ids]
+
+    def create_user_plant_matrix(self) -> Dict[int, Dict[int, int]]:
+        """
+        사용자-작물 행렬을 생성합니다.
+        예시: {user_id: {plant_id: rating_or_count}}
+        """
+        user_plant_matrix = {}
+        user_farms = self.db.query(Farm.user_place_id, Farm.plant_id).all()
+
+        for user_place_id, plant_id in user_farms:
+            if user_place_id not in user_plant_matrix:
+                user_plant_matrix[user_place_id] = {}
+            if plant_id not in user_plant_matrix[user_place_id]:
+                user_plant_matrix[user_place_id][plant_id] = 0
+            user_plant_matrix[user_place_id][plant_id] += 1
+
+        return user_plant_matrix
+
+    def calculate_user_similarity(self, user_plant_matrix: Dict[int, Dict[int, int]], target_user_id: int) -> Dict[int, float]:
+        """
+        특정 사용자와 다른 사용자 간의 코사인 유사도를 계산합니다.
+        """
+        target_vector = user_plant_matrix.get(target_user_id, {})
+        similarities = {}
+
+        for user_id, user_vector in user_plant_matrix.items():
+            if user_id == target_user_id:
+                continue
+
+            similarity = self.cosine_similarity(target_vector, user_vector)
+            similarities[user_id] = similarity
+
+        return similarities
+
+    def cosine_similarity(self, vector1: Dict[int, int], vector2: Dict[int, int]) -> float:
+        """
+        두 사용자 간의 코사인 유사도를 계산합니다.
+        """
+        common_items = set(vector1.keys()) & set(vector2.keys())
+        numerator = sum(vector1[item] * vector2[item] for item in common_items)
+        denominator1 = sqrt(sum([vector1[item] ** 2 for item in vector1]))
+        denominator2 = sqrt(sum([vector2[item] ** 2 for item in vector2]))
+
+        if denominator1 == 0 or denominator2 == 0:
+            return 0.0
+
+        return numerator / (denominator1 * denominator2)
+
+    def get_recommendations(self, user_plant_matrix: Dict[int, Dict[int, int]], similarities: Dict[int, float], target_user_id: int) -> List[int]:
+        """
+        유사한 사용자가 선호하는 작물 중에서 타겟 사용자가 재배하지 않은 작물을 추천합니다.
+        """
+        weighted_scores = {}
+        similarity_sums = {}
+
+        for similar_user_id, similarity in similarities.items():
+            for plant_id, score in user_plant_matrix[similar_user_id].items():
+                if plant_id not in user_plant_matrix[target_user_id]:
+                    if plant_id not in weighted_scores:
+                        weighted_scores[plant_id] = 0
+                        similarity_sums[plant_id] = 0
+
+                    weighted_scores[plant_id] += similarity * score
+                    similarity_sums[plant_id] += similarity
+
+        recommendations = [(plant_id, weighted_scores[plant_id] / similarity_sums[plant_id])
+                           for plant_id in weighted_scores if similarity_sums[plant_id] != 0]
+
+        recommendations.sort(key=lambda x: x[1], reverse=True)
+
+        # 상위 추천 3개의 작물 ID 반환
+        return [plant_id for plant_id, score in recommendations[:3]]
+
 class PlaceRecommendationService:
     def __init__(self, db: Session):
         self.db = db
 
-    def recommend_place_for_plant(self, plant_id: int, plant_name: str) -> List[Dict[str, int]]:
+    def recommend_place_for_plant(self, user_id: int, plant_id: int, plant_name: str) -> List[Dict[str, int]]:
         """
         선택된 작물에 따라 적합한 텃밭 환경을 추천합니다.
         """
-        # 초기 콜드 스타트용 추천 로직
         cold_start_recommendations = {
             "토마토": [1, 2, 3],
             "상추": [1, 2, 4],
@@ -436,9 +522,85 @@ class PlaceRecommendationService:
             "가지": [2, 3]
         }
 
-        # 해당 작물에 대해 사전 정의된 환경을 제공
-        recommended_places = cold_start_recommendations.get(plant_name, [])
+        user_count = self.db.query(User).count()
+        if user_count < 100:  # 예: 사용자가 10명 미만인 경우 콜드 스타트
+            return [{"placeId": place_id} for place_id in cold_start_recommendations.get(plant_name, [])]
 
-        # 추천 결과를 'placeId' 형태로 반환
-        return [{"placeId": place_id} for place_id in recommended_places]
+        user_plant_matrix = self.create_user_plant_matrix()
+        user_similarities = self.calculate_user_similarity(user_plant_matrix, user_id)
+        recommended_plant_ids = self.get_recommendations(user_plant_matrix, user_similarities, user_id)
+
+        return [{"placeId": place_id} for place_id in recommended_plant_ids]
+
+    def create_user_plant_matrix(self) -> Dict[int, Dict[int, int]]:
+        """
+        사용자-작물 행렬을 생성합니다.
+        예시: {user_id: {plant_id: rating_or_count}}
+        """
+        user_plant_matrix = {}
+        user_farms = self.db.query(Farm.user_place_id, Farm.plant_id).all()
+
+        for user_place_id, plant_id in user_farms:
+            if user_place_id not in user_plant_matrix:
+                user_plant_matrix[user_place_id] = {}
+            if plant_id not in user_plant_matrix[user_place_id]:
+                user_plant_matrix[user_place_id][plant_id] = 0
+            user_plant_matrix[user_place_id][plant_id] += 1
+
+        return user_plant_matrix
+
+    def calculate_user_similarity(self, user_plant_matrix: Dict[int, Dict[int, int]], target_user_id: int) -> Dict[int, float]:
+        """
+        특정 사용자와 다른 사용자 간의 코사인 유사도를 계산합니다.
+        """
+        target_vector = user_plant_matrix.get(target_user_id, {})
+        similarities = {}
+
+        for user_id, user_vector in user_plant_matrix.items():
+            if user_id == target_user_id:
+                continue
+
+            similarity = self.cosine_similarity(target_vector, user_vector)
+            similarities[user_id] = similarity
+
+        return similarities
+
+    def cosine_similarity(self, vector1: Dict[int, int], vector2: Dict[int, int]) -> float:
+        """
+        두 사용자 간의 코사인 유사도를 계산합니다.
+        """
+        common_items = set(vector1.keys()) & set(vector2.keys())
+        numerator = sum(vector1[item] * vector2[item] for item in common_items)
+        denominator1 = sqrt(sum([vector1[item] ** 2 for item in vector1]))
+        denominator2 = sqrt(sum([vector2[item] ** 2 for item in vector2]))
+
+        if denominator1 == 0 or denominator2 == 0:
+            return 0.0
+
+        return numerator / (denominator1 * denominator2)
+
+    def get_recommendations(self, user_plant_matrix: Dict[int, Dict[int, int]], similarities: Dict[int, float], target_user_id: int) -> List[int]:
+        """
+        유사한 사용자가 선호하는 작물 중에서 타겟 사용자가 재배하지 않은 작물을 추천합니다.
+        """
+        weighted_scores = {}
+        similarity_sums = {}
+
+        for similar_user_id, similarity in similarities.items():
+            for plant_id, score in user_plant_matrix[similar_user_id].items():
+                if plant_id not in user_plant_matrix[target_user_id]:
+                    if plant_id not in weighted_scores:
+                        weighted_scores[plant_id] = 0
+                        similarity_sums[plant_id] = 0
+
+                    weighted_scores[plant_id] += similarity * score
+                    similarity_sums[plant_id] += similarity
+
+        recommendations = [(plant_id, weighted_scores[plant_id] / similarity_sums[plant_id])
+                           for plant_id in weighted_scores if similarity_sums[plant_id] != 0]
+
+        recommendations.sort(key=lambda x: x[1], reverse=True)
+
+        # 상위 추천 3개의 작물 ID 반환
+        return [plant_id for plant_id, score in recommendations[:3]]
 
