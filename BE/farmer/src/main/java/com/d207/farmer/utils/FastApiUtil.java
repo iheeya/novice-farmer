@@ -82,7 +82,7 @@ public class FastApiUtil {
         // json data
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("place", new RecommendPlantResponseDTO.placeRequestDTO(place.getId(), place.getName()));
-        requestBody.put("address", new RecommendPlantResponseDTO.addressRequestDTO(address.getSido(), address.getSigugun(), address.getBname1(), address.getBname2(),
+        requestBody.put("address", new RecommendPlantResponseDTO.addressRequestDTO(address.getSido(), address.getSigungu(), address.getBname1(), address.getBname2(),
                 address.getBunji(), address.getJibun(), address.getZonecode(), latAndLong.get("latitude"), latAndLong.get("longitude")));
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);

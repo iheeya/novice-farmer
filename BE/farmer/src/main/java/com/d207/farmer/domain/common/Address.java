@@ -14,7 +14,7 @@ public class Address {
 
     private String sido;
 
-    private String sigugun;
+    private String sigungu;
 
     private String bname1;
 
