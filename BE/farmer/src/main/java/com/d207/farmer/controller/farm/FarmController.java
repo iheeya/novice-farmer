@@ -84,7 +84,7 @@ public class FarmController {
     public ResponseEntity<List<PlaceWithRecommendAndFavoriteResponseDTO>> getPlaceWithRecommendAndFavorite(@RequestHeader("Authorization") String authorization,
                                                                                                            @RequestBody @Valid RecommendPlaceRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("[FarmController] Received get places with recommend and favorite request for {}", userId);
+        log.info("[FarmController] Received get places with recommend and favorite request for {}", request);
 
         farmService.requestPlaceRecommend(userId, request);
 
@@ -99,7 +99,7 @@ public class FarmController {
     public ResponseEntity<List<PlantWithRecommendAndFavoriteResponseDTO>> getPlantWithRecommendAndFavorite(@RequestHeader("Authorization") String authorization,
                                                                                                            @RequestBody @Valid RecommendPlantRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("[FarmController] Received get plants with recommend and favorite request for {}", userId);
+        log.info("[FarmController] Received get plants with recommend and favorite request for {}", request);
 
         farmService.requestPlantRecommend(userId, request);
 
