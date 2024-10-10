@@ -1,8 +1,6 @@
 # Column: 컬럼 설정, Integer: 정수 타입 지정, TypeDecorator: 커스텀 타입 정의 지원
 from sqlalchemy import Column, Dialect, Integer, String, Boolean, Date, DateTime, TypeDecorator, ForeignKey, Float, CheckConstraint, SmallInteger, BigInteger, Enum
 from sqlalchemy.ext.declarative import declarative_base
-# MySQL의 BIT 타입 사용을 위해 dialect.mysql에서 가져온다.
-from sqlalchemy.dialects.mysql import BIT
 from sqlalchemy.orm import relationship
 
 Base = declarative_base()
@@ -17,7 +15,7 @@ class TinyInteger(TypeDecorator):
             return int(value)
 
     def process_result_value(self, value, dialect):
-        return int(value)
+        return int(value) if value is not None else 0
 
 # 작물 기본 정보 모델
 class CropBase(Base):

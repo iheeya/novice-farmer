@@ -1,10 +1,7 @@
 from sqlalchemy.orm import Session
 from setting.mysql import session_local
-from setting.models import UserPlace, Farm
-from weather.models import WeatherArea, SpecialWeather, CurrentSpecialWeather, AwsStn
-from weather.schemas import WeatherAreaSchema, SpecialWeatherSchema, CurrentSpecialWeatherSchema, AwsStnSchema
-from .models import FarmTodo, FarmTodoType
-from .schemas import FarmTodoSchema, FarmTodoCreateSchema,FarmTodoTypeSchema
+from setting.models import UserPlace, Farm, FarmTodo, FarmTodoType
+from weather.models import WeatherArea, SpecialWeather, CurrentSpecialWeather
 from sqlalchemy.exc import OperationalError
 from datetime import datetime
 from sqlalchemy import or_
@@ -17,7 +14,6 @@ def update_special_weatherinfo():
     
     for farm in farm_data:
         id = farm.farm_id
-        plant = farm.plant_id
         user_place = farm.user_place_id
         wrn_type = ''
         sido, sigungu = farmer.query(UserPlace).with_entities(UserPlace.user_place_sido, UserPlace.user_place_sigugun).filter(UserPlace.user_place_id == user_place).first()
@@ -34,12 +30,12 @@ def update_special_weatherinfo():
             print(f'stn_id: {wrn_id}')
             
             if wrn_id:
-                wrn_type = fast_api.query(SpecialWeather).with_entities(SpecialWeather.wrn_id).filter(SpecialWeather.wrn_id)
+                wrn_type = fast_api.query(CurrentSpecialWeather).with_entities(CurrentSpecialWeather.wrn_id).filter(CurrentSpecialWeather.wrn_id)
                 todo_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
                 add_special_weather(farmer, id, wrn_type, FarmTodoType.NATURE, todo_date, False)
 
 def add_special_weather(db: Session, farm_id: int, title: str, type: FarmTodoType, date: datetime=None, is_completed: bool=False):
-    new_todo = FarmTodo(farm_id=farm_id, title=title, farm_todo_type=type, farm_todo_date=date, farm_todo_is_completed=is_completed)
+    new_todo = FarmTodo(farm_id=farm_id, farn_todo_title=title, farm_todo_type=type, farm_todo_date=date, farm_todo_is_completed=is_completed)
     
     try:
         db.add(new_todo)

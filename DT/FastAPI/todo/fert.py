@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Session
 from setting.mysql import session_local
 from growth.models import CropFertilizerPeriod, CropThreshold
-from setting.models import Farm
-from .models import FarmTodo, FarmTodoType
+from setting.models import Farm, FarmTodo, FarmTodoType
 from sqlalchemy.exc import OperationalError
 from datetime import datetime, timedelta
 from sqlalchemy import desc, and_
@@ -27,16 +26,18 @@ def create_todoinfo():
     todo_type = FarmTodoType
 
     for farm in farm_data:
+        print(farm.farm_id)
         fert_cycle = 0, 0
-        last_todo = farmer.query(FarmTodo).filter(FarmTodo.farm_id == farm.farm_id).order_by(desc(FarmTodo.farm_todo_id)).first()
+        last_todo = farmer.query(FarmTodo).filter(and_(FarmTodo.farm_id == farm.farm_id, FarmTodoType==FarmTodoType.FERTILIZERING)).order_by(desc(FarmTodo.farm_todo_id)).first()
         
         yesterday = datetime.now() - timedelta(days=1)
         
         threshold = crop_threshold_dict.get(farm.plant_id)
         fertilizer = crop_fertilizer_dict.get(farm.plant_id)
         
+        
         # 만약 fertilizering이 존재하고
-        if last_todo.farm_todo_type == FarmTodoType.FERTILIZERING:
+        if last_todo.farm_todo_type == 'FERTILIZERING':
             # 완료돼야 하는 날짜가 어제인데 완료가 안 됐을 때 내일로 날짜 만들어주기.
             if not last_todo.farm_todo_is_completed:
                 if last_todo.farm_todo_date == yesterday.date():
@@ -55,14 +56,17 @@ def create_todoinfo():
         elif last_todo is None:
             fert_cycle = fertilizer.fertilizer_step1_cycle
         
+        if fert_cycle == 0:
+            fert_cycle = 30
+        
         todo_date = today + timedelta(days=fert_cycle)
         todo_date = todo_date.strftime("%Y-%m-%d %H:%M:%S.%f")
         
-        add_new_todo(farmer, farm.farm_id, '', FarmTodoType.FERTILIZERING, todo_date, False)
+        add_new_todo(farmer, farm.farm_id, None, FarmTodoType.FERTILIZERING, todo_date, False)
 # 단계별로 비료 더해서 todo 생성
 
 def add_new_todo(db: Session, farm_id: int, title: str, type: FarmTodoType, date: datetime=None, is_completed: bool=False):
-    new_todo = FarmTodo(farm_id=farm_id, title=title, farm_todo_type=type, farm_todo_date=date, farm_todo_is_completed=is_completed)
+    new_todo = FarmTodo(farm_id=farm_id, farm_todo_title=title, farm_todo_type=type, farm_todo_date=date, farm_todo_is_completed=is_completed)
     
     try:
         db.add(new_todo)

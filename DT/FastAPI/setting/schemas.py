@@ -44,3 +44,33 @@ class UserSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        
+# FarmTodoType Enum 정의
+class FarmTodoTypeSchema(str, Enum):
+    FERTILIZERING = 'FERTILIZERING'
+    HARVESTING = 'HARVESTING'
+    NATURE = 'NATURE'
+    PANDEMIC = 'PANDEMIC'
+    WATERING = 'WATERING'
+
+# FarmTodo 생성 스키마 정의
+class FarmTodoCreateSchema(BaseModel):
+    farm_todo_title: Optional[str] = None
+    farm_todo_is_completed: Optional[bool] = None
+    farm_id: Optional[int] = None
+    farm_todo_complete_date: Optional[datetime] = None
+    farm_todo_date: Optional[datetime] = None
+    farm_todo_type: Optional[FarmTodoTypeSchema] = None
+
+# FarmTodo 조회 스키마 정의
+class FarmTodoSchema(BaseModel):
+    farm_todo_id: int
+    farm_todo_title: Optional[str] = None
+    farm_todo_is_completed: Optional[bool] = None
+    farm_id: Optional[int] = None
+    farm_todo_complete_date: Optional[datetime] = None
+    farm_todo_date: Optional[datetime] = None
+    farm_todo_type: Optional[FarmTodoTypeSchema] = None
+
+    class Config:
+        from_attributes = True

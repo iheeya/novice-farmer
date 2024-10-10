@@ -14,7 +14,7 @@ class TinyInteger(TypeDecorator):
             return int(value)
 
     def process_result_value(self, value, dialect):
-        return int(value)
+        return int(value) if value is not None else 0
 
 # 예보구역 데이터 모델
 class WeatherArea(Base):

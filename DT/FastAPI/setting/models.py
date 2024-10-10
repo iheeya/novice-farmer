@@ -23,6 +23,8 @@ class Farm(Base):
     farm_degree_day = Column(Integer, nullable=True)
     plant_id = Column(BigInteger, ForeignKey("plant.plant_id"), nullable=True)
     user_place_id = Column(BigInteger, ForeignKey("user_place.user_place_id"), nullable=True)
+    
+    todos = relationship("FarmTodo", back_populates="farm")
 
 class Plant(Base):
     __tablename__ = 'plant'
@@ -40,3 +42,23 @@ class Place(Base):
     
     place_id = Column(BigInteger, primary_key=True)
     place_name = Column(String(255), nullable=True)
+    
+class FarmTodoType(enum.Enum):
+    FERTILIZERING = 'FERTILIZERING'
+    HARVESTING = 'HARVESTING'
+    NATURE = 'NATURE' # 기상 특보
+    PANDEMIC = 'PANDEMIC'
+    WATERING = 'WATERING'
+
+class FarmTodo(Base):
+    __tablename__ = "farm_todo"
+
+    farm_todo_id = Column(BigInteger, primary_key=True, autoincrement=True)
+    farm_todo_title = Column(String(255), nullable=True)
+    farm_todo_is_completed = Column(Boolean, nullable=True) 
+    farm_id = Column(BigInteger, ForeignKey('farm.farm_id'), nullable=True)
+    farm_todo_complete_date = Column(DateTime(6), nullable=True)
+    farm_todo_date = Column(DateTime(6), nullable=True)
+    farm_todo_type = Column(Enum(FarmTodoType), nullable=True)
+    
+    farm = relationship("Farm", back_populates="todos")
