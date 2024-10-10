@@ -7,7 +7,7 @@ import { getFarmDetailPageInfo, FarmDetailPageInfoProps, Farm } from '../../serv
 import { updatePlaceName } from '../../services/FarmDetail/farmDetailPageApi';
 import { selectGardenPost } from '../../services/AddGarden/AddGardenPost';
 import { useDispatch } from 'react-redux';
-import { setLocationData } from '../../store/AddFarm/store';
+import { setLocationData, setFarmData } from '../../store/AddFarm/store';
 
 
 interface Address {
@@ -46,6 +46,8 @@ const MyGarden: React.FC = () => {
           setAddressInfo(data.placeInfo.address)
           setPlaceIdInfo(data.placeInfo.placeId)
           setLoading(false);
+
+          dispatch(setFarmData(data.placeInfo.placeName))
         })
         .catch((error) => {
           console.error('Failed to fetch farm detail data', error);

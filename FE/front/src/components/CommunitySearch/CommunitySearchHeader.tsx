@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState, useEffect } from "react";
+import Back from '../../assets/icons/Back.png'
 
 // 쿠키에 값을 저장하는 함수
 const setCookie = (name: string, value: string, days: number) => {
@@ -73,12 +74,16 @@ function CommunitySearchHeader({ onTextFieldClick, onCancelClick, isSearchActive
     }
   };
 
+  
+  const handleBack = () => {
+    navigate(-1)
+}
+
   return (
     <>
       <div className="community-search-container">
-        <div className="search-my-profile" onClick={handleMyPage}>
-          MY
-        </div>{" "}
+            <div className='search-back-box' onClick={handleBack}><img className='back' src={Back} alt='뒤로가기 버튼'/></div>
+            <div className='search-my-profile' onClick={handleMyPage}>MY</div> {/* 누르면 마이페이지로 이동*/}
         {/* 누르면 마이페이지로 이동*/}
       </div>
 
