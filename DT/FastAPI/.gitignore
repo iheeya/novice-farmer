@@ -195,5 +195,5 @@ pyrightconfig.json
 yolo_env/
 yolov5/
 aqua_env/
-irr_env
+irr_env/
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
