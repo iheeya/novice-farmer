@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
     
     yield
     
-app  = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan)
 
 # 허용할 도메인 목록
 origins = [

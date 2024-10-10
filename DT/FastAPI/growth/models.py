@@ -15,7 +15,7 @@ class TinyInteger(TypeDecorator):
             return int(value)
 
     def process_result_value(self, value, dialect):
-        return int(value) if value is not None else 0
+        return int(value) if value is not None else 0 
 
 # 작물 기본 정보 모델
 class CropBase(Base):

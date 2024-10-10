@@ -35,7 +35,7 @@ def update_special_weatherinfo():
                 add_special_weather(farmer, id, wrn_type, FarmTodoType.NATURE, todo_date, False)
 
 def add_special_weather(db: Session, farm_id: int, title: str, type: FarmTodoType, date: datetime=None, is_completed: bool=False):
-    new_todo = FarmTodo(farm_id=farm_id, farn_todo_title=title, farm_todo_type=type, farm_todo_date=date, farm_todo_is_completed=is_completed)
+    new_todo = FarmTodo(farm_id=farm_id, farm_todo_title=title, farm_todo_type=type, farm_todo_date=date, farm_todo_is_completed=is_completed)
     
     try:
         db.add(new_todo)
