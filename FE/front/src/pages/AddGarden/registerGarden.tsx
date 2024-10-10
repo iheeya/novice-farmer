@@ -29,7 +29,7 @@ function RegisterGarden(){
         if (response && response.length > 0) {
           setIsRecommend(true);  
         }
-      }, 2000);  // 2초 지연 후 처리
+      }, 5000);  // 2초 지연 후 처리
     }
   }, [isLoading, response]);  // isLoading 상태가 변할 때만 실행
 
