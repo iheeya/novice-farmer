@@ -30,7 +30,6 @@ const TodoList: React.FC = () => {
   return (
     <div className={styles.todoContainer}>
       <h1 className={styles.pageTitle}>내 Todo 리스트</h1>
-      <hr />
       {todoData.length === 0 ? (
         <AddGarden />
       ) : (
