@@ -5,7 +5,7 @@ import '../../styles/RegisterGarden/gardenModal.css'
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import axios from 'axios'
+import Swal from 'sweetalert2'
 import { useDispatch, useSelector } from 'react-redux';
 import { setLocationData, setPlantData } from '../../store/AddFarm/store';
 import { RootState } from '../../store/AddFarm/store';
@@ -27,10 +27,10 @@ const customModalStyles: ReactModal.Styles = {
     },
     content: {
       width: "100%",
-      height: "40%",
+      height: "45%",
       zIndex: 150,
       position: "absolute",
-      top: "72.7%",
+      top: "70%",
       left: "50%",
       transform: "translate(-50%, -50%)",
       borderRadius: "10px",
@@ -141,6 +141,18 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
       const response = await gardenFinishPost(payload);
       console.log(response.data); // 응답 처리
       onClose(); // 모달 닫기
+
+      Swal.fire({
+        icon: "success",
+        title: "등록되었습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+        customClass: {
+          title: 'custom-title' // 사용자 정의 클래스 추가
+        }
+      }).then(() => {
+        navigate('/')
+      });
     } catch (error) {
       console.error("Error posting data:", error);
     }
@@ -158,9 +170,7 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
     // onClose(); // Call the original onClose function
   };
 
-  const handleMain = () => {
-    navigate('/');
-  }
+
 
   return (
     <CSSTransition
@@ -214,7 +224,7 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
               onClick={handlePostcode}
               color="success"
               disabled={!isScriptLoaded} // 스크립트가 로드되기 전에는 버튼 비활성화
-              sx={{opacity:1, position:'absolute', left: '70%'}}
+              sx={{opacity:1, position:'absolute', right: '9%', height:'10%'}}
               
             >
               주소 찾기
@@ -280,7 +290,6 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
               onClick={async () => {
                 await handleSubmit(); // post 요청 보내기
                 onClose(); // 모달 닫기
-                handleMain(); // 메인 페이지로 이동
               }}
             >
               등록

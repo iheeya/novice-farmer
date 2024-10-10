@@ -7,8 +7,10 @@ import { getFarmDetailPageInfo, FarmDetailPageInfoProps, Farm } from '../../serv
 import { updatePlaceName } from '../../services/FarmDetail/farmDetailPageApi';
 import { selectGardenPost } from '../../services/AddGarden/AddGardenPost';
 import { useDispatch } from 'react-redux';
-import { setLocationData } from '../../store/AddFarm/store';
+import { setLocationData, setFarmData } from '../../store/AddFarm/store';
 import { deletePlant } from '../../services/PlantDetail/Icons';  // 삭제 API 임포트
+
+
 
 
 interface Address {
@@ -47,6 +49,8 @@ const MyGarden: React.FC = () => {
           setAddressInfo(data.placeInfo.address)
           setPlaceIdInfo(data.placeInfo.placeId)
           setLoading(false);
+
+          dispatch(setFarmData(data.placeInfo.placeName))
         })
         .catch((error) => {
           console.error('Failed to fetch farm detail data', error);
@@ -229,10 +233,10 @@ const MyGarden: React.FC = () => {
               className={styles.plantImage}
             />
             <div className={styles.plantDetails}>
-              <h3>{farm.plantName}</h3>
+              <h3>{farm.myPlantName}</h3>              
               <p>{farm.todoInfo}</p>
             </div>
-            <p className={styles.seedDate}>파종일: {farm.seedDate}</p>
+            <p className={styles.seedDate}>{farm.plantName}파종일: {farm.seedDate}</p>
             <img
               src={require('../../assets/icons/Delete.png')}
               alt="Delete"

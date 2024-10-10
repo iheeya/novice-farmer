@@ -49,7 +49,7 @@ export function getMyInfo(): Promise<userInfoProps> {
   return api
     .get("/user/mypage")
     .then((response) => {
-      console.log(response.data);
+      // console.log(response.data);
       return Promise.resolve(response.data);
     })
     .catch((error) => {

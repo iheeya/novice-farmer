@@ -16,13 +16,13 @@ export default function MyHistory() {
   useEffect(() => {
     getMyHistory()
       .then(async (res) => {
-        console.log("API 응답 데이터:", res); // 응답 데이터 확인
+        // console.log("API 응답 데이터:", res); // 응답 데이터 확인
         setHistory(res); // 응답이 배열 형태라면 그대로 설정
 
         // 각 plant 객체에 대해 이미지 URL 가져오기
         const urls = await Promise.all(
           res.map(async (plant) => {
-            const imageUrl = await GetImage(plant.imageurl); // 각 이미지 URL 가져오기
+            const imageUrl = await GetImage(plant.imageurl||'plant/Default.png'); // 각 이미지 URL 가져오기
             return { id: plant.id, url: imageUrl };
           })
         );

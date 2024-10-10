@@ -72,7 +72,7 @@ function PlantSelect({onLoading, onResponse}: GardenLoadingProps) {
         const PlantData = async() => {
             try{
                 const data = await getPlantData()
-                console.log(data)
+                // console.log(data)
                 setfarmPlant(data)
             } catch(e) {
                 console.log(e)
