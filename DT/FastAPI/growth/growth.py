@@ -105,7 +105,7 @@ def update_farm_growth():
             
             # 유저 농장의 위치
             # 위치 정보 처리
-            sido, sigungu = farmer.query(UserPlace).with_entities(UserPlace.user_place_sido, UserPlace.user_place_sigugun).filter(UserPlace.user_place_id == user_place).first()
+            sido, sigungu = farmer.query(UserPlace).with_entities(UserPlace.user_place_sido, UserPlace.sigungu).filter(UserPlace.user_place_id == user_place).first()
             sido = sido[:2]
             sigungu = sigungu[:-1]
             
