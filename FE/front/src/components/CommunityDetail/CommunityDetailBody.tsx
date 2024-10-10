@@ -121,7 +121,7 @@ function CommunityDetailBody(){
             if (!data){
               setHasError(true); // 데이터가 없을 경우 에러 상태 설정
             } else{
-              console.log(data)
+              // console.log(data)  
               setDetailData(data)
             
             }
@@ -135,7 +135,7 @@ function CommunityDetailBody(){
     getData();
     getComment();
 
-    console.log('isHeart:', isHeart)
+    // console.log('isHeart:', isHeart)
 
 
 
@@ -161,7 +161,7 @@ const handleHeartClick = () => {
   const postLike = async() => {
     try{
       const data =await IsLikePost(Id);
-      console.log('응답데이터: ',data)
+      // console.log('응답데이터: ',data)
     } catch (e){
       console.log(e)
     }
@@ -192,7 +192,7 @@ const handleDeleteClick = () => {
 const deleteContent = async() => {
   try{
     const data = await ContentDelete(Id)
-    console.log('응답 데이터', data)
+    // console.log('응답 데이터', data)
   } catch (e) {
     console.log(e)
   }
@@ -214,7 +214,7 @@ const handleCommentDelete = async (commentId: number) => {
   if (confirmation.isConfirmed) {
       try {
           const data = await CommnetDelete(Id, commentId);
-          console.log('댓글 삭제', data);
+          // console.log('댓글 삭제', data);
           setShouldSlide(false);
           await getComment(); // 댓글 목록을 새로 고침
 
@@ -233,7 +233,7 @@ const getComment = async ()=>{
 
   try{
     const data = await communityComment(Id);
-    console.log('댓글 데이터',data)
+    // console.log('댓글 데이터',data)
     setCommentData(data)
   } catch (e) {
     console.log(e)
@@ -402,7 +402,6 @@ const handleRewrite = () => {
                       margin: 0,
                       width: '100%',
                       height: '80%',
-                      maxWidth: '100%',
                     },
                   }}
                 >
@@ -441,12 +440,13 @@ const handleRewrite = () => {
                     <Avatar sx={{ bgcolor: "#D2EABD"}}> {/* 간격 조정 */}
                       <img src={sprout} alt="Sprout" className='avatar-img' />
                     </Avatar>
-                          
+                    
+              
                     <TextField
                       inputRef={commentInputRef} // ref 연결
-                      sx={{paddingLeft: '0.2rem', paddingY: '0.5rem'}}
+                      sx={{paddingLeft: '0.2rem', paddingY: '0.5rem', width: '100%'}}
                       placeholder="댓글을 입력해주세요."
-                      fullWidth
+                      
                       variant='outlined'
                       onKeyPress={(e) => {
                         if (e.key === 'Enter') {
@@ -461,6 +461,7 @@ const handleRewrite = () => {
                         )
                       }} 
                       />
+               
                     
                   </DialogActions>
                   </div>

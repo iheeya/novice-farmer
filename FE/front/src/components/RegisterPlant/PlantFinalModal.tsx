@@ -27,10 +27,10 @@ const customModalStyles: ReactModal.Styles = {
     },
     content: {
       width: "100%",
-      height: "40%",
+      height: "45%",
       zIndex: 150,
       position: "absolute",
-      top: "72.7%",
+      top: "70%",
       left: "50%",
       transform: "translate(-50%, -50%)",
       borderRadius: "10px",
@@ -224,7 +224,7 @@ function PlantFinalModal({  onClose, placeId, placeName }: GardenModalProps) {
               onClick={handlePostcode}
               color="success"
               disabled={!isScriptLoaded} // 스크립트가 로드되기 전에는 버튼 비활성화
-              sx={{opacity:1, position:'absolute', left: '70%'}}
+              sx={{opacity:1, position:'absolute', right: '9%', height:'10%'}}
               
             >
               주소 찾기
