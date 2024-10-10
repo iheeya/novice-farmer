@@ -1,11 +1,14 @@
 package com.d207.farmer.service.user;
 
 import com.d207.farmer.domain.farm.Farm;
+import com.d207.farmer.domain.farm.FarmTodo;
+import com.d207.farmer.domain.farm.TodoType;
 import com.d207.farmer.domain.farm.UserPlace;
 import com.d207.farmer.domain.plant.PlantGrowthIllust;
 import com.d207.farmer.domain.plant.PlantThreshold;
 import com.d207.farmer.dto.myplace.*;
 import com.d207.farmer.repository.farm.FarmRepository;
+import com.d207.farmer.repository.farm.FarmTodoRepository;
 import com.d207.farmer.repository.farm.UserPlaceRepository;
 import com.d207.farmer.repository.plant.PlantIllustRepository;
 import com.d207.farmer.repository.plant.PlantThresholdRepository;
@@ -17,7 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +34,7 @@ public class MyPlaceService {
 
     private final UserPlaceRepository userPlaceRepository;
     private final FarmRepository farmRepository;
-    private final DateUtil dateUtil;
+    private final FarmTodoRepository farmTodoRepository;
     private final UserAuthUtil userAuthUtil;
     private final FarmUtil farmUtil;
 
@@ -47,7 +52,6 @@ public class MyPlaceService {
             // 장소는 있는데 현재 키우고 있는 작물이 없을 때(없었거나, 종료했거나, 삭제했거나)
             return new MyPlaceResponseDTO(placeInfoDTO, new ArrayList<>());
         }
-
 
         List<MyPlaceFarmDTO> myPlaceFarmDTOs = new ArrayList<>();
         for(Farm farm : farms) {
@@ -67,7 +71,11 @@ public class MyPlaceService {
                 }
             }
 
-            String todoInfo = "5일 후에 물을 줘야 해요"; // FIXME TODO 정보 어떻게 받아올지
+            List<FarmTodo> farmTodos = farmTodoRepository.findByFarmIdAndIsCompletedFalseAndTodoType(farm.getId(), TodoType.WATERING);
+            int remainDay = farmTodos == null || farmTodos.isEmpty() ? 1 : Period.between(LocalDate.now(), farmTodos.get(0).getTodoDate().toLocalDate()).getDays();
+
+            String todoInfo = remainDay + "일 후에 물을 줘야 해요";
+
             LocalDateTime seedDate = farm.getSeedDate();
             myPlaceFarmDTOs.add(new MyPlaceFarmDTO(plantId, plantName, myPlantId, myPlantName,
                     myPlantGrowthStep, imagePath, todoInfo, seedDate == null ? null : seedDate.toLocalDate()));
