@@ -21,7 +21,7 @@ export default function Login() {
         // minWidth: "3px",
         margin: "0 auto", // 좌우 중앙 정렬
         // paddingY:"2%",
-        height: "100%",
+        height: "80vh",
         paddingX: "5%",
         backgroundColor: "white",
         // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
@@ -31,9 +31,10 @@ export default function Login() {
         flexDirection: "column", // Flex 방향을 세로로 설정
         justifyContent: "center", // 수직 중앙 정렬
         alignItems: "center", // 수평 중앙 정렬
+        
       }}
     >
-      <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%" }} />
+      <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%"}} />
       <form
         onSubmit={(event) => {
           event.preventDefault();
