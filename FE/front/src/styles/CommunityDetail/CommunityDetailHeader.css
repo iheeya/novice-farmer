@@ -28,3 +28,12 @@
     font-size: 1.8rem; 
     /* position:absolute; */
 }
+
+.back{
+    width: 40%;
+}
+
+.back-box{
+    margin-top: 7%;
+    margin-left: 5%;
+}

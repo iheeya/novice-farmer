@@ -1,10 +1,10 @@
 .mainContainer {
   padding: 5%;
+  padding-top: 10%;
   background-color: white;
-  min-height: 100vh; /* 화면 전체를 덮도록 최소 높이 설정 */
+  min-height: 100vh;
 }
-  
-  .componentWrapper {
-    margin-bottom: 5%;
-  }
-  
+
+.componentWrapper {
+  margin-bottom: 5%;
+}

@@ -147,8 +147,8 @@ function MyPageBody() {
         ))
       ) : (
         <div className="error-instruction">
-          <div> 존재하지 않는 페이지 입니다.</div>
-
+          <div> 내가 쓴 게시물이 존재하지 않습니다. </div>
+          <div>게시글을 작성해 보세요! </div>
           <img
               src={loading}
               className="error-image-size"

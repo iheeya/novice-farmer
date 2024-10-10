@@ -10,6 +10,7 @@ import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import Swal from 'sweetalert2'
 import { ArticlePost, ArticleImgPost } from '../../services/CommunityArticle/ArticlePost';
+import CommunityTag from '../CommunitySearch/CommunityTag';
 
 interface ArticlePost {
   commentTitle: string,
@@ -102,6 +103,8 @@ function InputArticle(){
       communityContent: content,
       communityTagList: formattedTags
     };
+
+    console.log('태그 리스트', formattedTags)
 
     try{
       const response = await ArticlePost(payload);
@@ -299,7 +302,8 @@ function InputArticle(){
             color: "white",
             padding: "10px 30px",
             borderRadius: "20px",
-            marginTop: '5%'
+            marginTop: '10%',
+            marginBottom: '20%'
             }}
             onClick={handleSubmit}
             >

@@ -2,6 +2,8 @@ import AddPlantHeader from "../../components/AddPlant/AddPlantHeader";
 import AddPlantBody from "../../components/AddPlant/AddPlantBody";
 import { useLocation } from 'react-router-dom';
 import { useEffect } from "react";
+import RegisterHeader from '../../components/RegisterGarden/RegisterHeader';
+
 
 function AddPlant(){
     const location = useLocation();
@@ -14,6 +16,7 @@ function AddPlant(){
     }, [plantData]);
     return(
         <>
+            <RegisterHeader/>
             <AddPlantHeader/>
             <AddPlantBody plantData={plantData} />
         </>
