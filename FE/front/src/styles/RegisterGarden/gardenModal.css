@@ -32,7 +32,7 @@
 .box-content{
     justify-content: center;
     text-align: center;
-    margin-left: 30%;
+    margin-left: 20%;
     display: flex;
     align-items: center;
     white-space: nowrap; /* 텍스트를 한 줄로 유지 */  
