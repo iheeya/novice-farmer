@@ -23,7 +23,7 @@ function RegisterGarden(){
   useEffect(() => {
     if (isLoading) {
       // 2초 후 로딩을 완료하고, 추천 데이터를 확인 후 상태 설정
-      console.log('메인 페이지 resonse 확인', response)
+      // console.log('메인 페이지 resonse 확인', response)
       setTimeout(() => {
         setIsLoading(false);  // 로딩 완료
         if (response && response.length > 0) {

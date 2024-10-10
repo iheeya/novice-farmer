@@ -41,10 +41,10 @@ export default function Login() {
           handleLogin({ email, password })
             .then(({ firstLogin }) => {
               if (firstLogin) {
-                console.log("firstLogin");
+                // console.log("firstLogin");
                 navigate("/user/survey");
               } else {
-                console.log("not firstLogin");
+                // console.log("not firstLogin");
                 navigate("/");
               }
             })

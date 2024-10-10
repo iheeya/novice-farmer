@@ -16,7 +16,7 @@ export default function MyHistory() {
   useEffect(() => {
     getMyHistory()
       .then(async (res) => {
-        console.log("API 응답 데이터:", res); // 응답 데이터 확인
+        // console.log("API 응답 데이터:", res); // 응답 데이터 확인
         setHistory(res); // 응답이 배열 형태라면 그대로 설정
 
         // 각 plant 객체에 대해 이미지 URL 가져오기
