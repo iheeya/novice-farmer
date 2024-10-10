@@ -42,7 +42,7 @@ public class MyPlantService {
     public String startGrowPlant(Long userId, StartGrowPlantRequestDTO request) {
         Farm farm = farmRepository.findById(request.getFarmId()).orElseThrow();
         userAuthUtil.authorizationUser(userId, farm); // 회원 일치 여부
-        farm.startGrow();
+        farm.startGrow(LocalDateTime.now());
         // 임의로 todo 추가
         farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING,"", false, LocalDateTime.now().plusDays(1), null));
         farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING, "", false, LocalDateTime.now().plusDays(7), null));
