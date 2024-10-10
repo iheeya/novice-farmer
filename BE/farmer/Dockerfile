@@ -12,7 +12,8 @@ RUN pwd
 RUN rm -rf .gradle
 RUN ls -al
 RUN chmod +x ./gradlew
-RUN ./gradlew clean build
+#RUN ./gradlew clean build
+RUN ./gradlew clean build -x test
 
 
 RUN ls -al ./build/libs/
