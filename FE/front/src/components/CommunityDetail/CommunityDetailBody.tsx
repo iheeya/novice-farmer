@@ -402,7 +402,6 @@ const handleRewrite = () => {
                       margin: 0,
                       width: '100%',
                       height: '80%',
-                      maxWidth: '100%',
                     },
                   }}
                 >
@@ -441,12 +440,13 @@ const handleRewrite = () => {
                     <Avatar sx={{ bgcolor: "#D2EABD"}}> {/* 간격 조정 */}
                       <img src={sprout} alt="Sprout" className='avatar-img' />
                     </Avatar>
-                          
+                    
+              
                     <TextField
                       inputRef={commentInputRef} // ref 연결
-                      sx={{paddingLeft: '0.2rem', paddingY: '0.5rem'}}
+                      sx={{paddingLeft: '0.2rem', paddingY: '0.5rem', width: '100%'}}
                       placeholder="댓글을 입력해주세요."
-                      fullWidth
+                      
                       variant='outlined'
                       onKeyPress={(e) => {
                         if (e.key === 'Enter') {
@@ -461,6 +461,7 @@ const handleRewrite = () => {
                         )
                       }} 
                       />
+               
                     
                   </DialogActions>
                   </div>
