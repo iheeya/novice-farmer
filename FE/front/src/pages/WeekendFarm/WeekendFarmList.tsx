@@ -19,7 +19,8 @@ const WeekendFarmPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const apiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY; // .env에 저장한 API 키를 불러옴
+    // API 키를 직접 하드코딩
+    const apiKey = '7d40056552ed894557f3c66db07c3360';
 
     if (!apiKey) {
       console.error('Kakao API key is missing');
