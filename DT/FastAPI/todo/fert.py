@@ -26,7 +26,7 @@ def update_todoinfo():
     todo_type = FarmTodoType
 
     for farm in farm_data:
-        print(farm.farm_id)
+        # print(farm.farm_id)
         fert_cycle = 0
         last_todo = farmer.query(FarmTodo).filter(and_(FarmTodo.farm_id == farm.farm_id, FarmTodo.farm_todo_type==FarmTodoType.FERTILIZERING)).order_by(desc(FarmTodo.farm_todo_id)).first()
         

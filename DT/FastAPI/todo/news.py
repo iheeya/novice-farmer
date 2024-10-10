@@ -22,12 +22,12 @@ def update_special_weatherinfo():
         
         # 유저 위치 정보에 맞는 예보구역
         reg_id = fast_api.query(WeatherArea).with_entities(WeatherArea.reg_id).filter(or_(WeatherArea.reg_name.like(f'%{sido}%'), WeatherArea.reg_name.like(f'%{sigungu}%'))).first()
-        print(f'reg_id: {reg_id}')
+        # print(f'reg_id: {reg_id}')
         
         if reg_id:
             # 예보구역에 맞는 관측구역
             wrn_id = fast_api.query(SpecialWeather).with_entities(SpecialWeather.stn_id).filter(SpecialWeather.reg_id == reg_id[0]).first()
-            print(f'stn_id: {wrn_id}')
+            # print(f'stn_id: {wrn_id}')
             
             if wrn_id:
                 wrn_type = fast_api.query(CurrentSpecialWeather).with_entities(CurrentSpecialWeather.wrn_id).filter(CurrentSpecialWeather.wrn_id==wrn_id).first()

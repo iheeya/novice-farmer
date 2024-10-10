@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 from typing import List, Dict
 # from .database import get_db
@@ -8,18 +9,24 @@ from .service import CropRecommendationService, IndoorCropRecommendationService,
 
 router = APIRouter()
 
-fast_api : Session = session_local['fast_api']()
-farmer : Session = session_local['farmer']()
+Base = declarative_base()
+def get_db():
+    db = session_local['fast_api']()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 # 서비스 객체 생성
-def get_crop_recommendation_service(fast_api):
-    return CropRecommendationService(fast_api)
+def get_crop_recommendation_service(db: Session = Depends(get_db)):
+    return CropRecommendationService(db)
 
-def get_indoor_crop_recommendation_service(fast_api):
-    return IndoorCropRecommendationService(fast_api)
+def get_indoor_crop_recommendation_service(db: Session = Depends(get_db)):
+    return IndoorCropRecommendationService(db)
 
-def get_place_recommendation_service(fast_api):
-    return PlaceRecommendationService(fast_api)
+def get_place_recommendation_service(db: Session = Depends(get_db)):
+    return PlaceRecommendationService(db)
 
 # 작물 추천 API
 @router.post("/plant/recommend", response_model=List[Dict[str, int]])

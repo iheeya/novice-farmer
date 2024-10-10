@@ -98,10 +98,10 @@ def update_farm_growth():
             user_place = farm.user_place_id
             DDs = farm.farm_degree_day
             
-            print(f'farm_id는 {id}입니다.')
+            # print(f'farm_id는 {id}입니다.')
             # 작물별 생장 한계 온도
             thi, tlow = fast_api.query(GrowthTemp).with_entities(GrowthTemp.growth_high_temp, GrowthTemp.growth_low_temp).filter(GrowthTemp.crop_id == plant).first()
-            print(f'thi, hlow: {thi}, {tlow}')
+            # print(f'thi, hlow: {thi}, {tlow}')
             
             # 유저 농장의 위치
             # 위치 정보 처리
@@ -109,26 +109,26 @@ def update_farm_growth():
             sido = sido[:2]
             sigungu = sigungu[:-1]
             
-            print(f'sido, sigungu: {sido}, {sigungu}')
+            # print(f'sido, sigungu: {sido}, {sigungu}')
             
             # 유저 위치 정보에 맞는 예보구역
             reg_id = fast_api.query(WeatherArea).with_entities(WeatherArea.reg_id).filter(or_(WeatherArea.reg_name.like(f'%{sido}%'), WeatherArea.reg_name.like(f'%{sigungu}%'))).first()
-            print(f'reg_id: {reg_id}')
+            # print(f'reg_id: {reg_id}')
             
             if reg_id:
                 # 예보구역에 맞는 관측구역
                 stn_id = fast_api.query(AwsStn).with_entities(AwsStn.stn_id).filter(AwsStn.reg_id == reg_id[0]).first()
-                print(f'stn_id: {stn_id}')
+                # print(f'stn_id: {stn_id}')
                 
                 if stn_id:
                     # 관측구역에서 관측한 데이터
                     tmax, tmin = fast_api.query(WeatherVal).with_entities(WeatherVal.ta_max, WeatherVal.ta_min).filter(WeatherVal.stn_id == stn_id[0]).first()
-                    print(f'ta_max, ta_min: {tmax}, {tmin}')
+                    # print(f'ta_max, ta_min: {tmax}, {tmin}')
                     
                     
                     # 데이터들을 가지고 CropTime 알고리즘 실행
                     DDs += crops_growth(tmax, tmin, thi, tlow)
-                    print(f'DD값은 {DDs} 입니다.')
+                    # print(f'DD값은 {DDs} 입니다.')
                     
                     update_degree_days(farmer, FarmUpdateSchema(farm_degree_day=DDs), id)
         farmer.commit()
