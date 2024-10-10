@@ -31,8 +31,8 @@ s3 = boto3.client(
 )
 
 # YOLOv5 모델 로드
-yolov5_path = os.path.abspath('yolo/yolov5')
-model_path = os.path.abspath('yolo/epoch32.pt')
+yolov5_path = os.path.abspath('yolov5')
+model_path = os.path.abspath('epoch.pt')
 model = torch.hub.load(yolov5_path, 'custom', path=model_path, source='local', force_reload=True)
 
 # 라우터 생성
