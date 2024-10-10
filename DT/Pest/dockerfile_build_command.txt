@@ -1,0 +1,7 @@
+<local 터미널>
+docker -build -t pest:lts
+
+docker tag pest:lst stylishy62/pest:lts
+
+<EC2 리눅스>
+docker run -d --name pest -p 8001:8000 stylish62/pest:lts
