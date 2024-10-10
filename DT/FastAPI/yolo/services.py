@@ -96,7 +96,7 @@ async def detect_s3_image(request: S3KeyRequest):
 
         # 4. 수정된 이미지를 S3에 다시 업로드
         modified_s3_key = f"modified_{request.s3_key}"
-        image_url = upload_image_to_s3(image_with_boxes, modified_s3_key)
+        image_url = upload_image_to_s3(image_with_boxes, modified_s3_key)   
 
         # 5. 탐지된 객체 정보를 JSON 형태로 변환
         detections = [

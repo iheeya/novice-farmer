@@ -2,6 +2,7 @@ from sqlalchemy import Column, Dialect, Integer, String, Boolean, Date, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 import enum
+# from todo.models import FarmTodo
 
 Base = declarative_base()
 
@@ -22,7 +23,7 @@ class Farm(Base):
     plant_id = Column(BigInteger, ForeignKey("plant.plant_id"), nullable=True)
     user_place_id = Column(BigInteger, ForeignKey("user_place.user_place_id"), nullable=True)
     
-    todos = relationship("FarmTodo", back_populates="farm")
+    # todos = relationship("FarmTodo", back_populates="farm")
 
 class Plant(Base):
     __tablename__ = 'plant'

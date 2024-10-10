@@ -2,6 +2,7 @@ from sqlalchemy import Column, Dialect, Integer, String, Boolean, Date, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 import enum
+from setting.models import Farm
 
 Base = declarative_base()
 
@@ -23,4 +24,4 @@ class FarmTodo(Base):
     farm_todo_date = Column(DateTime(6), nullable=True)
     farm_todo_type = Column(Enum(FarmTodoType), nullable=True)
     
-    farm = relationship("Farm", back_populates="todos")
+    # farm = relationship("Farm", back_populates="todos")

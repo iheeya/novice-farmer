@@ -41,10 +41,10 @@ class CropFertilizerPeriod(Base):
     __tablename__ = 'crop_fertilizer_period'
 
     crop_id = Column(SmallInteger, ForeignKey('crop_base.crop_id'), primary_key=True)
-    fertilizer_step1 = Column(TinyInteger, nullable=True)
-    fertilizer_step2 = Column(TinyInteger)
-    fertilizer_step3 = Column(TinyInteger)
-    fertilizer_step4 = Column(TinyInteger)
+    fertilizer_step1_cycle = Column(TinyInteger, nullable=True)
+    fertilizer_step2_cycle = Column(TinyInteger)
+    fertilizer_step3_cycle = Column(TinyInteger)
+    fertilizer_step4_cycle = Column(TinyInteger)
     fertilizer_step1_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
     fertilizer_step2_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
     fertilizer_step3_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
