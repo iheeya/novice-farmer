@@ -157,3 +157,4 @@ async def upload_to_s3(file: UploadFile = File(...)):
         return {"file_url": file_url, "s3_key": file_key}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
