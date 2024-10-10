@@ -82,7 +82,7 @@ def upload_image_to_s3(image: Image.Image, key: str):
         raise HTTPException(status_code=500, detail=f"Error uploading image to S3: {e}")
 
 # 이미지 탐지 및 S3 업로드 API
-@router.post("/detect_s3/")
+@router.post("/plant/pest")
 async def detect_s3_image(request: S3KeyRequest):
     try:
         # 1. S3에서 이미지 다운로드
@@ -129,7 +129,7 @@ async def upload_to_s3(file: UploadFile = File(...)):
         # 파일 내용을 읽어서 S3에 업로드
         file_content = await file.read()
         file_key = f"uploads/{file.filename}"
-        file_url = upload_file_to_s3(file_content, file_key)
+        file_url = upload_image_to_s3(file_content, file_key)
         
         return {"file_url": file_url, "s3_key": file_key}
     except Exception as e:

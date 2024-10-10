@@ -17,7 +17,7 @@ from pest.routers import router as pest_router
 from recomm.routers import router as recomm_router
 from todo.routers import router as todo_router
 from weather.routers import router as weather_router
-from yolo.routers import router as yolo_router
+from yolo.services import router as yolo_router
 
 # Scheduler 관리
 from setting.scheduler import start_scheduler
@@ -73,4 +73,4 @@ def read_root():
     return {"message": "연결 되었습니다!"}
 
 
-app.include_router(router)
+# app.include_router(router)
