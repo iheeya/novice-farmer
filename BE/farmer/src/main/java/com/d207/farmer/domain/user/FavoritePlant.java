@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter @Setter
@@ -14,7 +15,7 @@ import static jakarta.persistence.FetchType.LAZY;
 public class FavoritePlant {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "favorite_id")
     private Long id;
 
