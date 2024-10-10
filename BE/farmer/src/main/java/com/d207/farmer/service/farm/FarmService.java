@@ -83,7 +83,7 @@ public class FarmService {
 
     private Address createAddressWithJibun(Address addr) {
         String bunji = addressUtil.findBunjiByJibun(addr.getJibun());
-        return new Address(addr.getSido(), addr.getSigugun(), addr.getBname1(), addr.getBname2(),
+        return new Address(addr.getSido(), addr.getSigungu(), addr.getBname1(), addr.getBname2(),
                 bunji, addr.getJibun(), addr.getZonecode());
     }
 
