@@ -8,11 +8,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InspectionPestResponseByFastApiDTO {
-//    private Boolean hasPest;
-//    private String pestName;
-
-    private Boolean hasPast;
+    private IsPestDTO isPest;
     private PestInfoDTO pestInfo;
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class IsPestDTO {
+        private Boolean hasPest;
+        private String myImagePath;
+        private String plantName;
+        private Integer growthStep;
+    }
 
     @Getter
     @AllArgsConstructor

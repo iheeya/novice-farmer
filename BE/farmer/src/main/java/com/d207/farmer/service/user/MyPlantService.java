@@ -131,13 +131,15 @@ public class MyPlantService {
 
         InspectionPestResponseByFastApiDTO response = fastApiUtil.getInspectionPest(fileName);
 
-        if(!response.getHasPast()) {
+        // 병해충 안 걸렸을 때
+        if(isHealthy(response)) {
             InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(
                     false, PEST.toString().toLowerCase() + "/" + fileName, farm.getPlant().getName(), growthStep
             );
             InspectionPestResponseDTO.PestInfoDTO pestInfoDTO = new InspectionPestResponseDTO.PestInfoDTO();
             return new InspectionPestResponseDTO(isPestDTO, pestInfoDTO);
         }
+
         InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(
                 true, PEST.toString().toLowerCase() + "/" + fileName, farm.getPlant().getName(), growthStep
         );
@@ -145,6 +147,10 @@ public class MyPlantService {
                 response.getPestInfo().getPestName(), response.getPestInfo().getPestDesc(), response.getPestInfo().getPestCureDesc());
 
         return new InspectionPestResponseDTO(isPestDTO, pestInfoDTO);
+    }
+
+    private static boolean isHealthy(InspectionPestResponseByFastApiDTO response) {
+        return !response.getIsPest().getHasPest();
     }
 
 //    public InspectionGrowthStepResponseDTO inspectionGrowthStep(Long userId, InspectionPlantRequestDTO request) {
