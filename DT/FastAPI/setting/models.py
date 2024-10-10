@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 import enum
 
+
 Base = declarative_base()
 
 # 유저 정보 테이블
@@ -21,8 +22,7 @@ class Farm(Base):
     farm_degree_day = Column(Integer, nullable=True)
     plant_id = Column(BigInteger, ForeignKey("plant.plant_id"), nullable=True)
     user_place_id = Column(BigInteger, ForeignKey("user_place.user_place_id"), nullable=True)
-    
-    todos = relationship("FarmTodo", back_populates="farm")
+
 
 class Plant(Base):
     __tablename__ = 'plant'

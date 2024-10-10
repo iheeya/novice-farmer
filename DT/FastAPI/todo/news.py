@@ -10,8 +10,8 @@ from datetime import datetime
 from sqlalchemy import or_
 
 def update_special_weatherinfo():
-    fast_api : Session = session_local['fast_api']
-    farmer : Session = session_local['farmer']
+    fast_api : Session = session_local['fast_api']()
+    farmer : Session = session_local['farmer']()
     
     farm_data = farmer.query(Farm).all()
     

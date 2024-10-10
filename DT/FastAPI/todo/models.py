@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Dialect, Integer, String, Boolean, Date, DateTime, TypeDecorator, ForeignKey, Float, CheckConstraint, SmallInteger, BigInteger, Enum
 from sqlalchemy.orm import relationship
+from setting.models import Farm
 from sqlalchemy.ext.declarative import declarative_base
 import enum
 
@@ -23,4 +24,3 @@ class FarmTodo(Base):
     farm_todo_date = Column(DateTime(6), nullable=True)
     farm_todo_type = Column(Enum(FarmTodoType), nullable=True)
     
-    farm = relationship("Farm", back_populates="todos")

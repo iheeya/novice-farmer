@@ -7,14 +7,12 @@ from sqlalchemy.exc import OperationalError
 from datetime import datetime, timedelta
 from sqlalchemy import desc, and_
 
-fast_api : Session = session_local['fast_api']
-farmer : Session = session_local['farmer']
+fast_api : Session = session_local['fast_api']()
+farmer : Session = session_local['farmer']()
 
 today = datetime.now()
 
 def create_todoinfo():
-    
-    
     # farm 별 degreedays -> crop threshold로 단게 파악
     farm_data = farmer.query(Farm).all()
     # 만약 마지막으로 있는 farm_id의 fertilizer todo가 완료되지 않았고, 해야될 날이 어제였으면 그냥 하루만 추가할 것.
@@ -46,16 +44,16 @@ def create_todoinfo():
             # 완료됐다면 주기에 따라서 계산해주기.
             else:
                 if farm.farm_degree_day >= threshold.step4_threshold:
-                    fert_cycle = fertilizer.fertilizer_step4
+                    fert_cycle = fertilizer.fertilizer_step4_cycle
                 elif farm.farm_degree_day >= threshold.step3_threshold:
-                    fert_cycle = fertilizer.fertilizer_step3
+                    fert_cycle = fertilizer.fertilizer_step3_cycle
                 elif farm.farm_degree_day >= threshold.step2_threshold:
-                    fert_cycle = fertilizer.fertilizer_step2
+                    fert_cycle = fertilizer.fertilizer_step2_cycle
                 else:
-                    fert_cycle = fertilizer.fertilizer_step1
+                    fert_cycle = fertilizer.fertilizer_step1_cycle
         # 만약 fertilizer가 존재하지 않는다면 step1으로 계산해서 넣어주기.
         elif last_todo is None:
-            fert_cycle = fertilizer.fertilizer_step1
+            fert_cycle = fertilizer.fertilizer_step1_cycle
         
         todo_date = today + timedelta(days=fert_cycle)
         todo_date = todo_date.strftime("%Y-%m-%d %H:%M:%S.%f")
