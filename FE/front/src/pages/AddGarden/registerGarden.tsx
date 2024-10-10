@@ -3,6 +3,7 @@ import SelectTab from "../../components/RegisterGarden/selectTab";
 import GardenSelect from "../../components/RegisterGarden/gardenSelect";
 import Loading from "../../components/RegisterGarden/gardenSelectLoading";
 import RecommendPlant from "../../components/RegisterGarden/recommendPlant";
+import RegisterHeader from '../../components/RegisterGarden/RegisterHeader';
 
 function RegisterGarden(){
     const [isLoading, setIsLoading] = useState(false)
@@ -36,6 +37,7 @@ function RegisterGarden(){
 
     return(
         <>
+          <RegisterHeader/>
           <SelectTab />
 
           {isLoading? (
