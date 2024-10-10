@@ -87,7 +87,7 @@ def update_request_todo(farm_id, todo_type):
     fertilizer = crop_fertilizer_dict.get(farm.plant_id)
     
     # todo_id = farmer.query(FarmTodo).order_by(desc(FarmTodo.farm_todo_id)).first().farm_todo_id
-    
+    fert_cycle = 0
     # 완료돼야 하는 날짜가 어제인데 완료가 안 됐을 때 내일로 날짜 만들어주기.
     if not last_todo.farm_todo_is_completed:
         if last_todo.farm_todo_date == yesterday.date():
