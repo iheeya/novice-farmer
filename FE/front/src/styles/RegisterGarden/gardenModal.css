@@ -63,3 +63,8 @@
     transition: transform 200ms ease-in, opacity 200ms ease-in;
   }
   
+
+
+  .box-content-extra{
+    margin-left: 20%;
+  }

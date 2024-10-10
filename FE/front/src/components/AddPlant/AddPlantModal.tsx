@@ -138,11 +138,11 @@ function AddPlantModal({  onClose, plantId, plantName }: GardenModalProps) {
 
         <div className='box-color'>
           <div className='box-title'>위치</div>
-          <div className='box-content'>
-          {locationData ? 
-      (locationData.length > 13 ? locationData.substring(0, 13) + '...' : locationData) : 
-      '위치 정보가 없습니다.'}
-          </div>
+          <div className='box-content-extra'>      
+            {locationData ? 
+              (locationData.length > 13 ? locationData.substring(0, 13) + '...' : locationData) : 
+              '위치 정보가 없습니다.'}
+            </div>
         </div>
 
         <div className='box-color'>
