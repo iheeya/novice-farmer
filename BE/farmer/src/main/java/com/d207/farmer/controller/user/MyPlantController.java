@@ -130,7 +130,7 @@ public class MyPlantController {
      * 병해충 검사 요청
      */
     @Operation(summary = "병해충 검사 요청", description = "병해충 검사 버튼")
-    @GetMapping("/pest")
+    @PostMapping("/pest")
     public ResponseEntity<InspectionPestResponseDTO> inspectionPest(@RequestHeader("Authorization") String authorization,
                                                                     @ModelAttribute InspectionPestRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
