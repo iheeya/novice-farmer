@@ -14,7 +14,6 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
 public class User {
 
     @Id @GeneratedValue(strategy = IDENTITY)
