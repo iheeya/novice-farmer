@@ -5,6 +5,8 @@ import com.d207.farmer.domain.farm.TodoType;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.dto.common.FastAPIConnectTestResponseDTO;
+import com.d207.farmer.dto.farm.api.PlaceIdDTO;
+import com.d207.farmer.dto.farm.api.PlantIdDTO;
 import com.d207.farmer.dto.farm.get.RecommendPlaceRequestDTO;
 import com.d207.farmer.dto.farm.get.RecommendPlaceResponseDTO;
 import com.d207.farmer.dto.farm.get.RecommendPlantRequestDTO;
@@ -13,6 +15,7 @@ import com.d207.farmer.dto.myplant.InspectionGrowthStepResponseByFastApiDTO;
 import com.d207.farmer.dto.myplant.InspectionPestResponseByFastApiDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -32,7 +35,7 @@ public class FastApiUtil {
     @Value("${external.api.fastAPI.aiUrl}")
     private String fastApiAiUrl;
 
-    public RecommendPlaceResponseDTO getRecommendPlaceByFastApi(RecommendPlaceRequestDTO request, Plant plant) {
+    public List<PlaceIdDTO> getRecommendPlaceByFastApi(RecommendPlaceRequestDTO request, Plant plant) {
         RestTemplate restTemplate = new RestTemplate();
 
         // 요청 헤더 설정
@@ -54,11 +57,11 @@ public class FastApiUtil {
 
         String url = fastApiDataUrl + "/place/recommend";
         // 요청 및 응답
-        ResponseEntity<RecommendPlaceResponseDTO> response = restTemplate.exchange(
+        ResponseEntity<List<PlaceIdDTO>> response = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
                 entity,
-                RecommendPlaceResponseDTO.class
+                new ParameterizedTypeReference<>() {}
         );
 
         // 응답 오류 처리
@@ -69,7 +72,7 @@ public class FastApiUtil {
         return response.getBody();
     }
 
-    public RecommendPlantResponseDTO getRecommendPlantByFastApi(Place place, Address address, Map<String, String> latAndLong) {
+    public List<PlantIdDTO> getRecommendPlantByFastApi(Place place, Address address, Map<String, String> latAndLong) {
         RestTemplate restTemplate = new RestTemplate();
 
         // 요청 헤더 설정
@@ -79,7 +82,7 @@ public class FastApiUtil {
         // json data
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("place", new RecommendPlantResponseDTO.placeRequestDTO(place.getId(), place.getName()));
-        requestBody.put("placeName", new RecommendPlantResponseDTO.addressRequestDTO(address.getSido(), address.getSigugun(), address.getBname1(), address.getBname2(),
+        requestBody.put("address", new RecommendPlantResponseDTO.addressRequestDTO(address.getSido(), address.getSigugun(), address.getBname1(), address.getBname2(),
                 address.getBunji(), address.getJibun(), address.getZonecode(), latAndLong.get("latitude"), latAndLong.get("longitude")));
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
@@ -92,11 +95,11 @@ public class FastApiUtil {
 
         String url = fastApiDataUrl + "/plant/recommend";
         // 요청 및 응답
-        ResponseEntity<RecommendPlantResponseDTO> response = restTemplate.exchange(
+        ResponseEntity<List<PlantIdDTO>> response = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
                 entity,
-                RecommendPlantResponseDTO.class
+                new ParameterizedTypeReference<>() {}
         );
 
         // 응답 오류 처리
