@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, File, UploadFile
+from fastapi import APIRouter, HTTPException, File, UploadFile, FastAPI
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
@@ -31,16 +31,16 @@ s3 = boto3.client(
 )
 
 # YOLOv5 모델 로드
-yolov5_path = os.path.abspath('yolo/yolov5')
-model_path = os.path.abspath('yolo/epoch32.pt')
+yolov5_path = os.path.abspath('yolov5')
+model_path = os.path.abspath('epoch32.pt')
 model = torch.hub.load(yolov5_path, 'custom', path=model_path, source='local', force_reload=True)
 
 # 라우터 생성
-router = APIRouter()
+app = FastAPI()
 
 # 요청 바디 모델 정의
 class S3KeyRequest(BaseModel):
-    s3_key: str
+    imagePath: str
 
 # 이미지 다운로드 함수
 def download_image_from_s3(key: str):
@@ -81,55 +81,78 @@ def upload_image_to_s3(image: Image.Image, key: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error uploading image to S3: {e}")
 
-# 이미지 탐지 및 S3 업로드 API
-@router.post("/plant/pest")
-async def detect_s3_image(request: S3KeyRequest):
+import logging
+
+# 로그 설정
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@app.post("/data-api/plant/pest")
+async def detect_image_from_s3(request: S3KeyRequest):
     try:
+        logger.info("Request received with imagePath: %s", request.imagePath)
+        
         # 1. S3에서 이미지 다운로드
-        image = download_image_from_s3(request.s3_key)
+        image = download_image_from_s3(request.imagePath)
+        logger.info("Image downloaded successfully from S3.")
 
         # 2. YOLOv5로 객체 탐지 수행
         results = detect_object(image)
+        logger.info("Object detection completed.")
 
         # 3. 탐지된 결과를 바운딩 박스와 함께 그리기
         image_with_boxes = draw_bounding_boxes(image, results)
+        logger.info("Bounding boxes drawn on image.")
 
-        # 4. 수정된 이미지를 S3에 다시 업로드
-        modified_s3_key = f"modified_{request.s3_key}"
-        image_url = upload_image_to_s3(image_with_boxes, modified_s3_key)   
+        # 4. 수정된 이미지를 S3에 다시 업로드 (원래 S3 키 유지)
+        modified_s3_key = request.imagePath
+        _ = upload_image_to_s3(image_with_boxes, modified_s3_key)
+        logger.info("Image uploaded to S3 with key: %s", modified_s3_key)
 
-        # 5. 탐지된 객체 정보를 JSON 형태로 변환
-        detections = [
-            {
-                "class_name": model.names[int(cls)],
-                "confidence": float(conf),
-                "box": {
-                    "xmin": float(box[0]),
-                    "ymin": float(box[1]),
-                    "xmax": float(box[2]),
-                    "ymax": float(box[3])
+        # 5. 탐지된 객체 정보를 처리하여 병해충 여부 판단
+        has_pest = len(results.xyxy[0]) > 0
+        logger.info("Pest detection status: %s", has_pest)
+
+        # 탐지된 객체가 없는 경우 처리
+        if not has_pest:
+            return {
+                "hasPest": False,
+                "pestInfo": {
+                    "pestImagePath": modified_s3_key,
+                    "pestName": None,
+                    "pestDesc": None,
+                    "pestCureDesc": None
                 }
             }
-            for *box, conf, cls in results.xyxy[0]
-        ]
 
-        # 6. S3 키 및 탐지 결과 반환
+        # 6. 탐지된 병해충 정보 설정
+        pest_name = model.names[int(results.xyxy[0][0][-1])]
+        pest_desc = "잎이 마르거나 곰팡이가 폈다"
+        pest_cure_desc = "농약을 뿌립시다"
+
+        # 7. 응답 데이터 구성 (S3 키를 사용)
         return {
-            "s3_key": modified_s3_key,
-            "image_url": image_url,
-            "detections": detections
+            "hasPest": has_pest,
+            "pestInfo": {
+                "pestImagePath": modified_s3_key,
+                "pestName": pest_name,
+                "pestDesc": pest_desc,
+                "pestCureDesc": pest_cure_desc
+            }
         }
     except Exception as e:
+        logger.error("An error occurred: %s", str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
 # 파일 업로드 API
-@router.post("/upload/")
+@app.post("/data-api/upload/")
 async def upload_to_s3(file: UploadFile = File(...)):
     try:
         # 파일 내용을 읽어서 S3에 업로드
-        file_content = await file.read()
-        file_key = f"uploads/{file.filename}"
-        file_url = upload_image_to_s3(file_content, file_key)
+        # file_content = await file.read()
+        image = Image.open(io.BytesIO(await file.read()))
+        file_key = f"pest/{file.filename}"
+        file_url = upload_image_to_s3(image, file_key)
         
         return {"file_url": file_url, "s3_key": file_key}
     except Exception as e:
