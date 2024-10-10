@@ -223,10 +223,10 @@ const MyGarden: React.FC = () => {
               className={styles.plantImage}
             />
             <div className={styles.plantDetails}>
-              <h3>{farm.plantName}</h3>
+              <h3>{farm.myPlantName}</h3>              
               <p>{farm.todoInfo}</p>
             </div>
-            <p className={styles.seedDate}>파종일: {farm.seedDate}</p>
+            <p className={styles.seedDate}>{farm.plantName}파종일: {farm.seedDate}</p>
             <img
               src={require('../../assets/icons/Delete.png')}
               alt="Delete"

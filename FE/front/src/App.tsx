@@ -57,13 +57,13 @@ function AppWrapper() {
     <>
       <Routes>
         {/* 공개 페이지들 */}
-        <Route path="/" element={<Main />} />
         <Route path="/user/signUp" element={<SignUp />} />
         <Route path="/user/login" element={<Login />} />
         <Route path="/user/survey" element={<Survey />} />
         <Route path="/introduce" element={<HomePage />} />
 
         {/* 인증이 필요한 페이지들 */}
+        <Route path="/" element={<Main />} />
         <Route path="/register/garden" element={<RegisterGarden />} />
         <Route path="/register/plant" element={<RegisterPlant />} />
         <Route path="/weekendFarm-recommend" element={<WeekendFarmList />} />
