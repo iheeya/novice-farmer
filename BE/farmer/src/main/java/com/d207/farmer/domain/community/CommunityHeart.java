@@ -11,6 +11,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
@@ -20,7 +21,7 @@ import static jakarta.persistence.FetchType.LAZY;
 public class CommunityHeart {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "community_favorite_tag_id")
     private Long id;
 

@@ -7,12 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 @Entity
 @Getter @Setter
 @NoArgsConstructor // 기본 생성자 추가
 public class FavoritePlace {
 
-    @Id  @GeneratedValue
+    @Id  @GeneratedValue(strategy = IDENTITY)
     @Column(name = "favorite_id")
     private Long id;
 

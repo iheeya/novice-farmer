@@ -26,7 +26,7 @@ spring:
 #    auth-code-expiration-millis: 1800000
   jpa:
     hibernate:
-      ddl-auto: update      # 또는 필요에 따라 create, create-drop, validate로 변경
+      ddl-auto: create      # 또는 필요에 따라 create, create-drop, validate로 변경
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -72,6 +72,10 @@ spring:
         ***REMOVED***
         ***REMOVED***
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
 external:
   api:
     naver:
@@ -79,7 +83,12 @@ external:
         ***REMOVED***
         ***REMOVED***
     fastAPI:
-      url: http://j11d207.p.ssafy.io:8000/data-api
+#      url: http://j11d207.p.ssafy.io:8000/data-api
+      url: https://09fd-14-46-141-166.ngrok-free.app/data-api
+    weather:
+      url: http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst
+      ***REMOVED***
+
 # 로그 설정
 logging:
   level:

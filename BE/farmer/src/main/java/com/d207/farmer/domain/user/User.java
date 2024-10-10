@@ -8,13 +8,16 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.GenerationType.SEQUENCE;
+
 @Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class User {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
