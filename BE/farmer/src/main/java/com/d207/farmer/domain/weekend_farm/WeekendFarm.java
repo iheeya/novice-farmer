@@ -1,5 +1,6 @@
 package com.d207.farmer.domain.weekend_farm;
 
+import com.d207.farmer.dto.weekend_farm.WeekendFarmAllDTO;
 import com.d207.farmer.dto.weekend_farm.WeekendFarmRegisterRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,16 +28,13 @@ public class WeekendFarm {
     @Column(name = "weekend_farm_addr")
     private String address;
 
-    @Column(name = "weekend_farm_tel")
-    private String tel;
-
     @Column(name = "weekend_farm_latitude")
     private String latitude;
 
     @Column(name = "weekend_farm_longitude")
     private String longitude;
 
-    @Column(name = "weekend_farm_image_path")
+    @Column(name = "weekend_farm_image_path", length = 3000)
     private String imagePath;
 
     @Column(name = "weekend_farm_desc")
@@ -48,7 +46,15 @@ public class WeekendFarm {
     public WeekendFarm (WeekendFarmRegisterRequestDTO request) {
         this.name = request.getName();
         this.address = request.getAddress();
-        this.tel = request.getTel();
+        this.latitude = request.getLatitude();
+        this.longitude = request.getLongitude();
+        this.imagePath = request.getImagePath();
+        this.desc = request.getDesc();
+    }
+
+    public WeekendFarm (WeekendFarmAllDTO request) {
+        this.name = request.getName();
+        this.address = request.getAddress();
         this.latitude = request.getLatitude();
         this.longitude = request.getLongitude();
         this.imagePath = request.getImagePath();

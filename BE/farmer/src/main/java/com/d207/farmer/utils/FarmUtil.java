@@ -2,7 +2,13 @@ package com.d207.farmer.utils;
 
 import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.plant.PlantThreshold;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class FarmUtil {
