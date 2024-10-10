@@ -60,11 +60,11 @@ def create_todoinfo():
         todo_date = today + timedelta(days=fert_cycle)
         todo_date = todo_date.strftime("%Y-%m-%d %H:%M:%S.%f")
         
-        add_new_todo(farmer, farm.farm_id, '', FarmTodoType.FERTILIZERING, todo_date, False)
+        add_new_todo(farmer, farm.farm_id, None, FarmTodoType.FERTILIZERING, todo_date, False)
 # 단계별로 비료 더해서 todo 생성
 
 def add_new_todo(db: Session, farm_id: int, title: str, type: FarmTodoType, date: datetime=None, is_completed: bool=False):
-    new_todo = FarmTodo(farm_id=farm_id, title=title, farm_todo_type=type, farm_todo_date=date, farm_todo_is_completed=is_completed)
+    new_todo = FarmTodo(farm_id=farm_id, farm_todo_title=title, farm_todo_type=type, farm_todo_date=date, farm_todo_is_completed=is_completed)
     
     try:
         db.add(new_todo)
