@@ -1,9 +1,2 @@
 torch>=1.7.0
-fastapi
-uvicorn
 boto3
-Pillow
-pandas
-numpy
-requests
-python-dotenv

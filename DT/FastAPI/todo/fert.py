@@ -5,6 +5,7 @@ from setting.models import Farm
 from .models import FarmTodo, FarmTodoType
 from sqlalchemy.exc import OperationalError
 from datetime import datetime, timedelta
+from sqlalchemy import desc, and_
 
 fast_api : Session = session_local['fast_api']
 farmer : Session = session_local['farmer']
@@ -12,14 +13,15 @@ farmer : Session = session_local['farmer']
 today = datetime.now()
 
 def create_todoinfo():
+    
+    
+    # farm 별 degreedays -> crop threshold로 단게 파악
+    farm_data = farmer.query(Farm).all()
     # 만약 마지막으로 있는 farm_id의 fertilizer todo가 완료되지 않았고, 해야될 날이 어제였으면 그냥 하루만 추가할 것.
     # 만약 마지막으로 있는 farm_id의 fertilizer todo가 완료되었다면 자동으로 router가 올 것이니 그 때 계산.
     # 현재 farm_id의 todo가 아예 존재하지 않는다면 1단계로 만들어서 추가해주기
     
     
-    # farm 별 degreedays -> crop threshold로 단게 파악
-    farm_data = farmer.query(Farm).all()
-    farm_todo_data = farmer.query(FarmTodo).all()
     crop_threshold = fast_api.query(CropThreshold).all()
     crop_threshold_dict = {threshold.crop_id: threshold for threshold in crop_threshold}
     crop_fertilizer = fast_api.query(CropFertilizerPeriod).all()
@@ -28,24 +30,37 @@ def create_todoinfo():
 
     for farm in farm_data:
         fert_cycle = 0, 0
+        last_todo = farmer.query(FarmTodo).filter(FarmTodo.farm_id == farm.farm_id).order_by(desc(FarmTodo.farm_todo_id)).first()
+        
+        yesterday = datetime.now() - timedelta(days=1)
+        
         threshold = crop_threshold_dict.get(farm.plant_id)
         fertilizer = crop_fertilizer_dict.get(farm.plant_id)
         
-        if threshold:
-            if farm.farm_degree_day >= threshold.step4_threshold:
-                fert_cycle = fertilizer.fertilizer_step4
-            elif farm.farm_degree_day >= threshold.step3_threshold:
-                fert_cycle = fertilizer.fertilizer_step3
-            elif farm.farm_degree_day >= threshold.step2_threshold:
-                fert_cycle = fertilizer.fertilizer_step2
+        # 만약 fertilizering이 존재하고
+        if last_todo.farm_todo_type == FarmTodoType.FERTILIZERING:
+            # 완료돼야 하는 날짜가 어제인데 완료가 안 됐을 때 내일로 날짜 만들어주기.
+            if not last_todo.farm_todo_is_completed:
+                if last_todo.farm_todo_date == yesterday.date():
+                    fert_cycle = 1
+            # 완료됐다면 주기에 따라서 계산해주기.
             else:
-                fert_cycle = fertilizer.fertilizer_step1
+                if farm.farm_degree_day >= threshold.step4_threshold:
+                    fert_cycle = fertilizer.fertilizer_step4
+                elif farm.farm_degree_day >= threshold.step3_threshold:
+                    fert_cycle = fertilizer.fertilizer_step3
+                elif farm.farm_degree_day >= threshold.step2_threshold:
+                    fert_cycle = fertilizer.fertilizer_step2
+                else:
+                    fert_cycle = fertilizer.fertilizer_step1
+        # 만약 fertilizer가 존재하지 않는다면 step1으로 계산해서 넣어주기.
+        elif last_todo is None:
+            fert_cycle = fertilizer.fertilizer_step1
         
         todo_date = today + timedelta(days=fert_cycle)
         todo_date = todo_date.strftime("%Y-%m-%d %H:%M:%S.%f")
         
-        
-        add_new_todo(db=farmer, farm_id=farm.farm_id, title='', typoe=FarmTodoType.FERTILIZERING, farm_todo_data=todo_date)
+        add_new_todo(farmer, farm.farm_id, '', FarmTodoType.FERTILIZERING, todo_date, False)
 # 단계별로 비료 더해서 todo 생성
 
 def add_new_todo(db: Session, farm_id: int, title: str, type: FarmTodoType, date: datetime=None, is_completed: bool=False):

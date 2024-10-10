@@ -99,9 +99,8 @@ def update_farm_growth():
             # 작물별 생장 한계 온도
             thi, tlow = fast_api.query(GrowthTemp).with_entities(GrowthTemp.growth_high_temp, GrowthTemp.growth_low_temp).filter(GrowthTemp.crop_id == plant).first()
             print(f'thi, hlow: {thi}, {tlow}')
-            # 유저 농장의 위치
             
-        
+            # 유저 농장의 위치
             # 위치 정보 처리
             sido, sigungu = farmer.query(UserPlace).with_entities(UserPlace.user_place_sido, UserPlace.user_place_sigugun).filter(UserPlace.user_place_id == user_place).first()
             sido = sido[:2]
