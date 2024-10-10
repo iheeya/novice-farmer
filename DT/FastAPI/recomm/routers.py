@@ -10,8 +10,17 @@ from .service import CropRecommendationService, IndoorCropRecommendationService,
 router = APIRouter()
 
 Base = declarative_base()
-def get_db():
+# FastAPI DB 세션 생성 함수
+def get_fast_api_db():
     db = session_local['fast_api']()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# Farmer DB 세션 생성 함수
+def get_farmer_db():
+    db = session_local['farmer']()
     try:
         yield db
     finally:
@@ -19,14 +28,23 @@ def get_db():
 
 
 # 서비스 객체 생성
-def get_crop_recommendation_service(db: Session = Depends(get_db)):
-    return CropRecommendationService(db)
+def get_crop_recommendation_service(
+    fast_api_db: Session = Depends(get_fast_api_db),
+    farmer_db: Session = Depends(get_farmer_db)
+):
+    return CropRecommendationService(fast_api_db, farmer_db)
 
-def get_indoor_crop_recommendation_service(db: Session = Depends(get_db)):
-    return IndoorCropRecommendationService(db)
+def get_indoor_crop_recommendation_service(
+    fast_api_db: Session = Depends(get_fast_api_db),
+    farmer_db: Session = Depends(get_farmer_db)
+):
+    return IndoorCropRecommendationService(fast_api_db, farmer_db)
 
-def get_place_recommendation_service(db: Session = Depends(get_db)):
-    return PlaceRecommendationService(db)
+def get_place_recommendation_service(
+    fast_api_db: Session = Depends(get_fast_api_db),
+    farmer_db: Session = Depends(get_farmer_db)
+):
+    return PlaceRecommendationService(fast_api_db, farmer_db)
 
 # 작물 추천 API
 @router.post("/plant/recommend", response_model=List[Dict[str, int]])
