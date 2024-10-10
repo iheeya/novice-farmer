@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import SelectTab from "../../components/RegisterPlant/SelectPlantTab";
 import PlantSelect from "../../components/RegisterPlant/PlantSelect";
-import farmRecommend from "../../assets/dummydata/farmRecommend.json"
 import PlanSelectLoading from "../../components/RegisterPlant/PlantSelectLoading";
 import RecommendLand from "../../components/RegisterPlant/RecommendLand";
 

@@ -1,11 +1,24 @@
 import api from '../../utils/axios';
 
+
+export interface Address {
+  sido: string;    // 시/도
+  sigugun: string; // 시/군/구
+  bname1: string;  // 법정동/리 이름1
+  bname2: string;  // 법정동/리 이름2
+  bunji: string;   // 번지
+  jibun: string;   // 지번 주소
+  zonecode: string; // 우편번호
+}
+
+
 export interface PlaceInfo {
     placeId: number;
     placeName: string;
     myPlaceName: string;
     farmCount: number;
     weather: string;
+    address: Address;
 }
   
 export interface Farm {

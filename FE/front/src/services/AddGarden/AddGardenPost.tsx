@@ -62,4 +62,22 @@ export function selectPlantPost(payload:SelectPlant){
         })
 }
 
+interface AddGarden{
+    myPlaceId: number,
+    plant: {
+        plantId: number,
+        myPlantName: string,
+        memo: string
+    }
+}
 
+export function addPlantPost(payload:AddGarden){
+    return api
+        .post('/farm/plant', payload)
+        .then((response)=> {
+            return Promise.resolve(response)
+        })
+        .catch((e) => {
+            return Promise.reject(e)
+        })
+}

@@ -40,3 +40,14 @@ export function ContentDelete(Id:number){
         })
 }
 
+
+export function CommnetDelete(Id: number, commentId: number){
+    return api
+        .delete(`community/${Id}/all/comment/${commentId}`)
+        .then((response) => {
+            return Promise.resolve(response)
+        })
+        .catch((e) => {
+            return Promise.reject(e)
+        })
+}
