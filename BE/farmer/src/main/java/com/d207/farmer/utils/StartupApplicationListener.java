@@ -69,24 +69,24 @@ public class StartupApplicationListener {
     private final String[] userNicknames = {"불꽃토마토", "농슐랭3스타", "농사하는돌아이", "농부카세", "농부여신", "농사대가", "주말엔농부", "당근조아", "토마토조아", "청양고추조아"};
 
     // 작물
-    private final Object[][] plantSamples = {{"토마토", 1960, true}, {"고추", 1960, true}, {"옥수수", 1960, false}, {"오이", 1960, false}, {"콩", 1960, false},
-                                             {"가지", 1960, true}, {"무", 1960, true}, {"상추", 1960, false}, {"배추", 1960, false}, {"감자", 1960, false},
-                                             {"고구마", 1960, true}, {"대파", 1960, true}};
+    private final Object[][] plantSamples = {{"토마토", 1940, true}, {"고추", 1746, true}, {"옥수수", 2134, false}, {"오이", 742, false}, {"콩", 1060, false},
+                                             {"가지", 1378, true}, {"무", 1360, true}, {"상추", 776, false}, {"배추", 1940, false}, {"감자", 1060, false},
+                                             {"고구마", 1500, true}, {"대파", 2910, true}};
 
     // 작물 threshold
     private final int[][] plantThresholds = {
-            {510, 1060, 1940},
-            {255, 848, 1746},
-            {204, 742, 2134},
-            {178, 602, 742},
-            {204, 742, 1060},
-            {255, 954, 1378},
-            {680, 0, 1360},
-            {388, 0, 776},
-            {970, 0, 1940},
-            {530, 0, 1060},
-            {750, 0, 1500},
-            {1455, 0, 2910}
+            {510, 1060, 1940}, // 토마토
+            {255, 848, 1746}, // 고추
+            {204, 742, 2134}, // 옥수수
+            {178, 602, 742}, // 오이
+            {204, 742, 1060}, // 콩
+            {255, 954, 1378}, // 가지
+            {680, 0, 1360}, // 무
+            {388, 0, 776}, // 상추
+            {970, 0, 1940}, // 배추
+            {530, 0, 1060}, // 감자
+            {750, 0, 1500}, // 고구마
+            {1455, 0, 2910} // 대파
     };
 
     // 장소
@@ -366,8 +366,8 @@ public class StartupApplicationListener {
         FarmPlaceRegisterDTO farmPlace1 = new FarmPlaceRegisterDTO(1L, address);
         FarmPlantRegisterDTO farmPlant1 = new FarmPlantRegisterDTO(1L, "토순이", "토마토 냠냠");
         FarmRegisterRequestDTO farmRegister1 = new FarmRegisterRequestDTO(farmPlace1, farmPlant1);
-        Farm farm1 = farmService.registerFarm(11L, farmRegister1);
-        farm1.startGrow();
+        Farm farm1 = farmService.registerFarm(11L, farmRegister1); // 1L
+        farm1.startGrow(LocalDateTime.now().minusDays(50));
 
         Farm farm = farmRepository.findById(1L).orElseThrow();
         farm.updateDegreeDay(1000);
@@ -375,24 +375,24 @@ public class StartupApplicationListener {
         FarmPlaceRegisterDTO farmPlace2 = new FarmPlaceRegisterDTO(2L, address);
         FarmPlantRegisterDTO farmPlant2 = new FarmPlantRegisterDTO(2L, "작매고", "작은 고추가 매움");
         FarmRegisterRequestDTO farmRegister2 = new FarmRegisterRequestDTO(farmPlace2, farmPlant2);
-        Farm farm2 = farmService.registerFarm(11L, farmRegister2);
-        farm2.startGrow();
+        Farm farm2 = farmService.registerFarm(11L, farmRegister2); // 2L
+        farm2.startGrow(LocalDateTime.now().minusDays(20));
 
         myPlantService.harvestPlant(11L, new ManagePlantRequestDTO(2L));
         myPlantService.endPlant(11L, new ManagePlantRequestDTO(2L));
 
         FarmPlaceRegisterDTO farmPlace3 = new FarmPlaceRegisterDTO(3L, address);
-        FarmPlantRegisterDTO farmPlant3 = new FarmPlantRegisterDTO(1L, "상충", "쌈쌈");
+        FarmPlantRegisterDTO farmPlant3 = new FarmPlantRegisterDTO(8L, "상충", "쌈쌈");
         FarmRegisterRequestDTO farmRegister3 = new FarmRegisterRequestDTO(farmPlace3, farmPlant3);
-        Farm farm3 = farmService.registerFarm(11L, farmRegister3);
-        farm3.startGrow();
+        Farm farm3 = farmService.registerFarm(11L, farmRegister3); // 3L
+        farm3.startGrow(LocalDateTime.now().minusDays(20));
 
         // mainpage 계정용
-        Farm farm4 = farmService.registerFarm(13L, farmRegister1);
-        Farm farm5 = farmService.registerFarm(13L, farmRegister2);
+        Farm farm4 = farmService.registerFarm(13L, farmRegister1); // 4L
+        Farm farm5 = farmService.registerFarm(13L, farmRegister2); // 5L
 
-        farm4.startGrow();
-        farm5.startGrow();
+        farm4.startGrow(LocalDateTime.now().minusDays(50));
+        farm5.startGrow(LocalDateTime.now().minusDays(20));
 
         farmRepository.findById(4L).orElseThrow().updateDegreeDay(1000);
         farmRepository.findById(5L).orElseThrow().updateDegreeDay(1000);
@@ -405,17 +405,22 @@ public class StartupApplicationListener {
         farmTodoRepository.save(new FarmTodo(farm, TodoType.WATERING, "", true, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(2)));
         farmTodoRepository.save(new FarmTodo(farm, TodoType.FERTILIZERING,"", true, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
 
+        Farm farm3 = farmRepository.findById(3L).orElseThrow();
+        farmTodoRepository.save(new FarmTodo(farm3, TodoType.WATERING, "", false, LocalDateTime.now().plusDays(1), null));
+        farmTodoRepository.save(new FarmTodo(farm3, TodoType.FERTILIZERING, "", false, LocalDateTime.now().plusDays(6), null));
+        farmTodoRepository.save(new FarmTodo(farm3, TodoType.WATERING, "", true, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(2)));
+        farmTodoRepository.save(new FarmTodo(farm3, TodoType.FERTILIZERING,"", true, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5)));
+
         // mainpage 용
         Farm farmMainPage1 = farmRepository.findById(4L).orElseThrow();
-        Farm farmMainPage2 = farmRepository.findById(5L).orElseThrow();
         farmTodoRepository.save(new FarmTodo(farmMainPage1, TodoType.WATERING, "", false, LocalDateTime.now().plusDays(1), null));
         farmTodoRepository.save(new FarmTodo(farmMainPage1, TodoType.FERTILIZERING, "", false, LocalDateTime.now().plusDays(6), null));
         farmTodoRepository.save(new FarmTodo(farmMainPage1, TodoType.NATURE, "폭우주의보", false, LocalDateTime.now(), null));
 
+        Farm farmMainPage2 = farmRepository.findById(5L).orElseThrow();
         farmTodoRepository.save(new FarmTodo(farmMainPage2, TodoType.WATERING, "", false, LocalDateTime.now().plusDays(1), null));
         farmTodoRepository.save(new FarmTodo(farmMainPage2, TodoType.FERTILIZERING, "", false, LocalDateTime.now().plusDays(6), null));
         farmTodoRepository.save(new FarmTodo(farmMainPage2, TodoType.NATURE, "호우주의보", false, LocalDateTime.now(), null));
-
     }
 
     private void createCommunityTagSample() {
