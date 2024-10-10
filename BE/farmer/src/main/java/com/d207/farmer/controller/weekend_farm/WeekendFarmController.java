@@ -1,5 +1,6 @@
 package com.d207.farmer.controller.weekend_farm;
 
+import com.d207.farmer.dto.weekend_farm.WeekendFarmAllDTO;
 import com.d207.farmer.dto.weekend_farm.WeekendFarmRegisterRequestDTO;
 import com.d207.farmer.dto.weekend_farm.WeekendFarmResponseDTO;
 import com.d207.farmer.service.weekend_farm.WeekendFarmService;
@@ -34,6 +35,16 @@ public class WeekendFarmController {
         log.info("[WeekendFarmController] Received register weekend farm request for {}", request);
         return ResponseEntity.created(URI.create("/")).body(weekendFarmService.registerWeekendFarm(request));
     }
+
+    /**
+     * 주말농장 전체 등록
+     */
+    @PostMapping("/all")
+    public ResponseEntity<List<WeekendFarmAllDTO>> registerAllWeekendFarm(@RequestBody List<WeekendFarmAllDTO> request) {
+        log.info("[WeekendFarmController] Received registerAllWeekendFarm request for {}", request);
+        return ResponseEntity.created(URI.create("/all")).body(weekendFarmService.registerAllWeekendFarm(request));
+    }
+
 
     /**
      * 주말농장 전체 조회
