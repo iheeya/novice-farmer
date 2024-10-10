@@ -26,8 +26,11 @@ import java.util.Map;
 @Component
 public class FastApiUtil {
 
-    @Value("${external.api.fastAPI.url}")
-    private String fastApiUrl;
+    @Value("${external.api.fastAPI.dataUrl}")
+    private String fastApiDataUrl;
+
+    @Value("${external.api.fastAPI.aiUrl}")
+    private String fastApiAiUrl;
 
     public RecommendPlaceResponseDTO getRecommendPlaceByFastApi(RecommendPlaceRequestDTO request, Plant plant) {
         RestTemplate restTemplate = new RestTemplate();
@@ -43,13 +46,13 @@ public class FastApiUtil {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-        List<RecommendPlaceResponseDTO.placeDTO> placeDTO = new ArrayList<>();
-        placeDTO.add(new RecommendPlaceResponseDTO.placeDTO(1L));
-        return new RecommendPlaceResponseDTO(placeDTO);
+//        List<RecommendPlaceResponseDTO.placeDTO> placeDTO = new ArrayList<>();
+//        placeDTO.add(new RecommendPlaceResponseDTO.placeDTO(1L));
+//        return new RecommendPlaceResponseDTO(placeDTO);
 
         // FIXME FastAPI에서 추천 API 만들어질 때까지, 베란다만 추천으로 만들어서 리턴
-        /*
-        String url = fastApiUrl + "/place/recommend";
+
+        String url = fastApiDataUrl + "/place/recommend";
         // 요청 및 응답
         ResponseEntity<RecommendPlaceResponseDTO> response = restTemplate.exchange(
                 url,
@@ -64,7 +67,6 @@ public class FastApiUtil {
         }
 
         return response.getBody();
-         */
     }
 
     public RecommendPlantResponseDTO getRecommendPlantByFastApi(Place place, Address address, Map<String, String> latAndLong) {
@@ -82,13 +84,13 @@ public class FastApiUtil {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-        List<RecommendPlantResponseDTO.plantDTO> plantDTO = new ArrayList<>();
-        plantDTO.add(new RecommendPlantResponseDTO.plantDTO(1L));
-        return new RecommendPlantResponseDTO(plantDTO);
+//        List<RecommendPlantResponseDTO.plantDTO> plantDTO = new ArrayList<>();
+//        plantDTO.add(new RecommendPlantResponseDTO.plantDTO(1L));
+//        return new RecommendPlantResponseDTO(plantDTO);
 
         // FIXME FastAPI에서 추천 API 만들어질 때까지, 토마토만 추천으로 만들어서 리턴
-        /*
-        String url = fastApiUrl + "/plant/recommend";
+
+        String url = fastApiDataUrl + "/plant/recommend";
         // 요청 및 응답
         ResponseEntity<RecommendPlantResponseDTO> response = restTemplate.exchange(
                 url,
@@ -103,7 +105,6 @@ public class FastApiUtil {
         }
 
         return response.getBody();
-         */
     }
 
     public InspectionPestResponseByFastApiDTO getInspectionPest(String imagePath) {
@@ -121,7 +122,7 @@ public class FastApiUtil {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-        String url = fastApiUrl + "/plant/pest";
+        String url = fastApiAiUrl + "/plant/pest";
         // 요청 및 응답
         ResponseEntity<InspectionPestResponseByFastApiDTO> response = restTemplate.exchange(
                 url,
@@ -151,7 +152,7 @@ public class FastApiUtil {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(headers);
 
-        String url = fastApiUrl + "/plant/growth";
+        String url = fastApiAiUrl + "/plant/growth";
 
         // 요청 및 응답
         ResponseEntity<InspectionGrowthStepResponseByFastApiDTO> response = restTemplate.exchange(
@@ -178,7 +179,7 @@ public class FastApiUtil {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(headers);
 
-        String url = fastApiUrl + "/items/1";
+        String url = fastApiDataUrl + "/items/1";
 
         // 요청 및 응답
         ResponseEntity<FastAPIConnectTestResponseDTO> response = restTemplate.exchange(
@@ -210,7 +211,7 @@ public class FastApiUtil {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(headers);
 
-        String url = fastApiUrl + "/plant/todo";
+        String url = fastApiDataUrl + "/plant/todo";
 
         // 요청 및 응답
         ResponseEntity<String> response = restTemplate.exchange(
