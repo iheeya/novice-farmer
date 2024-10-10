@@ -1,18 +1,38 @@
 import api from '../../utils/axios';
 
-export const sendPlantDiagnosis = async (farmId: number, image: Blob) => {
+export const sendPlantDiagnosis = async (farmId: number, image: File) => {
   try {
-    // 파일 이름을 동적으로 생성 (예: 현재 타임스탬프 사용)
-    const timestamp = new Date().getTime();
-    const fileName = `plant_image_${timestamp}.jpeg`;  // JPEG 파일로 변경
+    // File 객체를 JPEG로 변환하는 함수
+    const convertToJpeg = async (file: File): Promise<File> => {
+      const imageBitmap = await createImageBitmap(file);
+      const canvas = document.createElement('canvas');
+      canvas.width = imageBitmap.width;
+      canvas.height = imageBitmap.height;
+      
+      const context = canvas.getContext('2d');
+      context?.drawImage(imageBitmap, 0, 0);
+      
+      // canvas를 JPEG로 변환
+      const jpegDataUrl = canvas.toDataURL('image/jpeg');
+      
+      // Data URL을 Blob으로 변환
+      const blob = await (await fetch(jpegDataUrl)).blob();
+      
+      // Blob을 JPEG File로 변환
+      const jpegFile = new File([blob], `plant_image_${Date.now()}.jpeg`, {
+        type: 'image/jpeg',
+      });
+      
+      return jpegFile;
+    };
 
-    // Blob을 File로 변환 (JPEG 형식으로)
-    const file = new File([image], fileName, { type: 'image/jpeg' });
+    // 이미지 파일을 JPEG로 변환
+    const jpegFile = await convertToJpeg(image);
 
     // FormData 객체 생성
     const formData = new FormData();
     formData.append('farmId', String(farmId));
-    formData.append('file', file);  // JPEG 파일로 전송
+    formData.append('file', jpegFile); // JPEG 파일로 전송
 
     // API 요청 보내기
     const response = await api.post('/myplant/pest', formData, {
