@@ -1,12 +1,8 @@
 package com.d207.farmer.domain.farm;
 
 import com.d207.farmer.domain.common.Address;
-import com.d207.farmer.domain.common.Direction;
-import com.d207.farmer.domain.common.Location;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.user.User;
-import com.d207.farmer.dto.farm.register.FarmPlaceRegisterDTO;
-import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -53,17 +49,19 @@ public class UserPlace {
     })
     private Address address;
 
-    @Column(name = "user_place_direction")
-    private Direction direction;
-
-    public UserPlace(User user, Place place, String lati, String longi, String defaultPlaceName, Address address, Direction direction) {
+    /**
+     * 비즈니스 메서드
+     */
+    public UserPlace(User user, Place place, String lati, String longi, String defaultPlaceName, Address address) {
         this.user = user;
         this.place = place;
         this.name = defaultPlaceName;
         this.latitude = lati;
         this.longitude = longi;
         this.address = address;
-        this.direction = direction;
     }
 
+    public void modifyName(String userPlaceName) {
+        this.name = userPlaceName;
+    }
 }

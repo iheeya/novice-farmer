@@ -5,6 +5,8 @@ import com.d207.farmer.dto.farm.register.FarmRegisterInMyPlaceRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
 import com.d207.farmer.service.farm.FarmService;
 import com.d207.farmer.utils.JWTUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/farm")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@Tag(name = "내 농장(작물)", description = "farm")
 public class FarmController {
 
     private final FarmService farmService;
@@ -28,6 +31,7 @@ public class FarmController {
     /**
      * 농장 등록
      */
+    @Operation(summary = "농장 등록", description = "농장 등록 버튼")
     @PostMapping
     public ResponseEntity<String> registerFarm(@RequestHeader("Authorization") String authorization,
                                                @RequestBody @Valid FarmRegisterRequestDTO request) {
@@ -39,6 +43,7 @@ public class FarmController {
     /**
      * 내 텃밭에서 작물 등록
      */
+    @Operation(summary = "내 텃밭에서 작물 등록", description = "내 텃밭 페이지에서 작물 등록하기")
     @PostMapping("/plant")
     public ResponseEntity<String> registerFarm(@RequestHeader("Authorization") String authorization,
                                                @RequestBody @Valid FarmRegisterInMyPlaceRegisterDTO request) {
@@ -50,6 +55,7 @@ public class FarmController {
     /**
      * 장소 조회(with 즐겨찾기)
      */
+    @Operation(summary = "장소 조회(with 즐겨찾기)", description = "장소 리스트 조회인데, 추천은 받지않은 장소 -> 즐겨찾기만 있음")
     @GetMapping("/place")
     public ResponseEntity<List<PlaceWithFavoriteResponseDTO>> getPlaceWithFavorite(@RequestHeader("Authorization") String authorization) {
         Long userId = jwtUtil.getUserId(authorization);
@@ -60,6 +66,7 @@ public class FarmController {
     /**
      * 작물 조회(with 즐겨찾기)
      */
+    @Operation(summary = "작물 조회(with 즐겨찾기)", description = "작물 리스트 조회인데, 추천은 받지않은 작물 -> 즐겨찾기만 있음")
     @GetMapping("/plant")
     public ResponseEntity<List<PlantWithFavoriteResponseDTO>> getPlantWithFavorite(@RequestHeader("Authorization") String authorization) {
         Long userId = jwtUtil.getUserId(authorization);
@@ -70,7 +77,8 @@ public class FarmController {
     /**
      * 장소 조회(with 추천, 즐겨찾기)
      */
-    @GetMapping("/place/recommend")
+    @Operation(summary = "장소 조회(with 추천, 즐겨찾기)", description = "장소 리스트 조회인데, 추천과 즐겨찾기 모두 있는 장소")
+    @PostMapping("/place/recommend")
     public ResponseEntity<List<PlaceWithRecommendAndFavoriteResponseDTO>> getPlaceWithRecommendAndFavorite(@RequestHeader("Authorization") String authorization,
                                                                                                            @RequestBody @Valid RecommendPlaceRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
@@ -84,13 +92,13 @@ public class FarmController {
     /**
      * 작물 조회(with 추천, 즐겨찾기)
      */
-    @GetMapping("/plant/recommend")
+    @Operation(summary = "작물 조회(with 추천, 즐겨찾기)", description = "작물 리스트 조회인데, 추천과 즐겨찾기 모두 있는 작물")
+    @PostMapping("/plant/recommend")
     public ResponseEntity<List<PlantWithRecommendAndFavoriteResponseDTO>> getPlantWithRecommendAndFavorite(@RequestHeader("Authorization") String authorization,
                                                                                                            @RequestBody @Valid RecommendPlantRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[FarmController] Received get plants with recommend and favorite request for {}", userId);
 
-        // TODO 작물 추천 받기
         farmService.requestPlantRecommend(userId, request);
 
         return ResponseEntity.ok().body(farmService.getPlantsWithRecommendAndFavorite(userId));

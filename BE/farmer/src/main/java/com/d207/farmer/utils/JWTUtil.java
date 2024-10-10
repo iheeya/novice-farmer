@@ -1,11 +1,9 @@
 package com.d207.farmer.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
@@ -71,7 +69,25 @@ public class JWTUtil {
 
     public Long getUserId(String token) {
         // TODO Exception 발생 시 무슨 Exception인지 확인하고 try-catch로 묶기
-        Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(token);
+        // FIXME swagger에서 http header에 데이터를 담아서 통신할 때는 swagger Configure에서 설정해주어야 함
+        // FIXME 이때 schema를 Bearer로 해야해서, 임시로 substring으로 동작하게 함.
+
+        Jws<Claims> claims = null;
+
+        if(token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        try {
+            claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(token);
+        } catch (ExpiredJwtException e) {
+            Claims expiredClaims = e.getClaims();
+            Long userId = expiredClaims.get("userId", Long.class);
+            log.info("Expired JWT token : {}", userId);
+            return userId;
+            // 재발급 로직
+//            String newToken = createToken(userId, "access-token", accessTokenExpireTime);
+//            return ResponseEntity.ok().header("Authorization", "Bearer " + newToken).body("token re generated");
+        }
         Map<String, Object> value = claims.getBody();
         Number n = (Number) value.get("userId");
         return n.longValue();

@@ -1,7 +1,9 @@
 package com.d207.farmer.service.user;
 
+import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
+import com.d207.farmer.domain.plant.PlantGrowthIllust;
 import com.d207.farmer.domain.user.*;
 import com.d207.farmer.dto.place.PlaceResponseDTO;
 import com.d207.farmer.dto.place.PlaceResponseWithIdDTO;
@@ -9,7 +11,11 @@ import com.d207.farmer.dto.plant.PlantResponseDTO;
 import com.d207.farmer.dto.plant.PlantResponseWithIdDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.*;
+import com.d207.farmer.dto.user.mypage.UserMypageHistoryResponseDTO;
 import com.d207.farmer.exception.FailedAuthenticateUserException;
+import com.d207.farmer.exception.FailedInvalidUserException;
+import com.d207.farmer.repository.farm.FarmRepository;
+import com.d207.farmer.repository.plant.PlantIllustRepository;
 import com.d207.farmer.repository.user.*;
 import com.d207.farmer.repository.place.PlaceRepository;
 import com.d207.farmer.repository.plant.PlantRepository;
@@ -41,10 +47,17 @@ public class UserService {
     private final FavoritePlaceRepository favoritePlaceRepository;
     private final RecommendPlantRepository recommendPlantRepository;
     private final RecommendPlaceRepository recommendPlaceRepository;
+    private final FarmRepository farmRepository;
+    private final PlantIllustRepository plantIllustRepository;
 
     @Transactional
     public UserInfoResponseDTO registerUser(UserRegisterRequestDTO request) {
         User user = new User(request);
+
+        ////////////////////////////////////
+        if (userRepository.findByNickname(request.getNickname()) != null) throw new FailedInvalidUserException("닉네임 중복입니다!");
+        if (userRepository.findByEmail(request.getEmail()) != null) throw new FailedInvalidUserException("이메일 중복입니다!");
+
         User saveUser = userRepository.save(user);
         return UserInfoResponseDTO.builder()
                 .email(user.getEmail())
@@ -54,7 +67,11 @@ public class UserService {
                 .gender(user.getGender())
                 .age(user.getAge())
                 .address(user.getAddress())
+                .pushAllow(user.getPushAllow())
                 .build();
+
+
+
     }
 
     public UserInfoResponseDTO getUserInfo(UserInfoRequestByEmailDTO request) {
@@ -67,6 +84,7 @@ public class UserService {
                 .gender(user.getGender())
                 .age(user.getAge())
                 .address(user.getAddress())
+                .pushAllow(user.getPushAllow())
                 .build();
     }
 
@@ -81,6 +99,8 @@ public class UserService {
                 .gender(user.getGender())
                 .age(user.getAge())
                 .address(user.getAddress())
+                .imagepath(user.getImagePath())
+                .pushAllow(user.getPushAllow())
                 .build();
     }
 
@@ -88,9 +108,7 @@ public class UserService {
     public UserLoginResponseDTO loginUser(UserLoginRequestDTO request) {
         User user = userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword());
         boolean check_firstLogin = user.getIsFirstLogin();
-        if (check_firstLogin) {
-            user.setIsFirstLogin(false);
-        }
+
 
         if (user == null) {
             throw new FailedAuthenticateUserException("아이디 혹은 비밀번호가 일치하지 않습니다.");
@@ -174,6 +192,14 @@ public class UserService {
             }
 
         }
+        boolean check_firstLogin = user.getIsFirstLogin();
+        if (check_firstLogin) {
+            user.setIsFirstLogin(false);
+        }
+
+
+
+
         return "registered successfully.";
 
     }
@@ -273,4 +299,57 @@ public class UserService {
     }
 
 
+    @Transactional
+    public String registerUserInfo(Long userId, UserInfoResponseDTO userInfoResponseDTO) {
+
+        User user = userRepository.findById(userId).orElseThrow();
+
+        user.setNickname(userInfoResponseDTO.getNickname());
+        user.setAge(userInfoResponseDTO.getAge());
+        user.setAddress(userInfoResponseDTO.getAddress());
+        user.setPushAllow(userInfoResponseDTO.getPushAllow());
+
+        return "successful save";
+
+
+
+    }
+
+    public boolean getEmailUse(String email) {
+        User user = userRepository.findByEmail(email);
+        log.info("user = {}, {}", user, email);
+        return userRepository.findByEmail(email) == null;
+
+    }
+
+    public boolean getNicknameUse(String nickname) {
+        User user = userRepository.findByEmail(nickname);
+        log.info("user = {}, {}", user, nickname);
+        return userRepository.findByNickname(nickname) == null;
+    }
+
+    public List<UserMypageHistoryResponseDTO> getFarmHistory(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        List<Farm> farms = farmRepository.findByUserAndIsCompletedTrue(user);
+        List<UserMypageHistoryResponseDTO> userMypageHistoryResponseDTOS = farms.stream()
+                .map(farm -> {
+                    // farm의 growthStep을 통해 PlantGrowthIllust에서 이미지 경로를 가져옵니다.
+                    String imageUrl = plantIllustRepository.findByPlantAndStep(farm.getPlant(), 4)
+                            .map(PlantGrowthIllust::getImagePath)
+                            .orElse(null); // 이미지가 없을 경우 null 처리 // 이미지가 없을 경우 null 처리
+
+                    return UserMypageHistoryResponseDTO.builder()
+                            .id(farm.getId())
+                            .plantname(farm.getPlant().getName()) // Plant의 이름을 가져온다고 가정
+                            .plantmyname(farm.getMyPlantName())
+                            .placename(farm.getUserPlace().getName()) // UserPlace의 이름을 가져온다고 가정
+                            .seedDate(farm.getSeedDate())
+                            .firstHarvestDate(farm.getFirstHarvestDate())
+                            .imageurl(imageUrl) // 가져온 이미지 경로를 설정
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return userMypageHistoryResponseDTOS;
+    }
 }

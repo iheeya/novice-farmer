@@ -1,14 +1,14 @@
 package com.d207.farmer.domain.plant;
 
 import com.d207.farmer.dto.plant.PlantRegisterRequestDTO;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -22,18 +22,30 @@ public class Plant {
     @Column(name = "plant_name")
     private String name;
 
-    @Column(name = "plant_growth_day")
-    private Integer growthDay;
+    @Column(name = "plant_degree_day")
+    private Integer degreeDay;
 
     @Column(name = "plant_is_on")
     private Boolean isOn;
+
+    @OneToMany(mappedBy = "plant")
+    private List<PlantGrowthIllust> plantGrowthIllusts = new ArrayList<>();
+
+    // 연관관계 편의 메서드
+    public void setPlantGrowthIllusts(PlantGrowthIllust plantGrowthIllust) {
+        plantGrowthIllusts.add(plantGrowthIllust);
+        plantGrowthIllust.setPlant(this);
+    }
+
+    @OneToMany(mappedBy = "plant")
+    private List<PlantThreshold> plantThresholds = new ArrayList<>();
 
     /**
      * 비즈니스 로직
      */
     public Plant(PlantRegisterRequestDTO request) {
         this.name = request.getName();
-        this.growthDay = request.getGrowthDay();
+        this.degreeDay = request.getDegreeDay();
         this.isOn = request.getIsOn();
     }
 }

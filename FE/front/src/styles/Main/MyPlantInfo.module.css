@@ -1,0 +1,79 @@
+.plantInfoContainer {
+  padding: 1.25rem 1.25rem 0.2rem 1.25rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  color: #3D7537;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  font-size: 1rem;
+  text-align: center;
+  color: black;
+  margin: 0;
+}
+
+.headerImage {
+  width: 30vw;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-left: 1rem;
+}
+
+.hashTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.hashTag {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #3D7537;
+  background-color: rgb(220, 241, 228);
+  padding: 0.2rem 0.5rem;
+  border-radius: 1rem;
+  margin: 0.5rem;
+}
+
+.plantList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.plantItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 6vw; /* 이미지가 없는 리스트 아이템의 높이 */
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  background-color: rgba(235, 236, 210, 0.41);
+  border-radius: 8px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+}
+
+
+.plantItem p {
+  text-align: center;
+  font-size: 1.4rem;
+  width: 100%;
+  margin: 0;
+}
