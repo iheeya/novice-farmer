@@ -9,25 +9,24 @@ from weather.weather import load_adminfo, load_areainfo, load_aswsinfo, load_cur
 # grwoth 함수 관리
 from growth.growth import update_farm_growth
 # todo 함수 관리
-from todo.fert import create_todoinfo
+from todo.fert import update_todoinfo
 from todo.news import update_special_weatherinfo
 
 # Router 관리
 from growth.routers import router as growth_router
-from pest.routers import router as pest_router
 from recomm.routers import router as recomm_router
 from todo.routers import router as todo_router
 from weather.routers import router as weather_router
-from yolo.services import router as yolo_router
 
 # Scheduler 관리
 from setting.scheduler import start_scheduler
 
     
 def start():
-    load_adminfo(), load_areainfo(), load_aswsinfo(), load_special_areainfo(), load_valinfo(), load_curruent_special_weatherinfo()
+    # load_adminfo(), load_areainfo(), load_aswsinfo(), load_special_areainfo(), load_valinfo()
+    load_curruent_special_weatherinfo()
     update_farm_growth()
-    create_todoinfo()
+    update_todoinfo()
     update_special_weatherinfo()
 
 # Scheduler 시작
@@ -63,11 +62,9 @@ app.add_middleware(
 )
 
 app.include_router(growth_router, prefix='/data-api', tags=['growth'])
-app.include_router(pest_router, prefix='/data-api', tags=['pest'])
 app.include_router(recomm_router, prefix='/data-api', tags=['recomm'])
 app.include_router(todo_router, prefix='/data-api', tags=['todo'])
 app.include_router(weather_router, prefix='/data-api', tags=['weather'])
-app.include_router(yolo_router, prefix='/data-api', tags=['pest'])
 
 router = APIRouter()
 

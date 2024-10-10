@@ -74,3 +74,7 @@ class FarmTodoSchema(BaseModel):
 
     class Config:
         from_attributes = True
+    
+class FarmRequestSchema(BaseModel):
+    farm_id: int
+    farm_todo_type: FarmTodoTypeSchema

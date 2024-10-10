@@ -53,7 +53,7 @@ class FarmTodoType(enum.Enum):
 class FarmTodo(Base):
     __tablename__ = "farm_todo"
 
-    farm_todo_id = Column(BigInteger, primary_key=True, autoincrement=True)
+    farm_todo_id = Column(BigInteger, primary_key=True)
     farm_todo_title = Column(String(255), nullable=True)
     farm_todo_is_completed = Column(Boolean, nullable=True) 
     farm_id = Column(BigInteger, ForeignKey('farm.farm_id'), nullable=True)

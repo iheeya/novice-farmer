@@ -91,11 +91,14 @@ def update_farm_growth():
 
         # 6. 농장, 농장위치, 작물 정보 일치하는 곳에 dd값 계산한 것 넣어주기.
         for farm in farmer_data:
+            if farm.farm_id is None:
+                continue
             id = farm.farm_id
             plant = farm.plant_id
             user_place = farm.user_place_id
             DDs = farm.farm_degree_day
             
+            print(f'farm_id는 {id}입니다.')
             # 작물별 생장 한계 온도
             thi, tlow = fast_api.query(GrowthTemp).with_entities(GrowthTemp.growth_high_temp, GrowthTemp.growth_low_temp).filter(GrowthTemp.crop_id == plant).first()
             print(f'thi, hlow: {thi}, {tlow}')
@@ -105,6 +108,7 @@ def update_farm_growth():
             sido, sigungu = farmer.query(UserPlace).with_entities(UserPlace.user_place_sido, UserPlace.user_place_sigugun).filter(UserPlace.user_place_id == user_place).first()
             sido = sido[:2]
             sigungu = sigungu[:-1]
+            
             print(f'sido, sigungu: {sido}, {sigungu}')
             
             # 유저 위치 정보에 맞는 예보구역
@@ -124,6 +128,7 @@ def update_farm_growth():
                     
                     # 데이터들을 가지고 CropTime 알고리즘 실행
                     DDs += crops_growth(tmax, tmin, thi, tlow)
+                    print(f'DD값은 {DDs} 입니다.')
                     
                     update_degree_days(farmer, FarmUpdateSchema(farm_degree_day=DDs), id)
         farmer.commit()

@@ -30,9 +30,10 @@ def update_special_weatherinfo():
             print(f'stn_id: {wrn_id}')
             
             if wrn_id:
-                wrn_type = fast_api.query(CurrentSpecialWeather).with_entities(CurrentSpecialWeather.wrn_id).filter(CurrentSpecialWeather.wrn_id)
+                wrn_type = fast_api.query(CurrentSpecialWeather).with_entities(CurrentSpecialWeather.wrn_id).filter(CurrentSpecialWeather.wrn_id==wrn_id).first()
                 todo_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-                add_special_weather(farmer, id, wrn_type, FarmTodoType.NATURE, todo_date, False)
+                if wrn_type:
+                    add_special_weather(farmer, id, wrn_type, FarmTodoType.NATURE, todo_date, False)
 
 def add_special_weather(db: Session, farm_id: int, title: str, type: FarmTodoType, date: datetime=None, is_completed: bool=False):
     new_todo = FarmTodo(farm_id=farm_id, farm_todo_title=title, farm_todo_type=type, farm_todo_date=date, farm_todo_is_completed=is_completed)
