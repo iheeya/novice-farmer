@@ -4,15 +4,17 @@ FROM python:3.8
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# 필요한 파일 복사
-COPY .env .env
-COPY requirements.txt .
+# yolo 폴더 복사 (yolo 폴더가 Dockerfile과 동일한 경로에 있다고 가정)
+COPY yolo/ /app/yolo/
 
-# 종속성 설치
+# 작업 디렉토리 이동
+WORKDIR /app/yolo
+
+# 종속성 설치 (yolo 폴더 내에 있는 requirements.txt를 사용)
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-# 앱 소스 복사
-COPY . .
+# .env 파일 복사
+COPY PEST/yolo/.env .env
 
 # 외부 접속 허용 포트번호
 EXPOSE 8000
