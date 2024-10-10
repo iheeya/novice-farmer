@@ -1,7 +1,7 @@
 .beginnerInfoContainer {
   padding: 1.25rem 1.25rem 0.2rem 1.25rem;
-  background-color: #F8FAF8;
   border-radius: 0.5rem;
+  background-color: #f9f9f9;
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
 }
 
@@ -47,7 +47,7 @@
 
 .plantItem p {
   text-align: center;
-  font-size: 1.3rem;
+  /* font-size: 1.3rem; */
   font-weight: bold;
   color: #5B8E55;
   width: 60%;
@@ -55,7 +55,7 @@
 
 .plantImage {
   background-color: rgba(235, 236, 210, 0.41);
-  width: 30%;
+  width: 20%;
   height: auto;
   object-fit: cover;
 }

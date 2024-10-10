@@ -10,11 +10,13 @@ import {  useSelector } from 'react-redux';
 import { RootState } from '../../store/AddFarm/store';
 import { motion } from "framer-motion";
 import { CSSTransition } from 'react-transition-group';
+import { selectPlantPost } from '../../services/AddGarden/AddGardenPost';
 
 interface GardenModalProps {
     plantId: number |null;
     onClose: () => void; // onClose는 함수 타입
     onLoading: () => void;
+    onResponse: (response:any) => void;
 }
 
 const customModalStyles: ReactModal.Styles = {
@@ -42,7 +44,7 @@ const customModalStyles: ReactModal.Styles = {
     },
 };
 
-function GardenModal({ plantId, onClose, onLoading }: GardenModalProps) {
+function GardenModal({ plantId, onClose, onLoading , onResponse}: GardenModalProps) {
   
 
   const plantData = useSelector((state: RootState) => state.farmSelect.plant)
@@ -64,12 +66,14 @@ function GardenModal({ plantId, onClose, onLoading }: GardenModalProps) {
   const handleSubmit = async () => {
    
       const payload = {
-        plantId: plantId
+        plantId: plantId,
+        plantName: plantData
       };
 
       try {
-        const response = await axios.post('/your-endpoint', payload);
+        const response = await selectPlantPost(payload);
         console.log(response.data); // 응답 처리
+        onResponse(response)
         onClose(); // 모달 닫기
       } catch (error) {
         console.error("Error posting data:", error);
