@@ -199,7 +199,7 @@ function GardenModal({ placeId, onClose, onLoading, onResponse }: GardenModalPro
           onClick={handlePostcode}
           color="success"
           disabled={!isScriptLoaded} // 스크립트가 로드되기 전에는 버튼 비활성화
-          sx={{ opacity: 1, position: 'absolute', left: '70%' }}
+          sx={{ opacity: 1, position: 'absolute', right: '9%', height:'10%' }}
         >
           주소 찾기
         </Button>
