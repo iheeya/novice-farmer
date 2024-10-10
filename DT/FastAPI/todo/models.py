@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from setting.models import Farm
 from sqlalchemy.ext.declarative import declarative_base
 import enum
+from setting.models import Farm
 
 Base = declarative_base()
 

@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean
-from .database import Base
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 class BJDCode(Base):
     __tablename__ = 'bjd_code'
