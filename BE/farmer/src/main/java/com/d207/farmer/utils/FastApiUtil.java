@@ -117,13 +117,15 @@ public class FastApiUtil {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("imagePath", imagePath);
 
+        log.info("file imagePath = {}", imagePath);
+
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
         String url = fastApiUrl + "/plant/pest";
         // 요청 및 응답
         ResponseEntity<InspectionPestResponseByFastApiDTO> response = restTemplate.exchange(
                 url,
-                HttpMethod.GET,
+                HttpMethod.POST,
                 entity,
                 InspectionPestResponseByFastApiDTO.class
         );

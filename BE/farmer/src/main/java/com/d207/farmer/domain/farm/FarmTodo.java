@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
@@ -14,7 +15,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FarmTodo {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "farm_todo_id")
     private Long id;
 

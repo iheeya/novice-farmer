@@ -72,6 +72,10 @@ spring:
         ***REMOVED***
         ***REMOVED***
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
 external:
   api:
     naver:
@@ -79,7 +83,12 @@ external:
         ***REMOVED***
         ***REMOVED***
     fastAPI:
-      url: http://j11d207.p.ssafy.io:8000/data-api
+     url: http://j11d207.p.ssafy.io:8000/data-api
+      # url: https://09fd-14-46-141-166.ngrok-free.app/data-api
+    weather:
+      url: http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst
+      ***REMOVED***
+
 # 로그 설정
 logging:
   level:

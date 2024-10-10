@@ -9,6 +9,7 @@ import com.d207.farmer.domain.plant.PlantGrowthIllust;
 import com.d207.farmer.domain.plant.PlantThreshold;
 import com.d207.farmer.domain.user.FavoritePlace;
 import com.d207.farmer.domain.user.FavoritePlant;
+import com.d207.farmer.domain.user.Gender;
 import com.d207.farmer.domain.user.User;
 import com.d207.farmer.dto.common.FileDirectory;
 import com.d207.farmer.dto.mainpage.MainPageResponseDTO;
@@ -211,17 +212,59 @@ public class MainPageService {
      * 7. 추천 컴포넌트
      */
     private RecommendInfoComponentDTO getRecommendInfo(Long userId, List<Plant> plants) {
-        // TODO 추천 알고리즘
         List<RecommendInfoComponentDTO.RecommendPlantDTO> recommendPlants = new ArrayList<>();
-        String[] desc = {"라이코펜 가득!", "비타민C 풍부!", "비타민B 풍부!", "철분 가득!"};
+        User user = userRepository.findById(userId).orElseThrow();
+        String address = user.getAddress();
+        Integer age = user.getAge();
+        Gender gender = user.getGender();
+        String gen = "";
+        if(gender == Gender.MALE) gen = "남자";
+        else gen = "여자";
+        String[] commentsBySeason = {
+                "서늘한 가을날, " + address + "에서 키우기 좋은 작물은?",
+                "쌀쌀한 가을에 " + address + "에 사는 사람들이 많이 키우는 작물은?",
+                "일교차가 큰 요즘, " + address + "에서 키우기 좋은 작물은?",
+                "해가 빨리 지는 요즘, " + address + "에서 키우기 좋은 작물은?",
+                "부쩍 추워진 요즘, " + address + "에 사는 사람들이 많이 키우는 작물은?",
+                "여름이 끝난 직후인 요즘, " + address + "에 사는 사람들이 많이 키우는 작물은?"
+        };
+        String[] commentsByAge = {
+                "토마토를 키우는 " + age + "살 " + gen + "들에게 가장 인기있는 작물은?",
+                "고추를 키우는 " + age + "살 " + gen + "들이 가장 많이 키우는 작물은?",
+                "상추를 키우는 " + age + "살 " + gen + "들이 가장 선호하는 작물은?",
+                "배추를 키우는 " + age + "살 " + gen + "들에게 가장 인기있는 작물은?",
+                "콩을 키우는 " + age + "살 " + gen + "들이 가장 선호하는 작물은?"
+        };
+
+        String[] descs = {"라이코펜 가득!", "비타민C 풍부!", "비타민B 풍부!", "철분 가득!", "비타민A 가득", "맛있다!", "눈 기능 향상!"};
+
+        Random rand = new Random();
+        Set<Integer> plantIdSet = new HashSet<>();
+
         for (int i = 0; i < 4; i++) {
-            recommendPlants.add(new RecommendInfoComponentDTO.RecommendPlantDTO(plants.get(i).getId(), plants.get(i).getName(), desc[i]));
+            int plantId = getRandPlantId(plants.size(), plantIdSet, rand);
+            int descId = rand.nextInt(descs.length);
+            recommendPlants.add(new RecommendInfoComponentDTO.RecommendPlantDTO(plants.get(plantId).getId(), plants.get(plantId).getName(), descs[descId]));
         }
-        RecommendInfoComponentDTO.RecommendByDTO recommendByPlace = new RecommendInfoComponentDTO.RecommendByDTO("서늘한 가을날, 구미시 진평동에서 키우기 좋은 작물은?",
+        int commentsBySeasonId = rand.nextInt(6);
+        int commentsByAgeId = rand.nextInt(5);
+        RecommendInfoComponentDTO.RecommendByDTO recommendByPlace = new RecommendInfoComponentDTO.RecommendByDTO(commentsBySeason[commentsBySeasonId],
                 recommendPlants.subList(0, 2));
-        RecommendInfoComponentDTO.RecommendByDTO recommendByUser = new RecommendInfoComponentDTO.RecommendByDTO("토마토를 키우는 20대 남성들에게 가장 인기있는 작물은?",
+        RecommendInfoComponentDTO.RecommendByDTO recommendByUser = new RecommendInfoComponentDTO.RecommendByDTO(commentsByAge[commentsByAgeId],
                 recommendPlants.subList(2, 4));
         return new RecommendInfoComponentDTO(true, recommendByPlace, recommendByUser);
+    }
+
+    private int getRandPlantId(int size, Set<Integer> plantIdSet, Random rand) {
+        int id = rand.nextInt(size);
+        while(true) {
+            if(plantIdSet.contains(id)) {
+                id = rand.nextInt(size);
+                continue;
+            }
+            plantIdSet.add(id);
+            return id;
+        }
     }
 
     /**

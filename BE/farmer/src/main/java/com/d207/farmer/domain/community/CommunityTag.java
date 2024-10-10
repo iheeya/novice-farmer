@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
@@ -18,7 +19,7 @@ import static jakarta.persistence.EnumType.STRING;
 @NoArgsConstructor
 public class CommunityTag {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "community_tag_id")
     private Long id;
 
