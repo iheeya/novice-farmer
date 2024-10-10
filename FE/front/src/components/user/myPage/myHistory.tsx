@@ -22,7 +22,7 @@ export default function MyHistory() {
         // 각 plant 객체에 대해 이미지 URL 가져오기
         const urls = await Promise.all(
           res.map(async (plant) => {
-            const imageUrl = await GetImage(plant.imageurl); // 각 이미지 URL 가져오기
+            const imageUrl = await GetImage(plant.imageurl||'plant/Default.png'); // 각 이미지 URL 가져오기
             return { id: plant.id, url: imageUrl };
           })
         );
