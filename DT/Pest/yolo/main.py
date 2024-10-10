@@ -32,7 +32,7 @@ s3 = boto3.client(
 
 # YOLOv5 모델 로드
 yolov5_path = os.path.abspath('yolov5')
-model_path = os.path.abspath('epoch32.pt')
+model_path = os.path.abspath('epoch1.pt')
 model = torch.hub.load(yolov5_path, 'custom', path=model_path, source='local', force_reload=True)
 
 # 라우터 생성
@@ -65,8 +65,8 @@ def draw_bounding_boxes(image: Image.Image, results):
     for *box, conf, cls in results.xyxy[0]:
         draw.rectangle(box, outline="red", width=2)
         draw.text((box[0], box[1]), f'{model.names[int(cls)]} {conf:.2f}', fill="red")
+    print(results.xyxy[0])
     return image
-
 # S3에 이미지 업로드
 def upload_image_to_s3(image: Image.Image, key: str):
     buffer = io.BytesIO()
@@ -86,6 +86,7 @@ import logging
 # 로그 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+    
 
 @app.post("/data-api/plant/pest")
 async def detect_image_from_s3(request: S3KeyRequest):
