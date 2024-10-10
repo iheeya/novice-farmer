@@ -30,3 +30,12 @@ class Place(BaseModel):
 class CropRecommendationRequest(BaseModel):
     place: Place
     address: Address
+
+class Plant(BaseModel):
+    plantId: int
+    plantName: str
+
+class PlaceRecommendationRequest(BaseModel):
+    plantId: int
+    plantName: str
+

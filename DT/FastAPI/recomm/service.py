@@ -397,4 +397,48 @@ def clean_value(value: str) -> str:
         value = value.replace('%', '').strip()
     return value
 
+class IndoorCropRecommendationService:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def get_cold_start_recommendations(self) -> List[Dict[str, int]]:
+        """
+        콜드 스타트 문제를 해결하기 위해 사전 정의된 작물 추천을 반환합니다.
+        """
+        # 베란다 텃밭에 추천할 기본 작물 리스트 (plantId는 예시로 설정)
+        cold_start_plants = [
+            {"plantId": 1},  # 예: 토마토
+            {"plantId": 2},  # 예: 상추
+            {"plantId": 3},  # 예: 고추
+            {"plantId": 4},  # 예: 콩
+        ]
+        return cold_start_plants
+
+class PlaceRecommendationService:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def recommend_place_for_plant(self, plant_id: int, plant_name: str) -> List[Dict[str, int]]:
+        """
+        선택된 작물에 따라 적합한 텃밭 환경을 추천합니다.
+        """
+        # 초기 콜드 스타트용 추천 로직
+        cold_start_recommendations = {
+            "토마토": [1, 2, 3],
+            "상추": [1, 2, 4],
+            "고추": [1, 2, 3],
+            "오이": [1, 3, 4],
+            "콩": [1, 2, 4],
+            "감자": [2, 3, 4],
+            "고구마": [2, 3, 4],
+            "배추": [2, 4],
+            "옥수수": [2, 4],
+            "가지": [2, 3]
+        }
+
+        # 해당 작물에 대해 사전 정의된 환경을 제공
+        recommended_places = cold_start_recommendations.get(plant_name, [])
+
+        # 추천 결과를 'placeId' 형태로 반환
+        return [{"placeId": place_id} for place_id in recommended_places]
 

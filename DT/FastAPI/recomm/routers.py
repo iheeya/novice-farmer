@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from typing import List, Dict
 from .database import get_db
-from .schemas import CropRecommendationRequest
-from .service import CropRecommendationService
+from .schemas import CropRecommendationRequest, PlaceRecommendationRequest
+from .service import CropRecommendationService, IndoorCropRecommendationService, PlaceRecommendationService
 
 router = APIRouter()
 
@@ -11,11 +11,27 @@ router = APIRouter()
 def get_crop_recommendation_service(db: Session = Depends(get_db)):
     return CropRecommendationService(db)
 
+def get_indoor_crop_recommendation_service(db: Session = Depends(get_db)):
+    return IndoorCropRecommendationService(db)
+
+def get_place_recommendation_service(db: Session = Depends(get_db)):
+    return PlaceRecommendationService(db)
+
 # 작물 추천 API
 @router.post("/plant/recommend", response_model=List[Dict[str, int]])
-async def recommend_crops(request: CropRecommendationRequest, service: CropRecommendationService = Depends(get_crop_recommendation_service)):
+async def recommend_crops(
+    request: CropRecommendationRequest,
+    service: CropRecommendationService = Depends(get_crop_recommendation_service),
+    indoor_service: IndoorCropRecommendationService = Depends(get_indoor_crop_recommendation_service)
+):
     try:
-        # 객체의 속성으로 접근하도록 수정
+        place_id = request.place.placeId
+
+        # 실내 텃밭(placeId == 1)인 경우 콜드 스타트 추천 반환
+        if place_id == 1:
+            return indoor_service.get_cold_start_recommendations()
+        
+        # 실외 텃밭(2, 3, 4)에 대한 작물 추천
         address = {
             "sido": request.address.sido,
             "sigungu": request.address.sigungu,
@@ -23,7 +39,6 @@ async def recommend_crops(request: CropRecommendationRequest, service: CropRecom
             "bname2": request.address.bname2,
             "bunji": request.address.bunji,
         }
-        # 작물 추천 결과 반환
         recommendations = service.get_crop_recommendations(address)
         return recommendations
     except HTTPException as e:
@@ -31,4 +46,13 @@ async def recommend_crops(request: CropRecommendationRequest, service: CropRecom
         raise e
     except Exception as e:
         # 그 외의 예외 발생 시 내부 서버 오류 반환
+        raise HTTPException(status_code=500, detail=f"내부 서버 오류: {str(e)}")
+
+@router.post("/place/recommend", response_model=List[Dict[str, int]])
+async def recommend_place_for_plant(request: PlaceRecommendationRequest, service: PlaceRecommendationService = Depends(get_place_recommendation_service)):
+    try:
+        # 선택한 작물에 따른 추천 결과 반환
+        recommendations = service.recommend_place_for_plant(request.plantId, request.plantName)
+        return recommendations
+    except Exception as e:
         raise HTTPException(status_code=500, detail=f"내부 서버 오류: {str(e)}")
