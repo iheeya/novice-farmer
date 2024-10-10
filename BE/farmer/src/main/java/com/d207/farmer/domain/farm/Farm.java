@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
@@ -85,8 +86,8 @@ public class Farm {
     }
 
     // 작물 키우기 시작하기
-    public void startGrow() {
-        this.seedDate = LocalDateTime.now();
+    public void startGrow(LocalDateTime localDateTime) {
+        this.seedDate = localDateTime;
     }
 
     // 작물 삭제
