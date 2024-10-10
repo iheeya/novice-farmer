@@ -6,6 +6,8 @@ import com.d207.farmer.domain.farm.UserPlace;
 import com.d207.farmer.domain.place.Place;
 import com.d207.farmer.domain.plant.Plant;
 import com.d207.farmer.domain.user.*;
+import com.d207.farmer.dto.farm.api.PlaceIdDTO;
+import com.d207.farmer.dto.farm.api.PlantIdDTO;
 import com.d207.farmer.dto.farm.get.*;
 import com.d207.farmer.dto.farm.register.FarmRegisterInMyPlaceRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
@@ -240,16 +242,19 @@ public class FarmService {
         User user = userRepository.findById(userId).orElseThrow();
 
         // 추천 장소 받기
-        RecommendPlaceResponseDTO response = fastApiUtil.getRecommendPlaceByFastApi(request, plant);
-        List<RecommendPlaceResponseDTO.placeDTO> placeDTOs = response.getPlaces();
+        List<PlaceIdDTO> response = fastApiUtil.getRecommendPlaceByFastApi(request, plant);
+//        List<RecommendPlaceResponseDTO.placeDTO> placeDTOs = response.getPlaces();
 
         // 먼저 추천 테이블 비우기(by userId)
         recommendPlaceRepository.deleteByUserId(userId);
 
         // 추천 테이블에 추가
         List<Long> placeIds = new ArrayList<>();
-        for (RecommendPlaceResponseDTO.placeDTO p : placeDTOs) {
-            placeIds.add(p.getPlaceId());
+//        for (RecommendPlaceResponseDTO.placeDTO p : placeDTOs) {
+//            placeIds.add(p.getPlaceId());
+//        }
+        for (PlaceIdDTO placeIdDTO : response) {
+            placeIds.add(placeIdDTO.getPlaceId());
         }
 
         List<Place> places = placeRepository.findByIdIn(placeIds);
@@ -272,17 +277,20 @@ public class FarmService {
         Map<String, String> latAndLong = addressUtil.getLatAndLongByJibun(address.getJibun());
 
         // 추천 작물 받기
-        RecommendPlantResponseDTO response = fastApiUtil.getRecommendPlantByFastApi(place, address, latAndLong);
+        List<PlantIdDTO> response = fastApiUtil.getRecommendPlantByFastApi(place, address, latAndLong);
 
-        List<RecommendPlantResponseDTO.plantDTO> plantDTOs = response.getPlants();
+//        List<RecommendPlantResponseDTO.plantDTO> plantDTOs = response.getPlants();
 
         // 먼저 추천 테이블 비우기(by userId)
         recommendPlantRepository.deleteByUserId(userId);
 
         // 추천 테이블에 추가
         List<Long> plantIds = new ArrayList<>();
-        for (RecommendPlantResponseDTO.plantDTO p : plantDTOs) {
-            plantIds.add(p.getPlantId());
+//        for (RecommendPlantResponseDTO.plantDTO p : plantDTOs) {
+//            plantIds.add(p.getPlantId());
+//        }
+        for (PlantIdDTO id : response) {
+            plantIds.add(id.getPlantId());
         }
 
         List<Plant> plants = plantRepository.findByIdIn(plantIds);
