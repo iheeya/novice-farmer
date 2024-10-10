@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class WeekendFarmRegisterRequestDTO {
+public class WeekendFarmAllDTO {
     private String name;
     private String address;
     private String latitude;

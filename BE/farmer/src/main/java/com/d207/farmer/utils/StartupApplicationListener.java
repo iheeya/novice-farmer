@@ -244,7 +244,7 @@ public class StartupApplicationListener {
         log.info("Application ready");
         createPlantSample();
         createPlaceSample();
-        createWeekendFarmSample();
+//        createWeekendFarmSample(); // import.sql로 들어감
         createPlantIllustSample();
         createPlantThresholdSample();
         createUserSample();
@@ -267,12 +267,12 @@ public class StartupApplicationListener {
         }
     }
 
-    private void createWeekendFarmSample() {
-        for (int i = 0; i < weekendFarmSamples.length; i++) {
-            weekendFarmService.registerWeekendFarm(new WeekendFarmRegisterRequestDTO(weekendFarmSamples[i][0], weekendFarmSamples[i][1], weekendFarmSamples[i][2],
-                    weekendFarmSamples[i][3], weekendFarmSamples[i][4], weekendFarmSamples[i][5], weekendFarmSamples[i][6]));
-        }
-    }
+//    private void createWeekendFarmSample() {
+//        for (int i = 0; i < weekendFarmSamples.length; i++) {
+//            weekendFarmService.registerWeekendFarm(new WeekendFarmRegisterRequestDTO(weekendFarmSamples[i][0], weekendFarmSamples[i][1], weekendFarmSamples[i][2],
+//                    weekendFarmSamples[i][3], weekendFarmSamples[i][4], weekendFarmSamples[i][5], weekendFarmSamples[i][6]));
+//        }
+//    }
 
     private void createPlantIllustSample() {
         List<Plant> plants = plantRepository.findAll();
@@ -349,7 +349,7 @@ public class StartupApplicationListener {
         // mainpage@email.com - 가입(13L)
         UserSampleRegisterRequestDTO u3 = new UserSampleRegisterRequestDTO(
                 "mainpage@email.com", "1234", "농부의정원", 30, Gender.MALE,
-                "경상북도 구미시", true, "mainpage.png"
+                "대구광역시 달성군", true, "mainpage.png"
         );
         User mainpageUser = sampleService.registerUser(u3);
 
