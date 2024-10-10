@@ -75,6 +75,7 @@ public class MyPlaceService {
             int remainDay = farmTodos == null || farmTodos.isEmpty() ? 1 : Period.between(LocalDate.now(), farmTodos.get(0).getTodoDate().toLocalDate()).getDays();
 
             String todoInfo = remainDay + "일 후에 물을 줘야 해요";
+            if(farmTodos == null) todoInfo = "작물 키우기를 시작하세요!";
 
             LocalDateTime seedDate = farm.getSeedDate();
             myPlaceFarmDTOs.add(new MyPlaceFarmDTO(plantId, plantName, myPlantId, myPlantName,
