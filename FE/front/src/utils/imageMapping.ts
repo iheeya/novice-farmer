@@ -18,6 +18,8 @@ export const getImageForCrop = (cropName: string): string => {
         return require('../assets/img/plants/Tomato.png');
       case '상추':
         return require('../assets/img/plants/Lettuce.png');
+      case '배추':
+        return require('../assets/img/plants/Cabbage.png');
       case '바질':
         return require('../assets/img/plants/Basil.png');
       case '알로에':

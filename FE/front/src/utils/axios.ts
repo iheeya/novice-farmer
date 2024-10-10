@@ -2,6 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://j11d207.p.ssafy.io:8081/farmer-api",
+  // baseURL: "http://192.168.100.84:8081/farmer-api",
   timeout: 10000,
 });
 

@@ -1,0 +1,49 @@
+.weekendFarmContainer {
+  padding: 2vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.backButton {
+  width: 3rem;
+  cursor: pointer;
+}
+
+.title {
+  flex: 1;
+  text-align: center;
+  margin-left: 10px;
+}
+
+.divider {
+  width: 80%;
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 1vw 0;
+}
+
+.mapWrapper {
+  margin: 5%;
+  width: 100%;
+  margin-bottom: 2vw;
+}
+
+.mapImage {
+  width: 100%;
+}
+
+.farmList {
+  display: flex;
+  flex-direction: column;
+  gap: 2vw;
+  width: 100%;
+  margin-bottom: 8%;
+}
