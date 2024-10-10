@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from '../../styles/Detail/cameraPage.module.css';
-import CameraLoading from '../../components/Detail/cameraLoading'; // 새로운 로딩 컴포넌트 임포트
+import CameraLoading from '../../components/Detail/cameraLoading'; // 로딩 컴포넌트 임포트
+import { sendPlantDiagnosis } from '../../services/PlantDetail/CameraDiagnosis'; // 분석 요청 함수 임포트
 
 const CameraPage: React.FC = () => {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -9,7 +10,7 @@ const CameraPage: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null); // 카메라 스트림을 저장할 ref
   const navigate = useNavigate();
-  
+
   // URL에서 myPlaceId와 myPlantId를 받아옴
   const { myPlaceId, myPlantId } = useParams<{ myPlaceId: string; myPlantId: string }>();
 
@@ -36,7 +37,7 @@ const CameraPage: React.FC = () => {
       canvas.width = videoRef.current.videoWidth;
       canvas.height = videoRef.current.videoHeight;
       context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      const imageDataUrl = canvas.toDataURL('image/png');
+      const imageDataUrl = canvas.toDataURL('image/jpeg');
       setCapturedImage(imageDataUrl);
     }
   };
@@ -47,51 +48,39 @@ const CameraPage: React.FC = () => {
     startCamera(); // 카메라 재시작
   };
 
-  /// 이미지 전송 처리
-// 이미지 전송 처리
-const sendImageToBackend = async () => {
-  if (!capturedImage) return;
+  // 이미지 전송 처리
+  const sendImageToBackend = async () => {
+    if (!capturedImage || !myPlaceId) return;  // myPlaceId가 없는 경우 처리
 
-  try {
-    // 로딩 상태 설정
-    setIsLoading(true);
+    try {
+      // 로딩 상태 설정
+      setIsLoading(true);
 
-    // 아직 백엔드 로직이 완성되지 않았으므로 주석 처리
-    /*
-    const response = await fakeApiCallToAnalyzeImage(capturedImage);
+      // capturedImage (Data URL)를 Blob 형식으로 변환
+      const blob = await (await fetch(capturedImage)).blob();
 
-    setTimeout(() => {
+      // 분석 API 요청, farmId는 myPlaceId로 사용
+      const response = await sendPlantDiagnosis(Number(myPlaceId), blob);
+
+      // 서버 응답에 따라 병해충 진단 결과 페이지로 이동
       navigate(`/myGarden/${myPlaceId}/${myPlantId}/diagnosis`, {
         state: {
-          plantName: '토마토',  // 예시 데이터
-          capturedImage,
-          pestDetected: response.pestDetected,
-          pestImage: response.pestImage,
-          pestDescription: response.pestDescription,
-          treatmentMethod: response.treatmentMethod,
+          plantName: response.isPest.plantName,  // 작물 이름
+          capturedImage: response.isPest.myImagePath,  // 내가 찍은 사진 경로
+          pestDetected: response.isPest.hasPest,  // 병해충 발견 여부
+          pestName: response.pestInfo?.pestName || '',  // 병해충 이름
+          pestDescription: response.pestInfo?.pestDesc || '',  // 병해충 설명
+          treatmentMethod: response.pestInfo?.pestCureDesc || '',  // 치료법
+          pestImagePath: response.pestInfo?.pestImagePath || '',  // 병해충 이미지 경로
         },
       });
+
       setIsLoading(false);  // 페이지 이동 후 로딩 해제
-    }, 2000);
-    */
-
-    setTimeout(() => {
-      navigate(`/myGarden/${myPlaceId}/${myPlantId}/diagnosis`, {
-        state: {
-          plantName: '토마토',  // 임시 데이터
-          capturedImage,
-          pestDetected: false, // 임시로 병해충 감지된 것으로 가정
-        },
-      });
-      setIsLoading(false);  // 페이지 이동 후 로딩 해제
-    }, 2000); 
-  } catch (error) {
-    console.error('이미지 분석 중 오류 발생:', error);
-    setIsLoading(false);  // 오류 발생 시에도 로딩 해제
-  }
-};
-
-
+    } catch (error) {
+      console.error('이미지 분석 중 오류 발생:', error);
+      setIsLoading(false);  // 오류 발생 시에도 로딩 해제
+    }
+  };
 
   // 카메라 스트림 중지 함수
   const stopCamera = () => {
@@ -121,17 +110,17 @@ const sendImageToBackend = async () => {
   return (
     <div className={styles.cameraPage}>
       {isLoading ? (
-        <CameraLoading />  // 로딩 중일 때 새로운 로딩 컴포넌트 보여주기
+        <CameraLoading />  // 로딩 중일 때 로딩 컴포넌트 보여주기
       ) : capturedImage ? (
         <div className={styles.capturedImageContainer}>
           <img src={capturedImage} alt="Captured" className={styles.capturedImage} />
           <div className={styles.buttonsContainer}>
-            {/* 분석하기 버튼: 가운데 큰 동그란 버튼 */}
+            {/* 분석하기 버튼 */}
             <button onClick={sendImageToBackend} className={styles.analyzeButton}>
               병충해 <br /> 분석하기
             </button>
 
-            {/* 다시 찍기 버튼: Restart.png 아이콘 사용 */}
+            {/* 다시 찍기 버튼 */}
             <button onClick={retakeImage} className={styles.retakeButton}>
               <img src={require('../../assets/icons/Restart.png')} alt="다시 찍기" />
             </button>

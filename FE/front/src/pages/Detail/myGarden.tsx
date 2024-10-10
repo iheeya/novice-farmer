@@ -8,6 +8,7 @@ import { updatePlaceName } from '../../services/FarmDetail/farmDetailPageApi';
 import { selectGardenPost } from '../../services/AddGarden/AddGardenPost';
 import { useDispatch } from 'react-redux';
 import { setLocationData } from '../../store/AddFarm/store';
+import { deletePlant } from '../../services/PlantDetail/Icons';  // 삭제 API 임포트
 
 
 interface Address {
@@ -96,16 +97,25 @@ const MyGarden: React.FC = () => {
       width: '70%', 
     }).then((result) => {
       if (result.isConfirmed) {
-        // 삭제 로직 처리
-        Swal.fire({
-          icon: 'success',
-          title: '삭제 완료',
-          text: '작물이 성공적으로 삭제되었습니다.',
-          confirmButtonText: '확인',
-        });
+        // 삭제 API 호출
+        deletePlant(plant.myPlantId)
+          .then(() => {
+            // 성공적으로 삭제되면 farms 배열에서 해당 작물을 제거하고 UI를 업데이트
+            setFarms((prevFarms) => prevFarms.filter((f) => f.myPlantId !== plant.myPlantId));
+
+            Swal.fire({
+              icon: 'success',
+              title: '삭제 완료',
+              text: '작물이 성공적으로 삭제되었습니다.',
+              confirmButtonText: '확인',
+            });
+          })
+          .catch((error) => {
+            console.error('작물 삭제 중 오류 발생:', error);
+            Swal.fire('삭제 실패', '작물을 삭제하는 데 실패했습니다.', 'error');
+          });
       }
     });
-    
   };
 
   const handleAddPlantClick = () => {
@@ -122,13 +132,11 @@ const MyGarden: React.FC = () => {
     selectGardenPost(payload)
     .then((data) => {
       console.log('성공적으로 데이터가 전송되었습니다:', data);
-      // 데이터 전송 후 다른 로직 처리 (예: navigate)
       dispatch(setLocationData(addressInfo.jibun))
       navigate(`/myGarden/${myPlaceId}/register/plant`, { state: { plantData: data } });
     })
     .catch((error) => {
       console.error('데이터 전송 중 오류 발생:', error);
-      // 오류 처리 로직 추가 (예: 사용자에게 오류 메시지 표시)
     });
     }
 
