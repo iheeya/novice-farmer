@@ -9,7 +9,7 @@ from enum import Enum
 class UserPlaceSchema(BaseModel):
     user_place_id: Optional[int]
     user_place_sido: Optional[str]
-    user_place_sigugun: Optional[str]
+    sigungu: Optional[str]
 
     class Config:
         from_attributes = True

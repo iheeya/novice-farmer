@@ -13,7 +13,7 @@ class UserPlace(Base):
     
     user_place_id = Column(BigInteger, primary_key=True, index=True)
     user_place_sido = Column(String(255), nullable=True)
-    user_place_sigugun = Column(String(255), nullable=True)
+    sigungu = Column(String(255), nullable=True)
 
 # 농장 테이블에 대한 모델 정의
 class Farm(Base):

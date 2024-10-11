@@ -113,7 +113,6 @@ def update_request_todo(farm_id, todo_type):
         
     todo_date = today + timedelta(days=fert_cycle)
     todo_date = todo_date.strftime("%Y-%m-%d %H:%M:%S.%f")
-    # todo_id += 1
     add_new_todo(farmer, farm.farm_id, '', todo_type, todo_date, False)
     
 

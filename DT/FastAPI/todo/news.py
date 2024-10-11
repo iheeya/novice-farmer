@@ -16,7 +16,7 @@ def update_special_weatherinfo():
         id = farm.farm_id
         user_place = farm.user_place_id
         wrn_type = ''
-        sido, sigungu = farmer.query(UserPlace).with_entities(UserPlace.user_place_sido, UserPlace.user_place_sigugun).filter(UserPlace.user_place_id == user_place).first()
+        sido, sigungu = farmer.query(UserPlace).with_entities(UserPlace.user_place_sido, UserPlace.sigungu).filter(UserPlace.user_place_id == user_place).first()
         sido = sido[:2]
         sigungu = sigungu[:-1]
         
