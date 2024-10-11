@@ -1,1 +1,4 @@
+DT/FastAPI/recomm/bjd_code.csv filter=lfs diff=lfs merge=lfs -text
+DT/FastAPI/todo/irr/processed_test_data.csv filter=lfs diff=lfs merge=lfs -text
+DT/FastAPI/todo/irr/test_data.csv filter=lfs diff=lfs merge=lfs -text
 *.{pt,json} filter=lfs diff=lfs merge=lfs -text

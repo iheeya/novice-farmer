@@ -4,24 +4,66 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
-class Farm(BaseModel):
-    id : int
-    plant_id : int
-    place_id : int
-    user_id : int
-    farm_DDs : int
-    is_completeed : int
-    is_deleted : bool
-    is_harvest : bool
-    complete_date : datetime
-    create_date : datetime
-    delete_date : datetime
-    harvest_date : datetime
-    start_date : datetime
-    memo : str
-    crop_name : str
-    
-    # SQLAlchemy의 모델 객체를 Pydantic 스키마로 쉽게 변환할 수 있게 해서 FastAPI가 자동으로 데이터 직렬화를 해준다.    
+# 작물 기본 정보 스키마
+class CropBaseSchema(BaseModel):
+    crop_id: Optional[int]
+    crop_name: str
+    crop_plant_season: Optional[str]
+    is_leaves: Optional[int]
+
     class Config:
         from_attributes = True
-        
+
+# 비료 정보 스키마
+class CropFertilizerSchema(BaseModel):
+    fertilizer_id: Optional[int]
+    fertilizer_type: Optional[str]
+    fertilizer_name: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+# 작물별 비료 주기 스키마
+class CropFertilizerPeriodSchema(BaseModel):
+    crop_id: Optional[int]
+    fertilizer_step1: Optional[bool]
+    fertilizer_step2: Optional[bool]
+    fertilizer_step3: Optional[bool]
+    fertilizer_step4: Optional[bool]
+    fertilizer_step1_id: Optional[int]
+    fertilizer_step2_id: Optional[int]
+    fertilizer_step3_id: Optional[int]
+    fertilizer_step4_id: Optional[int]
+
+    class Config:
+        from_attributes = True
+
+# 작물별 관수 주기 스키마
+class CropWaterPeriodSchema(BaseModel):
+    crop_id: Optional[int]
+    watering_step1: Optional[bool]
+    watering_step2: Optional[bool]
+    watering_step3: Optional[bool]
+    watering_step4: Optional[bool]
+
+    class Config:
+        from_attributes = True
+
+# 작물 생육 온도 스키마
+class GrowthTempSchema(BaseModel):
+    crop_id: Optional[int]
+    growth_high_temp: Optional[float]
+    growth_low_temp: Optional[float]
+
+    class Config:
+        from_attributes = True
+
+# 작물별 DD값 Threshold 스키마
+class CropThresholdSchema(BaseModel):
+    crop_id: Optional[int]
+    step2_threshold: int
+    step3_threshold: int
+    step4_threshold: int
+
+    class Config:
+        from_attributes = True

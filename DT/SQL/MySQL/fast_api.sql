@@ -1,7 +1,7 @@
 # CREATE DATABASE fast_api DEFAULT CHARACTER SET utf8mb4;
 #
-# USE fast_api
-
+USE fast_api;
+# SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
 # DROP TABLE weather_area, adm_district, aws_stn, today_weather_base, today_weather_val, crop_base, crop_fertilizer, crop_info, growth_temp
 
 
@@ -10,7 +10,7 @@
 -- 예보구역 데이터 가져오기
 CREATE TABLE weather_area (
     `reg_id` VARCHAR(12) PRIMARY KEY COLLATE utf8mb4_unicode_ci, # 예보가 발효되는 예보구역 코드(region_id)
-    `reg_name` VARCHAR(12) UNIQUE # 예보가 발효되는 예보구역 이름(region_name)
+    `reg_name` VARCHAR(12) # 예보가 발효되는 예보구역 이름(region_name)
 );
 
 -- 행정구역 데이터 가져오기
@@ -19,8 +19,8 @@ CREATE TABLE adm_district(
     `adm_head` VARCHAR(12) COLLATE utf8mb4_unicode_ci,
     `adm_middle` VARCHAR(12) COLLATE utf8mb4_unicode_ci,
     `adm_tail` VARCHAR(12) COLLATE utf8mb4_unicode_ci,
-    `x_grid` TINYINT,
-    `y_grid` TINYINT,
+    `x_grid` SMALLINT,
+    `y_grid` SMALLINT,
     `lat` FLOAT8,
     `lon` FLOAT8
 );
@@ -46,7 +46,8 @@ CREATE TABLE weather_val(
 CREATE TABLE crop_base(
     `crop_id` SMALLINT PRIMARY KEY AUTO_INCREMENT,
     `crop_name` VARCHAR(255) NOT NULL,
-    `crop_plant_season` VARCHAR(50) # 1, 2, 3으로 입력.
+    `crop_plant_season` VARCHAR(50), # 1, 2, 3으로 입력.
+    `is_leaves` TINYINT
 );
 
 CREATE TABLE crop_fertilizer(
@@ -56,24 +57,25 @@ CREATE TABLE crop_fertilizer(
 );
 
 CREATE TABLE crop_fertilizer_period(
-    `crop_id` TINYINT PRIMARY KEY,
-    `fertilizer_step1` TINYINT, # growth 1단계에서 시비 주기.
-    `fertilizer_step2` TINYINT, # growth 2단계에서 시비 주기.
-    `fertilizer_step3` TINYINT, # growth 3단계에서 시비 주기.
-    `fertilizer_step4` TINYINT, # growth 4단계에서 시비 주기.
-    fertilizer_step1_id SMALLINT,  # 1단계에서 사용할 비료
-    fertilizer_step2_id SMALLINT,  # 2단계에서 사용할 비료
-    fertilizer_step3_id SMALLINT,  # 3단계에서 사용할 비료
-    fertilizer_step4_id SMALLINT,  # 4단계에서 사용할 비료
-    FOREIGN KEY (crop_id) REFERENCES crop_base(crop_id) ON DELETE CASCADE,
-    FOREIGN KEY (fertilizer_step1_id) REFERENCES crop_fertilizer(fertilizer_id),
-    FOREIGN KEY (fertilizer_step2_id) REFERENCES crop_fertilizer(fertilizer_id),
-    FOREIGN KEY (fertilizer_step3_id) REFERENCES crop_fertilizer(fertilizer_id),
-    FOREIGN KEY (fertilizer_step4_id) REFERENCES crop_fertilizer(fertilizer_id)
+    `crop_id` SMALLINT PRIMARY KEY,
+    `fertilizer_step1_cycle` TINYINT NULL,
+    `fertilizer_step2_cycle` TINYINT NULL,
+    `fertilizer_step3_cycle` TINYINT NULL,
+    `fertilizer_step4_cycle` TINYINT NULL,
+    fertilizer_step1_id SMALLINT NULL,
+    fertilizer_step2_id SMALLINT NULL,
+    fertilizer_step3_id SMALLINT NULL,
+    fertilizer_step4_id SMALLINT NULL,
+    CONSTRAINT fk_crop_id FOREIGN KEY (crop_id) REFERENCES crop_base(crop_id) ON DELETE CASCADE,
+    CONSTRAINT fk_fertilizer_step1_id FOREIGN KEY (fertilizer_step1_id) REFERENCES crop_fertilizer(fertilizer_id),
+    CONSTRAINT fk_fertilizer_step2_id FOREIGN KEY (fertilizer_step2_id) REFERENCES crop_fertilizer(fertilizer_id),
+    CONSTRAINT fk_fertilizer_step3_id FOREIGN KEY (fertilizer_step3_id) REFERENCES crop_fertilizer(fertilizer_id),
+    CONSTRAINT fk_fertilizer_step4_id FOREIGN KEY (fertilizer_step4_id) REFERENCES crop_fertilizer(fertilizer_id)
 );
 
+
 CREATE TABLE crop_water_period(
-    `crop_id` TINYINT PRIMARY KEY,
+    `crop_id` SMALLINT PRIMARY KEY,
     `watering_step1` TINYINT, # growth 1단계에서 관수 주기.
     `watering_step2` TINYINT, # growth 1단계에서 관수 주기.
     `watering_step3` TINYINT, # growth 1단계에서 관수 주기.
@@ -89,4 +91,21 @@ CREATE TABLE growth_temp
     FOREIGN KEY growth_temp(crop_id) REFERENCES crop_base(crop_id) ON DELETE CASCADE
 );
 
+CREATE TABLE special_weather(
+    `stn_id`    VARCHAR(12) PRIMARY KEY,
+    `wrn_id`    VARCHAR(12) NOT NULL, # 특보구역 코드 - 어느지역 특보인지
+    `reg_id`    VARCHAR(12) NOT NULL # 예보구역 코드
+);
 
+CREATE TABLE current_special_weather(
+    `wrn_id` VARCHAR(12) PRIMARY KEY,
+    `wrn_type` VARCHAR(12) NOT NULL
+); # 특보현황
+
+CREATE TABLE crop_threshold(
+    `crop_id` SMALLINT PRIMARY KEY,
+    `step2_threshold` INT,
+    `step3_threshold` INT,
+    `step4_threshold` INT NOT NULL,
+    FOREIGN KEY crop_threshold(crop_id) REFERENCES crop_base(crop_id) ON DELETE CASCADE
+);
