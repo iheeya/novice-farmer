@@ -136,7 +136,8 @@ public class MyPlantController {
                                                                     @ModelAttribute InspectionPestRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
         log.info("[MyPlantController] Received inspectionPest request for {}", userId);
-        return ResponseEntity.ok().body(myPlantService.inspectionPest(userId, request));
+//        return ResponseEntity.ok().body(myPlantService.inspectionPest(userId, request));
+        return ResponseEntity.ok().body(myPlantService.inspectionPestTest(userId, request));
     }
 
 //    /**
