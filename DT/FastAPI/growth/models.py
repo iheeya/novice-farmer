@@ -1,78 +1,40 @@
 # Column: 컬럼 설정, Integer: 정수 타입 지정, TypeDecorator: 커스텀 타입 정의 지원
-from sqlalchemy import Column, Dialect, Integer, String, Boolean, Date, DateTime, TypeDecorator, ForeignKey, Float, CheckConstraint, SmallInteger, BigInteger, Enum
+from sqlalchemy import Column, Dialect, Integer, String, Boolean, Date, DateTime, TypeDecorator, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+# MySQL의 BIT 타입 사용을 위해 dialect.mysql에서 가져온다.
+from sqlalchemy.dialects.mysql import BIT
 
 Base = declarative_base()
 
-
-# TINYINT TypeDecorator 정의
-class TinyInteger(TypeDecorator):
-    impl = SmallInteger
-
-    def process_bind_param(self, value, dialect):
-        if value is not None:
-            return int(value)
-
-    def process_result_value(self, value, dialect):
-        return int(value) if value is not None else 0 
-
-# 작물 기본 정보 모델
-class CropBase(Base):
-    __tablename__ = 'crop_base'
-
-    crop_id = Column(SmallInteger, primary_key=True, autoincrement=True)
-    crop_name = Column(String(255), nullable=False)
-    crop_plant_season = Column(String(50))
-    is_leaves = Column(TinyInteger)
-
-# 비료 정보 모델
-class CropFertilizer(Base):
-    __tablename__ = 'crop_fertilizer'
-
-    fertilizer_id = Column(SmallInteger, primary_key=True)
-    fertilizer_type = Column(String(255))
-    fertilizer_name = Column(String(255))
-
-# 작물별 비료 주기 모델
-class CropFertilizerPeriod(Base):
-    __tablename__ = 'crop_fertilizer_period'
-
-    crop_id = Column(SmallInteger, ForeignKey('crop_base.crop_id'), primary_key=True)
-    fertilizer_step1_cycle = Column(TinyInteger, nullable=True)
-    fertilizer_step2_cycle = Column(TinyInteger)
-    fertilizer_step3_cycle = Column(TinyInteger)
-    fertilizer_step4_cycle = Column(TinyInteger)
-    fertilizer_step1_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
-    fertilizer_step2_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
-    fertilizer_step3_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
-    fertilizer_step4_id = Column(SmallInteger, ForeignKey('crop_fertilizer.fertilizer_id'))
-
-# 작물별 관수 주기 모델
-class CropWaterPeriod(Base):
-    __tablename__ = 'crop_water_period'
-
-    crop_id = Column(SmallInteger, ForeignKey('crop_base.crop_id'), primary_key=True)
-    watering_step1 = Column(Boolean)
-    watering_step2 = Column(Boolean)
-    watering_step3 = Column(Boolean)
-    watering_step4 = Column(Boolean)
-
-# 작물 생육 온도 모델
-class GrowthTemp(Base):
-    __tablename__ = 'growth_temp'
-
-    crop_id = Column(SmallInteger, ForeignKey('crop_base.crop_id'), primary_key=True)
-    growth_high_temp = Column(Float)
-    growth_low_temp = Column(Float)
-
-# 작물별 DD값 Treshold
-class CropThreshold(Base):
-    __tablename__ = 'crop_threshold'
-
-    crop_id = Column(SmallInteger, ForeignKey('crop_base.crop_id', ondelete='CASCADE'), primary_key=True)
-    step2_threshold = Column(Integer, nullable=False)
-    step3_threshold = Column(Integer, nullable=False)
-    step4_threshold = Column(Integer, nullable=False)
-
+# 커스텀 BIT 타입을 정의한다.
+class BooleanBit(TypeDecorator):
+    # impl 속성은 이 커스텀 타입이 내부적으로 어떤 데이터베이스 타입으로 변환될 지 정의한다.
+    impl = BIT
     
+    # SQLAlchemy가 데이터를 DB에 저장하기 전에 호출된다. value는 Python에서 전달된 값, dialect는 DB의 종류.
+    def process_bind_param(self, value, dialect):
+        # Python에서 준 value 값이 True면 1 반환, False면 0 반환.
+        return 1 if value else 0
+    
+    # SQLAlchemy가 DB에서 값을 가져올 때 호출된다.
+    def process_result_value(self, value, dialect):
+        # value를 boolean type으로 변환하여 True, False로 반환한다(사실 없어도 상관은 없으나 schemas에서 문제가 발생하지 않기 위해 사용 권장)
+        return bool(value)
+    
+class UserFarm(Base):
+    __tablename__ = 'farm'
+    id = Column('farm_id', Integer, primary_key=True)
+    plant_id = Column(Integer, ForeignKey('palnt.palnt_id'))
+    place_id = Column(Integer, ForeignKey('user_place_id'))
+    user_id = Column(Integer, ForeignKey('user.user_id'))
+    farm_DDs = Column('farm_degree_day', Integer)
+    is_completeed = Column('farm_is_completed', BooleanBit)
+    is_deleted = Column('farm_is_deleted', BooleanBit)
+    is_harvest = Column('farm_is_harvest', BooleanBit)
+    complete_date = Column('farm_complete_date', DateTime)
+    create_date =  Column('farm_create_date', DateTime)
+    delete_date = Column('farm_delete_date', DateTime)
+    harvest_date =  Column('farm_harvest_date', DateTime)
+    start_date = Column('farm_seed_date', DateTime)
+    memo = Column('farm_memo', String(255))
+    crop_name = Column('farm_plant_name', String(255))
