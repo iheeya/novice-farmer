@@ -1,11 +1,6 @@
 # CREATE DATABASE fast_api DEFAULT CHARACTER SET utf8mb4;
 #
-# USE fast_api
-
-# DROP TABLE weather_area, adm_district, aws_stn, today_weather_base, today_weather_val, crop_base, crop_fertilizer, crop_info, growth_temp
-
-
-# 리스트로 입력하는 데이터들은 모두 ,(comma) 단위로 구분하여 작성할 것.
+USE fast_api;
 
 -- 예보구역 데이터 가져오기
 CREATE TABLE weather_area (
