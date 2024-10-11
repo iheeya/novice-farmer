@@ -218,6 +218,7 @@ public class MyPlantService {
         LocalDate recentWateringDate = null;
         for (FarmTodo ft : farmTodosIsCompleted) {
             if(ft.getTodoType() == TodoType.WATERING) {
+                if(ft.getTodoDate() == null) recentWateringDate = LocalDate.now().minusDays(10);
                 recentWateringDate = ft.getTodoDate().toLocalDate();
                 break;
             }
@@ -227,6 +228,7 @@ public class MyPlantService {
         LocalDate recentFertilizingDate = null;
         for (FarmTodo ft : farmTodosIsCompleted) {
             if(ft.getTodoType() == TodoType.FERTILIZERING) {
+                if(ft.getTodoDate() == null) recentWateringDate = LocalDate.now().minusDays(10);
                 recentFertilizingDate = ft.getTodoDate().toLocalDate();
                 break;
             }
