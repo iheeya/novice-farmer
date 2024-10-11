@@ -19,8 +19,7 @@ const WeekendFarmPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // API 키를 직접 하드코딩
-    const apiKey = '7d40056552ed894557f3c66db07c3360';
+    const apiKey = process.env.REACT_APP_KAKAO_API_KEY;
 
     if (!apiKey) {
       console.error('Kakao API key is missing');
