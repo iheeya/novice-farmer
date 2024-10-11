@@ -9,7 +9,9 @@ import com.d207.farmer.domain.plant.PlantGrowthIllust;
 import com.d207.farmer.domain.plant.PlantThreshold;
 import com.d207.farmer.domain.user.FavoritePlace;
 import com.d207.farmer.domain.user.FavoritePlant;
+import com.d207.farmer.domain.user.Gender;
 import com.d207.farmer.domain.user.User;
+import com.d207.farmer.dto.common.FileDirectory;
 import com.d207.farmer.dto.mainpage.MainPageResponseDTO;
 import com.d207.farmer.dto.mainpage.components.*;
 import com.d207.farmer.repository.farm.*;
@@ -17,6 +19,7 @@ import com.d207.farmer.repository.mainpage.*;
 import com.d207.farmer.repository.plant.PlantRepository;
 import com.d207.farmer.repository.user.UserRepository;
 import com.d207.farmer.utils.DateUtil;
+import com.d207.farmer.utils.FarmUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +51,7 @@ public class MainPageService {
     private final CommunityCommentForMainPageRepository communityCommentRepository;
     private final CommunityImageForMainPageRepository communityImageRepository;
     private final DateUtil dateUtil;
+    private final FarmUtil farmUtil;
 
     public MainPageResponseDTO getMainPage(Long userId) {
         // db 조회
@@ -78,13 +82,13 @@ public class MainPageService {
      * 1. TO DO 컴포넌트
      */
     private TodoInfoComponentDTO getTodoInfo(Long userId, List<Farm> farms) {
-        if(farms == null) return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null);
+        if(farms == null) return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null, null, null);
 
         List<Long> farmIds = farms.stream().map(Farm::getId).toList();
         List<FarmTodo> farmTodos = todoRepository.findByFarmIdInAndIsCompletedFalseOrderByTodoDate(farmIds);
 
         if(farmTodos == null || farmTodos.isEmpty()) {
-            return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null);
+            return new TodoInfoComponentDTO(false, null, null, null, null, null, null, null, null, null, null);
         }
         FarmTodo farmTodo = farmTodos.get(0);
         String title = switch (farmTodo.getTodoType()) {
@@ -96,13 +100,7 @@ public class MainPageService {
         };
 
         // 현재 생장단계 구하기
-        int growthStep = 1;
-        int maxDegreeDay = farmTodo.getFarm().getPlant().getDegreeDay();
-        for (PlantThreshold pt : farmTodo.getFarm().getPlant().getPlantThresholds()) {
-            if(farmTodo.getFarm().getDegreeDay() < pt.getDegreeDay()) break;
-            growthStep++;
-        }
-        if(farmTodo.getFarm().getDegreeDay() == maxDegreeDay) growthStep++;
+        int growthStep = farmUtil.getGrowthStep(farmTodo.getFarm());
 
         String imagePath = "";
         // 일러스트 이미지 경로
@@ -116,8 +114,9 @@ public class MainPageService {
         // TODO 기온
         String temperature = "25도";
 
-        return new TodoInfoComponentDTO(true, farmTodo.getTodoType(), title, farmTodo.getFarm().getMyPlantName(),
-                farmTodo.getFarm().getPlant().getName(), imagePath, dateUtil.timeStampToYmd(farmTodo.getTodoDate()), farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
+        return new TodoInfoComponentDTO(true, farmTodo.getTodoType(), title, farmTodo.getFarm().getUserPlace().getName(),
+                farmTodo.getFarm().getMyPlantName(), farmTodo.getFarm().getPlant().getName(), imagePath, farmUtil.getGrowthStep(farmTodo.getFarm()),
+                farmTodo.getTodoDate() == null ? null : farmTodo.getTodoDate().toLocalDate(), farmTodo.getFarm().getUserPlace().getAddress().getJibun(), temperature);
     }
 
     /**
@@ -125,7 +124,8 @@ public class MainPageService {
      */
     private BeginnerInfoComponentDTO getBeginnerInfo(Long userId, List<Farm> farms, List<FavoritePlant> favoritePlants) {
         // 키우는 작물이 없고 선호 작물이 없으면
-        if (farms != null || favoritePlants != null) {
+//        if (farms != null || favoritePlants != null) {
+        if (!userId.equals(13L) && (farms != null || favoritePlants != null)) { // FIXME 메인페이지 계정용
             return new BeginnerInfoComponentDTO(false, new ArrayList<>());
         }
 
@@ -159,7 +159,9 @@ public class MainPageService {
     private FarmGuideInfoComponentDTO getFarmGuideInfo(Long userId) {
         // 설문조사 여부와 관계없이 텃밭을 아예 만든 적이 없을 때
         List<Farm> farms = farmRepository.findByUserId(userId).orElse(null);
-        return farms == null ? new FarmGuideInfoComponentDTO(true) : new FarmGuideInfoComponentDTO(false);
+//        return farms == null ? new FarmGuideInfoComponentDTO(true) : new FarmGuideInfoComponentDTO(false);
+        // FIXME 메인페이지 계정용
+        return (farms == null || userId.equals(13L)) ? new FarmGuideInfoComponentDTO(true) : new FarmGuideInfoComponentDTO(false);
     }
 
     /**
@@ -167,7 +169,8 @@ public class MainPageService {
      */
     private FavoritesInfoComponentDTO getFavoritesInfo(Long userId, List<Farm> farms, List<FavoritePlant> favoritePlants, List<FavoritePlace> favoritePlaces) {
         // 현재 키우고 있는 텃밭이 없으면
-        if(farms != null) {
+//        if(farms != null) {
+        if(!(userId.equals(13L) && farms != null)) {  // FIXME 메인페이지 계정용
             return new FavoritesInfoComponentDTO(false, new ArrayList<>(), new ArrayList<>());
         }
         int componentSize = 0;
@@ -200,7 +203,7 @@ public class MainPageService {
         }
 
         // 일단 랜덤으로
-        Collections.shuffle(farms, new Random(LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli()));
+        Collections.shuffle(farms, new Random());
         Farm farm = farms.get(0);
         return new MyPlantInfoComponentDTO(true, farm.getPlant().getId(), farm.getPlant().getName());
     }
@@ -209,17 +212,59 @@ public class MainPageService {
      * 7. 추천 컴포넌트
      */
     private RecommendInfoComponentDTO getRecommendInfo(Long userId, List<Plant> plants) {
-        // TODO 추천 알고리즘
         List<RecommendInfoComponentDTO.RecommendPlantDTO> recommendPlants = new ArrayList<>();
-        String[] desc = {"라이코펜 가득!", "비타민C 풍부!", "비타민B 풍부!", "철분 가득!"};
+        User user = userRepository.findById(userId).orElseThrow();
+        String address = user.getAddress();
+        Integer age = user.getAge();
+        Gender gender = user.getGender();
+        String gen = "";
+        if(gender == Gender.MALE) gen = "남자";
+        else gen = "여자";
+        String[] commentsBySeason = {
+                "서늘한 가을날, " + address + "에서 키우기 좋은 작물은?",
+                "쌀쌀한 가을에 " + address + "에 사는 사람들이 많이 키우는 작물은?",
+                "일교차가 큰 요즘, " + address + "에서 키우기 좋은 작물은?",
+                "해가 빨리 지는 요즘, " + address + "에서 키우기 좋은 작물은?",
+                "부쩍 추워진 요즘, " + address + "에 사는 사람들이 많이 키우는 작물은?",
+                "여름이 끝난 직후인 요즘, " + address + "에 사는 사람들이 많이 키우는 작물은?"
+        };
+        String[] commentsByAge = {
+                "토마토를 키우는 " + age + "살 " + gen + "들에게 가장 인기있는 작물은?",
+                "고추를 키우는 " + age + "살 " + gen + "들이 가장 많이 키우는 작물은?",
+                "상추를 키우는 " + age + "살 " + gen + "들이 가장 선호하는 작물은?",
+                "배추를 키우는 " + age + "살 " + gen + "들에게 가장 인기있는 작물은?",
+                "콩을 키우는 " + age + "살 " + gen + "들이 가장 선호하는 작물은?"
+        };
+
+        String[] descs = {"라이코펜 가득!", "비타민C 풍부!", "비타민B 풍부!", "철분 가득!", "비타민A 가득", "맛있다!", "눈 기능 향상!"};
+
+        Random rand = new Random();
+        Set<Integer> plantIdSet = new HashSet<>();
+
         for (int i = 0; i < 4; i++) {
-            recommendPlants.add(new RecommendInfoComponentDTO.RecommendPlantDTO(plants.get(i).getId(), plants.get(i).getName(), desc[i]));
+            int plantId = getRandPlantId(plants.size(), plantIdSet, rand);
+            int descId = rand.nextInt(descs.length);
+            recommendPlants.add(new RecommendInfoComponentDTO.RecommendPlantDTO(plants.get(plantId).getId(), plants.get(plantId).getName(), descs[descId]));
         }
-        RecommendInfoComponentDTO.RecommendByDTO recommendByPlace = new RecommendInfoComponentDTO.RecommendByDTO("서늘한 가을날, 구미시 진평동에서 키우기 좋은 작물은?",
+        int commentsBySeasonId = rand.nextInt(6);
+        int commentsByAgeId = rand.nextInt(5);
+        RecommendInfoComponentDTO.RecommendByDTO recommendByPlace = new RecommendInfoComponentDTO.RecommendByDTO(commentsBySeason[commentsBySeasonId],
                 recommendPlants.subList(0, 2));
-        RecommendInfoComponentDTO.RecommendByDTO recommendByUser = new RecommendInfoComponentDTO.RecommendByDTO("토마토를 키우는 20대 남성들에게 가장 인기있는 작물은?",
+        RecommendInfoComponentDTO.RecommendByDTO recommendByUser = new RecommendInfoComponentDTO.RecommendByDTO(commentsByAge[commentsByAgeId],
                 recommendPlants.subList(2, 4));
         return new RecommendInfoComponentDTO(true, recommendByPlace, recommendByUser);
+    }
+
+    private int getRandPlantId(int size, Set<Integer> plantIdSet, Random rand) {
+        int id = rand.nextInt(size);
+        while(true) {
+            if(plantIdSet.contains(id)) {
+                id = rand.nextInt(size);
+                continue;
+            }
+            plantIdSet.add(id);
+            return id;
+        }
     }
 
     /**
@@ -231,8 +276,8 @@ public class MainPageService {
         // 내가 선택해놓은 선호태그가 뜨거나
         if(communityFavoriteTags != null && !communityFavoriteTags.isEmpty()) {
             log.info("in communityFavoriteTags");
-            Collections.shuffle(communityFavoriteTags, new Random(LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli()));
-            return getCommunityInfoComponent(userId, communityFavoriteTags.get(0).getCommunitytag());
+            Collections.shuffle(communityFavoriteTags, new Random());
+            return getCommunityInfoComponent(userId, communityFavoriteTags.get(0).getCommunityTag());
         }
 
         // 선택해놓은 선호태그가 없으면 선호하는 작물/장소 태그가 뜨거나
@@ -309,7 +354,7 @@ public class MainPageService {
         Map<Long, String> imageMap = new HashMap<>();
         for (CommunityImage ci : communityImages) {
             if(!imageMap.containsKey(ci.getCommunity().getId())) {
-                imageMap.put(ci.getCommunity().getId(), ci.getImagePath());
+                imageMap.put(ci.getCommunity().getId(), FileDirectory.COMMUNITY.toString().toLowerCase() + "/" + ci.getImagePath());
             }
         }
 
@@ -328,7 +373,9 @@ public class MainPageService {
                         c.getId(), c.getTitle(),
                         (c.getContent().length() > 20 ? c.getContent().substring(0, 20) : c.getContent()) + "...",
                         imageMap.get(c.getId()), heartCntMap.get(c.getId()), commentCntMap.get(c.getId()),
-                        c.getUser().getNickname(), c.getUser().getImagePath(), dateUtil.timeStampToYmd(c.getWriteDate())
+                        c.getUser().getNickname(),
+                        FileDirectory.USER.toString().toLowerCase() + "/" +c.getUser().getImagePath(),
+                        c.getWriteDate().toLocalDate()
                 ));
                 break;
             }
@@ -352,7 +399,7 @@ public class MainPageService {
         Map<Long, String> imageMap = new HashMap<>();
         for (CommunityImage ci : communityImages) {
             if(!imageMap.containsKey(ci.getCommunity().getId())) {
-                imageMap.put(ci.getCommunity().getId(), ci.getImagePath());
+                imageMap.put(ci.getCommunity().getId(), FileDirectory.COMMUNITY.toString().toLowerCase() + "/" + ci.getImagePath());
             }
         }
 
@@ -376,7 +423,9 @@ public class MainPageService {
                     c.getId(), c.getTitle(),
                     (c.getContent().length() > 20 ? c.getContent().substring(0, 20) : c.getContent()) + "...",
                     imageMap.get(c.getId()), heartCntMap.get(c.getId()), commentCntMap.get(c.getId()),
-                    c.getUser().getNickname(), c.getUser().getImagePath(), dateUtil.timeStampToYmd(c.getWriteDate())
+                    c.getUser().getNickname(),
+                    FileDirectory.USER.toString().toLowerCase() + "/" +c.getUser().getImagePath(),
+                    c.getWriteDate().toLocalDate()
             ));
         }
         return communitySortedByRecents;

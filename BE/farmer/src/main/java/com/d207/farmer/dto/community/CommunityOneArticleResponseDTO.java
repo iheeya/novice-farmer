@@ -1,9 +1,11 @@
 package com.d207.farmer.dto.community;
 
 
+import com.d207.farmer.dto.common.FileDirectory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -28,11 +30,14 @@ public class CommunityOneArticleResponseDTO {
                                           List<String> communityTagList, Long communityHeartcount, Long communityCommentcount, boolean checkIPushHeart, boolean checkMyarticle, String year, String month, String day) {
 
         this.nickname = nickname;
-        this.imagePath = imagePath;
+        this.imagePath = (FileDirectory.USER.toString().toLowerCase()+"/" +imagePath);
         this.communityCommentcount=communityCommentcount;
         this.communityTitle = communityTitle;
         this.communityContent = communityContent;
-        this.communityImagePath = communityImagePath;
+        // communityImage가 List<String> 타입이므로, 각 이미지를 처리합니다.
+        this.communityImagePath = communityImagePath.stream()
+                .map(image -> FileDirectory.COMMUNITY.toString().toLowerCase() + "/" + image)
+                .collect(Collectors.toList());
         this.communityTagList = communityTagList;
         this.communityHeartcount=communityHeartcount;
         this.checkIPushHeart=checkIPushHeart;

@@ -10,7 +10,6 @@ public class WeekendFarmResponseDTO {
     private Long id;
     private String name;
     private String address;
-    private String tel;
     private String latitude;
     private String longitude;
     private String imagePath;
@@ -20,7 +19,6 @@ public class WeekendFarmResponseDTO {
         this.id = weekendFarm.getId();
         this.name = weekendFarm.getName();
         this.address = weekendFarm.getAddress();
-        this.tel = weekendFarm.getTel();
         this.latitude = weekendFarm.getLatitude();
         this.longitude = weekendFarm.getLongitude();
         this.imagePath = weekendFarm.getImagePath();

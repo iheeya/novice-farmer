@@ -2,6 +2,7 @@ package com.d207.farmer.controller.user;
 
 import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.domain.user.User;
+import com.d207.farmer.dto.file.FileUploadTestRequestDTO;
 import com.d207.farmer.dto.plant.PlantResponseDTO;
 import com.d207.farmer.dto.survey.SurveyRegisterRequestDTO;
 import com.d207.farmer.dto.user.*;
@@ -34,7 +35,6 @@ public class UserController {
     @Value("${spring.jwt.salt}")
     private String salt;
 
-
     /**
      * 회원가입쪽에서 email 중복 여부 체크!!
      */
@@ -55,7 +55,6 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getNicknameUse(nickname));
     }
 
-
     /**
      * 일반회원 회원가입
      */
@@ -66,26 +65,11 @@ public class UserController {
     }
 
     /**
-     * 회원 조회 - email로 조회
-     * MVP를 위한거임
-     */
-//    @GetMapping
-    public ResponseEntity<UserInfoResponseDTO> getUserInfo(@RequestBody @Valid UserInfoRequestByEmailDTO request) {
-        log.info("[UserController] Received get user info by email request for {}", request);
-        return ResponseEntity.ok().body(userService.getUserInfo(request));
-    }
-
-
-
-
-    /**
      * 일반회원 로그인
      */
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponseDTO> loginUser(@RequestBody @Valid UserLoginRequestDTO request) {
-
         log.info("[UserController] Received get normal user login request for {}", request);
-
         return ResponseEntity.ok().body(userService.loginUser(request));
     }
 
@@ -94,11 +78,9 @@ public class UserController {
      */
     @GetMapping("/survey")
     public ResponseEntity<Map<String, List<?>>> getSurveyContent() {
-
         log.info("[UserController] Received get survey after user first login");
         return ResponseEntity.ok().body(userService.getSurveyContent());
     }
-
 
     /**
      * 설문조사(선택 후 제출)
@@ -108,8 +90,6 @@ public class UserController {
                                             @RequestBody SurveyRegisterRequestDTO surveyRegisterRequestDTO) {
         Long userId;
         userId = jwtUtil.getUserId(authorization);
-
-        //create의 ret urn
         return ResponseEntity.created(URI.create("/survey")).body(userService.registerSurvey(userId, surveyRegisterRequestDTO));
     }
 
@@ -119,13 +99,11 @@ public class UserController {
 
     @GetMapping("/mypage/like")
     public ResponseEntity<Map<String, List<?>>> getSurveyContentWithId(@RequestHeader("Authorization") String authorization) {
-
         Long userId;
         userId = jwtUtil.getUserId(authorization);
         log.info("[UserController] Received get mypage- mylike");
         return ResponseEntity.ok().body(userService.getSurveyContentWithId(userId));
     }
-
 
     /**
      * 마이페이지 - 선호 텃밭, 작물 변경 후 변경버튼눌렀을때~!!!!
@@ -134,12 +112,9 @@ public class UserController {
     @PostMapping("/mypage/like")
     public ResponseEntity<String> registerSurveyContentWithId(@RequestHeader("Authorization") String authorization,
                                                               @RequestBody SurveyRegisterRequestDTO surveyRegisterRequestDTO) {
-
         Long userId = jwtUtil.getUserId(authorization);
-
         return ResponseEntity.ok().body(userService.registerSurveyContentWithId(userId, surveyRegisterRequestDTO));
     }
-
 
     /**
      * 마이페이지!!!! 회원 조회 - token으로 조회
@@ -160,43 +135,40 @@ public class UserController {
 
     @PostMapping("/mypage")
     public ResponseEntity<?> registerProfilePage(@RequestHeader("Authorization") String authorization,
-                                                @RequestBody UserInfoResponseDTO userInfoResponseDTO) {
+                                                @RequestBody UserInfoRequestDTO userInfoRequestDTO) {
         Long userId;
         userId = jwtUtil.getUserId(authorization);
         log.info("[UserController] Set mypage - MyProfile");
-        return ResponseEntity.ok().body(userService.registerUserInfo(userId, userInfoResponseDTO));
+        return ResponseEntity.ok().body(userService.registerUserInfo(userId, userInfoRequestDTO));
+    }
+
+    /**
+     * 마이페이지 - 이미지변경
+     */
+    @PostMapping("/mypage/image")
+    public ResponseEntity<?> registerUserImage(@RequestHeader("Authorization") String authorization,
+                                               @ModelAttribute FileUploadTestRequestDTO request) {
+        Long userId;
+        userId = jwtUtil.getUserId(authorization);
+        log.info("[UserController] Set registerUserImage");
+        if(request.getFile().isEmpty()){
+            return ResponseEntity.ok().body(userService.registerUserImageClean(userId));
+        }
+        else {
+            return ResponseEntity.ok().body(userService.registerUserImage(userId, request));
+        }
     }
 
 
     /**
      * 마이페이지 - 과거 기른 작물 출력List<Farm>
      */
-    // 확인해봐야함!
     @GetMapping("/mypage/history")
     public ResponseEntity<?> getFarmHistory(@RequestHeader("Authorization") String authorization) {
         Long userId;
         userId = jwtUtil.getUserId(authorization);
         log.info("[UserController] Received get mypage- My Farm history");
         return ResponseEntity.ok().body(userService.getFarmHistory(userId));
-
     }
-
-
-
-
-
-
-
-
-
-    @PostMapping("/test")
-    public ResponseEntity<UserLoginResponseDTO> loginUser2() {
-
-        //log.info("[Us1232323");
-        System.out.println("hi~~~~~~~~~~~~~");
-        return ResponseEntity.ok().body(null);
-
-    }
-
 
 }

@@ -1,10 +1,7 @@
 package com.d207.farmer.domain.common;
 
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -12,11 +9,12 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@ToString
 public class Address {
 
     private String sido;
 
-    private String sigugun;
+    private String sigungu;
 
     private String bname1;
 

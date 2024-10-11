@@ -1,5 +1,6 @@
 package com.d207.farmer.controller.farm;
 
+import com.d207.farmer.domain.farm.Farm;
 import com.d207.farmer.dto.farm.get.*;
 import com.d207.farmer.dto.farm.register.FarmRegisterInMyPlaceRegisterDTO;
 import com.d207.farmer.dto.farm.register.FarmRegisterRequestDTO;
@@ -37,7 +38,8 @@ public class FarmController {
                                                @RequestBody @Valid FarmRegisterRequestDTO request) {
         log.info("[FarmController] Received register farm request for {}", request);
         Long userId = jwtUtil.getUserId(authorization);
-        return ResponseEntity.created(URI.create("/")).body(farmService.registerFarm(userId, request));
+        Farm farm = farmService.registerFarm(userId, request);
+        return ResponseEntity.created(URI.create("/")).body("농장 생성 완료");
     }
 
     /**
@@ -82,7 +84,7 @@ public class FarmController {
     public ResponseEntity<List<PlaceWithRecommendAndFavoriteResponseDTO>> getPlaceWithRecommendAndFavorite(@RequestHeader("Authorization") String authorization,
                                                                                                            @RequestBody @Valid RecommendPlaceRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("[FarmController] Received get places with recommend and favorite request for {}", userId);
+        log.info("[FarmController] Received get places with recommend and favorite request for {}", request);
 
         farmService.requestPlaceRecommend(userId, request);
 
@@ -97,7 +99,7 @@ public class FarmController {
     public ResponseEntity<List<PlantWithRecommendAndFavoriteResponseDTO>> getPlantWithRecommendAndFavorite(@RequestHeader("Authorization") String authorization,
                                                                                                            @RequestBody @Valid RecommendPlantRequestDTO request) {
         Long userId = jwtUtil.getUserId(authorization);
-        log.info("[FarmController] Received get plants with recommend and favorite request for {}", userId);
+        log.info("[FarmController] Received get plants with recommend and favorite request for {}", request);
 
         farmService.requestPlantRecommend(userId, request);
 

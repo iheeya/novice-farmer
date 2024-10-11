@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
@@ -19,7 +20,7 @@ import static jakarta.persistence.FetchType.LAZY;
 public class Community {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "community_id")
     private Long id;
 
@@ -46,6 +47,15 @@ public class Community {
         this.title = communityTitle;
         this.content = communityContent;
         this.writeDate = LocalDateTime.now();
+        this.checkDelete = false;
+    }
+
+    public Community(User user, String communityTitle, String communityContent, LocalDateTime writeDate) {
+
+        this.user = user;
+        this.title = communityTitle;
+        this.content = communityContent;
+        this.writeDate = writeDate;
         this.checkDelete = false;
     }
 }

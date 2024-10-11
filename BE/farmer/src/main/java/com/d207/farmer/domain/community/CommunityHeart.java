@@ -3,6 +3,7 @@ package com.d207.farmer.domain.community;
 
 import com.d207.farmer.domain.user.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
@@ -19,7 +21,7 @@ import static jakarta.persistence.FetchType.LAZY;
 public class CommunityHeart {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "community_favorite_tag_id")
     private Long id;
 
@@ -41,4 +43,9 @@ public class CommunityHeart {
         this.writeDate = LocalDateTime.now();
     }
 
+    public CommunityHeart(Community community, User user, LocalDateTime writeDate) {
+        this.community = community;
+        this.user = user;
+        this.writeDate = writeDate;
+    }
 }

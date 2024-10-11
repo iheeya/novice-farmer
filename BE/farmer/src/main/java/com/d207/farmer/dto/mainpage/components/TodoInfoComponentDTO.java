@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,10 +15,12 @@ public class TodoInfoComponentDTO {
     private Boolean isUsable;
     private TodoType todoType;
     private String title;
-    private String farmName;
+    private String myPlaceName;
+    private String myPlantName;
     private String plantName;
     private String plantImagePath;
-    private String todoDate;
+    private Integer growthStep;
+    private LocalDate todoDate;
     private String address;
     private String temperature;
 }

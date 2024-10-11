@@ -84,13 +84,39 @@ export function getSurveyInfo(): Promise<any> {
 
 // 설문조사 제출 함수
 export function postSurveyInfo({ plant, place }: postSurveyInfoProps): Promise<any> {
-  console.log({plant, place});
+  // console.log({plant, place});
   return api
     .post("/user/survey", { plant, place })
     .then((response) => {
       return Promise.resolve();
     })
     .catch((error) => {
+      return Promise.reject(error);
+    });
+}
+
+// 이메일 중복 검사 함수
+export function isEmailDuplicate(email: string): Promise<boolean> {
+  return api
+    .get(`/user/email-valid?email=${email}`)
+    .then((response) => {
+      return Promise.resolve(response.data); 
+    })
+    .catch((error) => {
+      console.error('이메일 중복 검사 실패:', error);
+      return Promise.reject(error);
+    });
+}
+
+// 닉네임 중복 검사 함수
+export function isNickNameDuplicate(nickname: string): Promise<boolean> {
+  return api
+    .get(`/user/nickname-valid?nickname=${nickname}`)
+    .then((response) => {
+      return Promise.resolve(response.data);
+    })
+    .catch((error) => {
+      console.error('닉네임 중복 검사 실패:', error);
       return Promise.reject(error);
     });
 }

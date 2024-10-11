@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CommunityFavoriteTagForMainPageRepository extends JpaRepository<CommunityFavoriteTag, Long> {
-    @Query("select cft from CommunityFavoriteTag cft join fetch cft.communitytag where cft.user.id = :userId")
+    @Query("select cft from CommunityFavoriteTag cft join fetch cft.communityTag where cft.user.id = :userId")
     List<CommunityFavoriteTag> findByUserId(@Param("userId") Long userId);
 }

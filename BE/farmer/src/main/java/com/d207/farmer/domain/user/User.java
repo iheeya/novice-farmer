@@ -1,19 +1,22 @@
 package com.d207.farmer.domain.user;
 
 import com.d207.farmer.dto.user.UserRegisterRequestDTO;
+import com.d207.farmer.dto.user.sample.UserSampleRegisterRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.GenerationType.SEQUENCE;
+
 @Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
 public class User {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
@@ -61,6 +64,19 @@ public class User {
         this.age = request.getAge();
         this.address = request.getAddress();
         this.imagePath = ""; // TODO default 값 설정 필요
+        this.pushAllow = request.getPushAllow();
+    }
+
+    public User (UserSampleRegisterRequestDTO request) {
+        this.email = request.getEmail();
+        this.password = request.getPassword();
+        this.nickname = request.getNickname();
+        this.regDate = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        this.isFirstLogin = true;
+        this.gender = request.getGender();
+        this.age = request.getAge();
+        this.address = request.getAddress();
+        this.imagePath = request.getImagePath();
         this.pushAllow = request.getPushAllow();
     }
 

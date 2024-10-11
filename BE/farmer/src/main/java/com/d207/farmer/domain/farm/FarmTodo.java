@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
@@ -14,7 +15,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FarmTodo {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "farm_todo_id")
     private Long id;
 
@@ -26,7 +27,7 @@ public class FarmTodo {
     @Enumerated(EnumType.STRING)
     private TodoType todoType;
 
-    @Column(name = "farm_tddo_type")
+    @Column(name = "farm_todo_title")
     private String todoTitle;
 
     @Column(name = "farm_todo_is_completed")
@@ -41,12 +42,13 @@ public class FarmTodo {
     /**
      * 비즈니스 메서드
      */
-    public FarmTodo (Farm farm, TodoType todoType, Boolean isCompleted, LocalDateTime todoDate, LocalDateTime completeDate) {
+    public FarmTodo (Farm farm, TodoType todoType, String todoTitle, Boolean isCompleted, LocalDateTime todoDate, LocalDateTime completeDate) {
         this.farm = farm;
         this.todoType = todoType;
         this.isCompleted = isCompleted;
         this.todoDate = todoDate;
         this.completeDate = completeDate;
+        this.todoTitle = todoTitle;
     }
 
     public void updateTodoComplete() {

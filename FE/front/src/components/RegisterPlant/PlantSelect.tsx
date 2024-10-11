@@ -1,34 +1,56 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import tomato from '../../assets/img/plants/1.png'
 import pepper from '../../assets/img/plants/2.png'
-import lettuce from '../../assets/img/plants/3.png'
-import perilla from '../../assets/img/plants/4.png'
-import cabbage from '../../assets/img/plants/5.png'
-import farmPlant from '../../assets/dummydata/farmPlant.json'
+import Corn from '../../assets/img/plants/3.png'
+import Cucumber from '../../assets/img/plants/4.png'
+import Bin from '../../assets/img/plants/5.png'
+import Branch from '../../assets/img/plants/6.png'
+import Radish from '../../assets/img/plants/7.png'
+import Lettuce from '../../assets/img/plants/8.png'
+import Cabbage from '../../assets/img/plants/9.png'
+import Potato from '../../assets/img/plants/10.png'
+import sweetPotato from '../../assets/img/plants/11.png'
+import leek from '../../assets/img/plants/12.png'
 import '../../styles/RegisterGarden/gardenSelect.css'
 import { FaHeart } from "react-icons/fa";
 import PlantModal from './PlantModal'
 import { useDispatch } from 'react-redux'
-import {setPlantData, setPlantIdData} from '../../store/AddFarm/store'
-
+import {setFarmData, setPlantData, setPlantIdData} from '../../store/AddFarm/store'
+import { getPlantData } from '../../services/AddGarden/AddGardenGet'
 
 // farm/place api 사용해서 텃밭 리스트 가져오기
 interface GardenLoadingProps{
     onLoading : () => void;
+    onResponse: (data: any) => void;
 }
 
-function PlantSelect({onLoading}: GardenLoadingProps) {
+interface Plant {
+    plantId: number; 
+    plantName: string; 
+    isService: boolean; 
+    isFavorite : boolean;
+}
+
+function PlantSelect({onLoading, onResponse}: GardenLoadingProps) {
     const dispatch = useDispatch(); // 디스패치 함수 
     const [selectedPlant, setSelectedPlant] = useState<string | null>(null); // 선택된 장소를 저장할 상태
     const [isModalOpen, setIsModalOpen] = useState(false)  // 모달 열림 상태
     const [selectPlantId, setSelectPlantId] = useState<number|null>(null) // 장소 id 저장
+    const [farmPlant, setfarmPlant] = useState<any[]>([]);
 
     const imageMapping: {[key:string]: string} = {
         1:tomato,
         2:pepper,
-        3:lettuce,
-        4: perilla,
-        5: cabbage
+        3:Corn,
+        4: Cucumber,
+        5: Bin,
+        6: Branch,
+        7: Radish,
+        8: Lettuce,
+        9: Cabbage,
+        10: Potato,
+        11: sweetPotato,
+        12: leek
     }
 
     const handleImageClick = (plantName :string, plantId:number) => {
@@ -46,13 +68,27 @@ function PlantSelect({onLoading}: GardenLoadingProps) {
         setIsModalOpen(false); // 모달 닫기
     };
 
+    useEffect(() => {
+        const PlantData = async() => {
+            try{
+                const data = await getPlantData()
+                // console.log(data)
+                setfarmPlant(data)
+            } catch(e) {
+                console.log(e)
+            }
+        }
+
+        PlantData();
+    }, [])
+
 
 
     return(
         <div className='frame'>
             <div className='farm-instruction'>작물을 선택해주세요!</div>
             <div className='image-group'>
-                {farmPlant.map(plant => (
+                {farmPlant.map((plant:Plant) => (
                     <div className={`image-container ${plant.isService ? '': 'blur'}`} // 서비스하지 않는 텃밭은 흑백 처리
                      key={plant.plantId}
                     onClick={plant.isService ? () => handleImageClick(plant.plantName, plant.plantId) : undefined} // 클릭 이벤트 설정
@@ -68,7 +104,7 @@ function PlantSelect({onLoading}: GardenLoadingProps) {
                 </div>
                 ))}
             </div>
-            {isModalOpen && <PlantModal  plantId={selectPlantId} onClose={closeModal} onLoading={onLoading} />} 
+            {isModalOpen && <PlantModal  plantId={selectPlantId} onClose={closeModal} onLoading={onLoading} onResponse={onResponse}/>} 
         </div>
     )
 }

@@ -1,0 +1,39 @@
+.community-header-container{
+    display: flex;
+    align-items: center;
+}
+
+.my-profile{
+    border-radius: 50%;
+    width: 14%;
+    height: 14%;
+    /* background-color: #D2EABD; */
+    color: #5B8E55;
+    aspect-ratio: 1 / 1; /* 1:1 비율로 유지 */
+    display: flex;
+    font-size: 1.5rem;
+    justify-content: center; /* 수평 가운데 정렬 */
+    align-items: center; /* 수직 가운데 정렬 */
+    margin-right: 5%;
+    margin-top: 5%;
+}
+
+.search{
+    margin-top: 5%;
+    margin-right: 5%;
+    margin-left: auto;
+    right: 22%;
+    left: auto;
+    color: #5B8E55;
+    font-size: 1.8rem; 
+    /* position:absolute; */
+}
+
+.back{
+    width: 40%;
+}
+
+.back-box{
+    margin-top: 7%;
+    margin-left: 5%;
+}

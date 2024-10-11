@@ -19,7 +19,7 @@
   }
   
   .tab {
-    flex: 1; /* 각 탭이 동일한 크기 */
+    flex: 1; 
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -21,7 +21,7 @@ export default function Login() {
         // minWidth: "3px",
         margin: "0 auto", // 좌우 중앙 정렬
         // paddingY:"2%",
-        height: "100%",
+        height: "80vh",
         paddingX: "5%",
         backgroundColor: "white",
         // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
@@ -31,19 +31,20 @@ export default function Login() {
         flexDirection: "column", // Flex 방향을 세로로 설정
         justifyContent: "center", // 수직 중앙 정렬
         alignItems: "center", // 수평 중앙 정렬
+        
       }}
     >
-      <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%" }} />
+      <img src="/user/sampleLogo.png" alt="샘플로고" style={{ width: "40%"}} />
       <form
         onSubmit={(event) => {
           event.preventDefault();
           handleLogin({ email, password })
             .then(({ firstLogin }) => {
               if (firstLogin) {
-                console.log("firstLogin");
+                // console.log("firstLogin");
                 navigate("/user/survey");
               } else {
-                console.log("not firstLogin");
+                // console.log("not firstLogin");
                 navigate("/");
               }
             })
@@ -78,7 +79,7 @@ export default function Login() {
           variant="contained"
           color="success"
           fullWidth
-          sx={{ marginTop: "1rem", marginBottom: "1rem", padding: "0.75rem", backgroundColor: "#84b366" }}
+          sx={{ marginTop: "1rem", marginBottom: "1rem", padding: "0.75rem", backgroundColor: "#5B8E55" }}
         >
           로그인
         </Button>
@@ -88,7 +89,7 @@ export default function Login() {
           color="success"
           fullWidth
           onClick={() => navigate("/user/signUp")}
-          sx={{ marginBottom: "1.5rem", padding: "0.75rem", backgroundColor: "#84b366" }}
+          sx={{ marginBottom: "1.5rem", padding: "0.75rem", backgroundColor: "#5B8E55" }}
         >
           회원가입하기
         </Button>

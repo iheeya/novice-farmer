@@ -1,5 +1,6 @@
 package com.d207.farmer.dto.survey;
 
+import com.d207.farmer.dto.utils.OnlyId;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,24 +12,10 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class SurveyRegisterRequestDTO {
-    private List<Plant> plant;
-    private List<Place> place;
+    private List<OnlyId> plant;
+    private List<OnlyId> place;
 
-    // Getters and Setters
 
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Plant {
-        private Long id;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Place {
-        private Long id;
-    }
 }
 
 

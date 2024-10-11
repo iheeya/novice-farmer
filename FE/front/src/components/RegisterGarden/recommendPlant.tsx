@@ -1,10 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import tomato from '../../assets/img/plants/1.png'
 import pepper from '../../assets/img/plants/2.png'
-import lettuce from '../../assets/img/plants/3.png'
-import perilla from '../../assets/img/plants/4.png'
-import cabbage from '../../assets/img/plants/5.png'
-import farmPlants from '../../assets/dummydata/plantRecommend.json'
+import Corn from '../../assets/img/plants/3.png'
+import Cucumber from '../../assets/img/plants/4.png'
+import Bin from '../../assets/img/plants/5.png'
+import Branch from '../../assets/img/plants/6.png'
+import Radish from '../../assets/img/plants/7.png'
+import Lettuce from '../../assets/img/plants/8.png'
+import Cabbage from '../../assets/img/plants/9.png'
+import Potato from '../../assets/img/plants/10.png'
+import sweetPotato from '../../assets/img/plants/11.png'
+import leek from '../../assets/img/plants/12.png'
 import '../../styles/RegisterGarden/gardenSelect.css'
 import { FaHeart } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
@@ -13,19 +19,40 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPlantData } from '../../store/AddFarm/store'
 import { RootState } from '../../store/AddFarm/store'
 
-function RecommendPlant() {
+
+interface Plant {
+    plantId: number;
+    plantName: string;
+    isFavorite: boolean;
+    isRecommend: boolean;
+    isService: boolean;
+}
+
+interface PlantData {
+    response: Plant[]
+}
+
+function RecommendPlant({response}:PlantData) {
 
     const [selectedPlant, setSelectedPlant] = useState<string | null>(null); // 선택된 장소를 저장할 상태
     const [isModalOpen, setIsModalOpen] = useState(false)  // 모달 열림 상태
     const [selectPlantId, setSelectPlanteId] = useState<number|null>(null) // 장소 id 저장
+    const [farmPlants, setPlantData] = useState<Plant[]>([]);
     const farmData = useSelector((state:RootState) => state.farmSelect.farm)
 
     const imageMapping: {[key:string]: string} = {
         1:tomato,
         2:pepper,
-        3:lettuce,
-        4: perilla,
-        5: cabbage
+        3:Corn,
+        4: Cucumber,
+        5: Bin,
+        6: Branch,
+        7: Radish,
+        8: Lettuce,
+        9: Cabbage,
+        10: Potato,
+        11: sweetPotato,
+        12: leek
     }
 
     const handleImageClick = (plantName :string, plantId:number) => {
@@ -40,11 +67,17 @@ function RecommendPlant() {
     };
 
 
+    // useEffect(()=> {
+    //     console.log('prop결과', response)
+    // })
+
+
+
     return(
          <div className='frame'>
             <div className='farm-instruction'>{farmData}에서 키우기 좋은 작물이에요!</div>
             <div className='image-group'>
-                {farmPlants.map(plant => (
+                {response.map((plant:Plant) => (
                     <div className={`image-container ${plant.isService ? '': 'blur'}`} // 서비스하지 않는 텃밭은 흑백 처리
                      key={plant.plantId}
                     onClick={plant.isService ? () => handleImageClick(plant.plantName, plant.plantId) : undefined} // 클릭 이벤트 설정
