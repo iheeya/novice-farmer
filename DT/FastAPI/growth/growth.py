@@ -72,24 +72,8 @@ def update_degree_days(db: Session, data: FarmUpdateSchema, farm_id: int):
 
 def update_farm_growth():
     try:
-        # 1. 모든 농장(farm.farm_id)을 순회하며 모든 작물(farm.plant_id)에 대해 계산 실시
         farmer_data = farmer.query(Farm).all()
 
-        # # 2. 작물 종류(plant_id )에 따른 생장 온도(growth_temp.crop_id))
-        # plant_data = farmer.query(Plant).all()
-
-        # # 3. 농장 위치(farm.user_palce_id)에서 시도, 시군구
-        # place_data = farmer.query(Place)
-        # user_palce_data = farmer.query(UserPlace).all()
-
-        # # 4. 위치 기반으로 WeatherArea reg_id 구함, AwsStn과 join
-        # area_data = fast_api.query(WeatherArea).all()
-        # aws_data = fast_api.query(AwsStn).all()
-
-        # # 5. join한 테이블과 WeatherVal과 stn_id로 join해서 최고기온, 최저기온.
-        # weather_data = fast_api.query(WeatherVal).all()
-
-        # 6. 농장, 농장위치, 작물 정보 일치하는 곳에 dd값 계산한 것 넣어주기.
         for farm in farmer_data:
             id = farm.farm_id
             plant = farm.plant_id
