@@ -1,5 +1,8 @@
-# Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
-# Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode
+# Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,dotenv
+# Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,dotenv
+
+### dotenv ###
+.env
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -115,7 +118,7 @@ ipython_config.py
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
-__pycache__/
+
 # Celery stuff
 celerybeat-schedule
 celerybeat.pid
@@ -124,7 +127,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -192,8 +194,4 @@ pyrightconfig.json
 .history
 .ionide
 
-yolo_env/
-yolov5/
-aqua_env/
-irr_env
-# End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
+# End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,dotenv
