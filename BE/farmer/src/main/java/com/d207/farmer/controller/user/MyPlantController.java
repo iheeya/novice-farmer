@@ -86,7 +86,7 @@ public class MyPlantController {
         String result = myPlantService.waterPlant(userId, request);
 
         // TODO MVP 발표용 FAST와 통신 단절 후 임의로 칼럼 추가
-        String fastApiResult = myPlantService.updateTodoByFastApi(request.getFarmId(), TodoType.WATERING);
+//        String fastApiResult = myPlantService.updateTodoByFastApi(request.getFarmId(), TodoType.WATERING);
 
         return ResponseEntity.ok().body(result);
     }
