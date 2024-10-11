@@ -150,6 +150,22 @@ public class MyPlantService {
         return new InspectionPestResponseDTO(isPestDTO, pestInfoDTO);
     }
 
+    public InspectionPestResponseDTO inspectionPestTest(Long userId, InspectionPestRequestDTO request) {
+        // 파일 업로드
+        String fileName = fileUtil.uploadFile(request.getFile(), PEST);
+        Farm farm = farmRepository.findByIdWithJoin(request.getFarmId()).orElseThrow();
+        int growthStep = farmUtil.getGrowthStep(farm);
+
+        // 병해충 걸렸을 때
+        InspectionPestResponseDTO.IsPestDTO isPestDTO = new InspectionPestResponseDTO.IsPestDTO(
+                true, PEST.toString().toLowerCase() + "/" + fileName, farm.getPlant().getName(), growthStep
+        );
+        InspectionPestResponseDTO.PestInfoDTO pestInfoDTO = new InspectionPestResponseDTO.PestInfoDTO("pest/검증완료버전.jpg",
+                "잎곰팡이병", "습한 환경에서 퍼지는 병으로 작물에 큰 피해를 줌", "곰팡이 약제를 사용하고 감염된 식물 제거");
+
+        return new InspectionPestResponseDTO(isPestDTO, pestInfoDTO);
+    }
+
     private static boolean isHealthy(InspectionPestResponseByFastApiDTO response) {
         return !response.getHasPest();
     }
