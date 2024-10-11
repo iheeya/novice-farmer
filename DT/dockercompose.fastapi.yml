@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  fastapi:
+    image: ${FASTAPI_IMAGE}
+    container_name: fastapi
+    environment:
+      - ENABLE_FASTAPI=${ENABLE_FASTAPI}
+    ports:
+      - "8000:8000"
+    entrypoint: >
+      sh -c 'if [ "$ENABLE_FASTAPI" = "true" ]; then exec uvicorn main:app --host 0.0.0.0 --port 8000; else echo "FastAPI Container Operation is Failed"; fi'

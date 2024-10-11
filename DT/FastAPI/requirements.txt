@@ -1,0 +1,13 @@
+fastapi[standard]
+uvicorn[standard]
+pandas
+sqlalchemy
+pillow
+requests
+pydantic
+databases
+python-dotenv
+motor
+alembic
+apscheduler
+pymysql
