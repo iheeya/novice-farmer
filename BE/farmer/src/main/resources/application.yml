@@ -84,8 +84,8 @@ external:
         ***REMOVED***
     fastAPI:
       dataUrl: http://j11d207.p.ssafy.io:8000/data-api
-      aiUrl: http://j11d207.p.ssafy.io:8001/data-api
-      # url: https://09fd-14-46-141-166.ngrok-free.app/data-api
+      aiUrl: https://ddf5-14-46-141-166.ngrok-free.app/data-api
+#      aiUrl: http://j11d207.p.ssafy.io:8001/data-api
     weather:
       url: http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst
       ***REMOVED***
