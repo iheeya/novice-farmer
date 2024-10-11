@@ -27,7 +27,6 @@ def update_special_weatherinfo():
         if reg_id:
             # 예보구역에 맞는 관측구역
             wrn_id = fast_api.query(SpecialWeather).with_entities(SpecialWeather.stn_id).filter(SpecialWeather.reg_id == reg_id[0]).first()
-            # print(f'stn_id: {wrn_id}')
             
             if wrn_id:
                 wrn_type = fast_api.query(CurrentSpecialWeather).with_entities(CurrentSpecialWeather.wrn_id).filter(CurrentSpecialWeather.wrn_id==wrn_id).first()

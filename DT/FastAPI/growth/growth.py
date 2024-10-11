@@ -1,19 +1,8 @@
 # 작물 생장도(DDs) 계산
-from sqlalchemy.orm import Session
-from sqlalchemy import or_
-from setting.mysql import session_local
-from setting.models import UserPlace, Farm
-from setting.schemas import FarmUpdateSchema
-from weather.models import AwsStn, WeatherArea, WeatherVal
-from .models import GrowthTemp
-from dotenv import load_dotenv
-import  math
+import math
 
-load_dotenv()
-fast_api: Session = session_local['fast_api']()
-farmer: Session = session_local['farmer']()
-
-def crops_growth(tmax, tmin, thi, tlow): # 현재는 토마토에 대한 값만 계산 중.
+def crops_growth(): # 현재는 토마토에 대한 값만 계산 중.
+    thi, tlow = 33.33, 7.22
     def docalcs_S(max_val, min_val):
         if min_val > thi:
             heat = thi - tlow
@@ -49,6 +38,7 @@ def crops_growth(tmax, tmin, thi, tlow): # 현재는 토마토에 대한 값만 
         heat = (diff * math.cos(theta) - d2 * (pihlf - theta)) / twopi
         return heat
     
+    tmax, tmin = 21.56, 14.95
     DD1 = 2*docalcs_S(tmax, tmin)
     tmep_tlow, temp_thi = tlow, tmin
     tlow, thi = thi, 2*thi - tlow
@@ -72,63 +62,41 @@ def update_degree_days(db: Session, data: FarmUpdateSchema, farm_id: int):
 
 def update_farm_growth():
     try:
-        # 1. 모든 농장(farm.farm_id)을 순회하며 모든 작물(farm.plant_id)에 대해 계산 실시
         farmer_data = farmer.query(Farm).all()
 
-        # # 2. 작물 종류(plant_id )에 따른 생장 온도(growth_temp.crop_id))
-        # plant_data = farmer.query(Plant).all()
-
-        # # 3. 농장 위치(farm.user_palce_id)에서 시도, 시군구
-        # place_data = farmer.query(Place)
-        # user_palce_data = farmer.query(UserPlace).all()
-
-        # # 4. 위치 기반으로 WeatherArea reg_id 구함, AwsStn과 join
-        # area_data = fast_api.query(WeatherArea).all()
-        # aws_data = fast_api.query(AwsStn).all()
-
-        # # 5. join한 테이블과 WeatherVal과 stn_id로 join해서 최고기온, 최저기온.
-        # weather_data = fast_api.query(WeatherVal).all()
-
-        # 6. 농장, 농장위치, 작물 정보 일치하는 곳에 dd값 계산한 것 넣어주기.
         for farm in farmer_data:
-            if farm.farm_id is None:
-                continue
             id = farm.farm_id
             plant = farm.plant_id
             user_place = farm.user_place_id
             DDs = farm.farm_degree_day
             
-            # print(f'farm_id는 {id}입니다.')
             # 작물별 생장 한계 온도
             thi, tlow = fast_api.query(GrowthTemp).with_entities(GrowthTemp.growth_high_temp, GrowthTemp.growth_low_temp).filter(GrowthTemp.crop_id == plant).first()
-            # print(f'thi, hlow: {thi}, {tlow}')
-            
-            # 유저 농장의 위치
+            print(f'thi, hlow: {thi}, {tlow}')            
+        
             # 위치 정보 처리
-            sido, sigungu = farmer.query(UserPlace).with_entities(UserPlace.user_place_sido, UserPlace.sigungu).filter(UserPlace.user_place_id == user_place).first()
+            sido, sigungu = farmer.query(UserPlace).with_entities(UserPlace.user_place_sido, UserPlace.user_place_sigugun).filter(UserPlace.user_place_id == user_place).first()
             sido = sido[:2]
             sigungu = sigungu[:-1]
-            
-            # print(f'sido, sigungu: {sido}, {sigungu}')
+            print(f'sido, sigungu: {sido}, {sigungu}')
             
             # 유저 위치 정보에 맞는 예보구역
             reg_id = fast_api.query(WeatherArea).with_entities(WeatherArea.reg_id).filter(or_(WeatherArea.reg_name.like(f'%{sido}%'), WeatherArea.reg_name.like(f'%{sigungu}%'))).first()
-            # print(f'reg_id: {reg_id}')
+            print(f'reg_id: {reg_id}')
             
             if reg_id:
                 # 예보구역에 맞는 관측구역
                 stn_id = fast_api.query(AwsStn).with_entities(AwsStn.stn_id).filter(AwsStn.reg_id == reg_id[0]).first()
-                # print(f'stn_id: {stn_id}')
+                print(f'stn_id: {stn_id}')
                 
                 if stn_id:
                     # 관측구역에서 관측한 데이터
                     tmax, tmin = fast_api.query(WeatherVal).with_entities(WeatherVal.ta_max, WeatherVal.ta_min).filter(WeatherVal.stn_id == stn_id[0]).first()
-                    # print(f'ta_max, ta_min: {tmax}, {tmin}')
+                    print(f'ta_max, ta_min: {tmax}, {tmin}')
                     
                     
                     # 데이터들을 가지고 CropTime 알고리즘 실행
                     DDs += crops_growth(tmax, tmin, thi, tlow)
-                    # print(f'DD값은 {DDs} 입니다.')
                     
                     update_degree_days(farmer, FarmUpdateSchema(farm_degree_day=DDs), id)
         farmer.commit()
