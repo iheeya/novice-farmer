@@ -71,7 +71,7 @@ const MyPlant = () => {
   const handleStartPlant = async () => {
     if (plantData) {
       try {
-        await startPlant(plantData.plantInfo.myPlaceId); // API 요청
+        await startPlant(Number(myPlantId)); // API 요청
         Swal.fire('시작 완료', '작물이 성공적으로 시작되었습니다.', 'success');
         
         fetchPlantDetail(); // 최신화된 데이터 다시 불러오기
@@ -87,7 +87,7 @@ const MyPlant = () => {
   const handleDelete = async () => {
     if (plantData) {
       try {
-        await deletePlant(plantData.plantInfo.myPlaceId);
+        await deletePlant(Number(myPlantId));
         Swal.fire('삭제 완료', '작물이 성공적으로 삭제되었습니다.', 'success');
         navigate(`/myGarden/${plantData.plantInfo.myPlaceId}`);
       } catch (error) {
@@ -101,7 +101,7 @@ const MyPlant = () => {
   const handleHarvest = async () => {
     if (plantData) {
       try {
-        await harvestPlant(plantData.plantInfo.myPlaceId);
+        await harvestPlant(Number(myPlantId));
         Swal.fire('첫 수확 완료', '첫 수확이 성공적으로 처리되었습니다.', 'success');
         fetchPlantDetail(); // 상태 업데이트
       } catch (error) {
@@ -115,7 +115,7 @@ const MyPlant = () => {
   const handleEndCultivation = async () => {
     if (plantData) {
       try {
-        await endCultivation(plantData.plantInfo.myPlaceId);
+        await endCultivation(Number(myPlantId));
         Swal.fire('재배 종료 완료', '재배가 성공적으로 종료되었습니다.', 'success');
         navigate('/myPage'); // 재배 종료 후 /myPage 경로로 이동
       } catch (error) {
@@ -129,7 +129,7 @@ const MyPlant = () => {
   const handleWater = async () => {
     if (plantData) {
       try {
-        await waterPlant(plantData.plantInfo.myPlaceId);
+        await waterPlant(Number(myPlantId));
         Swal.fire('물주기 완료', '물주기가 성공적으로 처리되었습니다.', 'success');
         fetchPlantDetail(); // 상태 업데이트
       } catch (error) {
@@ -143,7 +143,7 @@ const MyPlant = () => {
   const handleFertilize = async () => {
     if (plantData) {
       try {
-        await fertilizePlant(plantData.plantInfo.myPlaceId);
+        await fertilizePlant(Number(myPlantId));
         Swal.fire('비료주기 완료', '비료주기가 성공적으로 처리되었습니다.', 'success');
         fetchPlantDetail(); // 상태 업데이트
       } catch (error) {
