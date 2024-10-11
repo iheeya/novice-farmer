@@ -1,8 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,dotenv
-# Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,dotenv
-
-### dotenv ###
-.env
+# Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -118,7 +115,7 @@ ipython_config.py
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
-
+__pycache__/
 # Celery stuff
 celerybeat-schedule
 celerybeat.pid
@@ -127,6 +124,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+.env
 .venv
 env/
 venv/
@@ -163,7 +161,7 @@ cython_debug/
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
+.idea/
 
 ### Python Patch ###
 # Poetry local configuration file - https://python-poetry.org/docs/configuration/#local-configuration
@@ -194,4 +192,8 @@ pyrightconfig.json
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,dotenv
+yolo_env/
+yolov5/
+aqua_env/
+irr_env
+# End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
