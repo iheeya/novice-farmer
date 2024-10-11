@@ -6,9 +6,9 @@
 | ✅ Mobile Web     | ✅ AI               | ✅ JavaScript | ✅ React                 |
 | ✅ Android App    | ✅ Big Data         | ✅ TypeScript | ✅ Node.js               |
 | ✅ Desktop App    |                      | ✅ Python     | ✅ Spring/Springboot     |
-|                                          | ✅ Java       | ✅ MUI(Material UI)      |
-|                                          | ✅ FastAPI    |                           |
-|                                          | ✅ SQL        |                           |
+|                   |                      | ✅ Java       | ✅ MUI(Material UI)      |
+|                   |                      | ✅ FastAPI    |                           |
+|                    |                     | ✅ SQL        |                           |
 -----------------------------------------------------------------------------------------
 
 # 구미2반_D207
