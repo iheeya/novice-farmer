@@ -89,7 +89,7 @@
 <div><img src="./imgs/새싹농부-ERD.png"></div>
 
 ## 5. MockUp
-[Figma URL](https://www.figma.com/design/33EeT0FspJR31S814mO0wM/SaeSSak?t=ZrNahah62sMMp6Mc-0)
+[Figma URL](https://www.figma.com/design/33EeT0FspJR31S814mO0wM/SaeSSak?node-id=29-109&node-type=canvas&t=ZrNahah62sMMp6Mc-0)
 
 ## 6. API 명세서
-[API 명세서](https://www.notion.so/API-ade2e6d555b04d38b29a67387f299494?pvs=4)
+[API 명세서](https://www.notion.so/0abeddf5ac8740e6aa509f514585e8e9?v=efbe5a2b129445a0a2ae5b512a760b67&pvs=4)
