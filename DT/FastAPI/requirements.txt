@@ -11,5 +11,3 @@ databases==0.6.2
 python-dotenv==1.0.0
 motor==3.1.1
 alembic==1.10.4  # SQLAlchemy와 호환되는 버전
-apscheduler
-pymysql

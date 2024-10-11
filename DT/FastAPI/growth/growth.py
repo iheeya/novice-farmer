@@ -1,19 +1,8 @@
 # 작물 생장도(DDs) 계산
-from sqlalchemy.orm import Session
-from sqlalchemy import or_
-from setting.mysql import session_local
-from setting.models import UserPlace, Farm
-from setting.shcemas import FarmUpdateSchema
-from weather.models import AwsStn, WeatherArea, WeatherVal
-from .models import GrowthTemp
-from dotenv import load_dotenv
-import  math
+import math
 
-load_dotenv()
-fast_api: Session = session_local['fast_api']()
-farmer: Session = session_local['farmer']()
-
-def crops_growth(tmax, tmin, thi, tlow): # 현재는 토마토에 대한 값만 계산 중.
+def crops_growth(): # 현재는 토마토에 대한 값만 계산 중.
+    thi, tlow = 33.33, 7.22
     def docalcs_S(max_val, min_val):
         if min_val > thi:
             heat = thi - tlow
@@ -49,6 +38,7 @@ def crops_growth(tmax, tmin, thi, tlow): # 현재는 토마토에 대한 값만 
         heat = (diff * math.cos(theta) - d2 * (pihlf - theta)) / twopi
         return heat
     
+    tmax, tmin = 21.56, 14.95
     DD1 = 2*docalcs_S(tmax, tmin)
     tmep_tlow, temp_thi = tlow, tmin
     tlow, thi = thi, 2*thi - tlow

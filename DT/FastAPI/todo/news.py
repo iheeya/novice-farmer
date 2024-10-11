@@ -1,1 +1,45 @@
-# 기상 특보 및 병해충 주의보
+from sqlalchemy.orm import Session
+from setting.mysql import session_local
+from setting.models import UserPlace, Farm, FarmTodo, FarmTodoType
+from weather.models import WeatherArea, SpecialWeather, CurrentSpecialWeather
+from sqlalchemy.exc import OperationalError
+from datetime import datetime
+from sqlalchemy import or_
+
+def update_special_weatherinfo():
+    fast_api : Session = session_local['fast_api']()
+    farmer : Session = session_local['farmer']()
+    
+    farm_data = farmer.query(Farm).all()
+    
+    for farm in farm_data:
+        id = farm.farm_id
+        user_place = farm.user_place_id
+        wrn_type = ''
+        sido, sigungu = farmer.query(UserPlace).with_entities(UserPlace.user_place_sido, UserPlace.sigungu).filter(UserPlace.user_place_id == user_place).first()
+        sido = sido[:2]
+        sigungu = sigungu[:-1]
+        
+        # 유저 위치 정보에 맞는 예보구역
+        reg_id = fast_api.query(WeatherArea).with_entities(WeatherArea.reg_id).filter(or_(WeatherArea.reg_name.like(f'%{sido}%'), WeatherArea.reg_name.like(f'%{sigungu}%'))).first()
+        # print(f'reg_id: {reg_id}')
+        
+        if reg_id:
+            # 예보구역에 맞는 관측구역
+            wrn_id = fast_api.query(SpecialWeather).with_entities(SpecialWeather.stn_id).filter(SpecialWeather.reg_id == reg_id[0]).first()
+            
+            if wrn_id:
+                wrn_type = fast_api.query(CurrentSpecialWeather).with_entities(CurrentSpecialWeather.wrn_id).filter(CurrentSpecialWeather.wrn_id==wrn_id).first()
+                todo_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+                if wrn_type:
+                    add_special_weather(farmer, id, wrn_type, FarmTodoType.NATURE, todo_date, False)
+
+def add_special_weather(db: Session, farm_id: int, title: str, type: FarmTodoType, date: datetime=None, is_completed: bool=False):
+    new_todo = FarmTodo(farm_id=farm_id, farm_todo_title=title, farm_todo_type=type, farm_todo_date=date, farm_todo_is_completed=is_completed)
+    
+    try:
+        db.add(new_todo)
+        db.commit()
+    except OperationalError as e:
+        db.rollback()
+        print(f'fert todo 입력 에러: {e}')
