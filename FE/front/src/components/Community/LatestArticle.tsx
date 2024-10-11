@@ -47,13 +47,13 @@ function LatestArticle(){
           search: "",
         });
   
-        console.log(data.content);
+        // console.log(data.content);
   
         if (data.content.length > 0) {
           setSearchData((prev) => {
             const existingIds = new Set(prev.map(item => item.communityId));
             const newItems = data.content.filter((item: SearchData) => !existingIds.has(item.communityId));
-            console.log('서치 데이터', searchData)
+            // console.log('서치 데이터', searchData)
             return [...prev, ...newItems];
           });
 
@@ -61,7 +61,7 @@ function LatestArticle(){
           const imagePromises = data.content.map((item: SearchData) => GetImage(item.userImagePath));
           const images = await Promise.all(imagePromises);
           setUserImages((prev) => [...prev, ...images]);
-          console.log('유저 이미지', images)   
+          // console.log('유저 이미지', images)   
 
       
 
@@ -78,7 +78,7 @@ function LatestArticle(){
     // 커뮤니티이미지 저장
     useEffect(() => {
       if (searchData.length > 0) {
-        console.log('업데이트된 서치 데이터', searchData);
+        // console.log('업데이트된 서치 데이터', searchData);
         const fetchImages = async () => {
           // 배열의 각 요소에 접근해야 함
           const communityImagePromises = searchData.map(async (item) => {

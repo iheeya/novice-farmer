@@ -54,7 +54,7 @@
     gap: 5%; /* 이미지 사이의 간격 */
     justify-content: flex-start; /* 줄의 시작 위치를 같게 */
     margin-left: 7.5%;
-    margin-bottom: '10%';
+    margin-bottom: 10%;
 }
 
 .frame{

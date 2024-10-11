@@ -73,6 +73,11 @@
     margin-top: 5%;
 }
 
+.MuiDialogActions-root {
+    padding: 0 !important; /* 기본 패딩을 제거 */
+  }
+  
+
 
 .modal-size .MuiDialog-paper {
     width: 100%;
@@ -100,8 +105,10 @@
 
 
 .comment-input{
-    display: flex;
+    /* display: flex; */
     align-items: center;
+    margin-left: 3%;
+    margin-right: 3%;
   }
 
 .comment{
