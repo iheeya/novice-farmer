@@ -12,33 +12,33 @@
 
  ### 1) 메인페이지
   - (로그인 전) 랜딩 페이지 제공
-  <div><img src="./img/랜딩페이지.gif"></div>
+  <div><img src="./imgs/랜딩페이지.gif"></div>
   - (로그인 후) 사용자 맞춤형 메인페이지 제공
-  <div><img src="./img/메인페이지.gif"></div>
+  <div><img src="./imgs/메인페이지.gif"></div>
 
  ### 2) 텃밭/작물 추천 및 등록
   - 원하는 텃밭을 선택하면 그 텃밭에 맞는 작물 추천
   - 원하는 작물을 선택하면 그 작물에 맞는 텃밭 추천
   - 텃밭/작물 선택 후 등록
- <div><img src="./img/텃밭작물-추천.gif"></div>
+ <div><img src="./imgs/텃밭작물-추천.gif"></div>
 
  ### 3) 내 작물 관리
   - 내 작물 상세 페이지
- <div><img src="./img/내작물조회.gif"></div>
+ <div><img src="./imgs/내작물조회.gif"></div>
   - 작물 history, TODO 페이지
- <div><img src="./img/history와todo.gif"></div>
+ <div><img src="./imgs/history와todo.gif"></div>
 
  ### 4) 병해충 검사
   - AI 이미지 분석으로 작물 병해충 검사
- <div><img src="./img/병해충검사.gif"></div>
+ <div><img src="./imgs/병해충검사.gif"></div>
 
  ### 5) 태그 기반 커뮤니티
   - 태그 기반 커뮤니티
- <div><img src="./img/태그기반커뮤니티.gif"></div>
+ <div><img src="./imgs/태그기반커뮤니티.gif"></div>
 
  ### 6) 각종 정보 조회
   - 각종 정보 페이지
- <div><img src="./img/각종정보.gif"></div>
+ <div><img src="./imgs/각종정보.gif"></div>
 
 ## 4. ERD
-<div><img src="./img/새싹농부-ERD.png"></div>
+<div><img src="./imgs/새싹농부-ERD.png"></div>
