@@ -57,13 +57,13 @@ spring:
       host: j11d207.p.ssafy.io
       port: 6379
     mongodb:
-      ***REMOVED***
+      uri:#
 external:
   api:
     naver:
       apigw:
         ***REMOVED***
-        ***REMOVED***
+        key:#
     fastAPI:
       url: http://j11d207.p.ssafy.io/data-api
 # 로그 설정
