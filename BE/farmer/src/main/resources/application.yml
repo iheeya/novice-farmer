@@ -58,19 +58,7 @@ spring:
       host: j11d207.p.ssafy.io
       port: 6379
     mongodb:
-#      ***REMOVED***
-      ***REMOVED***
-
-  # project 종료 후 제거 필요!
-  cloud:
-    aws:
-      s3:
-        bucket: d207-farmer
-      stack.auto: false
-      region.static: ap-southeast-2
-      credentials:
-        ***REMOVED***
-        ***REMOVED***
+      uri: #
 
   servlet:
     multipart:
@@ -81,14 +69,14 @@ external:
     naver:
       apigw:
         ***REMOVED***
-        ***REMOVED***
+        key: #
     fastAPI:
       dataUrl: http://j11d207.p.ssafy.io:8000/data-api
       aiUrl: https://ddf5-14-46-141-166.ngrok-free.app/data-api
 #      aiUrl: http://j11d207.p.ssafy.io:8001/data-api
     weather:
       url: http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst
-      ***REMOVED***
+      key: #
 
 # 로그 설정
 logging:
